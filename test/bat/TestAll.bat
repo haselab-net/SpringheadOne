@@ -20,7 +20,7 @@ rem (引数1) : プロジェクトファイルの場所
 rem (引数2) : プロジェクトファイル名(BuildMFC-.dspの前の部分, BuildBCB-.bpgの前の部分)
 
 rem ----- この下にビルドを行うファイルを追加する -----
-call bat\BuildMFC.bat Springhead\src\Springhead Springhead
+call bat\BuildMFC.bat Springhead\src Springhead
 call bat\BuildMFC.bat Springhead\src\Samples\DynaHaptic DynaHaptic
 call bat\BuildMFC.bat Springhead\src\Samples\MFCD3DDyna MFCD3DDyna
 call bat\BuildVC.bat  Springhead\src\Samples\SDKD3DDyna SDKD3DDyna
