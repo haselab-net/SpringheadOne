@@ -35,6 +35,22 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Creature"=..\..\Creature\Creature.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/Creature", OOXAAAAA
+    ..\..\creature
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "FileIO"=..\..\FileIO\FileIO.dsp - Package Owner=<4>
 
 Package=<5>
@@ -178,6 +194,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Framework
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Creature
     End Project Dependency
 }}}
 

@@ -326,6 +326,19 @@ SOURCE=..\..\Framework\FrameworkM.lib
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\Creature\CreatureM.lib
+
+!IF  "$(CFG)" == "MFCD3DDyna - Win32 MFC Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "MFCD3DDyna - Win32 MFC Release"
+
+!ENDIF 
+
+# End Source File
 # End Group
 # Begin Group "DebugLib"
 
@@ -476,6 +489,19 @@ SOURCE=..\..\GraphicsGL\GraphicsGLMD.lib
 # Begin Source File
 
 SOURCE=..\..\Framework\FrameworkMD.lib
+
+!IF  "$(CFG)" == "MFCD3DDyna - Win32 MFC Debug"
+
+!ELSEIF  "$(CFG)" == "MFCD3DDyna - Win32 MFC Release"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Creature\CreatureMD.lib
 
 !IF  "$(CFG)" == "MFCD3DDyna - Win32 MFC Debug"
 

@@ -289,7 +289,7 @@ void CMFCD3DDynaView::ThrowSphere(float r){
 
 	if (!csphere) csphere = new CDSphere;
 	csphere->radius = r;
-	csphere->pmaterial = new PHPhysicalMaterial;
+	csphere->pmaterial = new CDPhysicalMaterial;
 	csphere->pmaterial->pMatData.reflexDamper = 0.3f;
 	csphere->pmaterial->pMatData.reflexSpring = 3.0f;
 	frame->AddChildObject(csphere, scene);
