@@ -1,75 +1,721 @@
 --- ビルドのログ ---  
  
 *** Springhead *** 
+--------------------構成: Base - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+Affine.cpp
+BaseDebug.cpp
+BaseTypeInfo.cpp
+BaseUtility.cpp
+StrbufBase.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: Collision - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
+CDCollisionEngine.cpp
+CDConvex.cpp
+CDDetectorImp.cpp
+CDFramePair.cpp
 CDGeometry.cpp
-C:\SVNWork\Springhead\src\Collision\Collision.h(7) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
+CDGJK.cpp
 CDMesh.cpp
-C:\SVNWork\Springhead\src\Collision\Collision.h(7) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
 CDPhysicalMaterial.cpp
-C:\SVNWork\Springhead\src\Collision\Collision.h(7) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
-cl.exe の実行ｴﾗｰ
-
-SpringheadMD.lib - ｴﾗｰ 3、警告 0
- 
- 
-*** DynaHaptic *** 
---------------------構成: Collision - Win32 MFC Debug--------------------
+CDPolyhedron.cpp
+CDRegisterLoader.cpp
+CDSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Device - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
-CDGeometry.cpp
-C:\SVNWork\Springhead\src\Collision\Collision.h(7) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
-CDMesh.cpp
-C:\SVNWork\Springhead\src\Collision\Collision.h(7) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
-CDPhysicalMaterial.cpp
-C:\SVNWork\Springhead\src\Collision\Collision.h(7) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
-cl.exe の実行ｴﾗｰ
-
-DynaHaptic.exe - ｴﾗｰ 3、警告 0
- 
- 
-*** MFCD3DDyna *** 
+DRADAPIO.cpp
+DRContecIsaCounter.cpp
+DRContecIsaDa.cpp
+DRNittaForce.cpp
+DRRealDevice.cpp
+DRRealDevicePool.cpp
+DRTokin3D.cpp
+DRUPP.CPP
+DRUsb20Sh4.cpp
+DRUsb20Simple.cpp
+DRUsbH8Simple.cpp
+DVDeviceManager.cpp
+DVVirtualDevice.cpp
+DVVirtualDevicePool.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: FileIO - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
 FIDocConverter.cpp
-C:\SVNWork\Springhead\src\FileIO\FileIO.h(12) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
 FIDocNode.cpp
-C:\SVNWork\Springhead\src\FileIO\FileIO.h(12) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
 FIDocScene.cpp
-C:\SVNWork\Springhead\src\FileIO\FileIO.h(12) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
 FIFileDoc.cpp
-C:\SVNWork\Springhead\src\FileIO\FileIO.h(12) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/Base.h': No such file or directory
 FISpirit.cpp
-C:\SVNWork\Springhead\src\FileIO\FISpirit.h(9) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/BaseUtility.h': No such file or directory
 FITypeDesc.cpp
-C:\SVNWork\Springhead\src\FileIO\FISpirit.h(9) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/BaseUtility.h': No such file or directory
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: HIS - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+HIHapticDevice.cpp
+HIMouse.cpp
+HIOrientation.cpp
+HIRUIKuma.cpp
+HISpidar2.cpp
+HISpidar3.cpp
+HISpidar4.cpp
+HISpidar4Angle.cpp
+HISpidar4D.cpp
+HISpidar8.cpp
+HISpidar8MotorTest.cpp
+HISpidarCalc3DOF.cpp
+HISpidarCalc6DOF.cpp
+HISpidarCalcBase.cpp
+HISpidarG6.cpp
+HISpidarG6C.cpp
+HISpidarG6Jun.cpp
+HISpidarG6O.cpp
+HISpidarG6WB.cpp
+HISpidarG6X.cpp
+HISpidarG6X2.cpp
+HISpidarG6X3.cpp
+HISpidarI7.cpp
+HISpidarMotor.cpp
+HISpidarMotorAngle.cpp
+HIStepWalk.cpp
+HITurnTable.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: ImpD3D - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+D3DocNode.cpp
+D3FileDoc.cpp
+D3Import.cpp
+D3Material.cpp
+D3Mesh.cpp
+D3RegisterLoader.cpp
+D3Render.cpp
+D3Sphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Physics - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+PHChangeObject.cpp
+PHContactEngine.cpp
+PHConvexPair.cpp
+PHForceField.cpp
+PHJoint.cpp
+PHJoint1D.cpp
+PHJointControl.cpp
+PHJointMulti.cpp
+PHJointPid.cpp
+PHMagneticEngine.cpp
+PHPenalty.cpp
+PHRegisterLoader.cpp
+PHSolid.cpp
+PHSpring.cpp
+PHStickEngine.cpp
+PHWarp.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: SceneGraph - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+SGBehaviorEngine.cpp
+SGEngine.cpp
+SGFrame.cpp
+SGObject.cpp
+SGRegisterLoader.cpp
+SGRenderEngine.cpp
+SGScene.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: WinBasis - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WBHid.cpp
+WBComStream.cpp
+WBDllLoader.cpp
+WBMMTimer.cpp
+WBPath.cpp
+WBPortIO.cpp
+WBPreciseTimer.cpp
+WBSocket.cpp
+WBSockStr.cpp
+WBUtility.cpp
+WBWindowMan.cpp
+WBWinDriver.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+glu32.lib(GLU32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: Framework - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+FWApp.cpp
+FWAppD3D.cpp
+FWFileIO.cpp
+FWFileIOD3D.cpp
+FWPointer.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Graphics - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+GRCamera.cpp
+GRLight.cpp
+GRLoadBmp.cpp
+GRMaterial.cpp
+GRMesh.cpp
+GRRegisterLoader.cpp
+GRRender.cpp
+GRSphere.cpp
+GRVisual.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: GraphicsGL - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+GLMesh.cpp
+GLRegisterLoader.cpp
+GLRender.cpp
+GLRenderWgl.cpp
+GLSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Springhead - Win32 MFC Debug--------------------
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
+c:\winnt\system32\cmd.exe の実行ｴﾗｰ
+
+SpringheadMD.lib - ｴﾗｰ 1、警告 3
+ 
+ 
+*** DynaHaptic *** 
+--------------------構成: WinDX - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WXComBase.cpp
+WXError.cpp
+WXD3D.cpp
+WXDInput.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+d3d9.lib(d3d9.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+dsound.lib(DSOUND.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+Quartz.lib(QUARTZ.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+d3dxof.lib(d3dxof.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: Creature - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+CRActionPlanner.cpp
+CRBalance.cpp
+CRBalanceMultiLeg.cpp
+CRBalanceQuadPR.cpp
+CRBeetle.cpp
+CRHuman.cpp
+CRPuppet.cpp
+CRReachingMovment.cpp
+CRReachingMovmentPD.cpp
+CRRegisterLoader.cpp
+CRSupportArea.cpp
+CRUser.cpp
+CRVH.cpp
+CRVirtualHuman.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: DynaHaptic - Win32 MFC Debug--------------------
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+DynaHaptic.cpp
+DynaHapticDoc.cpp
+DynaHapticView.cpp
+HisConfig.cpp
+MainFrm.cpp
+ﾘﾝｸ中...
+
+DynaHaptic.exe - ｴﾗｰ 0、警告 5
+ 
+ 
+*** MFCD3DDyna *** 
+--------------------構成: MFCD3DDyna - Win32 MFC Debug--------------------
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+MainFrm.cpp
+MFCD3DDyna.cpp
+MFCD3DDynaDoc.cpp
+MFCD3DDynaView.cpp
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(292) : error C2061: 構文ｴﾗｰ : 識別子 'PHPhysicalMaterial' がｼﾝﾀｯｸｽｴﾗｰを起こしました。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : warning C4390: ';' : 制御が空の文が見つかりました。意図した記述でしょうか?
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : fatal error C1003: ﾌﾟﾛｸﾞﾗﾑ内のｴﾗｰが 100 個を超えました。ｺﾝﾊﾟｲﾙは中断されます。
 cl.exe の実行ｴﾗｰ
 
-MFCD3DDyna.exe - ｴﾗｰ 6、警告 0
+MFCD3DDyna.exe - ｴﾗｰ 102、警告 1
  
  
 *** SDKD3DDyna *** 
 --------------------構成: Base - Win32 Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
 Affine.cpp
-C:\SVNWork\Springhead\src\Base\TinyVec.h(4) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/TVector.h': No such file or directory
 BaseDebug.cpp
-C:\SVNWork\Springhead\src\Base\BaseDebug.cpp(2) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'WinBasis/WinBasis.h': No such file or directory
 BaseTypeInfo.cpp
-C:\SVNWork\Springhead\src\Base\TinyVec.h(4) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/TVector.h': No such file or directory
 BaseUtility.cpp
-C:\SVNWork\Springhead\src\Base\TinyVec.h(4) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/TVector.h': No such file or directory
 StrbufBase.cpp
-C:\SVNWork\Springhead\src\Base\TinyVec.h(4) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'Base/TVector.h': No such file or directory
 ｺｰﾄﾞを生成中...
-cl.exe の実行ｴﾗｰ
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Collision - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+CDCollisionEngine.cpp
+CDConvex.cpp
+CDDetectorImp.cpp
+CDFramePair.cpp
+CDGeometry.cpp
+CDGJK.cpp
+CDMesh.cpp
+CDPhysicalMaterial.cpp
+CDPolyhedron.cpp
+CDRegisterLoader.cpp
+CDSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: FileIO - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+FIDocConverter.cpp
+FIDocNode.cpp
+FIDocScene.cpp
+FIFileDoc.cpp
+FISpirit.cpp
+FITypeDesc.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Graphics - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+GRCamera.cpp
+GRLight.cpp
+GRLoadBmp.cpp
+GRMaterial.cpp
+GRMesh.cpp
+GRRegisterLoader.cpp
+GRRender.cpp
+GRSphere.cpp
+GRVisual.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: ImpD3D - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+D3DocNode.cpp
+D3FileDoc.cpp
+D3Import.cpp
+D3Material.cpp
+D3Mesh.cpp
+D3RegisterLoader.cpp
+D3Render.cpp
+D3Sphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Physics - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+PHChangeObject.cpp
+PHContactEngine.cpp
+PHConvexPair.cpp
+PHForceField.cpp
+PHJoint.cpp
+PHJoint1D.cpp
+PHJointControl.cpp
+PHJointMulti.cpp
+PHJointPid.cpp
+PHMagneticEngine.cpp
+PHPenalty.cpp
+PHRegisterLoader.cpp
+PHSolid.cpp
+PHSpring.cpp
+PHStickEngine.cpp
+PHWarp.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: SceneGraph - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+SGBehaviorEngine.cpp
+SGEngine.cpp
+SGFrame.cpp
+SGObject.cpp
+SGRegisterLoader.cpp
+SGRenderEngine.cpp
+SGScene.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: WinBasis - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WBComStream.cpp
+WBDllLoader.cpp
+WBMMTimer.cpp
+WBPath.cpp
+WBPortIO.cpp
+WBPreciseTimer.cpp
+WBSocket.cpp
+WBSockStr.cpp
+WBUtility.cpp
+WBWindowMan.cpp
+WBWinDriver.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+glu32.lib(GLU32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: WinDX - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WXComBase.cpp
+WXError.cpp
+WXD3D.cpp
+WXDInput.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+d3d9.lib(d3d9.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+dsound.lib(DSOUND.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+Quartz.lib(QUARTZ.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+d3dxof.lib(d3dxof.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: SDKD3DDyna - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+InitFuncs.cpp
+Main.cpp
+MesFuncs.cpp
+ﾘﾝｸ中...
 
-SDKD3DDyna.exe - ｴﾗｰ 5、警告 0
+SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
  
  
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
-[C++ エラー] BaseDebug.cpp(2): E2209 インクルードファイル 'WinBasis\WinBasis.h' をオープンできない
-[C++] cstddef.h(27): 
+[C++] BaseUtility.cpp(1): 
+[C++] Affine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] StrbufBase.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] BaseTypeInfo.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBWinDriver.cpp(1): 
+[C++] WBDllLoader.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBMTimer.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBPath.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBPortIO.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBSocket.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] wspiapi.h(786): W8060 おそらく不正な代入
+  詳細な解析情報
+    WBSocket.cpp(3): #include C:\SVNWork\Springhead\src\WinBasis\WBSocket.h
+    WBSocket.h(6): #include c:\progra~1\borland\cbuild~1\include\ws2tcpip.h
+    ws2tcpip.h(566): #include c:\progra~1\borland\cbuild~1\include\wspiapi.h
+    wspiapi.h(814): 具体化対象の選択：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
+    --- 具体化のため構文解析を初期化しました
+    wspiapi.h(692): 構文解析対象：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
+[C++] WBSockStr.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBUtility.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBWindowMan.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBComStream.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBPreciseTimer.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WXGuid.cpp(1): 
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] WXError.cpp(1): 
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++] WXComBase.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WXD3D.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DVVirtualDevicePool.cpp(1): 
+[C++] DVVirtualDevice.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DVDeviceManager.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRContecIsaCounter.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRContecIsaDa.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRNittaForce.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRRealDevice.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRRealDevicePool.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRTokin3D.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUPP.CPP(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUsb20Simple.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUsbH8Simple.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRADAPIO.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HITurnTable.cpp(1): 
+[C++] HIHapticDevice.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarMotor.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidar3.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HISpidar3.h(92): W8022 'HISpidar3::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar3.cpp(3): #include C:\SVNWork\Springhead\src\HIS\HISpidar3.h
+    HISpidar3.h(9): namespace Spr
+    HISpidar3.h(45): class HISpidar3
+[C++] HISpidar4.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidar8.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HISpidar3.h(92): W8022 'HISpidar3::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar8.cpp(3): #include C:\SVNWork\Springhead\src\HIS\HISpidar8.h
+    HISpidar8.h(3): #include C:\SVNWork\Springhead\src\HIS\HISpidar3.h
+    HISpidar3.h(9): namespace Spr
+    HISpidar3.h(45): class HISpidar3
+[C++] HISpidar8MotorTest.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarCalc3DOF.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarCalc6DOF.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarCalcBase.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6C.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6WB.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HIMouse.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HIMouse.cpp(241): W8004 'yPos' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(241): W8004 'xPos' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(254): W8004 'lKeyData' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(254): W8066 実行されないコード
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++] SGFrame.cpp(1): 
+[C++] SGObject.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGScene.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGBehaviorEngine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGEngine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGRegisterLoader.cpp(1): 
+[C++] SGRenderEngine.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] FITypeDesc.cpp(1): 
+[C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++] FIDocNode.cpp(1): 
+[C++] FIFileDoc.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FIDocScene.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FISpirit.cpp(1): 
+[C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++] CDMesh.cpp(1): 
+[C++] CDGJK.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDSphere.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDConvex.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDDetectorImp.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDFramePair.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDGeometry.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDPolyhedron.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDRegisterLoader.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] CDCollisionEngine.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] PHForceField.cpp(1): 
+[C++ エラー] PHJoint.h(121): E2094 * 演算子が使われたがクラス Matrix3d では SpSubVec3d 型のための定義が存在しない
+  詳細な解析情報
+    PHForceField.cpp(1): #include C:\SVNWork\Springhead\src\Physics\Physics.h
+    Physics.h(9): #include C:\SVNWork\Springhead\src\Physics\PHJointPid.h
+    PHJointPid.h(4): #include C:\SVNWork\Springhead\src\Physics/PHJoint1D.h
+    PHJoint1D.h(4): #include C:\SVNWork\Springhead\src\Physics/PHJoint.h
+    PHJoint.h(23): namespace Spr
+    PHJoint.h(48): class PHJointBase
+    PHJoint.h(215): 具体化対象の選択：Vec3f PHJointBase::GetSolidAngularAccel()
+    --- 具体化のため構文解析を初期化しました
+    PHJoint.h(121): 構文解析対象：Vec3f PHJointBase::GetSolidAngularAccel()
+[C++ 警告] PHJoint.h(45): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
  
  
