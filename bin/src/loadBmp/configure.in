@@ -1,0 +1,229 @@
+dnl
+dnl   Process this file with autoconf to produce a configure script.
+
+AC_INIT(common/plbitmap.h)
+AC_CONFIG_AUX_DIR(config)
+
+MAJOR_VERSION=2
+MINOR_VERSION=6
+MICRO_VERSION=1
+VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION dnl
+
+AC_SUBST(VERSION)
+
+PACKAGE=paintlib
+
+AM_CONFIG_HEADER(common/config.h)
+AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+
+
+dnl Checks for programs.
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+AC_C_BIGENDIAN
+
+dnl
+dnl Check for M$  Windows
+dnl
+dnl AC_CANONICAL_HOST
+
+dnl Checks for libraries.
+dnl Replace `main' with a function in -lc:
+AC_CHECK_LIB(c, main)
+dnl Replace `main' with a function in -lm:
+AC_CHECK_LIB(m, main)
+dnl Replace `main' with a function in -lstdc:
+AC_CHECK_LIB(stdc, main)
+dnl Replace `main' with a function in -lstdcx:
+AC_CHECK_LIB(stdcx, main)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+
+dnl Checks which header(s) contain dirent stuff
+AC_HEADER_DIRENT
+
+dnl Checks if memory-mapped files are available
+AC_FUNC_MMAP
+
+dnl Checks for library functions.
+AC_FUNC_MEMCMP
+
+
+dnl Mac OS X Framework support
+
+AC_ARG_ENABLE(extra-framework-path, AC_HELP_STRING([--enable-extra-framework-path], [additionally search for mac os x frameworks here.]),
+[ac_xtra_fmk_path="$ac_xtra_fmk_path -F$enableval"
+AC_MSG_NOTICE([enabled extra mac os x framework path: $enableval])
+AC_SUBST([FRAMEWORK_CFLAGS], [$ac_xtra_fmk_path])], 
+[ac_xtra_fmk_path=""
+AC_MSG_NOTICE([disabled extra mac os x framework path.])
+AC_SUBST([FRAMEWORK_CFLAGS], [$ac_xtra_fmk_path])])
+
+AC_CHECK_LIB(curl, main, sys_libcurl=yes, sys_libcurl=no)
+AC_CHECK_LIB(ungif, main, sys_libungif=yes, sys_libungif=no)
+AC_CHECK_LIB(jpeg, main, sys_libjpeg=yes, sys_libjpeg=no)
+AC_CHECK_LIB(tiff, main, sys_libtiff=yes, sys_libtiff=no)
+AC_CHECK_LIB(z, main, sys_libz=yes, sys_libz=no)
+AC_CHECK_LIB(png, main, sys_libpng=yes, sys_libpng=no, -lz)
+AC_MSG_CHECKING(system PNG support (libpng and libz))
+sys_png=no
+if test "$sys_libpng" = yes -a "$sys_libz" = yes
+then sys_png=yes
+fi
+AC_MSG_RESULT($sys_png)
+
+AC_ARG_ENABLE(SDL, 
+              AC_HELP_STRING([--enable-SDL], [compile support for SDL bitmaps]),
+              sys_libsdl=$enableval, sys_libsdl=maybe)
+if test "$sys_libsdl" = maybe; then
+    AC_CHECK_LIB(SDL, main, sys_libsdl=yes, sys_libsdl=no, -lpthread)
+    if test "$OSTYPE" = "darwin7.0"; then
+       sys_sdlframework=yes
+       AC_MSG_CHECKING([for SDL framework installation])
+       AC_SUBST([FRAMEWORK_LDFLAGS], ["$FRAMEWORK_LDFLAGS -framework AppKit -framework SDL -lSDLmain -lpthread"])
+       AC_SUBST([CFLAGS],["$CFLAGS $FRAMEWORK_CFLAGS"])
+       oldldflags="$LDFLAGS"
+       AC_SUBST([LDFLAGS],["$LDFLAGS $FRAMEWORK_LDFLAGS"])
+       AC_LINK_IFELSE([dnl
+#include <SDL/SDL.h>
+
+int main(int argc, char** argv) {
+     SDL_Init(SDL_INIT_VIDEO);
+}
+],[AC_MSG_RESULT([OK])],[AC_MSG_ERROR([failed])])
+       AC_SUBST([LDFLAGS],["$oldldflags"])
+    else
+       sys_sdlframework=no
+    fi
+fi
+AC_ARG_ENABLE(dfb, 
+              AC_HELP_STRING([--enable-dfb], [compile support for DirectFB bitmaps]),
+              sys_libdfb=$enableval, sys_libdfb=maybe)
+if test "$sys_libdfb" = maybe; then
+  AC_CHECK_PROG(libdfb_config, directfb-config, yes)
+  if test "$libdfb_config" = yes; then
+    AC_CHECK_LIB(directfb, main, sys_libdfb=yes, sys_libdfb=no, `directfb-config --libs`)
+  fi
+fi
+
+dnl Defines for the graphic file formats supported
+
+if test "$sys_libtiff" = yes; then
+AC_DEFINE(PL_SUPPORT_TIFF)
+libstiff="-ltiff"
+else
+libstiff=""
+fi
+
+if test "$sys_libjpeg" = yes; then
+AC_DEFINE(PL_SUPPORT_JPEG)
+libsjpeg="-ljpeg"
+else
+libsjpeg=
+fi
+
+if test "$sys_png" = yes; then
+AC_DEFINE(PL_SUPPORT_PNG)
+libspng="-lz -lpng"
+else
+libspng=""
+fi
+
+if test "$sys_libungif" = yes; then
+AC_DEFINE(PL_SUPPORT_GIF)
+libsungif="-lungif"
+else
+libsungif=""
+fi
+
+if test "$sys_libcurl" = yes; then
+AC_DEFINE(PL_SUPPORT_CURL)
+libscurl="-lcurl"
+else
+libscurl=""
+fi
+
+if test "$sys_libsdl" = yes; then
+AC_DEFINE(PL_SUPPORT_SDL)
+if test "$sys_sdlframework" = yes; then
+libssdl="$FRAMEWORK_CFLAGS $FRAMEWORK_LDFLAGS"
+else
+libssdl="-lSDL -lpthread"
+fi
+else
+libssdl=""
+fi
+
+if test "$sys_libdfb" = yes; then
+AC_DEFINE(PL_SUPPORT_DFB)
+libsdfb="`directfb-config --libs`"
+cflagsdfb="`directfb-config --cflags`"
+else
+libsdfb=""
+cflagsdfb=""
+fi
+
+case "$host" in
+*-cygwin* | *-mingw*)
+  mswindows=yes
+  PIXEL_BYTE_ORDER=PL_PIXEL_BGRA_ORDER
+  ;;
+*)
+  mswindows=no
+  PIXEL_BYTE_ORDER=PL_PIXEL_RGBA_ORDER
+  CXXFLAGS=
+  ;;
+esac
+
+AC_DEFINE(PL_SUPPORT_TGA)
+AC_DEFINE(PL_SUPPORT_BMP)
+AC_DEFINE(PL_SUPPORT_PICT)
+AC_DEFINE(PL_SUPPORT_PCX)
+AC_DEFINE(PL_SUPPORT_PGM)
+AC_DEFINE(PL_SUPPORT_PPM)
+AC_DEFINE(PL_SUPPORT_PSD)
+AC_DEFINE(PL_SUPPORT_SGI)
+AC_DEFINE(PL_SUPPORT_IFF85)
+
+AM_CONDITIONAL(SYS_LIBJPEG, test "$sys_libjpeg" = yes)
+AM_CONDITIONAL(SYS_LIBTIFF, test "$sys_libtiff" = yes)
+AM_CONDITIONAL(SYS_LIBPNG, test "$sys_png" = yes)
+AM_CONDITIONAL(SYS_LIBUNGIF, test "$sys_libungif" = yes)
+AM_CONDITIONAL(SYS_LIBCURL, test "$sys_libcurl" = yes)
+AM_CONDITIONAL(SYS_LIBSDL, test "$sys_libsdl" = yes)
+AM_CONDITIONAL(SYS_LIBDFB, test "$sys_libdfb" = yes)
+
+# Now establish PAINTLIB_CFLAGS and PAINTLIB_LIBS
+PAINTLIB_CFLAGS="$CFLAGSDFB $CFLAGS -I$includedir -D_REENTRANT"
+PAINTLIB_LIBS="$libspng $libsjpeg $libstiff $libsungif $libscurl $libssdl $libsdfb -L$libdir -lpaintlib"
+
+AC_SUBST(PAINTLIB_CFLAGS)
+AC_SUBST(PAINTLIB_LIBS)
+
+# Check for Windows platform
+AM_CONDITIONAL(WIN32, test "$mswindows" = yes)
+
+# This hurts so much
+AM_CONDITIONAL(LIBTIFF_MACOSX, test "$OSTYPE" = "darwin7.0")
+AM_CONDITIONAL(LIBSDL_MACOSX, test "$OSTYPE" = "darwin7.0")
+
+AC_SUBST(CXX)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(PIXEL_BYTE_ORDER)
+
+
+AC_OUTPUT(paintlib-config 
+          lib/paintlib_version.h
+          common/plpixeldefs.h
+          Makefile
+          common/Makefile
+          common/Filter/Makefile
+          common/test/Makefile
+          lib/Makefile)
+

@@ -1,0 +1,17 @@
+SCC = This is a Source Code Control file
+
+[paintlib.dsp]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/bin/src/loadBmp/win/paintlib", EPBCAAAA
+
+[paintlib.dsw]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/bin/src/loadBmp/win/paintlib", EPBCAAAA
+
+[paintlib.sln]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/bin/src/loadBmp/win/paintlib", EPBCAAAA
+
+[paintlib.vcproj]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/bin/src/loadBmp/win/paintlib", EPBCAAAA

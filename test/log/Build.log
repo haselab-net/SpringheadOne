@@ -1,0 +1,1192 @@
+--- ビルドのログ ---  
+ 
+*** Springhead *** 
+..\..\Springhead\src\Springhead\Springhead.dsw
+ﾌｧｲﾙが見つかりません。
+正しいﾊﾟｽとﾌｧｲﾙ名を入力してください。
+ｴﾗｰ: ﾌﾟﾛｼﾞｪｸﾄがﾛｰﾄﾞされていません。 
+ 
+*** DynaHaptic *** 
+--------------------構成: Base - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+Affine.cpp
+BaseDebug.cpp
+BaseTypeInfo.cpp
+BaseUtility.cpp
+StrbufBase.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Collision - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+CDCollisionEngine.cpp
+CDConvex.cpp
+CDDetectorImp.cpp
+CDFramePair.cpp
+CDGeometry.cpp
+CDGJK.cpp
+CDMesh.cpp
+CDPolyhedron.cpp
+CDRegisterLoader.cpp
+CDSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Device - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+DRADAPIO.cpp
+DRContecIsaCounter.cpp
+DRContecIsaDa.cpp
+DRNittaForce.cpp
+DRRealDevice.cpp
+DRRealDevicePool.cpp
+DRTokin3D.cpp
+DRUPP.CPP
+DRUsb20Sh4.cpp
+DRUsb20Simple.cpp
+DRUsbH8Simple.cpp
+DVDeviceManager.cpp
+DVVirtualDevice.cpp
+DVVirtualDevicePool.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: FileIO - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+FIDocConverter.cpp
+FIDocNode.cpp
+FIDocScene.cpp
+FIFileDoc.cpp
+FISpirit.cpp
+FITypeDesc.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: HIS - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+HIHapticDevice.cpp
+HIMouse.cpp
+HISpidar2.cpp
+HISpidar3.cpp
+HISpidar4.cpp
+HISpidar4Angle.cpp
+HISpidar4D.cpp
+HISpidar8.cpp
+HISpidar8MotorTest.cpp
+HISpidarCalc3DOF.cpp
+HISpidarCalc6DOF.cpp
+HISpidarCalcBase.cpp
+HISpidarG6.cpp
+HISpidarG6C.cpp
+HISpidarG6Jun.cpp
+HISpidarG6O.cpp
+HISpidarG6WB.cpp
+HISpidarG6X.cpp
+HISpidarI7.cpp
+HISpidarMotor.cpp
+HISpidarMotorAngle.cpp
+HIStepWalk.cpp
+HITurnTable.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: ImpD3D - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+D3DocNode.cpp
+D3FileDoc.cpp
+D3Import.cpp
+D3Material.cpp
+D3Mesh.cpp
+D3RegisterLoader.cpp
+D3Render.cpp
+D3Sphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Physics - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+PHBeetle.cpp
+PHChangeObject.cpp
+PHContactEngine.cpp
+PHConvexPair.cpp
+PHForceField.cpp
+PHHuman.cpp
+PHJoint.cpp
+PHJointControl.cpp
+PHMagneticEngine.cpp
+PHPenalty.cpp
+PHPhysicalMaterial.cpp
+PHRegisterLoader.cpp
+PHSolid.cpp
+PHSpring.cpp
+PHStickEngine.cpp
+PHWarp.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: SceneGraph - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+SGBehaviorEngine.cpp
+SGEngine.cpp
+SGFrame.cpp
+SGObject.cpp
+SGRegisterLoader.cpp
+SGRenderEngine.cpp
+SGScene.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: WinBasis - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WBHid.cpp
+WBComStream.cpp
+WBDllLoader.cpp
+WBMTimer.cpp
+WBPath.cpp
+WBPortIO.cpp
+WBPreciseTimer.cpp
+WBSocket.cpp
+WBSockStr.cpp
+WBUtility.cpp
+WBWindowMan.cpp
+WBWinDriver.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+glu32.lib(GLU32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: WinDX - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WXComBase.cpp
+WXError.cpp
+WXD3D.cpp
+WXDInput.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+d3d9.lib(d3d9.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+dsound.lib(DSOUND.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+Quartz.lib(QUARTZ.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+d3dxof.lib(d3dxof.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: Graphics - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+GRCamera.cpp
+GRLight.cpp
+GRLoadBmp.cpp
+GRMaterial.cpp
+GRMesh.cpp
+GRRegisterLoader.cpp
+GRRender.cpp
+GRSphere.cpp
+GRVisual.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: GraphicsGL - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+GLMesh.cpp
+GLRegisterLoader.cpp
+GLRender.cpp
+GLRenderWgl.cpp
+GLSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Framework - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+FWApp.cpp
+FWAppD3D.cpp
+FWFileIO.cpp
+FWFileIOD3D.cpp
+FWPointer.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: DynaHaptic - Win32 MFC Debug--------------------
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+DynaHaptic.cpp
+DynaHapticDoc.cpp
+DynaHapticView.cpp
+HisConfig.cpp
+MainFrm.cpp
+ﾘﾝｸ中...
+
+DynaHaptic.exe - ｴﾗｰ 0、警告 8
+ 
+ 
+*** MFCD3DDyna *** 
+--------------------構成: MFCD3DDyna - Win32 MFC Debug--------------------
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+MainFrm.cpp
+MFCD3DDyna.cpp
+MFCD3DDynaDoc.cpp
+MFCD3DDynaView.cpp
+ﾘﾝｸ中...
+
+MFCD3DDyna.exe - ｴﾗｰ 0、警告 0
+ 
+ 
+*** SDKD3DDyna *** 
+--------------------構成: Base - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+Affine.cpp
+BaseDebug.cpp
+BaseTypeInfo.cpp
+BaseUtility.cpp
+StrbufBase.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Collision - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+CDCollisionEngine.cpp
+CDConvex.cpp
+CDDetectorImp.cpp
+CDFramePair.cpp
+CDGeometry.cpp
+CDGJK.cpp
+CDMesh.cpp
+CDPolyhedron.cpp
+CDRegisterLoader.cpp
+CDSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: FileIO - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+FIDocConverter.cpp
+FIDocNode.cpp
+FIDocScene.cpp
+FIFileDoc.cpp
+FISpirit.cpp
+FITypeDesc.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Graphics - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+GRCamera.cpp
+GRLight.cpp
+GRLoadBmp.cpp
+GRMaterial.cpp
+GRMesh.cpp
+GRRegisterLoader.cpp
+GRRender.cpp
+GRSphere.cpp
+GRVisual.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: ImpD3D - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+D3DocNode.cpp
+D3FileDoc.cpp
+D3Import.cpp
+D3Material.cpp
+D3Mesh.cpp
+D3RegisterLoader.cpp
+D3Render.cpp
+D3Sphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Physics - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+PHBeetle.cpp
+PHChangeObject.cpp
+PHContactEngine.cpp
+PHConvexPair.cpp
+PHForceField.cpp
+PHHuman.cpp
+PHJoint.cpp
+PHJointControl.cpp
+PHMagneticEngine.cpp
+PHPenalty.cpp
+PHPhysicalMaterial.cpp
+PHRegisterLoader.cpp
+PHSolid.cpp
+PHSpring.cpp
+PHStickEngine.cpp
+PHWarp.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: SceneGraph - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+SGBehaviorEngine.cpp
+SGEngine.cpp
+SGFrame.cpp
+SGObject.cpp
+SGRegisterLoader.cpp
+SGRenderEngine.cpp
+SGScene.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: WinBasis - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WBComStream.cpp
+WBDllLoader.cpp
+WBMTimer.cpp
+WBPath.cpp
+WBPortIO.cpp
+WBPreciseTimer.cpp
+WBSocket.cpp
+WBSockStr.cpp
+WBUtility.cpp
+WBWindowMan.cpp
+WBWinDriver.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+glu32.lib(GLU32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: WinDX - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WXComBase.cpp
+WXError.cpp
+WXD3D.cpp
+WXDInput.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+d3d9.lib(d3d9.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+dsound.lib(DSOUND.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+Quartz.lib(QUARTZ.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+d3dxof.lib(d3dxof.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: SDKD3DDyna - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+InitFuncs.cpp
+Main.cpp
+MesFuncs.cpp
+ﾘﾝｸ中...
+
+SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
+ 
+ 
+*** TreeTestView *** 
+[C++] BaseDebug.cpp(1): 
+[C++] BaseUtility.cpp(1): 
+[C++] Affine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] StrbufBase.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] BaseTypeInfo.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBWinDriver.cpp(1): 
+[C++] WBDllLoader.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBMTimer.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBPath.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBPortIO.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBSocket.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] wspiapi.h(786): W8060 おそらく不正な代入
+  詳細な解析情報
+    WBSocket.cpp(3): #include C:\VSSWork\Springhead\src\WinBasis\WBSocket.h
+    WBSocket.h(6): #include c:\progra~1\borland\cbuild~1\include\ws2tcpip.h
+    ws2tcpip.h(566): #include c:\progra~1\borland\cbuild~1\include\wspiapi.h
+    wspiapi.h(814): 具体化対象の選択：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
+    --- 具体化のため構文解析を初期化しました
+    wspiapi.h(692): 構文解析対象：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
+[C++] WBSockStr.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBUtility.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBWindowMan.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBComStream.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WBPreciseTimer.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WXGuid.cpp(1): 
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] WXError.cpp(1): 
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++] WXComBase.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] WXD3D.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DVVirtualDevicePool.cpp(1): 
+[C++] DVVirtualDevice.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DVDeviceManager.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRContecIsaCounter.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRContecIsaDa.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRNittaForce.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRRealDevice.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRRealDevicePool.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRTokin3D.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUPP.CPP(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUsb20Simple.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUsbH8Simple.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRADAPIO.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HITurnTable.cpp(1): 
+[C++] HIHapticDevice.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarMotor.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidar3.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HISpidar3.h(92): W8022 'HISpidar3::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar3.cpp(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar3.h
+    HISpidar3.h(9): namespace Spr
+    HISpidar3.h(45): class HISpidar3
+[C++] HISpidar4.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidar8.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HISpidar3.h(92): W8022 'HISpidar3::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar8.cpp(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar8.h
+    HISpidar8.h(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar3.h
+    HISpidar3.h(9): namespace Spr
+    HISpidar3.h(45): class HISpidar3
+[C++] HISpidar8MotorTest.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarCalc3DOF.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarCalc6DOF.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarCalcBase.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6C.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6WB.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HIMouse.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HIMouse.cpp(159): W8004 'yPos' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(159): W8004 'xPos' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(172): W8004 'lKeyData' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(172): W8066 実行されないコード
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++] SGFrame.cpp(1): 
+[C++] SGObject.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGScene.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGBehaviorEngine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGEngine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SGRegisterLoader.cpp(1): 
+[C++] SGRenderEngine.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] FITypeDesc.cpp(1): 
+[C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++] FIDocNode.cpp(1): 
+[C++] FIFileDoc.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FIDocScene.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FISpirit.cpp(1): 
+[C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++] CDMesh.cpp(1): 
+[C++] CDGJK.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDSphere.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDConvex.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDDetectorImp.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDFramePair.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDGeometry.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDPolyhedron.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] CDRegisterLoader.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] CDCollisionEngine.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] CDCollisionEngine.cpp(309): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(4): namespace Spr
+    CDCollisionEngine.cpp(292): 構文解析対象：void CDCollisionEngine::LoadState(const SGBehaviorStates &)
+[C++ 警告] CDCollisionEngine.cpp(333): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(4): namespace Spr
+    CDCollisionEngine.cpp(315): 構文解析対象：void CDCollisionEngine::SaveState(SGBehaviorStates &) const
+[C++] PHForceField.cpp(1): 
+[C++] PHJoint.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] PHPenalty.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] PHSolid.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] PHConvexPair.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] PHRegisterLoader.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] PHPhysicalMaterial.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] PHContactEngine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] PHContactEngine.cpp(149): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHContactEngine.cpp(5): namespace Spr
+    PHContactEngine.cpp(145): 構文解析対象：void PHContactEngine::Render(GRRender *,SGScene *)
+[C++ 警告] PHContactEngine.cpp(224): W8004 'alpha' に代入した値は使われていない
+  詳細な解析情報
+    PHContactEngine.cpp(5): namespace Spr
+    PHContactEngine.cpp(186): 構文解析対象：void PHContactEngine::DrawForce(CDConvexPair &,PHContactEngine::ConvexPairRecord &,Affinef,GRRender *,SGScene *)
+[C++ 警告] PHContactEngine.cpp(224): W8004 'aveForce' に代入した値は使われていない
+  詳細な解析情報
+    PHContactEngine.cpp(5): namespace Spr
+    PHContactEngine.cpp(186): 構文解析対象：void PHContactEngine::DrawForce(CDConvexPair &,PHContactEngine::ConvexPairRecord &,Affinef,GRRender *,SGScene *)
+[C++ 警告] PHContactEngine.cpp(706): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHContactEngine.cpp(5): namespace Spr
+    PHContactEngine.cpp(692): 構文解析対象：void PHContactEngine::LoadState(const SGBehaviorStates &)
+[C++ 警告] PHContactEngine.cpp(730): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHContactEngine.cpp(5): namespace Spr
+    PHContactEngine.cpp(715): 構文解析対象：void PHContactEngine::SaveState(SGBehaviorStates &) const
+[C++] PHStickEngine.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] PHWarp.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] GRCamera.cpp(1): 
+[C++] GRRegisterLoader.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] GRRender.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] GRVisual.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3DocNode.cpp(1): 
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    D3DocNode.cpp(1): #include C:\VSSWork\Springhead\src\ImpD3D\ImpD3D.h
+    ImpD3D.h(6): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    D3DocNode.cpp(1): #include C:\VSSWork\Springhead\src\ImpD3D\ImpD3D.h
+    ImpD3D.h(6): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    D3DocNode.cpp(1): #include C:\VSSWork\Springhead\src\ImpD3D\ImpD3D.h
+    ImpD3D.h(6): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    D3DocNode.cpp(1): #include C:\VSSWork\Springhead\src\ImpD3D\ImpD3D.h
+    ImpD3D.h(6): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    D3DocNode.cpp(1): #include C:\VSSWork\Springhead\src\ImpD3D\ImpD3D.h
+    ImpD3D.h(6): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] D3FileDoc.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3Material.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3Import.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3Mesh.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3RegisterLoader.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3Sphere.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] D3Render.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FWAppD3D.cpp(1): 
+[C++] FWApp.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] HISpidar4D.h(101): W8022 'HISpidar4D::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    FWApp.cpp(7): #include C:\VSSWork\Springhead\src\HIS\HISpidar4D.h
+    HISpidar4D.h(9): namespace Spr
+    HISpidar4D.h(44): class HISpidar4D
+[C++ 警告] FWApp.cpp(197): W8004 'dev' に代入した値は使われていない
+  詳細な解析情報
+    FWApp.cpp(17): namespace Spr
+    FWApp.cpp(58): 構文解析対象：bool FWApp::AddHis(const char *)
+[C++ 警告] FWApp.cpp(235): W8004 'lKeyData' に代入した値は使われていない
+  詳細な解析情報
+    FWApp.cpp(17): namespace Spr
+    FWApp.cpp(218): 構文解析対象：bool FWApp::PreviewMessage(tagMSG *)
+[C++ 警告] FWApp.cpp(259): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    FWApp.cpp(17): namespace Spr
+    FWApp.cpp(252): 構文解析対象：bool FWApp::OnKeyDown(unsigned int)
+[C++ 警告] FWApp.cpp(263): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    FWApp.cpp(17): namespace Spr
+    FWApp.cpp(252): 構文解析対象：bool FWApp::OnKeyDown(unsigned int)
+[C++] FWFileIOD3D.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FWFileIO.cpp(1): 
+[C++] PHSpring.cpp(1): 
+[C++] GRLight.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] GRMaterial.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] GRMesh.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] GRSphere.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] PHChangeObject.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] GLSphere.cpp(1): 
+[C++] GLMesh.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] GLRegisterLoader.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] GLRender.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] GLRender.cpp(45): W8066 実行されないコード
+  詳細な解析情報
+    GLRender.cpp(6): namespace Spr
+    GLRender.cpp(14): 構文解析対象：int GLTextureManager::Get(const _STL::string &)
+[C++] GLRenderWgl.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] FWPointer.cpp(1): 
+[C++] HISpidarG6Jun.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] HISpidarG6O.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] HISpidarG6X.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] DRUsb20Sh4.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] DRUsb20Sh4.cpp(85): W8041 符号なし値の否定の演算
+  詳細な解析情報
+    DRUsb20Sh4.cpp(11): namespace Spr
+    DRUsb20Sh4.cpp(52): 構文解析対象：void DRUsb20Sh4::UsbUpdate()
+[C++] PHJointControl.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] PHJointControl.cpp(14): W8008 条件が常に true
+  詳細な解析情報
+    PHJointControl.cpp(6): namespace Spr
+    PHJointControl.cpp(13): 構文解析対象：SGObject * PHJointControl::ReferenceObject(unsigned int)
+[C++ 警告] PHJointControl.cpp(34): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHJointControl.cpp(6): namespace Spr
+    PHJointControl.cpp(32): 構文解析対象：void PHJointControl::Step(float)
+[C++ 警告] PHJointControl.cpp(48): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHJointControl.cpp(6): namespace Spr
+    PHJointControl.cpp(45): 構文解析対象：void PHJointControlEngine::Step(SGScene *)
+[C++ 警告] PHJointControl.cpp(56): W8008 条件が常に true
+  詳細な解析情報
+    PHJointControl.cpp(6): namespace Spr
+    PHJointControl.cpp(55): 構文解析対象：SGObject * PHJointControlEngine::ChildObject(unsigned int)
+[C++] PHBeetle.cpp(1): 
+[C++ 警告] PHJoint.h(276): W8058 ヘッダにコードが含まれているためプリコンパイルヘッダーを作成できない
+[C++ 警告] PHBeetle.cpp(28): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(29): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(30): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(31): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(32): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(33): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(34): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(35): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(36): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(37): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(38): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(39): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(40): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(41): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(42): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(43): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(44): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(45): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(46): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(47): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(48): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(49): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(50): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(51): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(52): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(53): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(54): W8060 おそらく不正な代入
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(106): W8004 'solid' に代入した値は使われていない
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(25): 構文解析対象：void PHBeetle::Loaded(SGScene *)
+[C++ 警告] PHBeetle.cpp(122): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHBeetle.cpp(5): namespace Spr
+    PHBeetle.cpp(115): 構文解析対象：void PHBeetle::CheckForce()
+[C++] HISpidar4D.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] HISpidar4D.h(101): W8022 'HISpidar4D::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar4D.cpp(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar4D.h
+    HISpidar4D.h(9): namespace Spr
+    HISpidar4D.h(44): class HISpidar4D
+[C++] GRLoadBmp.cpp(1): 
+[C++] PHHuman.cpp(1): 
+[C++ 警告] PHHuman.cpp(287): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(286): 構文解析対象：bool PHHuman::HasFrame(SGFrame *)
+[C++ 警告] PHHuman.cpp(294): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(293): 構文解析対象：void PHHuman::SetMass()
+[C++ 警告] PHHuman.cpp(312): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(311): 構文解析対象：void PHHuman::SetInertia()
+[C++ 警告] PHHuman.cpp(331): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(327): 構文解析対象：void PHHuman::SetScale(SGScene *)
+[C++ 警告] PHHuman.cpp(374): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(367): 構文解析対象：void PHHuman::SetSolidScale()
+[C++ 警告] PHHuman.cpp(387): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(386): 構文解析対象：void PHHuman::SetJointScale()
+[C++ 警告] PHHuman.cpp(481): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(486): 具体化対象の選択：float GetChildMass(PHJoint *)
+    --- 具体化のため構文解析を初期化しました
+    PHHuman.cpp(475): 構文解析対象：float GetChildMass(PHJoint *)
+[C++ 警告] PHHuman.cpp(499): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    PHHuman.cpp(11): namespace Spr
+    PHHuman.cpp(494): 構文解析対象：void PHHuman::SetJointSpring(float)
+[C++] PHMagneticEngine.cpp(1): 
+[C++ 警告] PHMagneticEngine.h(23): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[TLib 警告] duplicate file 'vcl' in list, not added!
+[TLib 警告] duplicate file 'rtl' in list, not added!
+[TLib 警告] duplicate file 'vclx' in list, not added!
+[TLib 警告] 'vcl.bpi' file not found
+[TLib 警告] 'rtl.bpi' file not found
+[TLib 警告] 'vclx.bpi' file not found
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'FISpirit' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'FISpirit' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'FISpirit' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'FISpirit' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'boost::throw_exception<boost::ba...' in module 'FISpirit' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::VectorImp<S...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const float&,const PTM::VectorImp<S...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(float,const PTM::MatrixImp<PTM...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const ...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const ...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const ...' in module 'PHBeetle' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public '_STL::operator <<(_STL::basic_ostream<_STL::char_traits<...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator +(const PTM::VectorImp<S...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator -(const PTM::VectorImp<S...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::VectorImp<S...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const float&,const PTM::VectorImp<S...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::TMatrixBase<int...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(float,const PTM::MatrixImp<PTM...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const ...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const ...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const ...' in module 'PHMagneticEngine' clashes with prior module 'FITypeDesc'
+[TLib 警告] public 'PTM::operator *(const PTM::TMatrixBase<int...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] public 'PTM::operator *(const PTM::TMatrixBase<int...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM::...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] public 'PTM::operator *(const PTM::MatrixImp<PTM::...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] public 'PTM::operator -(const PTM::VectorImp<S...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] public '_STL::find<...' in module 'PHMagneticEngine' clashes with prior module 'PHBeetle'
+[TLib 警告] 'cg32.lib' file not found
+[C++] SHAffine.cpp(1): 
+[C++] SHBox.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SHCamera.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SHComponent.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SHFrame.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SHLight.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHLight.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHLight.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHLight.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHLight.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHLight.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] SHMatrix.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SHPathGraph.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SHPathGraph.h(33): W8070 関数は値を返すべき
+  詳細な解析情報
+    SHPathGraph.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHPathGraph.h
+    SHPathGraph.h(18): namespace Spr
+    SHPathGraph.h(33): 具体化対象の選択：_STL::ostream & Spr::operator <<(_STL::ostream &,const PHControlKey &)
+    --- 具体化のため構文解析を初期化しました
+    SHPathGraph.h(31): 構文解析対象：_STL::ostream & Spr::operator <<(_STL::ostream &,const PHControlKey &)
+[C++ 警告] SHPathGraph.h(36): W8070 関数は値を返すべき
+  詳細な解析情報
+    SHPathGraph.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHPathGraph.h
+    SHPathGraph.h(18): namespace Spr
+    SHPathGraph.h(36): 具体化対象の選択：_STL::istream & Spr::operator >>(_STL::istream &,PHControlKey &)
+    --- 具体化のため構文解析を初期化しました
+    SHPathGraph.h(34): 構文解析対象：_STL::istream & Spr::operator >>(_STL::istream &,PHControlKey &)
+[C++] SHPhysicalMaterial.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHPhysicalMaterial.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHPhysicalMaterial.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHPhysicalMaterial.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHPhysicalMaterial.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHPhysicalMaterial.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] SHRenderer.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++] SHScene.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHScene.cpp(16): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHScene.cpp(16): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHScene.cpp(16): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHScene.cpp(16): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHScene.cpp(16): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] SHSceneGraphDlg.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSceneGraphDlg.cpp(6): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSceneGraphDlg.cpp(6): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSceneGraphDlg.cpp(6): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSceneGraphDlg.cpp(6): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSceneGraphDlg.cpp(6): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] SHSolid.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSolid.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSolid.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSolid.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSolid.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    SHSolid.cpp(7): #include C:\VSSWork\Springhead\src\BCBGui\SHSceneGraphDlg.h
+    SHSceneGraphDlg.h(21): #include C:\VSSWork\Springhead\src\ImpD3D/D3Mesh.h
+    D3Mesh.h(6): #include C:\VSSWork\Springhead\src\WinDX/WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] SHTreeView.cpp(1): 
+[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++] SpringheadGui.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
+[リンカ] 
+[リンカ 致命的エラー] Fatal: Could not open c:\progra~1\borland\cbuild~1\Projects\Bpl\SpringheadGui.bpl (program still running?)
+ 
+ 

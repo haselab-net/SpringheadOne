@@ -1,0 +1,17 @@
+SCC = This is a Source Code Control file
+
+[MLTestVRML.dsp]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/src/FileIO/Samples/MLTestVRML", VPBBAAAA
+
+[MLTestVRML.dsw]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/src/FileIO/Samples/MLTestVRML", VPBBAAAA
+
+[MLTestVRML.sln]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/src/FileIO/Samples/MLTestVRML", VPBBAAAA
+
+[MLTestVRML.vcproj]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/src/FileIO/Samples/MLTestVRML", VPBBAAAA

@@ -1,0 +1,352 @@
+#ifndef PH_JOINT_H
+#define PH_JOINT_H
+
+#include <Base/BaseUtility.h>
+#include <Base/TinyVec.h>
+#include <Base/TinyMat.h>
+#include <FileIO/FIDocScene.h>
+#include <SceneGraph/SGScene.h>
+#include <Physics/PHSolid.h>
+#include <WinBasis/WBPreciseTimer.h>
+#include <float.h>
+
+/**	@file ３次元連結剛体系
+	解説：
+	Featherstoneのアルゴリズムを利用してツリー状に連結された剛体の
+	運動をシミュレートするクラス
+
+	開発責任者：田崎勇一 tazaki@cyb.mei.titech.ac.jp
+
+	参考文献："Impulse-based Dynamic Simulation of Rigid Body Systems" Brian Mirtich 1996
+*/
+namespace Spr{;
+
+///@name	Featherstone's method で使われる"spatial matrix/vector"
+//@{
+typedef PTM::TVector<6, double> SpVec6d;
+typedef PTM::TSubVector<3, SpVec6d::desc> SpSubVec3d;
+typedef PTM::TMatrixCol<6, 6, double> SpMatrix6d;
+typedef PTM::TSubMatrixCol<3, 3, SpMatrix6d::desc> SpSubMatrix3d;
+//@}
+
+typedef Vec3f Vector;
+typedef Matrix3f Matrix3x3;
+DEF_RECORD(XJointBase, {
+	GUID Guid(){ return WBGuid("23F6D545-8987-4aa6-BBE1-2FE32C096D5A"); }	
+	Vector		v3fPositionParent;
+	Matrix3x3	m3fRotationParent;
+	Vector		v3fPositionChild;
+	Matrix3x3	m3fRotationChild;
+});
+
+///	関節の基本クラス．ツリー構造を作る．PHJointEngineがツリーを持つ．
+class PHJointBase : public UTTreeNode<PHJointBase>, public SGObject{
+public:
+	typedef std::vector<UTRef<PHJointBase> > array_type;
+	friend class PHJointEngine;
+	friend class PHJointClearForce;
+	friend class PHJointLoader;
+	friend class CRHuman;
+public:
+	SGOBJECTDEFABST(PHJointBase);
+	UTRef<PHSolid> solid;	//	子Solid．関節は親Solidと子Solidをつなぐ
+	UTRef<SGFrame> frame;	//	ルートノードが固定の場合のFrame
+protected:
+	/**	@name ファイルからロードされる変数
+		関節フレームの説明
+			関節の位置と傾きを表現するためのフレーム。
+			関節フレーム原点は関節軸の位置を表す。
+			回転関節(TYPE_HINGE)の場合、
+				フレームのＺ軸が回転軸の向きを表す。
+			m3fRotationParent =: pRj
+			m3fRotationChild  =: cRj
+			fPosition =: q
+			とおくと、
+			子ノードから親ノードへの回転変換は、
+				pRc = pRj * Rot(q, 'z') * cRj.trans()
+			直動関節(TYPE_SLIDER)の場合、
+				フレームのＺ軸が直動軸の向きを表す。	*/
+	//@{
+	Vec3f		v3fPositionParent;			///<	親剛体のフレームから見た関節位置
+	Matrix3f	m3fRotationParent;			///<	親剛体のフレームから見た関節姿勢
+	Vec3f		v3fPositionChild;			///<	子剛体のフレームから見た関節位置
+	Matrix3f	m3fRotationChild;			///<	子剛体のフレームから見た関節姿勢
+	//@}
+	
+	/**	@name 状態変数．
+		以下のコメントで，
+		- Fc := child frame
+		- Fp := parent frame
+		- Fj := joint frame
+		を意味する
+	*/
+	//@{
+	Matrix3d		R;					///<	orientation matrix
+	Quaterniond		quat;				///<	orientation quaternion
+	Vec3d			p;					///<	position vector
+	Matrix3d		pRj, cRj, pRc, cRp;	///<	rotation matrix(Fp to Fj, Fj to Fc, Fp to Fc, Fc to Fp)
+	Vec3d			prc, prj, crj;		///<	radius vector(Fp to Fc in Fc, Fp to Fj in Fp, Fc to Fj in Fc)
+	Vec3d			v, v_abs;			///<	velocity in Fc/world coord.
+	Vec3d			w, w_abs;			///<	angular velocity in Fc/world coord.
+	Vec3d			pvc, pwc;			///<	[angular]velocity relative to Fp in Fc coord. 
+	double			m;					///<	mass
+	Matrix3d		I;					///<	inertia matrix
+	SpMatrix6d		Ii;					///<	spatial isolated inertia
+	SpMatrix6d		Ia;					///<	spatial articulated inertia
+	SpVec6d			Za;					///<	zero accelaration force in Fc coord.
+	SpVec6d			c;					///<	Coriolis vector in Fc coord.
+	SpVec6d			a;					///<	spatial accelaration in Fc coord.
+	SpVec6d			s;					///<	spatial joint axis in Fc coord.
+	//@}
+	
+	//キャッシュ変数
+	SpMatrix6d		smat;
+	SpVec6d			a_p, Ia_s, Ia_c, Z_plus_Ia_c;
+	double			dot_s_Ia_s, dot_s_Z_plus_Ia_c;
+	Matrix3d		rcross, rpcross, rcross_cRp, rpcross_pRc;
+		
+public:
+	///	コンストラクタ
+	PHJointBase();
+	///	ロード後の初期化．再帰．
+	void Loaded(SGScene* scene);
+	///	指定したPHSolidを小に持つノードを検索する
+	PHJointBase* Search(PHSolid*);
+	///	親剛体のフレームから見た関節姿勢
+	Affinef GetPostureFromParent(){ Affinef rv; rv.Pos()=v3fPositionParent; rv.Rot()=m3fRotationParent; return rv; }
+	///	子剛体のフレームから見た関節姿勢
+	Affinef GetPostureFromChild(){ Affinef rv; rv.Pos()=v3fPositionChild; rv.Rot()=m3fRotationChild; return rv; }
+	///	子剛体の加速度(World系)
+	Vec3f GetSolidAccel(){ return solid->GetRotation() * a.sub_vector(0, Vec3f()); }
+	///	子剛体の角加速度(World系)
+	Vec3f GetSolidAngularAccel(){ return solid->GetRotation() * a.sub_vector(3, Vec3f()); }
+	///	子剛体の加速度(World系)
+	Vec3f GetSolidVelocity(){ return v_abs; }
+	///	子剛体の角加速度(World系)
+	Vec3f GetSolidAngularVelocity(){ return w_abs; }
+
+	///@name	Featherstone's algorithm
+	//@{
+	///	コリオリの力による加速度の計算
+	void CompCoriolisAccelRecursive(double dt);	
+	///	articulated inertia & ZA-force
+	virtual void CompArticulatedInertia(double dt)=0;
+	///	積分
+	virtual void Integrate(double dt) = 0;
+	/**	このノードの加速度を計算したい場合に呼ぶ．
+		親ノードの加速度は副作用で求まる．子ノードについては計算しない．
+		
+		呼び出しかた．
+		1. root->CalcCoriolisAccelRecusive(dt);
+		2. 全ジョイントについて，PHJointBase::torque に値を直接代入する．
+		3. root->CalcArticulatedInertia(dt);
+		4. CalcAccel(dt)
+		5. ジョイントの a から加速度を読み出す(座標系に注意)
+		6. 2-5をトルクパターンを変えながら呼び出す．
+		
+		Compute accelaration of the child solid of this joint.
+		For partial use of Featherstone's algorithm.
+	*/
+	virtual void CalcAccel(double dt)=0;
+	//@}
+
+	///	所有しているオブジェクトの数
+	virtual size_t NChildObjects();
+	///	所有しているオブジェクト
+	virtual SGObject* ChildObject(size_t i);
+	///	参照しているオブジェクトの数
+	virtual size_t NReferenceObjects();
+	///	参照しているオブジェクト
+	virtual SGObject* ReferenceObject(size_t i);
+	///	子オブジェクトの追加
+	virtual bool AddChildObject(SGObject* o, SGScene* s);
+	///	子オブジェクトの削除
+	virtual bool DelChildObject(SGObject* o, SGScene* s);
+	///	子になりえるオブジェクトの型情報の配列
+	virtual const UTTypeInfo** ChildCandidates();
+
+	void SaveX(XJointBase& x) const;
+	void LoadX(const XJointBase& x);
+
+protected:
+	///	派生クラスが基本クラス型オブジェクトのメンバにアクセスするための手段
+	template <class T> T& OfParent(T PHJointBase::* member){
+		return GetParent()->*member;
+	}
+
+	inline SpMatrix6d pXc_Mat_cXp(SpMatrix6d& m);
+	inline SpVec6d	pXc_Vec(SpVec6d& v);
+	inline SpVec6d cXp_Vec(SpVec6d& v);
+
+	virtual void CompJointAxis()=0;
+	virtual void CompRelativePosition()=0;
+	virtual void CompRelativeVelocity()=0;
+	virtual void CompCoriolisAccel()=0;
+	void UpdateSolid();
+	void UpdateJointPosture();
+	void PropagateState();				///<	位置・速度の伝播（非再帰関数）	
+	virtual void ClearTorqueRecursive();
+	/**	姿勢などの再設定	非再帰
+		基本的な状態量(PHJointStateの内容)がLoadedやLoadStateでセットされた後に、
+		従属変数を計算するための関数	*/
+	virtual void Reset()=0;
+	virtual void LoadState(const SGBehaviorStates& states);
+	virtual void SaveState(SGBehaviorStates& states) const;
+};
+
+
+/**	PHJointEngine
+	関節エンジン．1つのArticulated Bodyに対応する．
+*/
+class PHJointEngine	: public SGBehaviorEngine{
+public:
+	SGOBJECTDEF(PHJointEngine);
+	typedef PHJointBase::array_type array_type;	///<	ジョイントの配列
+	UTRef<PHJointBase> root;					///<	ルートノード．関節ではない．
+
+	//	Featherstone法にかかる時間の計測
+	WBPreciseTimer timer;
+	
+
+	int GetPriority() const {return SGBP_JOINTENGINE;}
+	void Step (SGScene* s);
+	void Loaded(SGScene* scene);
+	void Clear(SGScene* s){}
+	PHJointEngine::PHJointEngine(){}
+
+	///	所有しているオブジェクトの数
+	virtual size_t NChildObjects();
+	///	所有しているオブジェクト
+	virtual SGObject* ChildObject(size_t i);
+	///	子オブジェクトの追加
+	virtual bool AddChildObject(SGObject* o, SGScene* s);
+	///	子オブジェクトの削除
+	virtual bool DelChildObject(SGObject* o, SGScene* s);
+	///	子になりえるオブジェクトの型情報の配列
+	virtual const UTTypeInfo** ChildCandidates();
+
+	///	状態の読み出し
+	virtual void LoadState(const SGBehaviorStates& states);
+	///	状態の保存
+	virtual void SaveState(SGBehaviorStates& states) const;
+};
+
+/**	Jointのトルクをクリアするクラス	*/
+class PHJointClearForce:public SGBehaviorEngine{
+	SGOBJECTDEF(PHJointClearForce);
+public:
+	UTRef<PHJointEngine> je;
+	///	クリアする
+	virtual void Step(SGScene* s);
+	virtual int GetPriority() const { return SGBP_CLEARFORCE; }
+};
+
+//----------------------------------------------------------------------------
+//	実装
+
+///	要素アクセス
+inline SpSubVec3d& svitem(SpVec6d& v, int i){
+	return *(SpSubVec3d*)((double*)&v + i*3);
+}
+inline SpSubMatrix3d& smitem(SpMatrix6d& m, int i, int j){
+	return m.sub_matrix(i * 3, j * 3, PTM::TMatDim<3, 3>());
+}
+///	独自の内積定義(v1^T * v2)
+inline double svdot(const SpVec6d& v1, const SpVec6d& v2){
+	return 
+		v1[0] * v2[3] + v1[1] * v2[4] + v1[2] * v2[5] + 
+		v1[3] * v2[0] + v1[4] * v2[1] + v1[5] * v2[2];
+}
+///	v1 * v2^T で得られる行列
+inline Matrix3d mat(const Vec3d& v1, const Vec3d& v2){
+	return Matrix3d(
+		v1[0] * v2[0], v1[0] * v2[1], v1[0] * v2[2],
+		v1[1] * v2[0], v1[1] * v2[1], v1[1] * v2[2],
+		v1[2] * v2[0], v1[2] * v2[1], v1[2] * v2[2]);
+}
+inline SpMatrix6d svmat(const SpVec6d& v1, const SpVec6d& v2){
+    PTM::TVecDim<3> dim3;
+	const SpSubVec3d& v11 = v1.sub_vector(0, dim3), v12 = v1.sub_vector(3, PTM::TVecDim<3>());
+	const SpSubVec3d& v21 = v2.sub_vector(0, dim3), v22 = v2.sub_vector(3, PTM::TVecDim<3>());
+	SpMatrix6d y;
+	y.sub_matrix(0, 0, PTM::TMatDim<3, 3>()) = mat(v11, v22);
+	y.sub_matrix(0, 3, PTM::TMatDim<3, 3>()) = mat(v11, v21);
+	y.sub_matrix(3, 0, PTM::TMatDim<3, 3>()) = mat(v12, v22);
+	y.sub_matrix(3, 3, PTM::TMatDim<3, 3>()) = mat(v12, v21);
+	return y;
+}
+inline void LimitCycle(float& t){
+	const float M_PIf = (float)M_PI;
+	if (!_finite(t) || t > 1e6 || t < -1e6){
+		assert(0);
+		if (t>0) t = M_PIf;
+		else t= - M_PIf;
+		return;
+	}
+	int times;
+	if (t > M_PIf){
+		times = int((t+M_PIf) / (2*M_PIf));
+	}else if (t < -M_PIf){
+		times = int((t-M_PIf) / (2*M_PIf));
+	}else{
+		return;
+	}
+	t -= (float)(times*(2*M_PIf));
+	assert(-M_PIf <= t &&  t < M_PIf);
+}
+inline void LimitCycle(double& t){
+	if (!_finite(t) || t > 1e6 || t < -1e6){
+		if (t>0) t = (double)M_PI;
+		else t= - (double)M_PI;
+		return;
+	}
+	int times;
+	if (t > M_PI){
+		times = int((t+M_PI) / (2*M_PI));
+	}else if (t < -M_PI){
+		times = int((t-M_PI) / (2*M_PI));
+	}else{
+		return;
+	}
+	t -= (double)(times*(2*M_PI));
+	if (t < -M_PI || M_PI <= t){
+		DSTR << t << std::endl;
+		assert(0);
+	}
+}
+
+SpMatrix6d PHJointBase::pXc_Mat_cXp(SpMatrix6d& m){
+	static Matrix3d pRc_m11_cRp, pRc_m12_cRp, pRc_m21_cRp, pRc_m22_cRp, tmp;
+	pRc_m11_cRp = pRc * smitem(m, 0, 0) * cRp;
+	pRc_m12_cRp = pRc * smitem(m, 0, 1) * cRp;
+	pRc_m21_cRp = pRc * smitem(m, 1, 0) * cRp;
+	pRc_m22_cRp = pRc * smitem(m, 1, 1) * cRp;
+	tmp = pRc_m11_cRp - pRc * smitem(m, 0, 1) * rcross_cRp;
+	SpMatrix6d	y;
+	smitem(y, 0, 0) = tmp;
+	smitem(y, 0, 1) = pRc_m12_cRp;
+	smitem(y, 1, 0) = rpcross * tmp + pRc_m21_cRp - pRc * smitem(m, 1, 1) * rcross_cRp;
+	smitem(y, 1, 1) = rpcross * pRc_m12_cRp + pRc_m22_cRp;
+	return y;
+}
+
+SpVec6d	PHJointBase::pXc_Vec(SpVec6d& v){
+	Vec3d pRc_v1 = pRc * svitem(v, 0);
+	SpVec6d y;
+	svitem(y, 0) = pRc_v1;
+	svitem(y, 1) = rpcross * pRc_v1 + pRc * svitem(v, 1);
+	return y;
+}
+
+SpVec6d PHJointBase::cXp_Vec(SpVec6d& v){
+	Vec3d cRp_v1 = cRp * svitem(v, 0);
+	SpVec6d y;
+	svitem(y, 0) = cRp_v1;
+	svitem(y, 1) = -rcross * cRp_v1 + cRp * svitem(v, 1);
+	return y;
+}
+
+
+}
+
+#endif

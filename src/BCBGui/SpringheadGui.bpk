@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="SpringheadGui.bpl"/>
+    <OBJFILES value="SpringheadGui.obj SHAffine.obj SHRenderer.obj SHComponent.obj SHScene.obj 
+      SHFrame.obj SHLight.obj SHCamera.obj SHBox.obj SHTreeView.obj 
+      SHSceneGraphDlg.obj SHSolid.obj SHMatrix.obj SHPhysicalMaterial.obj 
+      SHPathGraph.obj"/>
+    <RESFILES value="SpringheadGui.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) SHSceneGraphDlg.dfm"/>
+    <LIBFILES value="C:\DXSDK\lib\BCB\d3dxof.lib 
+      &quot;C:\Program Files\Borland\CBuilder6\Lib\ws2_32.lib&quot; ..\SpringheadBCB.lib 
+      C:\DXSDK\Lib\bcb\d3d9.lib C:\DXSDK\Lib\bcb\d3dx9d.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib vcl.lib"/>
+    <PACKAGES value="rtl.bpi vcl.bpi designide.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="SPR_DEBUG;_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="SpringheadGui.cpp"/>
+    <INCLUDEPATH value="$(SPRINGHEAD)\src;$(SPRINGHEAD)\src\bcbgui;$(BCB)\Projects;C:\DXSDK\include;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(SPRINGHEAD)\src;$(BCB)\Projects\Lib;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par -w-8030 -w-8027 -w-8026"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\SpringheadGui.csm -Hc -Q -Vx -Ve -ff -X- -r- -pr -a8 -6 
+      -b- -d -k -y -v -vi- -c -tWM"/>
+    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpp -x -Gl -Gi -w -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="SpringheadGui.res" FORMNAME="" UNITNAME="SpringheadGui.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SpringheadGui.cpp" FORMNAME="" UNITNAME="SpringheadGui" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Lib\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Lib\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\DXSDK\lib\BCB\d3dxof.lib" FORMNAME="" UNITNAME="d3dxof" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Lib\ws2_32.lib" FORMNAME="" UNITNAME="ws2_32" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHAffine.cpp" FORMNAME="" UNITNAME="SHAffine" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\Bpl\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHRenderer.cpp" FORMNAME="" UNITNAME="SHRenderer" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHComponent.cpp" FORMNAME="" UNITNAME="SHComponent" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHScene.cpp" FORMNAME="" UNITNAME="SHScene" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHFrame.cpp" FORMNAME="" UNITNAME="SHFrame" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHLight.cpp" FORMNAME="" UNITNAME="SHLight" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHCamera.cpp" FORMNAME="" UNITNAME="SHCamera" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHBox.cpp" FORMNAME="" UNITNAME="SHBox" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHTreeView.cpp" FORMNAME="" UNITNAME="SHTreeView" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHSceneGraphDlg.cpp" FORMNAME="SHSceneGraphDlg" UNITNAME="SHSceneGraphDlg" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\SpringheadBCB.lib" FORMNAME="" UNITNAME="SpringheadBCB" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHSolid.cpp" FORMNAME="" UNITNAME="SHSolid" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHMatrix.cpp" FORMNAME="" UNITNAME="SHMatrix" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHPhysicalMaterial.cpp" FORMNAME="" UNITNAME="SHPhysicalMaterial" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="SHPathGraph.cpp" FORMNAME="" UNITNAME="SHPathGraph" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\DXSDK\Lib\bcb\d3d9.lib" FORMNAME="" UNITNAME="d3d9" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="C:\DXSDK\Lib\bcb\d3dx9d.lib" FORMNAME="" UNITNAME="d3dx9d" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1041
+CodePage=932
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=13
+Item0=$(SPRINGHEAD)\src;$(SPRINGHEAD)\src\bcbgui;$(BCB)\Projects;C:\DXSDK\include;$(BCB)\include;$(BCB)\include\vcl
+Item1=$(SPRINGHEAD)\src;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Item2=..\Device;..\HIS;..\HIS\Fortran\QPFortran;..\FileIO\MetaLoader;..\Physics;..\Collision;..\WinDX\D3D8;..\WinDX\Base;..\WinBasis;..\SceneGraph;..\ImpD3D;..\FileIO;..\Base;..;Device;HIS;HIS\Fortran\QPFortran;FileIO\MetaLoader;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;C:\msSDK\include
+Item3=..\Device;..\HIS;..\HIS\Fortran\QPFortran;..\FileIO\MetaLoader;..\Physics;..\Collision;..\WinDX\D3D8;..\WinDX\Base;..\WinBasis;..\SceneGraph;..\ImpD3D;..\FileIO;..\Base;..;Device;HIS;HIS\Fortran\QPFortran;FileIO\MetaLoader;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;C:\msSDK\include;$(SPRINGHEAD)\src
+Item4=Device;HIS;HIS\Fortran\QPFortran;FileIO\MetaLoader;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src;C:\msSDK\include
+Item5=FileIO\MetaLoader;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src;C:\msSDK\include
+Item6=FileIO\MetaLoader;BCBGui;Physics;Collision;BCBComponent;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src;C:\msSDK\include
+Item7=FileIO\MetaLoader;BCBGui;Physics;Collision;BCBComponent;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item8=BCBGui;Physics;Collision;BCBComponent;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item9=Collision;BCBComponent;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item10=BCBComponent;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item11=C:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item12=WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=9
+Item0=$(SPRINGHEAD)\src;$(BCB)\Projects\Lib;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item1=$(SPRINGHEAD)\src;$(BCB)\Projects\Lib;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\Device;..\HIS;..\HIS\Fortran\QPFortran;..\FileIO\MetaLoader;..\Physics;..\Collision;..\WinDX\D3D8;..\WinDX\Base;..\WinBasis;..\SceneGraph;..\ImpD3D;..\FileIO;..\Base;..;Device;HIS;HIS\Fortran\QPFortran;FileIO\MetaLoader;$(BCB)\Projects\Lib;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib;C:\DXSDK\lib\bcb;C:\mssdk\lib\bcb
+Item3=Device;HIS;HIS\Fortran\QPFortran;FileIO\MetaLoader;$(BCB)\Projects\Lib;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib;C:\DXSDK\lib\bcb;C:\mssdk\lib\bcb
+Item4=FileIO\MetaLoader;$(BCB)\Projects\Lib;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib;C:\DXSDK\lib\bcb;C:\mssdk\lib\bcb
+Item5=FileIO\MetaLoader;$(BCB)\Projects\Lib;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item6=$(BCB)\Projects\Lib;BCBGui;Physics;Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item7=Collision;WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item8=WinDX\D3D8;WinDX\Base;WinBasis;SceneGraph;ImpD3D;FileIO;Base;BCBComponent;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=4
+Item0=SPR_DEBUG;_DEBUG
+Item1=SPR_DEBUG
+Item2=_DEBUG;SPR_DEBUG
+Item3=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=C:\Program Files\Borland\CBuilder6\Bin\bcb.exe
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=1
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

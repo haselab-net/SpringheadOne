@@ -1,0 +1,558 @@
+$/Project/Springhead のリストを作成しています。................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...............................................................................
+...........................
+
+*****************  バージョン 523  *****************
+ラベル: "ビルド成功2004/10/21"
+ユーザー: Demo         日付: 04/10/21   時刻:  3:23
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  PHHuman.cpp  *****
+バージョン 25
+ユーザー: Yosa         日付: 04/10/20   時刻: 15:25
+チェックイン $/Project/Springhead/src/Physics
+
+*****  BuildError.log  *****
+バージョン 539
+ユーザー: Demo         日付: 04/10/19   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 594
+ユーザー: Demo         日付: 04/10/19   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 522  *****************
+ラベル: "ビルド成功2004/10/19"
+ユーザー: Demo         日付: 04/10/19   時刻:  3:23
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna,TreeViewTest）
+
+*****  CDDetectorImp.cpp  *****
+バージョン 17
+ユーザー: Hase         日付: 04/10/19   時刻:  2:48
+チェックイン $/Project/Springhead/src/Collision
+
+*****  PHHuman.h  *****
+バージョン 13
+ユーザー: Yosa         日付: 04/10/18   時刻: 21:57
+チェックイン $/Project/Springhead/src/Physics
+コメント: GetTotalMass追加
+
+
+*****  History.log  *****
+バージョン 593
+ユーザー: Demo         日付: 04/10/18   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 538
+ユーザー: Demo         日付: 04/10/18   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 521  *****************
+ラベル: "ビルド成功2004/10/18"
+ユーザー: Demo         日付: 04/10/18   時刻:  3:23
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna,TreeViewTest）
+
+*****  History.log  *****
+バージョン 592
+ユーザー: Demo         日付: 04/10/17   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  Build.log  *****
+バージョン 309
+ユーザー: Demo         日付: 04/10/17   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 537
+ユーザー: Demo         日付: 04/10/17   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 520  *****************
+ラベル: "ビルド成功2004/10/17"
+ユーザー: Demo         日付: 04/10/17   時刻:  3:23
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna,TreeViewTest）
+
+*****  BuildError.log  *****
+バージョン 536
+ユーザー: Demo         日付: 04/10/16   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 591
+ユーザー: Demo         日付: 04/10/16   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  Build.log  *****
+バージョン 308
+ユーザー: Demo         日付: 04/10/16   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 519  *****************
+ラベル: "ビルド成功2004/10/16"
+ユーザー: Demo         日付: 04/10/16   時刻:  3:23
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna,TreeViewTest）
+
+*****  BuildError.log  *****
+バージョン 535
+ユーザー: Demo         日付: 04/10/15   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 590
+ユーザー: Demo         日付: 04/10/15   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****  Build.log  *****
+バージョン 307
+ユーザー: Demo         日付: 04/10/15   時刻:  3:24
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 518  *****************
+ラベル: "ビルド成功2004/10/15"
+ユーザー: Demo         日付: 04/10/15   時刻:  3:23
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna,TreeViewTest）
+
+*****  PHContactEngine.cpp  *****
+バージョン 73
+ユーザー: Hase         日付: 04/10/14   時刻:  5:30
+チェックイン $/Project/Springhead/src/Physics
+
+*****  Build.log  *****
+バージョン 306
+ユーザー: Demo         日付: 04/10/14   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 534
+ユーザー: Demo         日付: 04/10/14   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 589
+ユーザー: Demo         日付: 04/10/14   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 517  *****************
+ラベル: "ビルド成功2004/10/14"
+ユーザー: Demo         日付: 04/10/14   時刻:  3:18
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  PHHuman.cpp  *****
+バージョン 24
+ユーザー: Ishikawa     日付: 04/10/13   時刻: 16:08
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHHuman.h  *****
+バージョン 12
+ユーザー: Ishikawa     日付: 04/10/13   時刻: 16:08
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  Base.dsp  *****
+バージョン 33
+ユーザー: Yosa         日付: 04/10/13   時刻: 16:02
+チェックイン $/Project/Springhead/src/Base
+
+*****  Collision.dsp  *****
+バージョン 26
+ユーザー: Yosa         日付: 04/10/13   時刻: 16:02
+チェックイン $/Project/Springhead/src/Collision
+
+*****  Physics.dsp  *****
+バージョン 41
+ユーザー: Yosa         日付: 04/10/13   時刻: 16:02
+チェックイン $/Project/Springhead/src/Physics
+
+*****  History.log  *****
+バージョン 588
+ユーザー: Demo         日付: 04/10/13   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  Build.log  *****
+バージョン 305
+ユーザー: Demo         日付: 04/10/13   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 533
+ユーザー: Demo         日付: 04/10/13   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 516  *****************
+ラベル: "ビルド成功2004/10/13"
+ユーザー: Demo         日付: 04/10/13   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  PHHuman.cpp  *****
+バージョン 23
+ユーザー: Yosa         日付: 04/10/12   時刻: 19:49
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHHuman.h  *****
+バージョン 11
+ユーザー: Yosa         日付: 04/10/12   時刻: 19:49
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  CDFramePair.h  *****
+バージョン 20
+ユーザー: Hase         日付: 04/10/12   時刻: 15:02
+チェックイン $/Project/Springhead/src/Collision
+コメント: 
+
+*****  BuildError.log  *****
+バージョン 532
+ユーザー: Demo         日付: 04/10/12   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 587
+ユーザー: Demo         日付: 04/10/12   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 531
+ユーザー: Demo         日付: 04/10/11   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 586
+ユーザー: Demo         日付: 04/10/11   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 530
+ユーザー: Demo         日付: 04/10/10   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 585
+ユーザー: Demo         日付: 04/10/10   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  Build.log  *****
+バージョン 304
+ユーザー: Demo         日付: 04/10/09   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 529
+ユーザー: Demo         日付: 04/10/09   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 584
+ユーザー: Demo         日付: 04/10/09   時刻:  3:07
+チェックイン $/Project/Springhead/test/log
+
+*****  PHContactEngine.h  *****
+バージョン 29
+ユーザー: Hase         日付: 04/10/09   時刻:  3:06
+チェックイン $/Project/Springhead/src/Physics
+
+*****  DynaHaptic.dsp  *****
+バージョン 17
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Samples/DynaHaptic
+コメント: 
+
+*****  PHWarp.cpp  *****
+バージョン 24
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHStickEngine.cpp  *****
+バージョン 15
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHHuman.cpp  *****
+バージョン 22
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHContactEngine.h  *****
+バージョン 28
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHContactEngine.cpp  *****
+バージョン 72
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  Collision.dsp  *****
+バージョン 25
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Collision
+コメント: 
+
+*****  CDCollisionEngine.h  *****
+バージョン 26
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Collision
+コメント: 
+
+*****  CDCollisionEngine.cpp  *****
+バージョン 24
+ユーザー: Hase         日付: 04/10/09   時刻:  2:42
+チェックイン $/Project/Springhead/src/Collision
+コメント: 
+
+*****  PHHuman.h  *****
+バージョン 10
+ユーザー: Yosa         日付: 04/10/09   時刻:  0:41
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHHuman.cpp  *****
+バージョン 21
+ユーザー: Hase         日付: 04/10/08   時刻: 21:06
+チェックイン $/Project/Springhead/src/Physics
+
+*****  PHHuman.cpp  *****
+バージョン 20
+ユーザー: Hase         日付: 04/10/08   時刻: 20:20
+チェックイン $/Project/Springhead/src/Physics
+
+*****  PHContactEngine.h  *****
+バージョン 27
+ユーザー: Hase         日付: 04/10/08   時刻: 17:35
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHHuman.cpp  *****
+バージョン 19
+ユーザー: Hase         日付: 04/10/08   時刻: 17:35
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  PHHuman.h  *****
+バージョン 9
+ユーザー: Hase         日付: 04/10/08   時刻: 17:35
+チェックイン $/Project/Springhead/src/Physics
+コメント: 
+
+*****  CDCollisionEngine.h  *****
+バージョン 25
+ユーザー: Hase         日付: 04/10/08   時刻: 17:35
+チェックイン $/Project/Springhead/src/Collision
+コメント: 
+
+*****  BuildError.log  *****
+バージョン 528
+ユーザー: Demo         日付: 04/10/08   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 583
+ユーザー: Demo         日付: 04/10/08   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 515  *****************
+ラベル: "ビルド成功2004/10/08"
+ユーザー: Demo         日付: 04/10/08   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  SpidarG6.dsw  *****
+バージョン 5
+ユーザー: Hase         日付: 04/10/07   時刻: 19:05
+チェックイン $/Project/Springhead/src/HIS/Samples/SpidarG6
+コメント: 
+
+*****  BuildError.log  *****
+バージョン 527
+ユーザー: Demo         日付: 04/10/07   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 582
+ユーザー: Demo         日付: 04/10/07   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 514  *****************
+ラベル: "ビルド成功2004/10/07"
+ユーザー: Demo         日付: 04/10/07   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  main.cpp  *****
+バージョン 9
+ユーザー: Hase         日付: 04/10/06   時刻: 21:05
+チェックイン $/Project/Springhead/src/HIS/Samples/SpidarG6
+
+*****  HIStepWalk.h  *****
+バージョン 4
+ユーザー: Hase         日付: 04/10/06   時刻: 17:49
+チェックイン $/Project/Springhead/src/HIS
+
+*****  HITurnTable.cpp  *****
+バージョン 4
+ユーザー: Hase         日付: 04/10/06   時刻: 17:49
+チェックイン $/Project/Springhead/src/HIS
+
+*****  TurnTable.dsw  *****
+バージョン 3
+ユーザー: Hase         日付: 04/10/06   時刻: 17:45
+チェックイン $/Project/Springhead/src/HIS/Samples/TurnTable
+コメント: 
+
+*****  main.cpp  *****
+バージョン 2
+ユーザー: Hase         日付: 04/10/06   時刻: 17:34
+チェックイン $/Project/Springhead/src/HIS/Samples/TurnTable
+コメント: 
+
+*****  TurnTable.dsp  *****
+バージョン 2
+ユーザー: Hase         日付: 04/10/06   時刻: 17:34
+チェックイン $/Project/Springhead/src/HIS/Samples/TurnTable
+コメント: 
+
+*****  TurnTable.dsw  *****
+バージョン 2
+ユーザー: Hase         日付: 04/10/06   時刻: 17:34
+チェックイン $/Project/Springhead/src/HIS/Samples/TurnTable
+コメント: 
+
+*****  BuildError.log  *****
+バージョン 526
+ユーザー: Demo         日付: 04/10/06   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 581
+ユーザー: Demo         日付: 04/10/06   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 513  *****************
+ラベル: "ビルド成功2004/10/06"
+ユーザー: Demo         日付: 04/10/06   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  History.log  *****
+バージョン 580
+ユーザー: Demo         日付: 04/10/05   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  BuildError.log  *****
+バージョン 525
+ユーザー: Demo         日付: 04/10/05   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 512  *****************
+ラベル: "ビルド成功2004/10/05"
+ユーザー: Demo         日付: 04/10/05   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  BuildError.log  *****
+バージョン 524
+ユーザー: Demo         日付: 04/10/04   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 579
+ユーザー: Demo         日付: 04/10/04   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 511  *****************
+ラベル: "ビルド成功2004/10/04"
+ユーザー: Demo         日付: 04/10/04   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  BuildError.log  *****
+バージョン 523
+ユーザー: Demo         日付: 04/10/03   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 578
+ユーザー: Demo         日付: 04/10/03   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 510  *****************
+ラベル: "ビルド成功2004/10/03"
+ユーザー: Demo         日付: 04/10/03   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  BuildError.log  *****
+バージョン 522
+ユーザー: Demo         日付: 04/10/02   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 577
+ユーザー: Demo         日付: 04/10/02   時刻:  3:18
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 509  *****************
+ラベル: "ビルド成功2004/10/02"
+ユーザー: Demo         日付: 04/10/02   時刻:  3:18
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  BuildError.log  *****
+バージョン 521
+ユーザー: Demo         日付: 04/10/01   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****  History.log  *****
+バージョン 576
+ユーザー: Demo         日付: 04/10/01   時刻:  3:17
+チェックイン $/Project/Springhead/test/log
+
+*****************  バージョン 508  *****************
+ラベル: "ビルド成功2004/10/01"
+ユーザー: Demo         日付: 04/10/01   時刻:  3:17
+ラベル設定
+ラベル コメント: ビルド成功（DynaHaptic,MFCD3DDyna,SDKD3DDyna）
+
+*****  rollingBall8.x  *****
+バージョン 2
+ユーザー: Hase         日付: 04/09/30   時刻: 23:50
+チェックイン $/Project/Springhead/src/Samples/data/tutorial
+コメント: 
+
+*****  rollingBall7.x  *****
+バージョン 2
+ユーザー: Hase         日付: 04/09/30   時刻: 23:50
+チェックイン $/Project/Springhead/src/Samples/data/tutorial
+コメント: 
+
+*****  rollingBall6.x  *****
+バージョン 2
+ユーザー: Hase         日付: 04/09/30   時刻: 23:50
+チェックイン $/Project/Springhead/src/Samples/data/tutorial
+コメント: 
+
