@@ -1,4 +1,4 @@
-日付 : 2005.03.30 
+日付 : 05.03.31 
  
 --- ビルドエラーのログ --- 
  
@@ -9,6 +9,108 @@
  
  
 *** MFCD3DDyna *** 
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(292) : error C2061: 構文ｴﾗｰ : 識別子 'PHPhysicalMaterial' がｼﾝﾀｯｸｽｴﾗｰを起こしました。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
+C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : fatal error C1003: ﾌﾟﾛｸﾞﾗﾑ内のｴﾗｰが 100 個を超えました。ｺﾝﾊﾟｲﾙは中断されます。
  
  
 *** SDKD3DDyna *** 
