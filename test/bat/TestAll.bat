@@ -5,11 +5,6 @@ set DATE=%DATE:~2,10%
 set LABEL=ビルド失敗
 set COMMENT=ビルド成功（
 
-rem **** ログファイルをチェックアウトする ****
-cd log 
-rem ss Checkout -I- $/Project/Springhead/test/log/Build.log $/Project/Springhead/test/log/BuildError.log $/Project/Springhead/test/log/History.log
-cd ..
-
 echo --- ビルドのログ ---  > log\Build.log
 echo. >> log\Build.log
 echo 日付 : %DATE% > log\BuildError.log
@@ -66,7 +61,7 @@ copy log\BuildError.log %SMBBASE%
 rem **** ログをVSSにチェックインする ****
 cd log 
 rem ss Checkin -I- $/Project/Springhead/test/log/Build.log $/Project/Springhead/test/log/BuildError.log $/Project/Springhead/test/log/History.log
-svn commit -m "Autobuild done..."
+svn commit -m "Autobuild done."
 cd ..
 
 rem **** 使用した環境変数のクリア **** 

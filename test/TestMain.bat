@@ -1,12 +1,9 @@
 rem @echo off
 
-rem **** src以下のフォルダをすべて消去する ****
-rem もうやりません cd ..
-rem もうやりません rmdir /S /Q src
-rem もうやりません cd test
-
 rem **** SVNからSpringhead以下を取得する **** 
-call bat\GetSpringheadSVN.bat
+cd ..
+svn update
+cd test
 
 rem **** テストを行う ****
 call bat\TestAll.bat
