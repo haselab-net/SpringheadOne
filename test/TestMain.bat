@@ -1,12 +1,12 @@
 rem @echo off
 
 rem **** src以下のフォルダをすべて消去する ****
-cd ..
-rmdir /S /Q src
-cd test
+rem もうやりません cd ..
+rem もうやりません rmdir /S /Q src
+rem もうやりません cd test
 
-rem **** VSSからSpringhead以下を取得する **** 
-call bat\GetSpringhead.bat
+rem **** SVNからSpringhead以下を取得する **** 
+call bat\GetSpringheadSVN.bat
 
 rem **** テストを行う ****
 call bat\TestAll.bat
