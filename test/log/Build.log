@@ -158,7 +158,6 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 0
  
 *** TreeTestView *** 
 [C++] WXGuid.cpp(1): 
-[C++ エラー] WXGuid.cpp(10): E2209 インクルードファイル 'd3d9.h' をオープンできない
-[C++ エラー] WXGuid.cpp(11): E2209 インクルードファイル 'd3dx9.h' をオープンできない
+[C++] winefs.h(226): 
  
  
