@@ -22,4 +22,4 @@ rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
 rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
 rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
 rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-xcopy /e/c/f/h/i/y ..\src \\samba\VSS\Web\springhead\svntest\src
+xcopy /e/c/f/h/i/y ..\src \\samba\VSS\Web\springhead\src
