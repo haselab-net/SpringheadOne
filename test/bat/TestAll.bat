@@ -1,7 +1,8 @@
 rem **** テストを実行する ****
 
 rem **** ラベル付けに使う環境変数の初期化 **** 
-set DATE=%DATE:~2,10%
+set DATESL=%DATE:~2,10%
+set DATE=%DATESL:/=.%
 set LABEL=ビルド失敗
 set COMMENT=ビルド成功（
 
