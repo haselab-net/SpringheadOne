@@ -158,8 +158,8 @@ void CRUser::SetSprings(){
 
 	// [0] 腰(基本立ち位置に固定)
 //	postureSpring.SetSolid(solids[0], 0.1f, 1.0f);
-	postureSpring.SetSolid(solids[0], 0.02f, 0.6f);
-	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.1f, 1.0f);
+	postureSpring.SetSolid(solids[0], 0.01f, 0.6f);
+	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.05f, 1.0f);
 	positionSprings.push_back(positionSpr);
 	// [1] 右手(Spidarに対応)
 	positionSpr.SetSolid(solids[6],  Vec3f(0, 0, 0), 1.0f, 1.0f);
@@ -187,13 +187,13 @@ void CRUser::SetFixedPos(){
 void CRUser::SetSpidarPos(std::vector<HISpidar4*> spidars){
 	// Spidar のスケール調整込み 右手[1] 左手[2]
 	for(int i = 0; i < spidars.size(); ++i){
-		//const float SCALE = 2.5f;
-		const float SCALE = 1.2f;	// ミーティングルーム
+		const float SCALE = 2.0f;
+		//const float SCALE = 1.25f;	// ミーティングルーム
 		Vec3f tPos, tVel;
 		tPos = spidars[i]->GetPos() * SCALE;
 		tVel = spidars[i]->GetVel() * SCALE;
 		tPos.y += 1.2f;
-		tPos.z -= 0.5f;
+		tPos.z -= 0.6f;
 
 		positionSprings[i+1].SetTarget(tPos, tVel, true);
 	}
@@ -220,12 +220,12 @@ void CRUser::SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpid
 			Vec3f force = Vec3f();
 			force += humanContactInfo.GetContactForceOfSolid(solids[3*i+6], puppet, scene);
 			for(int j = 0; j < 2; ++j){
-				force += 0.4f * humanContactInfo.GetContactForceOfSolid(solids[3*i+j+4], puppet, scene);
+			//	force += 0.4f * humanContactInfo.GetContactForceOfSolid(solids[3*i+j+4], puppet, scene);
 			}
 			for(int j = 0; j < 2; ++j){
 				force += 0.1f * humanContactInfo.GetContactForceOfSolid(solids[j+2], puppet, scene);
 			}
-			float maxForce = 1.5f;
+			float maxForce = 2.5f;
 			if(force.norm() > maxForce) force = force.unit() * maxForce;
 			spidars[i]->SetForce(-force);
 		}

@@ -18,6 +18,9 @@ HIForceDevice6D::HIForceDevice6D():alpha(0.98f){
 void HIHapticDevice::AddRealDeviceDependency(DRRealDevice* rd){
 	realDevices.insert(rd);
 }
+void HIHapticDevice::ClearRealDeviceDependency(){
+	realDevices.clear();
+}
 void HIHapticDevice::Update(float dt){
 	updateStep ++;
 	if (updateStep > deviceUpdateStep){

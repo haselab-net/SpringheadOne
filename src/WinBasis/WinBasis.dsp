@@ -216,11 +216,11 @@ SOURCE=.\WBDllLoaderImpl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\WBMMTimer.h
+SOURCE=.\WBMMTimer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\WBMTimer.cpp
+SOURCE=.\WBMMTimer.h
 # End Source File
 # Begin Source File
 

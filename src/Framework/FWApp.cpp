@@ -10,6 +10,7 @@
 #include <HIS/HISpidarG6O.h>
 #include <HIS/HISpidarG6X.h>
 #include <HIS/HISpidarG6X2.h>
+#include <HIS/HISpidarG6X3.h>
 #include <HIS/HISpidarG6WB.h>
 #include <HIS/HISpidarG6Jun.h>
 #include <HIS/HIRuiKuma.h>
@@ -36,6 +37,7 @@ FWApp::~FWApp(){
 	pointers.clear();
 }
 void FWApp::InitDevice(){
+	HIHapticDevice::ClearRealDeviceDependency();
 	mouse = new HIMouse;
 	devMan.Clear();
 	devMan.RPool().Register(new DRUsb20Sh4(0));
@@ -237,6 +239,7 @@ bool FWApp::AddHis(const char* str){
 	else IF_SPIDAR(HISpidarG6O)
 	else IF_SPIDAR(HISpidarG6X)
 	else IF_SPIDAR(HISpidarG6X2)
+	else IF_SPIDAR(HISpidarG6X3)
 	else IF_SPIDAR(HISpidarG6WB)
 	else IF_SPIDAR(HISpidarG6Jun)
 	bBusy = false;

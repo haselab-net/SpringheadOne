@@ -1,4 +1,5 @@
 #include <HIS/HISpidarG6X.h>
+#include <HIS/HISpidarG6X3.h>
 #ifdef __sh__		//	SH4版(コントローラのファーム内で動作する場合)
  #include <Device/DRIhcSh4.h>
  #include <cyg/kernel/kapi.h>
@@ -28,8 +29,8 @@ int main(){
 	devMan.RPool().Register(new DRIHCSh4);		//	SH4からアクセスするコントローラのI/O
 #else
 	devMan.RPool().Register(new DRUsb20Simple(10));	//	USB2.0版コントローラ 8モータ
-	devMan.RPool().Register(new DRUsb20Sh4(0));		//	Sh4版コントローラ 8モータ
-	devMan.RPool().Register(new DRUsbH8Simple(0));	//	H8版コントローラ 8モータ
+	devMan.RPool().Register(new DRUsb20Sh4(1));		//	Sh4版コントローラ 8モータ
+//	devMan.RPool().Register(new DRUsbH8Simple(0));	//	H8版コントローラ 8モータ
 /*	devMan.RPool().Register(new DRContecIsaDa(0x300));	//	ISAボード版(3つで8モータ用)
 	devMan.RPool().Register(new DRContecIsaCounter(0x200));
 	devMan.RPool().Register(new DRContecIsaCounter(0x210));	*/
@@ -37,7 +38,7 @@ int main(){
 	devMan.Init();								//	デバイスの初期化
 	std::cout << devMan;						//	初期化の結果を表示
 
-	HISpidarG6X spidarG6;						//	SPIDARに対応するクラス
+	HISpidarG6X3 spidarG6;						//	SPIDARに対応するクラス
 /*
 	std::cout << "hoge" << std::endl;
 	//	モータの取り付け位置. モータが直方体に取り付けられている場合は，
@@ -92,6 +93,7 @@ int main(){
 		}
 #endif
 		spidarG6.Update(dt);						//	USBの通信を行う．
+#if 0
 		Vec3f pos = spidarG6.GetPos();				//	位置の読み出し Vec3fについては，自動生成マニュアルを参照
 		float delta = (pos.Y() - lastPos) / dt;
 		float alpha = 0.1f;
@@ -110,11 +112,12 @@ int main(){
 			}
 		}
 		spidarG6.SetForce(Vec3f(0, force, 0), torque);	//	力の取得
+#endif
 		
 #if 0
 	std::cout << spidarG6.GetPos() << std::endl;
 #endif
-#if 0
+#if 1
 		for( int i=0; i<8; i++ ) std::cout << spidarG6.motor[i].GetLength() << " ";
 		std::cout << std::endl;
 #endif

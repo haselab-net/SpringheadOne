@@ -41,6 +41,8 @@ public:
 	virtual bool AfterCalib(){ return true; }
 	///
 	void AddRealDeviceDependency(DRRealDevice* rd);
+	///
+	static void ClearRealDeviceDependency();
 	//@}
 	/**	デバイスの状態を更新する．	*/
 	virtual void Update(float dt);

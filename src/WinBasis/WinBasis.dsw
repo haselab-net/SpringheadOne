@@ -19,6 +19,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "MMTimer"=.\Samples\MMTimer\mmtimer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "WinBasis"=.\WinBasis.dsp - Package Owner=<4>
 
 Package=<5>

@@ -309,6 +309,14 @@ SOURCE=.\HISpidarG6X2.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\HISpidarG6X3.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\HISpidarG6X3.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\HISpidarI7.cpp
 # End Source File
 # Begin Source File

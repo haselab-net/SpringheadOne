@@ -260,7 +260,7 @@ bool HIMouse::PreviewMessage(void* m){
 bool HIMouse::OnKeyDown(unsigned nChar){
 	//	‹“_ˆÚ“®ŠÖŒW
 	Affinef afBody = GetAxis().inv();
-	float df = 0.1f ; //ˆÚ“®•Ï‰»—Ê
+	float df = 1.0f ; //ˆÚ“®•Ï‰»—Ê
 	// ƒJƒƒ‰‚Ì•½sˆÚ“®
 	if ( nChar == 'W' ) afBody.Pos() = afBody.Pos() + afBody.Ex() * df;
 	else if ( nChar == 'Q' ) afBody.Pos() = afBody.Pos() - afBody.Ex() * df;

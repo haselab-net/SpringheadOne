@@ -227,8 +227,8 @@ void CRPuppet::ReachingMovement::Step(SGScene* scene){
 		if(time > dt){
 			Vec3f pos, vel;
 			float s = dt / time;
-			pos = (finalPos - GetPos()) * 1.5f * s + GetPos();	// 仮目標の設定
-			vel = (finalPos - GetPos()) * 2.0f / time;
+			pos = (finalPos - GetPos()) * 2.0f * s + GetPos();	// 仮目標の設定
+			vel = (finalPos - GetPos()) * 1.5f / time;
 			//pos = (finalPos - firstPos) * (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5)) + firstPos;	// 仮目標の設定(躍度最小)
 			//vel = (finalPos - firstPos) * (pow(s,2) - 2*pow(s,3) + pow(s,4)) * 30 / time;
 			SetTarget(pos, vel, true);
@@ -697,8 +697,8 @@ void CRPuppet::SetJointSpring(float dt){
 	// 関節を柔らかめに設定(上半身)
 	for(int i = 0; i < 6; ++i){
 		if(jointPids[i] != NULL){
-			if(i % 3 == 2) JointPIDMul(jointPids[i], 0.06f, 0.06f);
-			else           JointPIDMul(jointPids[i], 0.2f, 0.8f);
+			if(i % 3 == 2) JointPIDMul(jointPids[i], 0.04f, 0.2f);
+			else           JointPIDMul(jointPids[i], 0.3f, 0.8f);
 		}
 	}
 	// 関節を柔らかめに設定(首)
@@ -710,14 +710,14 @@ void CRPuppet::SetJointSpring(float dt){
 	// 関節を柔らかめに設定(右腕)
 	for(int i = 9; i <= 13; ++i){ 
 		if(jointPids[i] != NULL){
-			JointPIDMul(jointPids[i], 0.02f, 0.4f);
+			JointPIDMul(jointPids[i], 0.04f, 0.5f);
 			//JointPIDMul(jointPids[i], 0.03f, 0.3f);
 		}
 	}
 	// 関節を柔らかめに設定(左腕)
 	for(int i = 16; i <= 20; ++i){ 
 		if(jointPids[i] != NULL){
-			JointPIDMul(jointPids[i], 0.02f, 0.4f);
+			JointPIDMul(jointPids[i], 0.04f, 0.5f);
 			//JointPIDMul(jointPids[i], 0.03f, 0.3f);
 		}
 	}
@@ -752,10 +752,9 @@ void CRPuppet::SetSprings(){
 	positionSprings.clear();
 
 	// [0] 腰(基本立ち位置に固定)
-//	postureSpring.SetSolid(solids[0], 0.02f, 0.6f);
-	postureSpring.SetSolid(solids[0], 0.02f, 0.8f);
+	postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
 	PositionSpring positionSpr;
-	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.2f, 1.0f);
+	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
 	positionSprings.push_back(positionSpr);
 }
 
@@ -789,7 +788,7 @@ void CRPuppet::Step(SGScene* scene){
 		GRRender* render;
 		scene->GetRenderers().Find(render);
 		Draw(render);
-		//for(int i = 0; i < 3; ++i) reaching[0][i].Draw(render);
+		for(int i = 2; i < 3; ++i) reaching[0][i].Draw(render);
 	}
 }
 
@@ -800,12 +799,13 @@ inline float random1(){
 void CRPuppet::Attack(CRPuppet* puppet){
 	if(bAttack){
 		int wait = 0;
-		for(int i = 0; i < 3; ++i) wait += reaching[0][i].state;
+		//for(int i = 0; i < 3; ++i) wait += reaching[0][i].state;
+		for(int i = 0; i < 2; ++i) wait += reaching[0][i].state;
 		if(wait == 0){
 			if(random1() < 0.002f){
 				//srand((unsigned) time(NULL));
 				int hand = 0;
-				if(random1() > 0.4f) hand = 1;
+				if(random1() > 0.7f) hand = 1;
 				int body = 0;
 				float dist0 = pow((solids[3*hand+6]->GetCenterPosition() - puppet->solids[2]->GetCenterPosition()).norm(), 2);
 				float dist1 = pow((solids[3*hand+6]->GetCenterPosition() - puppet->solids[3]->GetCenterPosition()).norm(), 2);
@@ -833,12 +833,12 @@ void CRPuppet::AttackTest(CRPuppet* puppet){
 	//                 1 2 3  4  5 6 7  8 9 1011 12 1314 15 16 17181920
 	reaching[0][hand[atc]].SetSpring(solids[3*hand[atc]+6], Vec3f(0,0,0));
 	Vec3f r   = Vec3f(0.8f * puppet->GetSolidInfo(body[atc]+2).scale.X() * target[atc],
-		              0.3f * puppet->GetSolidInfo(body[atc]+2).scale.Y(),
+		              0.1f * puppet->GetSolidInfo(body[atc]+2).scale.Y(),
 					  0.05f);
 	if(body[atc] == 1) r.y *= -1.0f;
 	Vec3f pos = puppet->solids[body[atc]+2]->GetFrame()->GetPosture() * r;
 	reaching[0][hand[atc]].SetTargetPos(pos, Vec3f());
-	reaching[0][hand[atc]].SetTimer(0.25f, 0.05f);
+	reaching[0][hand[atc]].SetTimer(0.2f, 0.1f);
 	reaching[0][hand[atc]].SetType(1);
 	atc++;
 	atc %= 20;
@@ -850,7 +850,7 @@ inline bool CheckDirection(Vec3f a, Vec3f b, Vec3f v){
 	Vec3f ab = b - a;
 	bTarget &= (v.norm() > 1.0f);
 	bTarget &= ((ab.norm() * ab.norm()) / (ab * v) < 0.5f);
-	bTarget &= (acos(ab.unit() * v.unit()) < M_PI/12);
+	bTarget &= (acos(ab.unit() * v.unit()) < M_PI/8);
 	return bTarget;
 }
 

@@ -132,7 +132,7 @@ void CRActionPlanner::Step(CRPuppet* puppet, CRUser* user, SGScene* scene){
 }
 
 void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene){
-	const int SETCOUNT =  15;
+	const int SETCOUNT = 10;
 
 	if(times >= SETCOUNT){
 		contactInfo.clear();
@@ -173,8 +173,8 @@ void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* 
 }
 
 void CRActionPlanner::MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count){
-	const int STEPCOUNT = 2;
-	const float RATE = 1.5f;
+	const int STEPCOUNT = 4;
+	const float RATE = 1.25f;
 	
 	LoadState(scene, 0);	// “r’†“à•”ó‘Ô‚©‚çÄŠJ
 	float dt = scene->GetTimeStep();
@@ -203,7 +203,7 @@ void CRActionPlanner::PredictionStep(CRPuppet* puppet, CRUser* user, SGScene* sc
 	scene->GenerateForce();
 	
 	puppet->SetSpringForce(dt);
-	if(user->locus.degree == 1) user->SetExpectedPos(3.0*count, dt);
+	if(user->locus.degree == 1) user->SetExpectedPos(3.0f*count, dt);
 	else                        user->SetExpectedPos(count, dt);
 	user->SetSpringForce(dt);
 
@@ -281,10 +281,10 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 				float rate = 0.2f;
 				if(tTime > rate) rate = tTime;
 
-				puppet->reaching[0][2].SetSpring(cInfo->soVH, Vec3f(0.0f, 0.1f, 0.05f));
+				puppet->reaching[0][2].SetSpring(cInfo->soVH, Vec3f(0.02f, 0.02f, 0.02f));
 				Vec3f p = GetPointToAvoid(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][2].GetPos(), 0.25f);
 				puppet->reaching[0][2].SetTargetPos(p, Vec3f());
-				puppet->reaching[0][2].SetTimer(rate, 0.25f);
+				puppet->reaching[0][2].SetTimer(rate, 0.45f);
 				puppet->reaching[0][2].SetType(3);
 			}
 
@@ -306,7 +306,7 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 					}
 					Vec3f p = GetPointToGuard(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][0].GetPos());
 					puppet->reaching[0][0].SetTargetPos(p, Vec3f());
-					puppet->reaching[0][0].SetTimer(rate, 0.3f - rate);
+					puppet->reaching[0][0].SetTimer(rate, 0.4f - rate);
 					puppet->reaching[0][0].SetType(2);
 				}
 
@@ -315,7 +315,7 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 					puppet->reaching[0][1].Init();
 				}
 				else{
-					float rate = 0.11f;
+					float rate = 0.1f;
 					if(tTime > 0.2f) rate = tTime * 0.5f;
 
 					if((puppet->solids[8]->GetCenterPosition() - cPos).norm() > (puppet->solids[9]->GetCenterPosition() - cPos).norm()){
@@ -326,7 +326,7 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 					}
 					Vec3f p = GetPointToGuard(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][0].GetPos());
 					puppet->reaching[0][1].SetTargetPos(p, Vec3f());
-					puppet->reaching[0][1].SetTimer(rate, 0.3f - rate);
+					puppet->reaching[0][1].SetTimer(rate, 0.4f - rate);
 					puppet->reaching[0][1].SetType(2);
 				}
 			}
@@ -373,10 +373,10 @@ Vec3f CRActionPlanner::GetNearestPoint(Vec3f a, Vec3f b, Vec3f c){
 }
 
 Vec3f CRActionPlanner::GetPointToAvoid(Vec3f a, Vec3f b, Vec3f c, float d){
-	Vec3f p = GetNearestPoint(a, (b - a).unit() * 0.2f + b, c);
+	Vec3f p = GetNearestPoint(a, (b - a).unit() * 0.3f + b, c);
 	Vec3f q = (c - p);
-	q.y  = 0.0f;
-	q.z *= 0.05f;
+	q.y *= 0.0f;
+	q.z *= 0.1f;
 	//if(q.Z() > 0) q.z = 0.0f;
 	//return d * q.unit() + p;
 	return d * q.unit() + c;
@@ -384,7 +384,7 @@ Vec3f CRActionPlanner::GetPointToAvoid(Vec3f a, Vec3f b, Vec3f c, float d){
 
 Vec3f CRActionPlanner::GetPointToGuard(Vec3f a, Vec3f b, Vec3f c){
 	//return GetNearestPoint(a, (b - a) * 0.4f + a, c);
-	return GetNearestPoint(a, (a - b).unit() * 0.1f + b, c);
+	return GetNearestPoint(a, (a - b).unit() * 0.05f + b, c);
 }
 
 }

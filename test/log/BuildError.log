@@ -1,7 +1,132 @@
-日付 : 05/03/01 
+日付 : 2004/12/19 
  
 --- ビルドエラーのログ --- 
  
 *** Springhead *** 
+ 
+ 
+*** DynaHaptic *** 
+C:\VSSWork\Springhead\src\Creature\CRActionPlanner.cpp(8) : fatal error C1083: ｲﾝｸﾙｰﾄﾞ ﾌｧｲﾙがｵｰﾌﾟﾝできません。'../../../Experiments/VH/VHInteraction/VHCheckDialog.h': No such file or directory
+ 
+ 
+*** MFCD3DDyna *** 
+FrameworkMD.lib(FWFileIOD3D.obj) : error LNK2001: 外部ｼﾝﾎﾞﾙ ""void __cdecl RegisterLoaderForCreature(class Spr::FILoadScene *)" (?RegisterLoaderForCreature@@YAXPAVFILoadScene@Spr@@@Z)" は未解決です
+FrameworkMD.lib(FWFileIOD3D.obj) : error LNK2001: 外部ｼﾝﾎﾞﾙ ""void __cdecl RegisterSaverForCreature(class Spr::FISaveScene *)" (?RegisterSaverForCreature@@YAXPAVFISaveScene@Spr@@@Z)" は未解決です
+MFCDebug/MFCD3DDyna.exe : fatal error LNK1120: 外部参照 2 が未解決です。
+ 
+ 
+*** SDKD3DDyna *** 
+ 
+ 
+*** TreeTestView *** 
+[C++ 警告] wspiapi.h(786): W8060 おそらく不正な代入
+  詳細な解析情報
+    WBSocket.cpp(3): #include C:\VSSWork\Springhead\src\WinBasis\WBSocket.h
+    WBSocket.h(6): #include c:\progra~1\borland\cbuild~1\include\ws2tcpip.h
+    ws2tcpip.h(566): #include c:\progra~1\borland\cbuild~1\include\wspiapi.h
+    wspiapi.h(814): 具体化対象の選択：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
+    --- 具体化のため構文解析を初期化しました
+    wspiapi.h(692): 構文解析対象：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(1): #include C:\VSSWork\Springhead\src\WinDX\WinDX.h
+    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
+    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
+  詳細な解析情報
+    WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
+[C++ 警告] HISpidar3.h(92): W8022 'HISpidar3::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar3.cpp(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar3.h
+    HISpidar3.h(9): namespace Spr
+    HISpidar3.h(45): class HISpidar3
+[C++ 警告] HISpidar3.h(92): W8022 'HISpidar3::SetForce(const Vec3f &)' が仮想関数 'HIForceDevice3D::SetForce(const Vec3f &,const Vec3f &)' を隠蔽する
+  詳細な解析情報
+    HISpidar8.cpp(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar8.h
+    HISpidar8.h(3): #include C:\VSSWork\Springhead\src\HIS\HISpidar3.h
+    HISpidar3.h(9): namespace Spr
+    HISpidar3.h(45): class HISpidar3
+[C++ 警告] HIMouse.cpp(159): W8004 'yPos' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(159): W8004 'xPos' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(172): W8004 'lKeyData' に代入した値は使われていない
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(172): W8066 実行されないコード
+  詳細な解析情報
+    HIMouse.cpp(5): namespace Spr
+    HIMouse.cpp(129): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++ エラー] PHJoint.h(121): E2094 * 演算子が使われたがクラス Matrix3d では SpSubVec3d 型のための定義が存在しない
+  詳細な解析情報
+    PHForceField.cpp(1): #include C:\VSSWork\Springhead\src\Physics\Physics.h
+    Physics.h(9): #include C:\VSSWork\Springhead\src\Physics\PHJointPid.h
+    PHJointPid.h(4): #include C:\VSSWork\Springhead\src\Physics/PHJoint1D.h
+    PHJoint1D.h(4): #include C:\VSSWork\Springhead\src\Physics/PHJoint.h
+    PHJoint.h(23): namespace Spr
+    PHJoint.h(48): class PHJointBase
+    PHJoint.h(213): 具体化対象の選択：Vec3f PHJointBase::GetSolidAngularAccel()
+    --- 具体化のため構文解析を初期化しました
+    PHJoint.h(121): 構文解析対象：Vec3f PHJointBase::GetSolidAngularAccel()
+[C++ 警告] PHJoint.h(45): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
  
  
