@@ -184,7 +184,7 @@ void PHContactEngine::Render(GRRender* render, SGScene* scene){
 	}
 }
 void PHContactEngine::DrawForce(CDConvexPair& cp, PHContactEngine::ConvexPairRecord& cpr, Affinef afw, GRRender* render, SGScene* scene){  
-	static float forceScale = 1000.0f;
+	static float forceScale = 10000.0f;
 	static float aveForce = 10.0f;
 	Vec3f ap[3];
 	ap[1] = cpr.reflexForcePoint + cp.commonPoint;

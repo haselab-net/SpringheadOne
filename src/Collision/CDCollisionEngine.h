@@ -13,22 +13,51 @@ namespace Spr{;
 ///	衝突時のリスナー(コールバック)クラス．
 class CDCollisionListener{
 public:
+	///	すべての前に一度呼び出させるコールバック．
+	virtual void BeforeAll(SGScene* scene){}
+
 	///	衝突判定後，解析前に呼び出されるコールバック．接触しているフレーム対の数だけ呼び出される．
 	virtual void Before(SGScene* scene, CDFramePairWithRecord* fr){}
 	///	解析直後，交差部の面や頂点が有効なときに，接触している凸形状対の数だけ呼び出されるコールバック．
 	virtual void Analyzed(SGScene* scene, CDFramePairWithRecord* fr, CDGeometryPair* geom, CDConvexPairWithRecord* conv, CDContactAnalysis* analyzer){}
 	///	解析後に呼び出されるコールバック．接触しているフレーム対の数だけ呼び出される．
 	virtual void After(SGScene* scene, CDFramePairWithRecord* fr){}
+
+	///	すべての後に一度呼び出させるコールバック．
+	virtual void AfterAll(SGScene* scene){}
 };
 ///	リスナのvector
 class CDCollisionListeners:public std::vector<CDCollisionListener*>{
 public:
+	///	衝突判定前に一度呼び出させるコールバック．
+	void BeforeAll(SGScene* scene){
+		for(unsigned  i=0; i<size(); ++i){
+			at(i)->BeforeAll(scene);
+		}
+	}
 	///	衝突判定後，解析前に呼び出されるコールバック．接触しているフレーム対の数だけ呼び出される．
-	virtual void Before(SGScene* scene, CDFramePairWithRecord* fr);
+	void Before(SGScene* scene, CDFramePairWithRecord* fr){
+		for(unsigned  i=0; i<size(); ++i){
+			if (fr->IsActive(i)) begin()[i]->Before(scene, fr);
+		}
+	}
 	///	解析直後，交差部の面や頂点が有効なときに，接触している凸形状対の数だけ呼び出されるコールバック．
-	virtual void Analyzed(SGScene* scene, CDFramePairWithRecord* fr, CDGeometryPair* geom, CDConvexPairWithRecord* conv, CDContactAnalysis* analyzer);
+	void Analyzed(SGScene* scene, CDFramePairWithRecord* fr, CDGeometryPair* geom, CDConvexPairWithRecord* conv, CDContactAnalysis* analyzer){
+		for(unsigned  i=0; i<size(); ++i){
+			if (fr->IsActive(i)) begin()[i]->Analyzed(scene, fr, geom, conv, analyzer);
+		}
+	}
 	///	解析後に呼び出されるコールバック．接触しているフレーム対の数だけ呼び出される．
-	virtual void After(SGScene* scene, CDFramePairWithRecord* fr);
+	void After(SGScene* scene, CDFramePairWithRecord* fr){
+		for(unsigned  i=0; i<size(); ++i){
+			if (fr->IsActive(i)) begin()[i]->After(scene, fr);
+		}
+	}
+	void AfterAll(SGScene* scene){
+		for(unsigned  i=0; i<size(); ++i){
+			at(i)->AfterAll(scene);
+		}
+	}
 };
 
 /**	衝突判定エンジン．
@@ -183,10 +212,14 @@ public:
 	bool AddInactive(int f1, int f2, int pos);
 	///	衝突判定をしないペアを登録（デフォルトでは衝突判定する）
 	bool AddInactive(SGFrame* f1, SGFrame* f2, int pos){ return AddInactive(GetFrameID(f1), GetFrameID(f2), pos); }
+	///	posのリスナについて判定しないように登録したペア(InactiveList)をクリアする
+	int ClearInactive(int pos);
 	///	衝突判定をするペアを登録（pos のリスナについては，デフォルトでは判定しなくなる．）
 	bool AddActive(int f1, int f2, int pos);
 	///	衝突判定をするペアを登録（pos のリスナについては，デフォルトでは判定しなくなる．）
 	bool AddActive(SGFrame* f1, SGFrame* f2, int pos){ return AddActive(GetFrameID(f1), GetFrameID(f2), pos); }
+	///	posのリスナについて判定するように登録したペア(activeList)をクリアする
+	int ClearActive(int pos);
 	///	フレーム(CDFrame) ごとのユーザレコード(records) の場所取り．
 	int ReserveFrameRecord();
 	///	フレームのペア(CDFramePairWithRecord) ごとのユーザレコード(records) の場所取り．

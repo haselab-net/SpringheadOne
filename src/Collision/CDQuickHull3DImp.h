@@ -349,7 +349,8 @@ bool CDQHPlanes<TVtx>::FindFarthest(CDQHPlane* plane){
 	return false;
 }
 /*	外側 内側 の順に並べる．
-外側の終わり＝内側の始まりが inner	*/
+	外側の終わり＝内側の始まりが inner	
+	面の法線が内側を向いている．(逆向きの面)	*/
 template <class TVtx>
 TVtx** CDQHPlanes<TVtx>::DivideByPlaneR(CDQHPlane* plane, TVtx** start, TVtx** end){
 	double INNER_DISTANCE = HULL_EPSILON * plane->dist;
@@ -364,6 +365,9 @@ TVtx** CDQHPlanes<TVtx>::DivideByPlaneR(CDQHPlane* plane, TVtx** start, TVtx** e
 	}
 	return start;
 }
+/*	外側 内側 の順に並べる．
+	外側の終わり＝内側の始まりが inner．
+	面の法線は外側を向いている．*/
 template <class TVtx>
 TVtx** CDQHPlanes<TVtx>::DivideByPlane(CDQHPlane* plane, TVtx** start, TVtx** end){
 	double INNER_DISTANCE = HULL_EPSILON * plane->dist;
@@ -437,19 +441,19 @@ inline std::ostream& operator << (std::ostream& os, const TYPENAME CDQHPlanes<TV
 	f.Print(os); return os;
 }
 
-inline Vec3f TVtx::GetPos() const {
+inline Vec3f CDQHVtx3DSample::GetPos() const {
 	return dir * dist;
 }
-inline void TVtx::SetPos(Vec3f p){
+inline void CDQHVtx3DSample::SetPos(Vec3f p){
 	float d = p.norm();
 	dir = p / d;
 	dist = d;
 }
-inline void TVtx::Print(std::ostream& os) const {
+inline void CDQHVtx3DSample::Print(std::ostream& os) const {
 //		os << Vtx();
 		os << id_ << " ";
 }
-inline std::ostream& operator << (std::ostream& os, const TVtx& f){
+inline std::ostream& operator << (std::ostream& os, const CDQHVtx3DSample& f){
 	f.Print(os); return os;
 }
 

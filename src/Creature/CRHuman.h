@@ -51,7 +51,7 @@
 //	(左膝)
 //34:joLKnee(-X)
 //	(左足首)
-//35:joLAnkle1(-X), 36:joLAnkle2(-Z), 37:joLAnkle3(Y)
+//35:joLAnkle1(X), 36:joLAnkle2(-Z), 37:joLAnkle3(Y)
 //	(左土踏まず)
 //38:joLToe(-X)
 //////////////////////////////////////////////////////////////
@@ -73,9 +73,10 @@
 #include <Base/Affine.h>
 #include <vector>
 
-#include "CRBalance.h"
+#include "CRSupportArea.h"
 
-#define BODYPARTNUM 5
+#define JOINT_NUM 39
+#define SOLID_NUM 18
 
 namespace Spr{;
 
@@ -102,62 +103,34 @@ struct CRHumanJointInfo{
 };
 
 
+DEF_RECORD(XHuman,{
+	GUID Guid(){ return WBGuid("48CE97A5-A3C0-446f-A2A0-25D42168A1E4"); }
+	FLOAT totalHeight;
+	FLOAT totalMass;
+});
+
 class CRHuman: public SGBehaviorEngine{
 public:
 	friend class CRHumanLoader;
 	friend class CRHumanSaver;
 	SGOBJECTDEF(CRHuman);
 	PHSolid* test;
-
-	CRHuman();
-	virtual ~CRHuman();
-	CRBalance crBalance;
-
-///////////////////////  Enum   /////////////////////////////////
-
-	enum TBodyParts{	//　体の部分
-		BODY,
-		RIGHT_ARM,
-		LEFT_ARM,
-		RIGHT_LEG,
-		LEFT_LEG
-	};
-
-	enum TJointParts{	//　体の部分
-		JO_WAIST,
-		JO_CHEST,
-		JO_NECK,
-		JO_R_SHOULDER,
-		JO_R_ELBOW,
-		JO_R_WRIST,
-		JO_L_SHOULDER,
-		JO_L_ELBOW,
-		JO_L_WRIST
-	};
-
+	CRSupportArea supportArea;						// 体全体の安定領域の計算
+	std::vector<CRSupportArea> supportObject;		// 体を支持するSolidの接触点から安定領域を計算
 
 ///////////////////////  変数   /////////////////////////////////
 public:
 	UTRef<PHJointEngine> jointEngine;				//	ジョイントエンジン
 	std::vector<PHSolid*> solids;					//	VHの各部位を収納
-	std::vector<PHJoint1D*> joints;					//	VHの各関節を収納
+	std::vector<PHJointBase*> joints;				//	VHの各関節を収納
 	std::vector<PHJointPid*> jointPids;				//	VHの各関節を収納
-	std::vector<PHSolid*> solidPart[BODYPARTNUM];	// VHを５つに分けて収納
+	std::vector<unsigned int> supportSolidNum[2];	//　VHを支持する部位の番号を収納(踵,爪先)(0:右足,1:左足）
+	std::vector<unsigned int> ankleJointNum[2];		//
+	std::vector<int> noUseJoint;					// 最適化(バランス)で使わない関節番号
 
-	//std::vector<CRHumanSolidInfo*>	sinfo;		// VHのSolid情報
-	//std::vector<CRHumanJointInfo*>	jinfo;		// VHのJoint情報
-	CRHumanJointInfo	jinfo[39];					// VHのJoint情報
-	CRHumanSolidInfo	sinfo[18];					// VHのSolid情報
 
-	//Vec3f zmp;
-	struct CDContact{
-		CDContact(PHContactEngine::FramePairRecord* f, float s): fpr(f), sign(s){}
-		PHContactEngine::FramePairRecord* fpr;
-		float sign;
-	};
-	std::vector<CDContact> contactPairs;
-	Vec3f contactForce;					//	接触力の総和
-	Vec3f contactTorque;				//	接触トルクの総和
+	CRHumanJointInfo	jinfo[JOINT_NUM];			// VHのJoint情報
+	CRHumanSolidInfo	sinfo[SOLID_NUM];			// VHのSolid情報
 
 private:
 	bool bLoaded;	//　VHがロード(Connct)されたか否か
@@ -170,6 +143,10 @@ private:
 ///////////////////////   関数   ////////////////////////////////
 
 public:
+	CRHuman();
+	virtual ~CRHuman();
+	int GetPriority(){return SGBP_CREATURE;}
+
 	///	所有しているオブジェクトの数
 	virtual size_t NChildObjects(){ return jointEngine ? 0 : 1; }
 	///	所有しているオブジェクト
@@ -183,49 +160,60 @@ public:
 	///	子オブジェクトの削除
 	virtual bool DelChildObject(SGObject* o, SGScene* s){ return false; }
 
-	
-	bool IsLoaded(){ return bLoaded; }			//ロードの確認
-	void SetLoaded(bool load){bLoaded = load;}	//
+	// 基本インターフェース
+	virtual void Load(SGScene* scene);				// 基本設定。FrameWorkのLoadで呼ばれる。
+	virtual void Loaded(SGScene* scene);			// 基本設定。
+	virtual void LoadDerivedModel(SGScene* scene){}	//派生モデル(User,VH)の設定
+
+	bool IsLoaded(){ return bLoaded; }				// ロードの確認
+	void SetLoaded(bool load){bLoaded = load;}		// 体全体を読み込まずテストしたい場合
 	bool HasFrame(SGFrame* f);
 
-	//VHをコントロール可能にする(Solid,Jointの取得)
-	bool Connect(UTRef<SGScene> scene);
-	bool ConnectUser(UTRef<SGScene> scene);
-	void ConnectSolid(int bodyNum, const char* name, UTRef<SGScene> scene);
+	// VHをコントロール可能にする(Solid,Jointの取得)
+	virtual bool Connect(UTRef<SGScene> scene);
+	void ConnectSolid(const char* name, UTRef<SGScene> scene);
 	void ConnectJoint(const char* name, UTRef<SGScene> scene);
 
 	//VHの各種パラメータの設定
-	void SetVH(SGScene* scene);				// 以下の設定関数を使い、VHを使えるようにする。
+	void SetModel(SGScene* scene);				// 以下の設定関数を使い、VHを使えるようにする。
 	void SetTotalMass(float mass);
 	void SetTotalHeight(float height);
 	void SetMass();
 
 	void SetSolidInfo();
 	void SetJointInfo();
-	void SetJointRange();
+	virtual void SetJointRange();
 	void SetOneJointRange(PHJoint1D* j, float min, float max);
 
-	void SetInertia();
+	virtual void SetInertia();
 	void SetOneInertia(Spr::PHSolid* solid, Spr::Vec3f Axis);
-	void SetJointSpring(float dt);	
+	void JointPIDMul(PHJointPid* jo, float mulP, float mulD);
+	virtual void SetJointSpring(float dt);	
 
 	void AddJointPassivityResistance();
 	
+	// モデルのスケールをセット
 	void SetScale(SGScene* scene);
 	void SetSolidScale();
 	void SetJointScale();
 
-	void SetJointInitAngle();
+	// モデルの初期姿勢
+	virtual void SetJointInitAngle();
 
 	// VHのSolid,Joint情報取得
 	CRHumanSolidInfo GetSolidInfo(int i){return sinfo[i];}
 	CRHumanJointInfo GetJointInfo(int i){return jinfo[i];}
-	void CalcContactForce();
-	Vec3f GetContactForce(){ return contactForce; }
-	Vec3f GetContactTorque(){ return contactTorque; }
-	Vec3f GetContactPoint(float y=0);							// VHが他の物体と反力中心点を取得
 	float GetTotalMass(){return totalMass;}						// VHの全体重を取得
-	Vec3f GetCOG();												// VHの重心を取得
+	Vec3f GetCOG();												// VHの重心の位置取得
+	Vec3d GetCogVelocity();										// VHの重心の速度取得
+
+
+	void CalcContactForce();
+	virtual void RegistSupportParts(UTRef<SGScene> scene){}		// バランスにおいて体支持するSolidを登録(右足、左足など)
+	virtual void SetBodyNum(){}									// バランスなどに必要なSolid,Jointの番号の登録
+protected:
+	void LoadX(const XHuman& xh);
+	void SaveX(XHuman& xh) const;
 
 };
 

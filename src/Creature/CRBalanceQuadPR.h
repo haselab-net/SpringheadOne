@@ -5,68 +5,96 @@
 #ifndef CRBALANCE_QUADPR_H
 #define CRBALANCE_QUADPR_H
 
-#include <SceneGraph/SGScene.h>
-#include <Physics/PhSolid.h>
-#include <Physics/PhJoint.h>
-#include <Physics/PHForceField.h>
-#include <Base/Affine.h>
-#include <Base/TVector.h>
 #include <Base/QuadProgram.h>
 #include <WinBasis/WBPreciseTimer.h>
 
-#include <vector>
+#include "CRBalance.h"
+
+#define ANKLE_NUM	2
+#define ANKLE_DOF	6	// 足首(踵)の自由度(並進3,回転3)
+#define BALANCE_DOF	6	// バランスに必要な自由度(並進3,回転3)
 
 namespace Spr{;
-class CRHuman;
 
-#define DOF_NUM		6	// 最適化問題で使う自由度の数
-#define JOINT_NUM	39	// ジョイント（変数）の数
-#define R_ANKLE_J	29	// 右足首の関節(最後の)の番号
-#define L_ANKLE_J	37	// 左足首の関節(最後の)の番号
-#define R_HEEL_S	12	// 右足踵の番号
-#define L_HEEL_S	16	// 左足踵の番号
+class CRVirtualHuman;
 
-class CRBalanceQuadPR  
-{
+class CRBalanceQuadPR:public CRBalance{
+
 public:
 	CRBalanceQuadPR();
 	virtual ~CRBalanceQuadPR();
 
-//---- バランスを取るため、重心に必要なトルクを各関節に最適分配する ----//
-
-	PHJointEngine* jointEngine;									// PHJointEngine
-	PHGravityEngine* gravity;									// PHGravityEngine
+	// クラスのインスタンス
 	VQuadProgram<double> quadPR;								// 二次計画法
 	WBPreciseTimer timer;										// 時間計測
 
-	void Step(CRHuman* crHuman);
+	/////// TEST関数&変数　////////
+	float transTime;	// 伝播行列計算時間
+	float quadTime;		// 二次計画法計算時間
 
-	//各関節のトルクの重心に対する影響を表す行列を作成
-	void TransTorque(SGScene* scene,CRHuman* crHuman);
-	void MakeTorquePattern(CRHuman* crHuman, int t);			// トルク、力パターンの作成
-	Vec3d GetJointAccel(PHJoint1D* joint);						// 子のSolidの加速度,角加速度をJointの加速度へ変換
+
+	//////////　 関数　　//////////
+	// 諸処理関数
+	bool CompNoJoint(int jointNum,CRHuman* crHuman);			// 最適化で使わない関節かどうかを判断
+	void DataOut(CRHuman* crHuman);								// ファイルにデータを出力
+
+	// 初期設定
+	void Init(SGScene* scene,CRHuman* crHuman);					// 初期化
+	void SetBalanceParameter(CRHuman* crHuman);					// バランスに必要なパラメータ設定
+
+	// 二次計画法でのバランス
+	void ModifyBody(SGScene* scene,CRHuman* crHuman);			// バランスをとる一連の処理(バランスに必要な重心トルク計算は別）
+	void SetTargetJointTorque(SGScene* scene,CRHuman* crHuman);	// 各関節の目標トルクの取得
+	void CalcTransMatrix(SGScene* scene,CRHuman* crHuman);		// 伝播行列の計算
+	void MakeTorquePattern(CRHuman* crHuman, int t);			// 伝播行列のためのトルク,力パターンの生成
+	Vec3d GetJointAccel(PHJoint1D* joint);						// 関節の並進加速度の取得
+	void SetQuadPR(CRHuman* crHuman);							// 二次計画法の目的関数を計算
 	void QuadPRSolve();											// 二次計画法を解く
-	void SetQuadPR(CRHuman* crHuman);							// Q,Cの設定
-	void Init(SGScene* scene,CRHuman* crHuman);					// 二次計画法に必要な諸設定
-	void DataOut(CRHuman* crHuman);
-	void SetJointTorque(CRHuman* crHuman);						// 最適化のトルクを関節にセットする。
-
-	//TEST
-	void SetAnkleForce(CRHuman* crHuman);
-
-
-	PTM::TMatrixRow<DOF_NUM,JOINT_NUM,double> transmissionM;	// 各関節トルクの伝播行列M
-	PTM::TMatrixRow<DOF_NUM,DOF_NUM,double> transmissionD;		// 各関節トルクの伝播行列D
-	PTM::TVector<DOF_NUM,double> transmissionC;					// 各関節トルクの伝播行列C
-	PTM::TVector<JOINT_NUM,double> targetTorqe;					// 各関節の目的トルク(t0)
-	double coefficient;											// 二次計画法の目的関数の目標のトルクと
-																// 最適なトルクの差を最初にする項の係数
+	void SetBalanceTorque(CRHuman* crHuman);					// 最適(バランス)トルクを関節にセットする
 	
-	std::vector<Vec3d> unitVec;									// X,Y,Zの単位ベクトル
-	PTM::TMatrixRow<3,6,double> upMat;								// (6×1)の上三つを切り出す行列
-	PTM::TMatrixRow<3,6,double> lowMat;							// (6×1)の下三つを切り出す行列
-	int count;													// 二次計画法の試行回数
+	// 足首でバランスを保障,足裏が浮かないようにする
+	void AnkleBalance(CRHuman* crHuman);						// 二次計画法で取りきれないバランスを足首で保障
+	Vec3d AdjustAnkleTorque(CRHuman* crHuman,
+				Vec3d ankleForce,Vec3d ankleTorque,int ankle);	// 足裏が浮かないようにトルクを調節
+	bool AnkleZmpCheck(Vec3f zmp,CRSupportArea* supportArea);	// ZMPが接触多角形内にあるかチェック
+	Vec3f CalcPoint(Vec3f p0, Vec3f p1,Vec3f zmp);
 
+	Vec3f GetAnkleRealZmpR(){return ankleRealZmp[0];}
+	Vec3f GetAnkleRealZmpL(){return ankleRealZmp[1];}
+	Vec3f GetAnkleGoalZmpR(){return ankleGoalZmp[0];}
+	Vec3f GetAnkleGoalZmpL(){return ankleGoalZmp[1];}
+
+	void RenewConstraint(CRHuman* crHuman);
+	void NewConstraint(CRHuman* crHuman,PHSolid* heel,Vec3f* maxRange,Vec3f* minRange,int ankleSide);
+
+
+	//////////　 変数　　//////////
+	// 伝播行列
+	PTM::VMatrixRow<float>	transT;					// 各関節トルクの伝播行列T(トルクの伝播）
+	PTM::VMatrixRow<float>	transF;					// 各関節トルクの伝播行列F(力の伝播)
+	PTM::VVector<float>		transM;					// 各関節トルクの伝播行列M(質量の伝播)
+	// 二次計画法のX_cog = tempA*t + tempB
+	PTM::VMatrixRow<double> tempA;
+	PTM::VVector<float> tempB;
+	// 各関節の目的トルク(到達運動のためのトルク)
+	PTM::VVector<float> targetTorque;				// 各関節の目的トルク(t0)
+	PTM::VVector<float> targetTorqueP;				// 各関節の目的トルク(t0)のproportional成分
+	PTM::VVector<float> targetTorqueD;				// 各関節の目的トルク(t0)のdifferential成分
+	// 二次計画法の目的関数の係数
+	float coefficient;								// バランス重視 or 到達運動重視
+	float coefficientP;								// 目標トルクP成分と最適なトルクの差を最小にする項の係数
+	float coefficientD;								// 目標トルクD成分と最適なトルクの差を最小にする項の係数
+	PTM::VVector<float> coefficientJoint;			// 各関節のトルク抑制係数(大きいと抑制)
+
+	PTM::TVector<BALANCE_DOF,double> targetX;		// バランスの目標
+	PTM::VVector<float> optTorque;					// 最適トルク
+	float qdprBalanceRate;							// バランスに必要なトルクの何割を二次計画法で解くか
+	Vec3f ankleRealZmp[2];							// 両足のリアルZMP
+	Vec3f ankleGoalZmp[2];							// 両足の初期目標ZMP
+	unsigned int useJoNum;							// 最適化で使う関節の数
+	std::vector<Vec3d> unitVec;						// X,Y,Zの単位ベクトル
+	int count;										// 二次計画法の試行回数
+	
 };
 
 }		//	end namespace Spr

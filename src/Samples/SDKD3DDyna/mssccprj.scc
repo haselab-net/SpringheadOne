@@ -1,13 +1,9 @@
 SCC = This is a Source Code Control file
 
-[SDKD3DDyna.dsp]
+[SDKD3DDyna.vcproj]
 SCC_Aux_Path = "\\192.168.251.1\vss\"
 SCC_Project_Name = "$/Project/Springhead/src/Samples/SDKD3DDyna", BGPBAAAA
 
 [SDKD3DDyna.dsw]
-SCC_Aux_Path = "\\192.168.251.1\vss\"
-SCC_Project_Name = "$/Project/Springhead/src/Samples/SDKD3DDyna", BGPBAAAA
-
-[SDKD3DDyna.vcproj]
 SCC_Aux_Path = "\\192.168.251.1\vss\"
 SCC_Project_Name = "$/Project/Springhead/src/Samples/SDKD3DDyna", BGPBAAAA

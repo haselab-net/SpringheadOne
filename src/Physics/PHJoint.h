@@ -1,6 +1,7 @@
 #ifndef PH_JOINT_H
 #define PH_JOINT_H
 
+
 #include <Base/BaseUtility.h>
 #include <Base/TinyVec.h>
 #include <Base/TinyMat.h>
@@ -21,7 +22,11 @@
 */
 namespace Spr{;
 
-///@name	Featherstone's method で使われる"spatial matrix/vector"
+/**@name	Featherstone's method で使われる"spatial matrix/vector"
+	上3つが(力，角速度，角加速度など)をあらわし，
+	下3つが(トルク，速度，加速度)をあらわす．(と思う) by hase
+	力とトルクで回転と並進が逆なので注意．
+*/
 //@{
 typedef PTM::TVector<6, double> SpVec6d;
 typedef PTM::TSubVector<3, SpVec6d::desc> SpSubVec3d;
@@ -33,10 +38,10 @@ typedef Vec3f Vector;
 typedef Matrix3f Matrix3x3;
 DEF_RECORD(XJointBase, {
 	GUID Guid(){ return WBGuid("23F6D545-8987-4aa6-BBE1-2FE32C096D5A"); }	
-	Vector		v3fPositionParent;
 	Matrix3x3	m3fRotationParent;
-	Vector		v3fPositionChild;
+	Vector		v3fPositionParent;
 	Matrix3x3	m3fRotationChild;
+	Vector		v3fPositionChild;
 });
 
 ///	関節の基本クラス．ツリー構造を作る．PHJointEngineがツリーを持つ．
@@ -96,15 +101,11 @@ protected:
 	SpVec6d			Za;					///<	zero accelaration force in Fc coord.
 	SpVec6d			c;					///<	Coriolis vector in Fc coord.
 	SpVec6d			a;					///<	spatial accelaration in Fc coord.
-	SpVec6d			s;					///<	spatial joint axis in Fc coord.
 	//@}
 	
-	//キャッシュ変数
-	SpMatrix6d		smat;
-	SpVec6d			a_p, Ia_s, Ia_c, Z_plus_Ia_c;
-	double			dot_s_Ia_s, dot_s_Z_plus_Ia_c;
-	Matrix3d		rcross, rpcross, rcross_cRp, rpcross_pRc;
-		
+	//	sを含まない変数のキャッシュ．
+	Matrix3d	rcross, rpcross, rcross_cRp, rpcross_pRc;
+	SpVec6d		a_p, Ia_c, Z_plus_Ia_c;
 public:
 	///	コンストラクタ
 	PHJointBase();
@@ -116,23 +117,38 @@ public:
 	Affinef GetPostureFromParent(){ Affinef rv; rv.Pos()=v3fPositionParent; rv.Rot()=m3fRotationParent; return rv; }
 	///	子剛体のフレームから見た関節姿勢
 	Affinef GetPostureFromChild(){ Affinef rv; rv.Pos()=v3fPositionChild; rv.Rot()=m3fRotationChild; return rv; }
-	///	子剛体の加速度(World系)
-	Vec3f GetSolidAccel(){ return solid->GetRotation() * a.sub_vector(0, Vec3f()); }
 	///	子剛体の角加速度(World系)
-	Vec3f GetSolidAngularAccel(){ return solid->GetRotation() * a.sub_vector(3, Vec3f()); }
+	Vec3f GetSolidAngularAccel(){ return solid->GetRotation() * a.sub_vector(0, Vec3f()); }
 	///	子剛体の加速度(World系)
-	Vec3f GetSolidVelocity(){ return v_abs; }
+	Vec3f GetSolidAccel(){ return solid->GetRotation() * a.sub_vector(3, Vec3f()); }
 	///	子剛体の角加速度(World系)
 	Vec3f GetSolidAngularVelocity(){ return w_abs; }
+	///	子剛体の加速度(World系)
+	Vec3f GetSolidVelocity(){ return v_abs; }
+	
+	///	関節の自由度
+	virtual int GetJointDof()=0;
+	///	関節位置の取得
+	virtual double GetJointPosition(int i)=0;
+	///	関節速度の取得
+	virtual double GetJointVelocity(int i)=0;
+	///	関節加速度の取得
+	virtual double GetJointAccel(int i)=0;
+	///	関節トルクの取得
+	virtual double GetJointTorque(int i)=0;
+	///	関節トルクの設定
+	virtual void SetJointTorque(double v, int i)=0;
+	///	関節トルクを加える
+	virtual void AddJointTorque(double v, int i)=0;
 
 	///@name	Featherstone's algorithm
 	//@{
 	///	コリオリの力による加速度の計算
 	void CompCoriolisAccelRecursive(double dt);	
 	///	articulated inertia & ZA-force
-	virtual void CompArticulatedInertia(double dt)=0;
+	virtual void CompArticulatedInertia(double dt);
 	///	積分
-	virtual void Integrate(double dt) = 0;
+	virtual void Integrate(double dt);
 	/**	このノードの加速度を計算したい場合に呼ぶ．
 		親ノードの加速度は副作用で求まる．子ノードについては計算しない．
 		
@@ -168,6 +184,8 @@ public:
 	void SaveX(XJointBase& x) const;
 	void LoadX(const XJointBase& x);
 
+	//	関節角を-π～πに制限する関数
+	virtual void LimitAngle(double& d){}
 protected:
 	///	派生クラスが基本クラス型オブジェクトのメンバにアクセスするための手段
 	template <class T> T& OfParent(T PHJointBase::* member){
@@ -189,9 +207,33 @@ protected:
 	/**	姿勢などの再設定	非再帰
 		基本的な状態量(PHJointStateの内容)がLoadedやLoadStateでセットされた後に、
 		従属変数を計算するための関数	*/
-	virtual void Reset()=0;
+	virtual void Reset();
 	virtual void LoadState(const SGBehaviorStates& states);
 	virtual void SaveState(SGBehaviorStates& states) const;
+};
+
+class PHJointRoot:public PHJointBase{
+public:
+	SGOBJECTDEF(PHJointRoot);
+	virtual void Reset();
+	virtual void CalcAccel(double dt);
+	virtual void CompJointAxis(){}
+	virtual void CompRelativePosition(){}
+	virtual void CompRelativeVelocity(){}
+	virtual void CompCoriolisAccel(){}
+	virtual void Integrate(double dt);
+	///	状態の読み出し
+	virtual void LoadState(const SGBehaviorStates& states);
+	///	状態の保存
+	virtual void SaveState(SGBehaviorStates& states) const;	
+protected:
+	virtual int GetJointDof(){ return 0; }
+	virtual double GetJointPosition(int i){ return 0; }
+	virtual double GetJointVelocity(int i){ return 0; }
+	virtual double GetJointAccel(int i){ return 0; }
+	virtual double GetJointTorque(int i){ return 0; }
+	virtual void SetJointTorque(double v, int i){}
+	virtual void AddJointTorque(double v, int i){}
 };
 
 
@@ -201,8 +243,10 @@ protected:
 class PHJointEngine	: public SGBehaviorEngine{
 public:
 	SGOBJECTDEF(PHJointEngine);
-	typedef PHJointBase::array_type array_type;	///<	ジョイントの配列
-	UTRef<PHJointBase> root;					///<	ルートノード．関節ではない．
+	typedef PHJointBase::array_type array_type;		///<	ジョイントの配列
+	UTRef<PHJointBase> root;						///<	ルートノード．関節ではない．
+	typedef std::set< UTRef<PHSolid> > PHSolidSet;	///<	剛体のセット．
+	PHSolidSet solids;
 
 	//	Featherstone法にかかる時間の計測
 	WBPreciseTimer timer;
@@ -224,14 +268,28 @@ public:
 	virtual bool DelChildObject(SGObject* o, SGScene* s);
 	///	子になりえるオブジェクトの型情報の配列
 	virtual const UTTypeInfo** ChildCandidates();
+	///	オブジェクトを子孫に持っているかどうか．
+	bool Has(SGObject*);
 
 	///	状態の読み出し
 	virtual void LoadState(const SGBehaviorStates& states);
 	///	状態の保存
 	virtual void SaveState(SGBehaviorStates& states) const;
+
+	///
+	template <class CT> void EnumJoint(CT& ct){
+		typedef void (PHJointEngine::*Func)(PHJointBase* b, CT& ct);
+		Func func = &PHJointEngine::EnumJointFunc;
+		root->MemberTraverse(this, func, ct);
+	}
+protected:
+	template <class CT> void EnumJointFunc(PHJointBase* p, CT& ct){
+		CT::value_type v = DCASTP(CT::value_type, p);
+		if (v) ct.push_back(v);
+	}
 };
 
-/**	Jointのトルクをクリアするクラス	*/
+/**	ステップの最初でJointのトルクをクリアする．	*/
 class PHJointClearForce:public SGBehaviorEngine{
 	SGOBJECTDEF(PHJointClearForce);
 public:
@@ -257,6 +315,7 @@ inline double svdot(const SpVec6d& v1, const SpVec6d& v2){
 		v1[0] * v2[3] + v1[1] * v2[4] + v1[2] * v2[5] + 
 		v1[3] * v2[0] + v1[4] * v2[1] + v1[5] * v2[2];
 }
+
 ///	v1 * v2^T で得られる行列
 inline Matrix3d mat(const Vec3d& v1, const Vec3d& v2){
 	return Matrix3d(

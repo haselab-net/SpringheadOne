@@ -2,21 +2,6 @@
 #pragma hdrstop
 
 namespace Spr{;
-void CDCollisionListeners::Before(SGScene* scene, CDFramePairWithRecord* fr){
-	for(unsigned  i=0; i<size(); ++i){
-		if (fr->IsActive(i)) begin()[i]->Before(scene, fr);
-	}
-}
-void CDCollisionListeners::Analyzed(SGScene* scene, CDFramePairWithRecord* fr, CDGeometryPair* geom, CDConvexPairWithRecord* conv, CDContactAnalysis* analyzer){
-	for(unsigned  i=0; i<size(); ++i){
-		if (fr->IsActive(i)) begin()[i]->Analyzed(scene, fr, geom, conv, analyzer);
-	}
-}
-void CDCollisionListeners::After(SGScene* scene, CDFramePairWithRecord* fr){
-	for(unsigned  i=0; i<size(); ++i){
-		if (fr->IsActive(i)) begin()[i]->After(scene, fr);
-	}
-}
 	
 SGOBJECTIMP(CDCollisionEngine, SGBehaviorEngine);
 CDCollisionEngine::CDCollisionEngine():nFrameRecords(0), nFramePairRecords(0), nConvexPairRecords(0){
@@ -98,6 +83,32 @@ bool CDCollisionEngine::AddActive(int f1, int f2, int pos){
 	activeList.back().pos = pos;
 	return true;
 }
+int CDCollisionEngine::ClearActive(int pos){
+	int num = 0;
+	for(TActivePairs::iterator it=activeList.begin(); it != activeList.end(); ){
+		if (it->pos == pos){
+			it = activeList.erase(it);
+			num ++;
+		}else{
+			++it;
+		}
+	}
+	return num;
+}
+int CDCollisionEngine::ClearInactive(int pos){
+	int num = 0;
+	for(TActivePairs::iterator it=inactiveList.begin(); it != inactiveList.end(); ){
+		if (it->pos == pos){
+			it = inactiveList.erase(it);
+		}else{
+			++it;
+			num ++;
+		}
+	}
+	return num;
+}
+
+
 /**	Frameの端の位置をもち，ソートされるもの	*/
 struct CDFrameEdge{
 	float edge;				///<	端の位置(グローバル系)
@@ -202,6 +213,7 @@ void CDCollisionEngine::Init(){
 	}
 }
 void CDCollisionEngine::Step(SGScene* scene){
+	listeners.BeforeAll(scene);
 #if 1
 	//	両方の端を並べたリストを作り，ソートする．
 	Vec3f dir(1,0,0);
@@ -285,6 +297,7 @@ void CDCollisionEngine::Step(SGScene* scene){
 		}
 	}
 #endif
+	listeners.AfterAll(scene);
 }
 
 

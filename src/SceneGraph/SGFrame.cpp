@@ -57,7 +57,7 @@ const UTTypeInfo** SGFrame::ChildCandidates(){
 }
 
 void SGFrame::Clear(){
-	MemberTraverse(&SGFrame::Clear);
+	ForEachChild(&SGFrame::Clear);
 	if (doc){
 		doc->ClearChildren();
 		doc->SetParent(NULL);//ドキュメントを親から削除

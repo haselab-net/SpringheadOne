@@ -17,44 +17,23 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CRActionPlanner{
-	// 到達運動(仮)
-	class GoalDirectedMovement{
-	public:
-		Spr::PHSolid* solid;		// 対象Solid
-		Spr::Vec3f r;				// Solidローカル座標
-		Spr::Vec3f target, temp;	// 目標位置(仮目標)
-		float end, period;			// 目標時刻(目標時間)
-		enum Type{
-			STANDBY,
-			ATTACK,
-			GUARD,
-			AVOID,
-		} type;
+namespace Spr{;
 
-		GoalDirectedMovement();
-		void SetGoalDirectedMovement(Spr::PHSolid* so, Spr::Vec3f pos, float time){
-			solid = so;
-			target = pos;
-			end = time;
-		}
-		void AddForce(float time);
-	};
-	
+class CRActionPlanner{
 	// 接触情報
 	class ContactInfo{
 	public:
 		int firstCount, lastCount;	// 初接触時刻(Count)
 		float firstTime;			// 初接触時刻
 		int soVHIndex, soUserIndex;	// 接触したSolid番号
-		Spr::PHSolid* soVH;
-		Spr::PHSolid* soUser;
-		Spr::Vec3f contactPoint[3];	// 接触点(グローバル, soVHローカル, soUserローカル)
+		PHSolid* soVH;
+		PHSolid* soUser;
+		Vec3f contactPoint[3];		// 接触点(グローバル, soVHローカル, soUserローカル)
 		int contactType;			// 接触タイプ
 	
 		ContactInfo(){};
 		void SetContactInfo(int vh, int user, int c, float t);
-		void SetContactType(int vh, int user);
+		int  CheckContactType(int vh, int user);
 	};
 	class ContactInfoSequence: public std::vector<ContactInfo>{
 	};
@@ -62,33 +41,40 @@ class CRActionPlanner{
 public:
 	CRActionPlanner();
 
-	void SaveState(Spr::SGScene* scene, bool type);
-	void LoadState(Spr::SGScene* scene, bool type);
+	void SaveState(SGScene* scene, bool type);
+	void LoadState(SGScene* scene, bool type);
 
-	void PredictionAction(Spr::CRHuman* human, CRUser* user, Spr::SGScene* scene);
-	void MovementPrediction(Spr::CRHuman* human, CRUser* user, Spr::SGScene* scene, int count);
-	void Step(Spr::CRHuman* human, CRUser* user, Spr::SGScene* scene);
+	void PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene);
+	void MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count);
+	void Step(CRPuppet* puppet, CRUser* user, SGScene* scene);
 
-	void ContactTest(Spr::CRHuman* human1, Spr::CRHuman* human2, Spr::SGScene* scene, int step);
+	void ContactTest(CRHuman* human1, CRHuman* human2, SGScene* scene, int step);
 	bool IsFirstContact(int vh, int user, int count);
 
-	Spr::Vec3f ContactPointOfSolidPair(Spr::PHSolid* so1, Spr::PHSolid* so2, Spr::SGScene* scene);
-	void SetContactPointOfSolidPair(Spr::PHSolid* so1, Spr::PHSolid* so2, Spr::SGScene* scene, Spr::Vec3f* pos);
-	bool ContactCheckOfSolidPair(Spr::PHSolid* so1, Spr::PHSolid* so2, Spr::SGScene* scene);
-	bool ContactCheckOfSolid(Spr::PHSolid* so, Spr::CRHuman* human, Spr::SGScene* scene);
+	Vec3f ContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
+	void SetContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene, Vec3f* pos);
+	bool ContactCheckOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
+	bool ContactCheckOfSolid(PHSolid* so, CRHuman* human, SGScene* scene);
 
-	void ChooseTargetAction();
-	//void SetGoalDirectedMovement(Spr::PHSolid* so, Spr::Vec3f pos, float time);
+	Vec3f GetContactForceOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
+	Vec3f GetContactForceOfSolid(PHSolid* so, CRHuman* human, SGScene* scene);
+
+	bool ChooseTargetAction(CRPuppet* puppet, CRUser* user);
+
+	Vec3f GetNearestPoint(Vec3f a, Vec3f b, Vec3f c);
+	Vec3f GetPointToAvoid(Vec3f a, Vec3f b, Vec3f c, float d);
+	Vec3f GetPointToGuard(Vec3f a, Vec3f b, Vec3f c);
 		
+	bool bPlanner;
 	bool bPrediction;
 	bool bLoadReal, bLoadTemp;
 	int times;
-	float startTime;
+	float startTime, currentTime;
 
-	Spr::SGBehaviorStates stateReal, stateTemp;
+	SGBehaviorStates stateReal, stateTemp;
 	ContactInfoSequence contactInfo;
-
-	GoalDirectedMovement gdm;
 };
+
+}
 
 #endif // !defined(AFX_MOVEMENTPREDICTOR_H__71A071B6_77BD_4835_9979_17A1DB9DF1F8__INCLUDED_)

@@ -115,7 +115,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "MFCRelease"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
-# ADD CPP /nologo /G6 /Gr /MD /W3 /vd0 /GX /Zi /Od /Op /Gf /I "$(SPRINGHEAD)\src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
+# ADD CPP /nologo /G6 /Gr /MD /W3 /vd0 /GX /Zi /Ox /Ot /Og /Oi /Op /Ob2 /Gf /I "$(SPRINGHEAD)\src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
 # SUBTRACT CPP /Gy /Fr
 # ADD BASE RSC /l 0x411 /d "NDEBUG" /d "_AFXDLL"
 # ADD RSC /l 0x411 /d "NDEBUG" /d "_AFXDLL"
@@ -180,6 +180,22 @@ SOURCE=.\CRHuman.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRPuppet.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRPuppet.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRQuadPRBalance.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRQuadPRBalance.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRRegisterLoader.cpp
 # End Source File
 # Begin Source File
@@ -197,6 +213,14 @@ SOURCE=.\CRUser.cpp
 # Begin Source File
 
 SOURCE=.\CRUser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRVirtualHuman.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRVirtualHuman.h
 # End Source File
 # End Target
 # End Project

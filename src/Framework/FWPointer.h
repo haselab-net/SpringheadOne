@@ -48,6 +48,15 @@ public:
 	virtual void Init(HIForceDevice6D*);	///<	‰Šú‰»
 	virtual void Connect(SGScene* s);
 	virtual void Step(float dt);
+	virtual void Update(float dt);
+
+	virtual Vec3f GetPos();
+	virtual Quaternionf GetOri();
+	virtual Vec3f GetVel();
+	virtual Vec3f GetAngVel();
+
+	virtual void  SetForce(Vec3f, Vec3f);
+
 	PHSolid* GetSolid(){ return UTRef<PHSolid>(obj); }
 protected:
 	UTRef<PHSolid>& Solid(){ return (UTRef<PHSolid>&)obj; }

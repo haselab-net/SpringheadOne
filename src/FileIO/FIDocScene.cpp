@@ -101,6 +101,9 @@ void FILoadScene::LoadRecursive(){
 //		DSTR << "doc:" << docs.Top()->GetName() << ":" << docs.Top()->GetType() << "-" << docs.Top()->NChildren() << std::endl;
 		std::pair<FILoders::iterator,FILoders::iterator> range;
 		range = loaders.EqualRange(docs.Top()->GetType());
+		if (range.first == range.second){
+			DSTR << "Loader for '" << docs.Top()->GetType() << "' not found." << std::endl;
+		}
 		for(FILoders::iterator it = range.first; it != range.second; ++it) (*it)->Load(this);
 		bool shouldPop = PushContainer();
 		for(int i=0; i<docs.Top()->NChildren(); ++i){

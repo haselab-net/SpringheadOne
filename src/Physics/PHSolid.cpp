@@ -194,6 +194,8 @@ public:
 	Quaterniond ori;
 	Vec3d vel;
 	Vec3d angVel;
+	Vec3d force;
+	Vec3d torque;
 };
 class PHSolidContainerState: public SGBehaviorState, public std::vector<PHSolidState>{
 public:
@@ -210,6 +212,8 @@ void PHSolidContainer::LoadState(const SGBehaviorStates& states){
 		solids[i]->SetOrientation( state[i].ori );
 		solids[i]->SetVelocity( state[i].vel);
 		solids[i]->SetAngularVelocity( state[i].angVel);
+		solids[i]->SetForce( state[i].force);
+		solids[i]->SetTorque( state[i].torque);
 		solids[i]->UpdateFrame();
 	}
 }
@@ -222,6 +226,8 @@ void PHSolidContainer::SaveState(SGBehaviorStates& states) const{
 		state->back().ori = (*it)->GetOrientation();
 		state->back().vel = (*it)->GetVelocity();
 		state->back().angVel = (*it)->GetAngularVelocity();
+		state->back().force = (*it)->GetForce();
+		state->back().torque = (*it)->GetTorque();
 	}
 }
 

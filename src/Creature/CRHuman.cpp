@@ -18,7 +18,6 @@ CRHuman::CRHuman()
 
 	//êgí∑ÅAëÃèdÇÃê›íË(ÉfÉtÉHÉãÉgÅj
 	totalMass = 60.0f;
-//	totalMass = 20.0f;
 	totalHeight = 1.7f;
 	SetSolidInfo();
 	SetJointInfo();
@@ -28,8 +27,21 @@ CRHuman::~CRHuman()
 {
 
 }
+void CRHuman::Load(SGScene* scene){
+	scene->FindObject(jointEngine, "jeHuman");
+	if (!jointEngine) scene->GetBehaviors().Find(jointEngine);
+	Loaded(scene);
+}
+void CRHuman::Loaded(SGScene* scene){
+	jointEngine->Loaded(scene);
+	Connect(scene);
+	SetModel(scene);
+	SetBodyNum();
+	RegistSupportParts(scene);
+	LoadDerivedModel(scene);
+}
 
-void CRHuman::SetVH(SGScene* scene){
+void CRHuman::SetModel(SGScene* scene){
 	if(bLoaded){
 		SetScale(scene);
 		SetMass();
@@ -37,61 +49,83 @@ void CRHuman::SetVH(SGScene* scene){
 		SetJointSpring((float)scene->GetTimeStep());
 		SetJointRange();
 		SetJointInitAngle();
+		
+		totalMass = 0.0;
+		for(int i = 0; i < solids.size(); i++){
+			if(!(solids[i] == NULL))
+				totalMass += solids[i]->GetMass();
+		}
 	}
 }
 bool CRHuman::AddChildObject(SGObject* o, SGScene* s){
-	jointEngine = DCAST(PHJointEngine, o);
+	PHJointEngine* je = DCAST(PHJointEngine, o);
+	if (je){
+		jointEngine = je;
+	}
 	return true;
 }
 
-void CRHuman::ConnectSolid(int bodyNum, const char* name, UTRef<SGScene> scene){
-	PHSolid* solid;
-	scene->FindObject(solid, name);
-	bLoaded &= (solid != NULL);
-	solids.push_back(solid);
-	solidPart[bodyNum].push_back(solid);
+void CRHuman::ConnectSolid(const char* name, UTRef<SGScene> scene){
+	SGScene::SetRange range;
+	range = scene->RangeObject(name);
+	for(;range.first != range.second; ++range.first){
+		PHSolid* solid = DCAST(PHSolid, *range.first);
+		if (jointEngine->Has(solid)){
+			solids.push_back(solid);
+			return;
+		}
+	}
+	bLoaded = false;
+	DSTR << "Solid '" << name << "' is not found." << std::endl;
 }
 
-
 void CRHuman::ConnectJoint(const char* name, UTRef<SGScene> scene){
-	PHJoint1D* joint;
-	scene->FindObject(joint, name);
-	bLoaded &= (joint != NULL);
-	joints.push_back(joint);
+	SGScene::SetRange range;
+	range = scene->RangeObject(name);
+	for(;range.first != range.second; ++range.first){
+		PHJointBase* joint = DCAST(PHJointBase, *range.first);
+		if (jointEngine->Has(joint)){
+			joints.push_back(joint);
+			return;
+		}
+	}
+	bLoaded = false;
+	DSTR << "Joint '" << name << "' is not found." << std::endl;
 }
 
 bool CRHuman::Connect(UTRef<SGScene> scene){
 	solids.clear();
 	joints.clear();
 	jointPids.clear();
-	for(int i = 0; i < BODYPARTNUM; ++i){
-		solidPart[i].clear();
-	}
+	supportSolidNum[0].clear();
+	supportSolidNum[1].clear();
+	ankleJointNum[0].clear();
+	ankleJointNum[1].clear();
 	bLoaded = true;
 
 	// Solid Connect
-	ConnectSolid(BODY, "soWaist", scene);
-	ConnectSolid(BODY, "soAbdomen", scene);
-	ConnectSolid(BODY, "soChest", scene);
-	ConnectSolid(BODY, "soHead", scene);
+	ConnectSolid("soWaist", scene);
+	ConnectSolid("soAbdomen", scene);
+	ConnectSolid("soChest", scene);
+	ConnectSolid("soHead", scene);
 
-	ConnectSolid(RIGHT_ARM, "soRUArm", scene);
-	ConnectSolid(RIGHT_ARM, "soRFArm", scene);
-	ConnectSolid(RIGHT_ARM, "soRHand", scene);
+	ConnectSolid("soRUArm", scene);
+	ConnectSolid("soRFArm", scene);
+	ConnectSolid("soRHand", scene);
 
-	ConnectSolid(LEFT_ARM, "soLUArm", scene);
-	ConnectSolid(LEFT_ARM, "soLFArm", scene);
-	ConnectSolid(LEFT_ARM, "soLHand", scene);
+	ConnectSolid("soLUArm", scene);
+	ConnectSolid("soLFArm", scene);
+	ConnectSolid("soLHand", scene);
 
-	ConnectSolid(RIGHT_LEG, "soRThigh", scene);
-	ConnectSolid(RIGHT_LEG, "soRLThigh", scene);
-	ConnectSolid(RIGHT_LEG, "soRHeel", scene);
-	ConnectSolid(RIGHT_LEG, "soRToe", scene);
+	ConnectSolid("soRThigh", scene);
+	ConnectSolid("soRLThigh", scene);
+	ConnectSolid("soRHeel", scene);
+	ConnectSolid("soRToe", scene);
 
-	ConnectSolid(RIGHT_LEG, "soLThigh", scene);
-	ConnectSolid(RIGHT_LEG, "soLLThigh", scene);
-	ConnectSolid(RIGHT_LEG, "soLHeel", scene);
-	ConnectSolid(RIGHT_LEG, "soLToe", scene);
+	ConnectSolid("soLThigh", scene);
+	ConnectSolid("soLLThigh", scene);
+	ConnectSolid("soLHeel", scene);
+	ConnectSolid("soLToe", scene);
 
 	//Joint Connect	
 	ConnectJoint("joWaist1", scene);
@@ -139,168 +173,12 @@ bool CRHuman::Connect(UTRef<SGScene> scene){
 	ConnectJoint("joLToe", scene);
 
 	for(int i=0; i<joints.size(); ++i){
-		jointPids.push_back(PHJointPid::Find(joints[i], scene));
+		jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
 	}
 
-	//	ê⁄êGÉGÉìÉWÉìÇ∆ÇÃê⁄ë±
-	contactPairs.clear();
-	PHContactEngine* pe;
-	scene->GetBehaviors().Find(pe);
-	if (pe){
-		CDCollisionEngine* ce = pe->GetCollisionEngine();
-		for(CDCollisionEngine::TFrameIt it = ce->FramePairBegin(); it != ce->FramePairEnd(); ++it){
-			if (!*it) continue;
-			bool b0 = (*it)->frame[0] && HasFrame((*it)->frame[0]->frame);
-			bool b1 = (*it)->frame[1] && HasFrame((*it)->frame[1]->frame);
-			if ((b0 && b1) || (!b0 && !b1)) continue;
-			float sign = b0 ? 1.0f : -1.0f;
-			PHContactEngine::FramePairRecord* fpr = UTRef<PHContactEngine::FramePairRecord>((*it)->records[pe->GetFramePairRecordPos()]);
-			contactPairs.push_back(CDContact(fpr, sign));
-/*
-			for(CDFramePair::CDConvexPairIt cit = it->ConvexPairBegin(); cit != it->ConvexPairEnd(); ++cit){
-				PHContactEngine::ConvexPairRecord* cpr = UTRef<PHContactEngine::ConvexPairRecord>(it->records[pe->GetConvexPairRecordPos()]);
-				contactPairs.push_back(CDContact(cpr, sign));
-			}
-*/
-		}
-	}	
 	return bLoaded;
 }
 
-bool CRHuman::ConnectUser(UTRef<SGScene> scene){
-	solids.clear();
-	joints.clear();
-	for(int i = 0; i < BODYPARTNUM; ++i){
-		solidPart[i].clear();
-	}
-	bLoaded = true;
-
-	// Solid Connect
-	ConnectSolid(BODY, "soWaistU", scene);
-	ConnectSolid(BODY, "soAbdomenU", scene);
-	ConnectSolid(BODY, "soChestU", scene);
-	ConnectSolid(BODY, "soHeadU", scene);
-
-	ConnectSolid(RIGHT_ARM, "soRUArmU", scene);
-	ConnectSolid(RIGHT_ARM, "soRFArmU", scene);
-	ConnectSolid(RIGHT_ARM, "soRHandU", scene);
-
-	ConnectSolid(LEFT_ARM, "soLUArmU", scene);
-	ConnectSolid(LEFT_ARM, "soLFArmU", scene);
-	ConnectSolid(LEFT_ARM, "soLHandU", scene);
-
-	ConnectSolid(RIGHT_LEG, "soRThighU", scene);
-	ConnectSolid(RIGHT_LEG, "soRLThighU", scene);
-	ConnectSolid(RIGHT_LEG, "soRHeelU", scene);
-	ConnectSolid(RIGHT_LEG, "soRToeU", scene);
-
-	ConnectSolid(RIGHT_LEG, "soLThighU", scene);
-	ConnectSolid(RIGHT_LEG, "soLLThighU", scene);
-	ConnectSolid(RIGHT_LEG, "soLHeelU", scene);
-	ConnectSolid(RIGHT_LEG, "soLToeU", scene);
-
-	//Joint Connect	
-	ConnectJoint("joWaist1U", scene);
-	ConnectJoint("joWaist2U", scene);
-	ConnectJoint("joWaist3U", scene);
-	ConnectJoint("joChest1U", scene);
-	ConnectJoint("joChest2U", scene);
-	ConnectJoint("joChest3U", scene);
-	ConnectJoint("joNeck1U", scene);
-	ConnectJoint("joNeck2U", scene);
-	ConnectJoint("joNeck3U", scene);
-	
-	ConnectJoint("joRShoulder1U", scene);
-	ConnectJoint("joRShoulder2U", scene);
-	ConnectJoint("joRShoulder3U", scene);
-	ConnectJoint("joRElbow1U", scene);
-	ConnectJoint("joRElbow2U", scene);
-	ConnectJoint("joRWrist1U", scene);
-	ConnectJoint("joRWrist2U", scene);
-
-	ConnectJoint("joLShoulder1U", scene);
-	ConnectJoint("joLShoulder2U", scene);
-	ConnectJoint("joLShoulder3U", scene);
-	ConnectJoint("joLElbow1U", scene);
-	ConnectJoint("joLElbow2U", scene);
-	ConnectJoint("joLWrist1U", scene);
-	ConnectJoint("joLWrist2U", scene);
-
-	ConnectJoint("joRHip1U", scene);
-	ConnectJoint("joRHip2U", scene);
-	ConnectJoint("joRHip3U", scene);
-	ConnectJoint("joRKneeU", scene);
-	ConnectJoint("joRAnkle1U", scene);
-	ConnectJoint("joRAnkle2U", scene);
-	ConnectJoint("joRAnkle3U", scene);
-	ConnectJoint("joRToeU", scene);
-
-	ConnectJoint("joLHip1U", scene);
-	ConnectJoint("joLHip2U", scene);
-	ConnectJoint("joLHip3U", scene);
-	ConnectJoint("joLKneeU", scene);
-	ConnectJoint("joLAnkle1U", scene);
-	ConnectJoint("joLAnkle2U", scene);
-	ConnectJoint("joLAnkle3U", scene);
-	ConnectJoint("joLToeU", scene);
-
-	for(int i=0; i<joints.size(); ++i){
-		jointPids.push_back(PHJointPid::Find(joints[i], scene));
-	}
-
-	//	ê⁄êGÉGÉìÉWÉìÇ∆ÇÃê⁄ë±
-/*	contactPairs.clear();
-	PHContactEngine* pe;
-	scene->GetBehaviors().Find(pe);
-	if (pe){
-		CDCollisionEngine* ce = pe->GetCollisionEngine();
-		for(CDCollisionEngine::TFrameIt it = ce->FramePairBegin(); it != ce->FramePairEnd(); ++it){
-			if (!*it) continue;
-			bool b0 = (*it)->frame[0] && HasFrame((*it)->frame[0]->frame);
-			bool b1 = (*it)->frame[1] && HasFrame((*it)->frame[1]->frame);
-			if ((b0 && b1) || (!b0 && !b1)) continue;
-			float sign = b0 ? 1 : -1;
-			PHContactEngine::FramePairRecord* fpr = UTRef<PHContactEngine::FramePairRecord>((*it)->records[pe->GetFramePairRecordPos()]);
-			contactPairs.push_back(CDContact(fpr, sign));
-
-			for(CDFramePair::CDConvexPairIt cit = it->ConvexPairBegin(); cit != it->ConvexPairEnd(); ++cit){
-				PHContactEngine::ConvexPairRecord* cpr = UTRef<PHContactEngine::ConvexPairRecord>(it->records[pe->GetConvexPairRecordPos()]);
-				contactPairs.push_back(CDContact(cpr, sign));
-			}
-
-		}
-	}*/	
-	return bLoaded;
-}
-
-void CRHuman::CalcContactForce(){
-	contactForce.clear();
-	contactTorque.clear();
-	for(std::vector<CDContact>::iterator it = contactPairs.begin(); it != contactPairs.end(); ++it){
-		Vec3f force = it->sign * (it->fpr->frictionForce + it->fpr->reflexForce);
-		contactForce += force;
-		contactTorque += it->sign * (it->fpr->frictionTorque + it->fpr->reflexTorque);
-		contactTorque += it->fpr->cocog ^ contactForce;
-	}
-}
-Vec3f CRHuman::GetContactPoint(float y){
-	/*	ap: çÏópì_Ç∆Ç∑ÇÈÇ∆
-		torque = ap ^ force,
-		ap * force = 0 Ç∆Ç∑ÇÈÇ∆ ap Å€ torque,  force Å€ torque, ap Å€ force 
-		Ç∆Ç»ÇËÅC3Ç¬ÇÃÉxÉNÉgÉãÇÕíºçsÇ∑ÇÈÅD
-		ÇªÇÃÇΩÇﬂÅC
-		|torque| = |ap|*|force| Ç∆Ç»ÇÈÅD
-
-		ap = ((force^torque) / (|force|*|torque|)) * (|torque|/|force|)
-		= (force^torque) / force^2
-		
-		(ap + k*normal) * normal = interior * normal
-		k = (interior-ap) * normal 
-	*/
-	Vec3f ap = (contactForce^contactTorque) / contactForce.square();
-	ap -= ((ap.Y() - y) / contactForce.Y()) * contactForce;
-	return ap;
-}
 bool CRHuman::HasFrame(SGFrame* f){
 	for(unsigned i=0; i<solids.size(); ++i){
 		if (solids[i] && solids[i]->GetFrame() == f) return true;
@@ -341,7 +219,6 @@ void CRHuman::SetTotalHeight(float height){
 	totalHeight = height;
 }
 
-
 void CRHuman::SetScale(SGScene* scene){
 	SetSolidScale();
 	SetJointScale();
@@ -350,8 +227,6 @@ void CRHuman::SetScale(SGScene* scene){
 	scene->GetBehaviors().Find(jointEngine);
 	jointEngine->root->Loaded(scene);
 }
-
-
 
 void CRHuman::SetSolidScale(){
 	SGFrame* transFrame;
@@ -706,7 +581,7 @@ void CRHuman::SetJointInfo(){
 void CRHuman::SetJointInitAngle(){
 	for(unsigned i = 0; i < joints.size(); i++){
 		if(joints[i] != NULL){
-			jointPids[i]->goal = jinfo[i].initPos;
+			((PHJoint1D*)joints[i])->position = jointPids[i]->goal = jinfo[i].initPos;
 		}
 	}
 }
@@ -714,7 +589,7 @@ void CRHuman::SetJointInitAngle(){
 void CRHuman::SetJointRange(){
 	for(unsigned i = 0; i < joints.size(); i++){
 		if(joints[i] != NULL){
-			SetOneJointRange(joints[i], jinfo[i].rangeMin, jinfo[i].rangeMax);
+			SetOneJointRange((PHJoint1D*)joints[i], jinfo[i].rangeMin, jinfo[i].rangeMax);
 		}
 	}
 }
@@ -755,21 +630,23 @@ inline float GetAllChildrenMass(PHJointBase* j){
 	}
 }
 
-static void JointPIDMul(PHJointPid* jo, float mulP, float mulD){
+void CRHuman::JointPIDMul(PHJointPid* jo, float mulP, float mulD){
 	jo->proportional *= mulP;
 	jo->integral *= mulP;
 	jo->differential *= mulD;
 }
 
 void CRHuman::SetJointSpring(float dt){
-//	const float SAFETYRATE = 0.005f;
+	//const float SAFETYRATE = 0.01f;
 	const float SAFETYRATE = 0.001f;
 	float k = 0.2f * SAFETYRATE;
 	float b = 0.6f * SAFETYRATE;
 	//float k = 0.008f * SAFETYRATE;
 	//float b = 0.9f * SAFETYRATE;
-	for(int i=0; i<joints.size(); ++i){
-		if(joints[i] != NULL){
+//	for(int i=0; i<joints.size(); ++i){
+	for(int i=0; i<jointPids.size(); ++i){
+		//if(joints[i] != NULL){
+		if(jointPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			//float mass = GetAllChildrenMass(joints[i]);
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
@@ -779,13 +656,15 @@ void CRHuman::SetJointSpring(float dt){
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(âEòr)
 	for(int i = 9; i < 15; ++i){ 
-		if(joints[i] != NULL){
+		//if(joints[i] != NULL){
+		if(jointPids[i] != NULL){
 			JointPIDMul(jointPids[i], 0.01f, 1.0f);
 		}
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(ç∂òr)
 	for(int i = 16; i < 22; ++i){ 
-		if(joints[i] != NULL){
+		//if(joints[i] != NULL){
+		if(jointPids[i] != NULL){
 			JointPIDMul(jointPids[i], 0.01f, 1.0f);
 		}
 	}
@@ -797,62 +676,62 @@ void CRHuman::AddJointPassivityResistance(){
 
 	////////// å®(ê≥ÅFã¸ã») [9],[16] //////////
 	// M = exp{3.3671(-É∆Å~ÉŒ/180 - 0.2543)} - exp{3.5743(É∆Å~ÉŒ/180 - 2.1966)}
-	torque = exp(3.3671 * (joints[9]->GetPosition() - 0.2543))
-		- exp(3.5743 * (joints[9]->GetPosition() - 2.1966));
+	torque = exp(3.3671 * (joints[9]->GetJointPosition(0) - 0.2543))
+		- exp(3.5743 * (joints[9]->GetJointPosition(0) - 2.1966));
 	//joints[9]->AddTorque(torque);
 
-	torque = exp(3.3671 * (joints[16]->GetPosition() - 0.2543))
-		- exp(3.5743 * (joints[16]->GetPosition() - 2.1966));
+	torque = exp(3.3671 * (joints[16]->GetJointPosition(0) - 0.2543))
+		- exp(3.5743 * (joints[16]->GetJointPosition(0) - 2.1966));
 	//joints[16]->AddTorque(torque);
 
 	////////// ïI(ê≥ÅFã¸ã») [12],[19] //////////
 	// M = exp{8.7084(-É∆Å~ÉŒ/180 + 0.1201)} - exp{9.4336(É∆Å~ÉŒ/180 - 2.3187)}
-	torque = exp(8.7084 * (joints[12]->GetPosition() + 0.1201))
-		- exp(9.4336 * (joints[12]->GetPosition() - 2.3187));
+	torque = exp(8.7084 * (joints[12]->GetJointPosition(0) + 0.1201))
+		- exp(9.4336 * (joints[12]->GetJointPosition(0) - 2.3187));
 	//joints[12]->AddTorque(torque);
 
-	torque = exp(8.7084 * (joints[20]->GetPosition() + 0.1201))
-		- exp(9.4336 * (joints[20]->GetPosition() - 2.3187));
+	torque = exp(8.7084 * (joints[20]->GetJointPosition(0) + 0.1201))
+		- exp(9.4336 * (joints[20]->GetJointPosition(0) - 2.3187));
 	//joints[19]->AddTorque(torque);
 
 	////////// éËéÒ(ê≥ÅFã¸ã») [14],[21] //////////
 	// M = exp{2.8508(-É∆Å~ÉŒ/180 - 1.0185)} - exp{5.4930(É∆Å~ÉŒ/180 - 1.2374)}
-	torque = exp(2.8508 * (joints[13]->GetPosition() - 1.0185))
-		- exp(5.4930 * (joints[13]->GetPosition() - 1.2374));
+	torque = exp(2.8508 * (joints[13]->GetJointPosition(0) - 1.0185))
+		- exp(5.4930 * (joints[13]->GetJointPosition(0) - 1.2374));
 	//joints[14]->AddTorque(torque);
 
-	torque = exp(2.8508 * (joints[13]->GetPosition() - 1.0185))
-		- exp(5.4930 * (joints[13]->GetPosition() - 1.2374));
+	torque = exp(2.8508 * (joints[13]->GetJointPosition(0) - 1.0185))
+		- exp(5.4930 * (joints[13]->GetJointPosition(0) - 1.2374));
 	//joints[21]->AddTorque(torque);
 
 	////////// å“ä÷êﬂ(ê≥ÅFã¸ã») [23],[31] //////////
 	// M = exp{5.3923(-É∆Å~ÉŒ/180 + 0.1461)} - exp{2.2578(É∆Å~ÉŒ/180 - 0.1270)}
-	torque = exp(5.3923 * (joints[23]->GetPosition() + 0.1461))
-		- exp(2.2578 * (joints[23]->GetPosition() - 0.1270));
+	torque = exp(5.3923 * (joints[23]->GetJointPosition(0) + 0.1461))
+		- exp(2.2578 * (joints[23]->GetJointPosition(0) - 0.1270));
 	//joints[23]->AddTorque(torque);
 
-	torque = exp(5.3923 * (joints[31]->GetPosition() - 0.1461))
-		- exp(2.2578 * (joints[31]->GetPosition() - 0.1270));
+	torque = exp(5.3923 * (joints[31]->GetJointPosition(0) - 0.1461))
+		- exp(2.2578 * (joints[31]->GetJointPosition(0) - 0.1270));
 	//joints[31]->AddTorque(torque);
 
 	////////// ïG(ê≥ÅFã¸ã») [26],[34] //////////
 	// M = exp{8.4262(-É∆Å~ÉŒ/180 + 0.2654)} - exp{5.9704(É∆Å~ÉŒ/180 - 2.1895)}
-	torque = exp(8.4262 * (joints[26]->GetPosition() + 0.2654))
-		- exp(5.9704 * (joints[26]->GetPosition() - 2.1895));
+	torque = exp(8.4262 * (joints[26]->GetJointPosition(0) + 0.2654))
+		- exp(5.9704 * (joints[26]->GetJointPosition(0) - 2.1895));
 	//joints[26]->AddTorque(torque);
 
-	torque = exp(8.4262 * (joints[34]->GetPosition() + 0.2654))
-		- exp(5.9704 * (joints[34]->GetPosition() - 2.1895));
+	torque = exp(8.4262 * (joints[34]->GetJointPosition(0) + 0.2654))
+		- exp(5.9704 * (joints[34]->GetJointPosition(0) - 2.1895));
 	//joints[34]->AddTorque(torque);
 
 	////////// ë´éÒ(ê≥ÅFã¸ã») [27],[35] //////////
 	// M = exp{2.391(-É∆Å~ÉŒ/180 + 0.6804)} - exp{5.4401(É∆Å~ÉŒ/180 - 0.6706)}
-	torque = exp(2.3912 * (joints[27]->GetPosition() + 0.6804))
-		- exp(5.4401 * (joints[27]->GetPosition() - 0.6706));
+	torque = exp(2.3912 * (joints[27]->GetJointPosition(0) + 0.6804))
+		- exp(5.4401 * (joints[27]->GetJointPosition(0) - 0.6706));
 	//joints[27]->AddTorque(-torque);
 
-	torque = exp(2.3912 * (joints[35]->GetPosition() + 0.6804))
-		- exp(5.4401 * (joints[35]->GetPosition() - 0.6706));
+	torque = exp(2.3912 * (joints[35]->GetJointPosition(0) + 0.6804))
+		- exp(5.4401 * (joints[35]->GetJointPosition(0) - 0.6706));
 	//joints[35]->AddTorque(-torque);
 }
 
@@ -865,12 +744,27 @@ Vec3f CRHuman::GetCOG(){
 	}
 	return p / totalMass;
 }
-
-DEF_RECORD(XHuman,{
-	GUID Guid(){ return WBGuid("48CE97A5-A3C0-446f-A2A0-25D42168A1E4"); }
-	FLOAT totalHeight;
-	FLOAT totalMass;
-});
+Vec3d CRHuman::GetCogVelocity(){
+	Vec3f p;
+	for(unsigned i=0; i<solids.size(); ++i){
+		if( solids[i] != NULL){
+			p += solids[i]->GetMass() * solids[i]->GetVelocity();
+		}
+	}
+	return p / totalMass;
+}
+void CRHuman::CalcContactForce(){
+	supportArea.Step();
+	for(int i=0; i<supportObject.size(); ++i){
+		supportObject[i].Step();
+	}
+}
+void CRHuman::LoadX(const XHuman& xh){
+	totalHeight = xh.totalHeight;
+	totalMass = xh.totalMass;
+}
+void CRHuman::SaveX(XHuman& xh) const{
+}
 
 class CRHumanLoader : public FIObjectLoader<CRHuman>
 {
@@ -885,15 +779,17 @@ public:
 	bool LoadData(FILoadScene* ctx, CRHuman* h){
 		XHuman xh;
 		ctx->docs.Top()->GetWholeData(xh);
-		h->totalHeight = xh.totalHeight;
-		h->totalMass = xh.totalMass;
+		h->LoadX(xh);
 		return true;
 	}
 };
 
 class CRHumanSaver : public FIObjectSaver<CRHuman>{
 protected:
-	void SaveData(class FISaveScene* ctx, FIDocNodeBase* doc, CRHuman* b){
+	void SaveData(class FISaveScene* ctx, FIDocNodeBase* doc, CRHuman* h){
+		XHuman xh;
+		h->SaveX(xh);
+		doc->SetWholeData(xh);		
 	}
 };
 

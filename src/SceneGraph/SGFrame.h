@@ -108,7 +108,7 @@ public:
 	///	ŠÖ˜A•t‚¯‚ç‚ê‚½doc‚ðŠJ•ú
 	virtual void ReleaseDoc(){
 		doc = NULL;
-		MemberTraverse(&SGFrame::ReleaseDoc);
+		ForEachChild(&SGFrame::ReleaseDoc);
 		for(SGObjects::iterator it = contents.begin(); it != contents.end(); ++it){
 			(*it)->ReleaseDoc();
 		}

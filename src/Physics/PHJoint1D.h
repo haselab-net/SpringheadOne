@@ -6,6 +6,7 @@
 namespace Spr{;
 
 struct XJoint1D;
+
 ///	1自由度の関節
 class PHJoint1D:public PHJointBase{
 public:
@@ -25,9 +26,29 @@ public:
 	void CompArticulatedInertia(double dt);	///<	articulated inertia & ZA-force
 	void CalcAccel(double dt);				///<	このジョイントの加速度計算．詳細は基本クラスのコメントを参照．
 
+	///	関節の自由度
+	virtual int GetJointDof(){ return 1; }
+	///	関節位置の取得
+	virtual double GetJointPosition(int i){ return position; }
+	///	関節速度の取得
+	virtual double GetJointVelocity(int i){ return velocity; }
+	///	関節加速度の取得
+	virtual double GetJointAccel(int i){ return accel; }
+	///	関節トルクの取得
+	virtual double GetJointTorque(int i){ return torque; }
+	///	関節トルクの設定
+	virtual void SetJointTorque(double v, int i){ torque = v; }
+	///	関節トルクを加える
+	virtual void AddJointTorque(double v, int i){ torque += v; }
+
 	void SaveX(XJoint1D&) const;
 	void LoadX(const XJoint1D&);
 protected:
+	SpVec6d			s;					///<	spatial joint axis in Fc coord.
+	//	sを含むキャッシュ変数
+	SpVec6d			Ia_s;
+	double			dot_s_Ia_s, dot_s_Z_plus_Ia_c;
+
 	virtual void Reset();
 	///	状態の読み出し
 	virtual void LoadState(const SGBehaviorStates& states);

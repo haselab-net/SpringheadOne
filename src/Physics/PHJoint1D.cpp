@@ -5,65 +5,36 @@
 
 using namespace PTM;
 namespace Spr{;
+
 SGOBJECTIMPABST(PHJoint1D, PHJointBase);
 
 void PHJoint1D::Reset(){
 	accel = 0;
 	torque = 0;
-
-	//非ルートノード
-	if(GetParent()){	
-		PropagateState();
-		solid->SetCenterPosition(p);
-		solid->SetRotation(R);
-		solid->UpdateFrame();
-	}
-	//ルートノード
-	else{
-		quat.from_matrix(R);
-		v = R.trans() * v_abs;
-		w = R.trans() * w_abs;
-	}
+	PHJointBase::Reset();
 }
-
-////////////////////////////////////////////////////////
-//・Ia: Articulated Inertia計算
-//・Za: Articulated 0-accel force計算
-void PHJoint1D::CompArticulatedInertia(double dt)
-{
-	//	Ia, Zaをクリア
-	Ia.clear();
-	Za.clear();
-
-	//子ノードから先に計算
-	for(array_type::const_iterator it = Children().end(); it != Children().begin();)
-		(*--it)->CompArticulatedInertia(dt);
-
-	//よく使う出てくる式をキャッシュ
-	rcross = Matrix3d::Cross(prc);
-	rpcross = Matrix3d::Cross(pRc * prc);
-	rcross_cRp = rcross * cRp;
-	rpcross_pRc = rpcross * pRc;
-		
-	//Za
-	if(solid){
-		svitem(Za, 0) += -R.trans() * solid->GetForce();
-		svitem(Za, 1) += -R.trans() * solid->GetTorque() + Vec3d(
-			(I[2][2] - I[1][1]) * w.Y() * w.Z(),
-			(I[0][0] - I[2][2]) * w.Z() * w.X(),
-			(I[1][1] - I[0][0]) * w.X() * w.Y());
-	}
-	//Ia
-	Ia += Ii;
-
-	//これもキャッシュ
-	smat = svmat(s, s);
-	Ia_c = Ia * c;
+/*
+ - Ia: Articulated Inertia計算
+ - Za: Articulated 0-accel force計算
+*/
+void PHJoint1D::CompArticulatedInertia(double dt){
+	//	子ジョイントのIa,Zaの計算．
+	PHJointBase::CompArticulatedInertia(dt);
+	//	キャッシュ
 	Ia_s = Ia * s;
-	Z_plus_Ia_c = Za + Ia_c;
 	dot_s_Ia_s = svdot(s, Ia_s);
 	dot_s_Z_plus_Ia_c = svdot(s, Z_plus_Ia_c);
 	
+	//親ノードのZa,Iaに自分のZa,Iaを積み上げる
+	//Ia
+	OfParent(&PHJointBase::Ia) += pXc_Mat_cXp(Ia - (Ia * svmat(s, s) * Ia) * (1 / dot_s_Ia_s));
+	//Za
+	OfParent(&PHJointBase::Za) += pXc_Vec(Z_plus_Ia_c + (Ia_s * (torque - dot_s_Z_plus_Ia_c)) / dot_s_Ia_s);
+
+/*	if (abs(dot_s_Ia_s) < 1e-1){
+		DSTR << Ia << (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) << std::endl;
+	}
+*/
 /*	static bReport;
 	if (abs(Ia.det()) < 1e-2f || bReport || abs(accel)>1e4){
 		DSTR << GetName() << "a:" << accel << "v:" << info.velocity << " Ia.det:" << Ia.det();
@@ -73,207 +44,98 @@ void PHJoint1D::CompArticulatedInertia(double dt)
 		bReport = true;
 	}
 */
-	//親ノードのZa,Iaに自分のZa,Iaを積み上げる
-	if(GetParent()){
-/*		if (abs(dot_s_Ia_s) < 1e-1){
-			DSTR << Ia << (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) << std::endl;
-		}
-*/
-		//Ia
-		OfParent(&PHJointBase::Ia) += pXc_Mat_cXp(Ia - (Ia * smat * Ia) * (1 / dot_s_Ia_s));
-		//Za
-		OfParent(&PHJointBase::Za) += pXc_Vec(Z_plus_Ia_c + (Ia_s * (torque - dot_s_Z_plus_Ia_c)) / dot_s_Ia_s);
-	}
 }
 
 void PHJoint1D::CalcAccel(double dt){
-	//非ルートノードの場合
-	if(GetParent()){
-		GetParent()->CalcAccel(dt);	//	親の加速度を計算
-		a_p = cXp_Vec(OfParent(&PHJointBase::a));
-		//加速度を計算
-		accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
-		//重心周りの加速度(子ノードの積分で使用する)
-		a = a_p + c + accel * s;
-	}else{	//ルートノードの場合
-		if(solid){	//	ルートノードが剛体の場合
-			//加速度を計算
-			a = (Ia.inv() * Za) * -1;
-		}else{	//if(frame)
-			a.clear();
-		}
-	}
+	GetParent()->CalcAccel(dt);	//	親の加速度を計算
+	a_p = cXp_Vec(OfParent(&PHJointBase::a));
+	//加速度を計算
+	accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
+	//重心周りの加速度(子ノードの積分で使用する)
+	a = a_p + c + accel * s;
 }
+
 void PHJoint1D::ClearTorqueRecursive(){
-	PHJointBase::ClearTorqueRecursive();
+	PHJointBase::ClearTorqueRecursive();	//	子ジョイントをクリア
 	torque = 0;
 }
 
 ////////////////////////////////////////////////////////
 //・関節加速度計算・数値積分
 //・加速度計算
-void PHJoint1D::Integrate(double dt)
-{
-	//非ルートノードの場合
-	if(GetParent()){
-		a_p = cXp_Vec(OfParent(&PHJointBase::a));
-		bool bOutOfRange = false;
-		//可動範囲制限が有効な場合
-		if(!(maxPosition == 0.0 && minPosition == 0.0)){
-			if(maxPosition > minPosition){
-				if(position >= maxPosition && velocity > 0.0){
-					accel = 0;
-					velocity *= -0.2f;				//速度を０に
-					position = maxPosition;
-					bOutOfRange = true;
-				}
-				else if(position <= minPosition && velocity < 0.0){
-					accel = 0;
-					velocity *= -0.2f;
-					position = minPosition;
-					bOutOfRange = true;
-				}
+void PHJoint1D::Integrate(double dt){
+	a_p = cXp_Vec(OfParent(&PHJointBase::a));
+	bool bOutOfRange = false;
+	//可動範囲制限が有効な場合
+	if(!(maxPosition == 0.0 && minPosition == 0.0)){
+		if(maxPosition > minPosition){
+			if(position >= maxPosition && velocity > 0.0){
+				accel = 0;
+				velocity *= -0.2f;				//速度を０に
+				position = maxPosition;
+				bOutOfRange = true;
+			}
+			else if(position <= minPosition && velocity < 0.0){
+				accel = 0;
+				velocity *= -0.2f;
+				position = minPosition;
+				bOutOfRange = true;
 			}
 		}
-		if(!bOutOfRange){
-			//加速度を計算
-			accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
-			//位置を積分
-			position += float ( (velocity + 0.5 * accel * dt) * dt );
-			//回転関節の場合は[-π,π]
-			LimitAngle(position);
-			//速度を積分
-			velocity += float(accel * dt);
-		}
-		//重心周りの加速度(子ノードの積分で使用する)
-		a = a_p + c + accel * s;
-		
-		//位置・速度の伝播
-		PropagateState();		
 	}
-	//ルートノードの場合
-	else{
-		//physical
-		if(solid){
-			//加速度を計算
-			a = (Ia.inv() * Za) * -1;
-			//速度変化量
-			Vec3d dv_abs = R * svitem(a, 1) * dt;
-			//角速度変化量
-			Vec3d dw_abs = R * svitem(a, 0) * dt;
-
-			//位置を更新
-			p += (v_abs + 0.5 * dv_abs) * dt;
-			//回転量を更新
-			quat += quat.derivative(w_abs + 0.5 * dw_abs) * dt;
-			quat.unitize();
-			quat.to_matrix(R);
-
-			//速度を更新
-			v_abs += dv_abs;
-			w_abs += dw_abs;
-			v = quat.conjugated() * v_abs;
-			w = quat.conjugated() * w_abs;
-
-			Vec3d a_rot = R * svitem(a, 0);
-			Vec3d a_trn = R * svitem(a, 1);
-
-			/* 旧形式
-			//加速度を積分して新しい速度を求める
-			Vec3d w_new = (w_abs + a_rot * dt);
-			Vec3d v_new = (v_abs + a_trn * dt);
-
-			//速度を積分して位置を求める
-			p += (v_abs + (0.5 * dt) * (R * a_trn)) * dt;
-
-			double wnorm = w.norm();
-			//クヲータニオンを微小回転
-			if(wnorm > 1.0e-10){
-				quat = Quaterniond::Rot(wnorm * dt, w_abs / wnorm) * quat;
-				quat.unitize();
-			}
-			//これを回転行列に変換
-			quat.to_matrix(R);
-
-			//速度を更新
-			v_abs = v_new;
-			w_abs = w_new;
-			v = R.trans() * v_abs;
-			w = R.trans() * w_abs;
-			*/
-		}
-		//non-physical
-		else{	//if(frame)
-			a.clear();
-		}
-	}
-
-	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
-	if(solid){
-#if 0	//	hase
-		if (pos.norm() > 100){
-			DSTR << "Strange position:" << std::endl;
-			DSTR << p << std::endl;
-			DSTR << R << solid->GetCenter() << std::endl;
-			DSTR << GetParent()->p << std::endl;
+	if(!bOutOfRange){
+		//加速度を計算
+		accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
+		//位置を積分
+		position += float ( (velocity + 0.5 * accel * dt) * dt );
+		//回転関節の場合は[-π,π]
+		LimitAngle(position);
+		//速度を積分
+		velocity += float(accel * dt);		
+#if 0
+		//	for DEBUG
+		if (accel > 100){
+			DSTR << GetName() << " accel:" << accel << "vel: " << velocity << std::endl;
 		}
 #endif
-		solid->SetCenterPosition(p);
-		solid->SetRotation(R);
-		solid->SetVelocity(v_abs);
-		solid->SetAngularVelocity(w_abs);
-		solid->SetIntegrationMode(PHINT_NONE);
 	}
+	//重心周りの加速度(子ノードの積分で使用する)
+	a = a_p + c + accel * s;
 	
-	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
-		(*it)->Integrate(dt);
+	//位置・速度の伝播
+	PropagateState();
+	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
+	PHJointBase::Integrate(dt);
 }
 
 /////////////////////////////////////////////////////////////////////
 
-class PHJointState: public SGBehaviorState{
+class PHJointState1D: public SGBehaviorState{
 public:
-	SGOBJECTDEF(PHJointState);
+	SGOBJECTDEF(PHJointState1D);
 	//非ルートノードの状態
 	float position;
 	float velocity;
-	//ルートノードの状態
-	Vec3d p;
-	Matrix3d R;
-	Vec3d v_abs;
-	Vec3d w_abs;
+	float torque;
+	float accel;
 };
-SGOBJECTIMP(PHJointState, SGBehaviorState);
-
+SGOBJECTIMP(PHJointState1D, SGBehaviorState);
 void PHJoint1D::LoadState(const SGBehaviorStates& states){
-	PHJointState* js = DCAST(PHJointState, states.GetNext());	
-	//ロード
-	if(GetParent()){
-		position = js->position;
-		velocity = js->velocity;
-	}
-	else{
-		p = js->p;
-		R = js->R;
-		v_abs = js->v_abs;
-		w_abs = js->w_abs;
-	}
+	PHJointState1D* js = DCAST(PHJointState1D, states.GetNext());	
+	position = js->position;
+	velocity = js->velocity;
+	accel = js->accel;
+	torque = js->torque;
 	PHJointBase::LoadState(states);
 }
 
 void PHJoint1D::SaveState(SGBehaviorStates& states) const{
-	UTRef<PHJointState> js = new PHJointState;
+	UTRef<PHJointState1D> js = new PHJointState1D;
 	states.push_back(js);
-	if(GetParent()){
-		js->position = position;
-		js->velocity = velocity;
-	}
-	else{
-		js->p = p;
-		js->R = R;
-		js->v_abs = v_abs;
-		js->w_abs = w_abs;
-	}
+	js->position = position;
+	js->velocity = velocity;
+	js->accel = accel;
+	js->torque = torque;
 	PHJointBase::SaveState(states);
 }
 
@@ -347,7 +209,7 @@ void PHJointHinge::CompRelativePosition()
 	pRc = m3fRotationParent * Matrix3d::Rot(position, 'z') * m3fRotationChild.trans();
 	cRp = pRc.trans();
 	Vec3d cp;
-	if(GetParent()->solid) GetParent()->solid->GetCenter();
+	if(GetParent()->solid) cp = GetParent()->solid->GetCenter();
 	prc = (cRp * (v3fPositionParent - cp)) - (v3fPositionChild - solid->GetCenter());
 }
 
@@ -366,24 +228,11 @@ void PHJointHinge::CompCoriolisAccel()
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }
 
-/*			//ボールジョイントは回転ジョイント３軸で実現する
-			UTRef<AC3Joint> joint[3];
-			AC3JointInfo i;
-
-			joint[0] = new AC3RevolutiveJoint(0, BallJoint.v3PositionParent, Vec3d(), Vec3d(1.0, 0.0, 0.0));
-			joint[1] = new AC3RevolutiveJoint(0, Vec3d(), Vec3d(), Vec3d(0.0, 1.0, 0.0));
-			joint[2] = new AC3RevolutiveJoint(pChild, Vec3d(), BallJoint.v3PositionChild, Vec3d(0.0, 0.0, 1.0));
-			joint[0]->AddChild(joint[1]);
-			joint[1]->AddChild(joint[2]);
-			return _Connect(pParent, joint[0]);		
-*/
-
 DEF_RECORD(XJointHinge, {
 	GUID Guid(){ return WBGuid("F0FEE14B-9F53-44b2-815A-93503C471474"); }
 	XJointBase jointBase;
 	XJoint1D joint1D;
 });
-
 class PHJointHingeLoader : public FIObjectLoader<PHJointHinge>
 {
 public:

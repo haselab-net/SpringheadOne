@@ -99,7 +99,7 @@ private:
 };
 
 ///	頂点クラスの例
-class TVtx{
+class CDQHVtx3DSample{
 public:
 	///@name QuickHullが使用するメンバ．必須．
 	//@{
@@ -107,7 +107,7 @@ public:
 		一番遠い頂点から見える面を削除したあと残った形状のエッジ部分
 		を一周接続しておくためのポインタ．
 		頂点→面の接続．	面→頂点は頂点の並び順から分かる．	*/
-	CDQHPlane<TVtx>* horizon;
+	CDQHPlane<CDQHVtx3DSample>* horizon;
 	///  頂点の位置
 	Vec3f GetPos() const;
 	//@}

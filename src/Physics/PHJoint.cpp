@@ -90,7 +90,7 @@ bool PHJointBase::AddChildObject(SGObject* o, SGScene* s){
 		((PHJointBase*)o)->SetParent(this);
 		return true;
 	}
-	return false;
+	return s->AddChildObject(o, s);
 }
 
 bool PHJointBase::DelChildObject(SGObject* o, SGScene* s){
@@ -129,7 +129,34 @@ void PHJointBase::UpdateJointPosture(){
 	CompRelativePosition();
 	//TODO:ここで下位ノードの位置をすべて更新
 }
+void PHJointBase::CompArticulatedInertia(double dt){
+	//	Ia, Zaをクリア
+	Ia.clear();
+	Za.clear();
 
+	//子ノードから先に計算
+	for(array_type::const_iterator it = Children().end(); it != Children().begin();)
+		(*--it)->CompArticulatedInertia(dt);
+
+	//よく使う出てくる式をキャッシュ
+	rcross = Matrix3d::Cross(prc);
+	rpcross = Matrix3d::Cross(pRc * prc);
+	rcross_cRp = rcross * cRp;
+	rpcross_pRc = rpcross * pRc;
+		
+	//Za
+	if(solid){
+		svitem(Za, 0) += -R.trans() * solid->GetForce();
+		svitem(Za, 1) += -R.trans() * solid->GetTorque() + Vec3d(
+			(I[2][2] - I[1][1]) * w.Y() * w.Z(),
+			(I[0][0] - I[2][2]) * w.Z() * w.X(),
+			(I[1][1] - I[0][0]) * w.X() * w.Y());
+	}
+	//Ia
+	Ia += Ii;
+	Ia_c = Ia * c;
+	Z_plus_Ia_c = Za + Ia_c;
+}
 void PHJointBase::CompCoriolisAccelRecursive(double dt){
 	if (GetParent()) CompCoriolisAccel();
 	for(array_type::const_iterator it = Children().end(); it != Children().begin();){
@@ -143,6 +170,25 @@ void PHJointBase::ClearTorqueRecursive(){
 	}
 }
 
+void PHJointBase::Integrate(double dt){
+	if(solid){
+#if 0	//	hase
+		if (pos.norm() > 100){
+			DSTR << "Strange position:" << std::endl;
+			DSTR << p << std::endl;
+			DSTR << R << solid->GetCenter() << std::endl;
+			DSTR << GetParent()->p << std::endl;
+		}
+#endif
+		solid->SetCenterPosition(p);
+		solid->SetRotation(R);
+		solid->SetVelocity(v_abs);
+		solid->SetAngularVelocity(w_abs);
+		solid->SetIntegrationMode(PHINT_NONE);
+	}	
+	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
+		(*it)->Integrate(dt);
+}
 
 void PHJointBase::PropagateState()
 {
@@ -161,6 +207,21 @@ void PHJointBase::PropagateState()
 	w += pwc;
 	v_abs = R * v;
 	w_abs = R * w;
+}
+void PHJointBase::Reset(){
+	//非ルートノード
+	if(GetParent()){	
+		PropagateState();
+		solid->SetCenterPosition(p);
+		solid->SetRotation(R);
+		solid->UpdateFrame();
+	}
+	//ルートノード
+	else{
+		quat.from_matrix(R);
+		v = R.trans() * v_abs;
+		w = R.trans() * w_abs;
+	}
 }
 
 void PHJointBase::LoadState(const SGBehaviorStates& states){
@@ -190,6 +251,105 @@ void PHJointBase::LoadX(const XJointBase& x){
 }
 
 
+//-----------------------------------------------------------------------------
+SGOBJECTIMP(PHJointRoot, PHJointBase);
+void PHJointRoot::Reset(){
+	PHJointBase::Reset();
+}
+
+class PHJointStateRoot: public SGBehaviorState{
+public:
+	SGOBJECTDEF(PHJointStateRoot);
+	//ルートノードの状態
+	Vec3d p;
+	Matrix3d R;
+	Vec3d v_abs;
+	Vec3d w_abs;
+};
+SGOBJECTIMP(PHJointStateRoot, SGBehaviorState);
+void PHJointRoot::LoadState(const SGBehaviorStates& states){
+	PHJointStateRoot* js = DCAST(PHJointStateRoot, states.GetNext());	
+	//ロード
+	p = js->p;
+	R = js->R;
+	v_abs = js->v_abs;
+	w_abs = js->w_abs;
+	PHJointBase::LoadState(states);
+}
+void PHJointRoot::SaveState(SGBehaviorStates& states) const{
+	UTRef<PHJointStateRoot> js = new PHJointStateRoot;
+	states.push_back(js);
+	js->p = p;
+	js->R = R;
+	js->v_abs = v_abs;
+	js->w_abs = w_abs;
+	PHJointBase::SaveState(states);
+}
+void PHJointRoot::CalcAccel(double dt){
+	if(solid){	//	ルートノードが剛体の場合
+		//加速度を計算
+		a = (Ia.inv() * Za) * -1;
+	}else{	//if(frame)
+		a.clear();
+	}
+}
+void PHJointRoot::Integrate(double dt){
+	//physical
+	if(solid){
+		//加速度を計算
+		a = (Ia.inv() * Za) * -1;
+		//速度変化量
+		Vec3d dv_abs = R * svitem(a, 1) * dt;
+		//角速度変化量
+		Vec3d dw_abs = R * svitem(a, 0) * dt;
+
+		//位置を更新
+		p += (v_abs + 0.5 * dv_abs) * dt;
+		//回転量を更新
+		quat += quat.derivative(w_abs + 0.5 * dw_abs) * dt;
+		quat.unitize();
+		quat.to_matrix(R);
+
+		//速度を更新
+		v_abs += dv_abs;
+		w_abs += dw_abs;
+		v = quat.conjugated() * v_abs;
+		w = quat.conjugated() * w_abs;
+
+		Vec3d a_rot = R * svitem(a, 0);
+		Vec3d a_trn = R * svitem(a, 1);
+
+		/* 旧形式
+		//加速度を積分して新しい速度を求める
+		Vec3d w_new = (w_abs + a_rot * dt);
+		Vec3d v_new = (v_abs + a_trn * dt);
+
+		//速度を積分して位置を求める
+		p += (v_abs + (0.5 * dt) * (R * a_trn)) * dt;
+
+		double wnorm = w.norm();
+		//クヲータニオンを微小回転
+		if(wnorm > 1.0e-10){
+			quat = Quaterniond::Rot(wnorm * dt, w_abs / wnorm) * quat;
+			quat.unitize();
+		}
+		//これを回転行列に変換
+		quat.to_matrix(R);
+
+		//速度を更新
+		v_abs = v_new;
+		w_abs = w_new;
+		v = R.trans() * v_abs;
+		w = R.trans() * w_abs;
+		*/
+	}else{		//non-physical
+		a.clear();
+	}
+	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
+	PHJointBase::Integrate(dt);
+}
+
+//-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointClearForce, SGBehaviorEngine);
 void PHJointClearForce::Step(SGScene* s){
 	je->root->ClearTorqueRecursive();
@@ -197,8 +357,12 @@ void PHJointClearForce::Step(SGScene* s){
 
 
 SGOBJECTIMP(PHJointEngine, SGBehaviorEngine);
+void PHJointEngineEnumSolid(PHJointBase* j, PHJointEngine* e){
+	e->solids.insert(j->solid);
+}
 void PHJointEngine::Loaded(SGScene* scene){
 	root->Loaded(scene);
+	root->Traverse(&PHJointEngineEnumSolid, this);
 }
 void PHJointEngine::Step(SGScene* scene)
 {
@@ -211,6 +375,18 @@ void PHJointEngine::Step(SGScene* scene)
 	timer.Stop();
 }
 
+bool PHJointEngine::Has(SGObject* o){
+	PHSolid* solid = DCAST(PHSolid, o);
+	if (solid){
+		if (solids.find(solid) != solids.end()) return true;
+	}
+	PHJointBase* joint = DCAST(PHJointBase, o);
+	while (joint){
+		if (joint == root) return true;
+		joint = joint->GetParent();
+	}
+	return false;
+}
 SGObject* PHJointEngine::ChildObject(size_t i){
 	return root;
 }
@@ -256,7 +432,7 @@ void PHJointEngine::SaveState(SGBehaviorStates& states) const{
 class PHJointEngineLoader : public FIObjectLoader<PHJointEngine>{
 public:
 	bool LoadData(FILoadScene* ctx, PHJointEngine* engine){
-		engine->root = new PHJointHinge;
+		engine->root = new PHJointRoot;
 		PHJointClearForce* jcf = new PHJointClearForce;
 		jcf->je = engine;
 		ctx->scene->AddChildObject(jcf, ctx->scene);

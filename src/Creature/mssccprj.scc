@@ -1,9 +1,9 @@
 SCC = This is a Source Code Control file
 
-[Creature.dsp]
+[Creature.dsw]
 SCC_Aux_Path = "\\192.168.251.1\vss\"
 SCC_Project_Name = "$/Project/Springhead/src/Creature", UXHCAAAA
 
-[Creature.dsw]
-SCC_Aux_Path = "\\192.168.251.1\vss\"
+[Creature.dsp]
+SCC_Aux_Path = "\\sklab\VSS\"
 SCC_Project_Name = "$/Project/Springhead/src/Creature", UXHCAAAA

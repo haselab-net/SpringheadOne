@@ -143,7 +143,7 @@ public:
 */
 class CDFramePair{	
 public:
-	///	リスナがアクティブかどうかのフラグ．最後の要素が全体の or を表す．
+	///	リスナがアクティブかどうかのフラグ．
 	class CDIsActive: public std::vector<bool>{
 		bool bOr;
 	public:

@@ -14,63 +14,72 @@
 #include <Base/BaseUtility.h>
 #include <vector>
 #include <fstream>
-
-//#include "CRHuman.h"
+#include <Physics/PHContactEngine.h>
 
 namespace Spr{;
 
 class CRHuman;
 
-class CRSupportArea : public CDCollisionListener
-{
+class CRContactDetector : public CDCollisionListener, public UTRefCount{
+public:
+	struct CRContactPair{
+		CRContactPair(PHContactEngine::FramePairRecord* f, float s): fpr(f), sign(s){}
+		PHContactEngine::FramePairRecord* fpr;
+		float sign;
+	};
+protected:
+	SGFrames subjects;						///<	足の裏など支えるものの剛体のリスト
+	std::set<SGFrame*> excepts;				///<	体など，除外すべき剛体のリスト
+	CDCollisionEngine* collision;			///<	衝突判定エンジン
+	std::vector<CRContactPair> contactPairs;///<	接触力計算のための接触ペア
+	Vec3f contactForce, contactTorque;		///<	接触力，接触トルク
+public:
+	CRContactDetector(){}
+	virtual ~CRContactDetector(){}
+	virtual void AddSubject(SGFrame* f);///<	
+	virtual void AddExcept(SGFrame* f);	///<	
+	virtual void Loaded(SGScene* s);	///<	ロード後の処理=初期化処理
+	std::vector<Vec3f> vtxs;			///<	衝突点
+	virtual void BeforeAll(SGScene* s){ vtxs.clear(); }
+	virtual void AfterAll(SGScene* s){ CalcContactForce(); }
+	//	接触している頂点をvtxsに保存
+	virtual void Analyzed(SGScene* scene, CDFramePairWithRecord* fr,
+		CDGeometryPair* geom, CDConvexPairWithRecord* conv, CDContactAnalysis* analyzer);
+	//	接触力の計算
+	void CalcContactForce();
+	Vec3f GetContactForce(){ return contactForce; }
+	Vec3f GetContactTorque(){ return contactTorque; }
+	Vec3f GetApplicationPoint(float y=0);						//	作用点
+};
+
+
+class CRSupportArea : public CDCollisionListener{
 public:
 	CRSupportArea();
 	virtual ~CRSupportArea();
-
-	CDCollisionEngine* collision;		//	衝突判定エンジン
-
-private:
-	std::vector<Vec3f> coVetxs;			// 接触点
-	std::vector<Vec3f> supportVetxs;	// 安定領域の点
-	bool bAdd;							// AddListener出来たか否か
-	bool bClear;						// coVetxsをクリアするタイミング
-	int listenerPos;					// CDContactEngineの中でのリスナの位置
-	
-
+	typedef std::vector< UTRef<CRContactDetector> > CREnumContacts;
+	class CRSupportVtxs:public std::vector<Vec3f>{
+	public:
+		Vec3f ClosestPoint(Vec3f p);
+	};
+protected:
+	CREnumContacts contacts;
+	CRSupportVtxs supportVtxs;	// 安定領域の点
+	Vec3f contactForce, contactTorque;
 public:
-	void Step();
-	void Load(SGScene* scene,CRHuman* crHuman);
-
-	//	CollisionEngineを取得し、CDCollisionListenerの登録 
-	void AddListener(SGScene* scene);
-
-	//接触している頂点を保存
-	void Analyzed(SGScene* scene, CDFramePairWithRecord* fr,
-		CDGeometryPair* geom, CDConvexPairWithRecord* conv, CDContactAnalysis* analyzer);
-	
-	void DrawCollisionVetxs(GRRender* render);				// 接触頂点を描画
-	void ClearCoVetxs();									// 保存されている接触頂点を解放
-	void SelectCDFrame(CRHuman* crHuman);					// 衝突判定するFrameの決定
-	bool HasFrame(SGFrame* f,CRHuman* crHuman);				// FrameがVHかどうか確認
-	void CalcSupportArea();									// 安定領域の計算
-	std::vector<Vec3f> GetSupportArea(){ return coVetxs;}	// 安定領域を取得
-
-	// CalcSupportAreaで使う変数
-	typedef struct
-	{
-		double			x;
-		double			y;
-		int				n;
-	} M_point;
-
-	int point_number;		// マウスの点の個数 
-	int search_number;		// 求める点の個数 
-	M_point M_vec_draw;		// マウスの位置
-	std::vector<M_point> M_vec;	// マウスの点の履歴　多分入力データになる?
-	std::vector<M_point> S_vec;	// 外形となる点の座標
-	Vec2f coCog;				//安定領域の中心（重心）
-
-
+	void Step(){
+		CalcSupportArea();
+		CalcForce();
+	}
+	void SetContacts(CRContactDetector* contact);				//	安定領域になる接触物
+	void DrawCollisionVetxs(GRRender* render);					//	安定領域と接触頂点を描画
+	CRSupportVtxs& GetSupportArea(){ return supportVtxs;}	// 安定領域を取得
+	Vec3f GetContactForce(){ return contactForce; }
+	Vec3f GetContactTorque(){ return contactTorque; }
+	Vec3f GetApplicationPoint(float y=0);						//	作用点
+protected:
+	void CalcForce();
+	void CalcSupportArea();										//	安定領域の計算
 };		
 
 }		//end namespace Spr

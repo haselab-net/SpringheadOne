@@ -41,12 +41,36 @@ void FWPointer6D::Step(float dt){
 	}else{
 		Device()->SetForce(Vec3f(), Vec3f());
 	}
-	Device()->Update(dt);
-	Solid()->SetFramePosition(qtOffset * (Device()->GetPos() * posScale) + v3Offset);
-	Solid()->SetOrientation(qtOffset * Device()->GetOri());
-	Solid()->SetVelocity(qtOffset * (Device()->GetVel() * posScale));
-	Solid()->SetAngularVelocity(qtOffset * (Device()->GetAngVel()));
+	Update(dt);
+	Solid()->SetFramePosition(GetPos());
+	Solid()->SetOrientation(GetOri());
+	Solid()->SetVelocity(GetVel());
+	Solid()->SetAngularVelocity(GetAngVel());
 	Solid()->UpdateFrame();
+}
+
+void FWPointer6D::Update(float dt){
+	Device()->Update(dt);
+}
+
+Vec3f FWPointer6D::GetPos(){
+	return qtOffset * (Device()->GetPos() * posScale) + v3Offset;
+}
+
+Quaternionf FWPointer6D::GetOri(){
+	return qtOffset * Device()->GetOri();
+}
+
+Vec3f FWPointer6D::GetVel(){
+	return qtOffset * (Device()->GetVel() * posScale);
+}
+
+Vec3f FWPointer6D::GetAngVel(){
+	return qtOffset * (Device()->GetAngVel());
+}
+
+void FWPointer6D::SetForce(Vec3f force, Vec3f torque){
+	Device()->SetForce(qtOffsetInv*force / forceScale, qtOffsetInv*torque / forceScale);
 }
 
 void FWPointerRui::Init(HIRuiBase* dev){
@@ -86,7 +110,7 @@ void FWPointerRui::Step(float dt){
 		float angle = Device()->GetJointAngle(i);
 		if (jointPids[i]){
 			jointPids[i]->goal = angle;
-			Device()->SetTorque(i, jointPids[i]->joint->GetTorque());
+			Device()->SetTorque(i, jointPids[i]->GetJointTorque());
 		}
 	}
 }

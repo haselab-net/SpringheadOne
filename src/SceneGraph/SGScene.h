@@ -34,6 +34,25 @@ public:
 		if (it != end()) return *it;
 		return NULL;
 	}
+	std::pair<iterator, iterator> Range(UTString name){
+		std::pair<iterator, iterator> rv;
+		SGObject key;
+		key.name = name;
+		key.AddRef();
+		rv.first = find(&key);
+		key.DelRef();
+		if (rv.first == end()){
+			rv.second = end();
+		}else{
+			rv.second = rv.first;
+			++rv.second;
+			for(; rv.second!=end(); ++rv.second){
+				if (rv.second == end()) break;
+				if (name.compare(0, name.length(), (*rv.second)->GetName())!=0) break;
+			}
+		}
+		return rv;
+	}
 	/**	オブジェクトの追加，
 		名前のないオブジェクトは追加できない．この場合 false を返す．
 		追加に成功すると true． すでに登録されていた場合は false を返す．
@@ -111,6 +130,10 @@ public:
 	template <class T> void FindObject(T*& t, UTString name){
 		t = DCAST(T, FindObject(name));
 	}
+	typedef SGObjectNames::iterator SetIt;
+	typedef std::pair<SetIt, SetIt> SetRange;
+	SetRange RangeObject(UTString n){ return names.Range(n); }
+	
 	SGObjectNames::TNameMap& GetNameMap(){ return names.nameMap; }
 
 	/// 積分ステップを返す
