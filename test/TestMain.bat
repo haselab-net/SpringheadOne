@@ -15,11 +15,11 @@ rem **** ソースツリー(Springhead\src以下)をWebの下にコピー ****
 cd ..\src
 call DelAll.bat
 cd ..\test
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
-rmdir /s /q \\samba\VSS\Web\springhead\svntest\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
+rmdir /s /q \\samba\VSS\Web\springhead\src
 xcopy /e/c/f/h/i/y ..\src \\samba\VSS\Web\springhead\src
