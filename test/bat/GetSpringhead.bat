@@ -1,4 +1,5 @@
 rem SpringheadˆÈ‰º‚ğVSS‚©‚çæ“¾‚·‚é
+rem SVN‚Ö‚ÌˆÚs‚É”º‚Á‚Äg—p‚³‚ê‚È‚­‚È‚è‚Ü‚· jumius
 
 cd ..
 ss Decloak $/Project/Springhead/src/boost

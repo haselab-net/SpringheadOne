@@ -7,7 +7,7 @@ set COMMENT=ビルド成功（
 
 rem **** ログファイルをチェックアウトする ****
 cd log 
-ss Checkout -I- $/Project/Springhead/test/log/Build.log $/Project/Springhead/test/log/BuildError.log $/Project/Springhead/test/log/History.log
+rem ss Checkout -I- $/Project/Springhead/test/log/Build.log $/Project/Springhead/test/log/BuildError.log $/Project/Springhead/test/log/History.log
 cd ..
 
 echo --- ビルドのログ ---  > log\Build.log
@@ -50,10 +50,12 @@ rem ----- ここまで -----
 
 set COMMENT=%COMMENT:~0,-1%）
 rem if "%LABEL%" == "ビルド成功" ss Label $/Project/Springhead/test/LabelTest.txt -I- -L%LABEL%%date% -C%COMMENT%
-if "%LABEL%" == "ビルド成功" ss Label $/Project/Springhead -I- -L%LABEL%%date% -C%COMMENT%
+rem ＜見直し必要＞ jumius
+rem if "%LABEL%" == "ビルド成功" ss Label $/Project/Springhead -I- -L%LABEL%%date% -C%COMMENT%
 
 rem **** Springheadの更新履歴をHistory.logに出力 ****
-ss History $/Project/Springhead -R -I- -#100 > log/History.log
+rem ＜見直し必要＞ jumius
+rem ss History $/Project/Springhead -R -I- -#100 > log/History.log
 
 rem **** ログをSambaにコピーする ****
 set SMBBASE=\\samba\VSS\Web\springhead
@@ -63,7 +65,8 @@ copy log\BuildError.log %SMBBASE%
 
 rem **** ログをVSSにチェックインする ****
 cd log 
-ss Checkin -I- $/Project/Springhead/test/log/Build.log $/Project/Springhead/test/log/BuildError.log $/Project/Springhead/test/log/History.log
+rem ss Checkin -I- $/Project/Springhead/test/log/Build.log $/Project/Springhead/test/log/BuildError.log $/Project/Springhead/test/log/History.log
+svn commit -m "Autobuild done..."
 cd ..
 
 rem **** 使用した環境変数のクリア **** 
