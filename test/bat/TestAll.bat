@@ -53,7 +53,7 @@ rem **** Springheadの更新履歴をHistory.logに出力 ****
 rem ss History $/Project/Springhead -R -I- -#100 > log/History.log
 svn log svn+ssh://sprsvn/export/spr/svn/repository/Springhead/trunk > log/History.log
 rem **** ログをSambaにコピーする ****
-set SMBBASE=\\samba\VSS\Web\springhead\svntest
+set SMBBASE=\\samba\VSS\Web\springhead
 if exist %SMBBASE%\result.log del %SMBBASE%\result.log
 if "%LABEL%" == "ビルド成功" echo %COMMENT%>%SMBBASE%\result.log
 copy log\BuildError.log %SMBBASE%
