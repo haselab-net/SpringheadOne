@@ -1,572 +1,98 @@
-$/Project/Springhead のリストを作成しています。................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-...............................................................................
-.....................................
-
-*****************  バージョン 525  *****************
-ラベル: "ビルド成功2004/12/19"
-ユーザー: Demo         日付: 04/12/19   時刻:  3:19
-ラベル設定
-ラベル コメント: ビルド成功（SDKD3DDyna）
-
-*****  PHJointPid.cpp  *****
-バージョン 9
-ユーザー: Hase         日付: 04/12/19   時刻:  0:54
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  BuildError.log  *****
-バージョン 541
-ユーザー: Demo         日付: 04/12/18   時刻:  3:18
-チェックイン $/Project/Springhead/test/log
-
-*****  History.log  *****
-バージョン 596
-ユーザー: Demo         日付: 04/12/18   時刻:  3:18
-チェックイン $/Project/Springhead/test/log
-
-*****  Build.log  *****
-バージョン 311
-ユーザー: Demo         日付: 04/12/18   時刻:  3:18
-チェックイン $/Project/Springhead/test/log
-
-*****************  バージョン 524  *****************
-ラベル: "ビルド成功2004/12/18"
-ユーザー: Demo         日付: 04/12/18   時刻:  3:18
-ラベル設定
-ラベル コメント: ビルド成功（SDKD3DDyna）
-
-*****  CRActionPlanner.cpp  *****
-バージョン 29
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 22:58
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRActionPlanner.h  *****
-バージョン 17
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 22:58
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRPuppet.cpp  *****
-バージョン 25
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 22:58
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRPuppet.h  *****
-バージョン 19
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 22:58
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  JointBall.x  *****
-バージョン 2
-ユーザー: Hase         日付: 04/12/17   時刻: 21:50
-チェックイン $/Project/Springhead/src/Samples/data/mechanism
-コメント: 
-
-*****  mechanism  *****
-バージョン 36
-ユーザー: Hase         日付: 04/12/17   時刻: 21:46
-JointBall.x を追加
-
-*****  mechanism  *****
-バージョン 35
-ユーザー: Hase         日付: 04/12/17   時刻: 21:46
-JointUniv.x を追加
-
-*****  CRHuman.cpp  *****
-バージョン 35
-ユーザー: Yosa         日付: 04/12/17   時刻: 21:35
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRPuppet.cpp  *****
-バージョン 24
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 19:30
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.h  *****
-バージョン 18
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 19:30
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRUser.cpp  *****
-バージョン 25
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 19:30
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRUser.cpp  *****
-バージョン 24
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 19:21
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.h  *****
-バージョン 17
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 19:10
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRActionPlanner.cpp  *****
-バージョン 28
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 19:03
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRHuman.cpp  *****
-バージョン 34
-ユーザー: Yosa         日付: 04/12/17   時刻: 19:02
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.h  *****
-バージョン 16
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 18:54
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRUser.cpp  *****
-バージョン 23
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 18:52
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.cpp  *****
-バージョン 23
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 18:52
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.h  *****
-バージョン 15
-ユーザー: Ishikawa     日付: 04/12/17   時刻: 18:52
-チェックイン $/Project/Springhead/src/Creature
-
-*****  PHJointPid.h  *****
-バージョン 7
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointPid.cpp  *****
-バージョン 8
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointMulti.h  *****
-バージョン 7
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointMulti.cpp  *****
-バージョン 8
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint1D.h  *****
-バージョン 9
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.h  *****
-バージョン 53
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  FWPointer.cpp  *****
-バージョン 13
-ユーザー: Hase         日付: 04/12/17   時刻:  1:38
-チェックイン $/Project/Springhead/src/Framework
-コメント: 
-
-*****  CRActionPlanner.cpp  *****
-バージョン 27
-ユーザー: Ishikawa     日付: 04/12/17   時刻:  1:09
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRActionPlanner.h  *****
-バージョン 16
-ユーザー: Ishikawa     日付: 04/12/17   時刻:  1:09
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRPuppet.cpp  *****
-バージョン 22
-ユーザー: Ishikawa     日付: 04/12/17   時刻:  1:09
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRUser.cpp  *****
-バージョン 22
-ユーザー: Ishikawa     日付: 04/12/17   時刻:  1:09
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  PHJointMulti.cpp  *****
-バージョン 7
-ユーザー: Hase         日付: 04/12/16   時刻: 13:26
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointMulti.h  *****
-バージョン 6
-ユーザー: Hase         日付: 04/12/16   時刻: 13:26
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHRegisterLoader.cpp  *****
-バージョン 22
-ユーザー: Hase         日付: 04/12/16   時刻: 13:26
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  TMatrixUtility.h  *****
-バージョン 24
-ユーザー: Hase         日付: 04/12/16   時刻: 13:26
-チェックイン $/Project/Springhead/src/Base
-コメント: 
-
-*****  TQuaternion.h  *****
-バージョン 31
-ユーザー: Hase         日付: 04/12/16   時刻:  4:51
-チェックイン $/Project/Springhead/src/Base
-
-*****  TMatrixUtility.h  *****
-バージョン 23
-ユーザー: Hase         日付: 04/12/16   時刻:  4:51
-チェックイン $/Project/Springhead/src/Base
-
-*****  PHJointMulti.cpp  *****
-バージョン 6
-ユーザー: Hase         日付: 04/12/16   時刻:  4:00
-チェックイン $/Project/Springhead/src/Physics
-
-*****  PHJointMulti.h  *****
-バージョン 5
-ユーザー: Hase         日付: 04/12/16   時刻:  3:39
-チェックイン $/Project/Springhead/src/Physics
-
-*****  PHJointMulti.cpp  *****
-バージョン 5
-ユーザー: Hase         日付: 04/12/16   時刻:  3:39
-チェックイン $/Project/Springhead/src/Physics
-
-*****  PHJointMulti.h  *****
-バージョン 4
-ユーザー: Hase         日付: 04/12/16   時刻:  2:42
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointMulti.cpp  *****
-バージョン 4
-ユーザー: Hase         日付: 04/12/16   時刻:  2:42
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint1D.cpp  *****
-バージョン 9
-ユーザー: Hase         日付: 04/12/16   時刻:  2:42
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.h  *****
-バージョン 52
-ユーザー: Hase         日付: 04/12/16   時刻:  2:41
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHRegisterLoader.cpp  *****
-バージョン 21
-ユーザー: Hase         日付: 04/12/16   時刻:  2:41
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  TMatrix.h  *****
-バージョン 40
-ユーザー: Hase         日付: 04/12/16   時刻:  2:40
-チェックイン $/Project/Springhead/src/Base
-コメント: 
-
-*****  Physics.dsp  *****
-バージョン 47
-ユーザー: Hase         日付: 04/12/16   時刻:  2:15
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  FWPointer.h  *****
-バージョン 12
-ユーザー: Hase         日付: 04/12/16   時刻:  2:15
-チェックイン $/Project/Springhead/src/Framework
-コメント: 
-
-*****  FWPointer.cpp  *****
-バージョン 12
-ユーザー: Hase         日付: 04/12/16   時刻:  2:15
-チェックイン $/Project/Springhead/src/Framework
-コメント: 
-
-*****  CRPuppet.cpp  *****
-バージョン 21
-ユーザー: Ishikawa     日付: 04/12/15   時刻: 18:54
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRPuppet.h  *****
-バージョン 14
-ユーザー: Ishikawa     日付: 04/12/15   時刻: 18:54
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRUser.cpp  *****
-バージョン 21
-ユーザー: Ishikawa     日付: 04/12/15   時刻: 18:54
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRActionPlanner.cpp  *****
-バージョン 26
-ユーザー: Ishikawa     日付: 04/12/15   時刻: 18:54
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  CRActionPlanner.h  *****
-バージョン 15
-ユーザー: Ishikawa     日付: 04/12/15   時刻: 18:54
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  PHJointMulti.h  *****
-バージョン 3
-ユーザー: Hase         日付: 04/12/15   時刻: 16:16
-チェックイン $/Project/Springhead/src/Physics
-
-*****  PHJointMulti.cpp  *****
-バージョン 3
-ユーザー: Hase         日付: 04/12/15   時刻: 16:16
-チェックイン $/Project/Springhead/src/Physics
-
-*****  Physics.dsp  *****
-バージョン 46
-ユーザー: Hase         日付: 04/12/15   時刻: 14:03
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointMulti.h  *****
-バージョン 2
-ユーザー: Hase         日付: 04/12/15   時刻: 14:03
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint1D.h  *****
-バージョン 8
-ユーザー: Hase         日付: 04/12/15   時刻: 14:03
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJointMulti.cpp  *****
-バージョン 2
-ユーザー: Hase         日付: 04/12/15   時刻: 14:03
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  Physics  *****
-バージョン 146
-ユーザー: Hase         日付: 04/12/15   時刻: 13:46
-PHJointMulti.cpp を追加
-
-*****  Physics  *****
-バージョン 145
-ユーザー: Hase         日付: 04/12/15   時刻: 11:47
-PHJointMulti.h を追加
-
-*****  PHJoint1D.h  *****
-バージョン 7
-ユーザー: Hase         日付: 04/12/15   時刻:  2:41
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint1D.cpp  *****
-バージョン 8
-ユーザー: Hase         日付: 04/12/15   時刻:  2:41
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.h  *****
-バージョン 51
-ユーザー: Hase         日付: 04/12/15   時刻:  2:41
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.cpp  *****
-バージョン 76
-ユーザー: Hase         日付: 04/12/15   時刻:  2:41
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  Physics  *****
-バージョン 144
-ユーザー: Hase         日付: 04/12/15   時刻:  1:40
-PHJoint3D.h 破棄
-
-*****  Physics  *****
-バージョン 143
-ユーザー: Hase         日付: 04/12/15   時刻:  1:40
-PHJoint3D.cpp 破棄
-
-*****  Physics  *****
-バージョン 142
-ユーザー: Hase         日付: 04/12/15   時刻:  1:40
-PHJoint3D.h を追加
-
-*****  Physics  *****
-バージョン 141
-ユーザー: Hase         日付: 04/12/15   時刻:  1:40
-PHJoint3D.cpp を追加
-
-*****  PHJoint1D.h  *****
-バージョン 6
-ユーザー: Hase         日付: 04/12/15   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint1D.cpp  *****
-バージョン 7
-ユーザー: Hase         日付: 04/12/15   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.h  *****
-バージョン 50
-ユーザー: Hase         日付: 04/12/15   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.cpp  *****
-バージョン 75
-ユーザー: Hase         日付: 04/12/15   時刻:  1:38
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  TQuaternion.h  *****
-バージョン 30
-ユーザー: Hase         日付: 04/12/15   時刻:  0:49
-チェックイン $/Project/Springhead/src/Base
-コメント: 
-
-*****  CRActionPlanner.cpp  *****
-バージョン 25
-ユーザー: Ishikawa     日付: 04/12/15   時刻:  0:07
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRActionPlanner.cpp  *****
-バージョン 24
-ユーザー: Ishikawa     日付: 04/12/15   時刻:  0:03
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRUser.cpp  *****
-バージョン 20
-ユーザー: Demo         日付: 04/12/14   時刻: 23:00
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRActionPlanner.cpp  *****
-バージョン 23
-ユーザー: Demo         日付: 04/12/14   時刻: 23:00
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.cpp  *****
-バージョン 20
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 22:32
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRActionPlanner.h  *****
-バージョン 14
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 22:31
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRActionPlanner.cpp  *****
-バージョン 22
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 22:31
-チェックイン $/Project/Springhead/src/Creature
-
-*****  FWPointer.cpp  *****
-バージョン 11
-ユーザー: Miwashita     日付: 04/12/14   時刻: 19:39
-チェックイン $/Project/Springhead/src/Framework
-コメント: 
-
-*****  FWPointer.h  *****
-バージョン 11
-ユーザー: Miwashita     日付: 04/12/14   時刻: 19:39
-チェックイン $/Project/Springhead/src/Framework
-コメント: 
-
-*****  CRPuppet.cpp  *****
-バージョン 19
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 19:33
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRUser.cpp  *****
-バージョン 19
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 19:03
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.cpp  *****
-バージョン 18
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 19:03
-チェックイン $/Project/Springhead/src/Creature
-
-*****  CRPuppet.h  *****
-バージョン 13
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 19:03
-チェックイン $/Project/Springhead/src/Creature
-
-*****  TQuaternion.h  *****
-バージョン 29
-ユーザー: Ishikawa     日付: 04/12/14   時刻: 17:55
-チェックイン $/Project/Springhead/src/Base
-
-*****  PHJoint1D.h  *****
-バージョン 5
-ユーザー: Hase         日付: 04/12/13   時刻: 22:29
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint1D.cpp  *****
-バージョン 6
-ユーザー: Hase         日付: 04/12/13   時刻: 22:29
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.h  *****
-バージョン 49
-ユーザー: Hase         日付: 04/12/13   時刻: 22:29
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  PHJoint.cpp  *****
-バージョン 74
-ユーザー: Hase         日付: 04/12/13   時刻: 22:29
-チェックイン $/Project/Springhead/src/Physics
-コメント: 
-
-*****  CRVirtualHuman.cpp  *****
-バージョン 10
-ユーザー: Yosa         日付: 04/12/13   時刻: 22:27
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
-
-*****  Creature.dsp  *****
-バージョン 9
-ユーザー: Yosa         日付: 04/12/13   時刻: 22:27
-チェックイン $/Project/Springhead/src/Creature
-コメント: 
+------------------------------------------------------------------------
+r27 | sprdemo | 2005-03-30 12:48:25 +0900 (水, 30 3 2005) | 1 line
 
+Scripts upgraded to use SVN
+------------------------------------------------------------------------
+r26 | sprdemo | 2005-03-30 12:01:57 +0900 (水, 30 3 2005) | 1 line
+
+Erase Obsolete .bat Files
+------------------------------------------------------------------------
+r25 | hase | 2005-03-28 23:55:18 +0900 (月, 28 3 2005) | 2 lines
+
+Doxygen更新 main.cppを最新版に
+
+------------------------------------------------------------------------
+r24 | hase | 2005-03-28 23:52:47 +0900 (月, 28 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r23 | hase | 2005-03-28 23:50:51 +0900 (月, 28 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r22 | hase | 2005-03-28 23:33:20 +0900 (月, 28 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r21 | jumius | 2005-03-28 22:43:44 +0900 (月, 28 3 2005) | 1 line
+
+Morning-build system
+------------------------------------------------------------------------
+r20 | hase | 2005-03-26 00:34:31 +0900 (土, 26 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r19 | hase | 2005-03-26 00:23:59 +0900 (土, 26 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r18 | hase | 2005-03-26 00:17:55 +0900 (土, 26 3 2005) | 1 line
+
+VSS->SVN
+------------------------------------------------------------------------
+r17 | hase | 2005-03-25 22:44:07 +0900 (金, 25 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r16 | hase | 2005-03-25 22:35:10 +0900 (金, 25 3 2005) | 1 line
+
+
+------------------------------------------------------------------------
+r15 | jumius | 2005-03-01 14:45:55 +0900 (火, 01 3 2005) | 1 line
+
+Use SVN for MorningBuild-Scripts
+------------------------------------------------------------------------
+r12 | jumius | 2005-02-17 22:52:42 +0900 (木, 17 2 2005) | 1 line
+
+Make directory structure for Springhead Project
+------------------------------------------------------------------------
+r11 | jumius | 2005-02-17 22:52:29 +0900 (木, 17 2 2005) | 1 line
+
+Make directory structure for Springhead Project
+------------------------------------------------------------------------
+r9 | hase | 2005-02-17 16:03:08 +0900 (木, 17 2 2005) | 1 line
+
+VSSから更新
+------------------------------------------------------------------------
+r8 | hase | 2004-12-24 02:36:08 +0900 (金, 24 12 2004) | 1 line
+
+VSSから更新
+------------------------------------------------------------------------
+r7 | hase | 2004-12-24 02:31:57 +0900 (金, 24 12 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r6 | hase | 2004-12-24 02:30:54 +0900 (金, 24 12 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r5 | hase | 2004-12-24 02:16:24 +0900 (金, 24 12 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r4 | hase | 2004-12-24 02:16:08 +0900 (金, 24 12 2004) | 1 line
+
+
+------------------------------------------------------------------------
+r3 | gimite | 2004-11-25 01:34:48 +0900 (木, 25 11 2004) | 1 line
+
+Move test by Gimite.
+------------------------------------------------------------------------
+r2 | gimite | 2004-11-25 01:31:17 +0900 (木, 25 11 2004) | 1 line
+
+Test by Gimite.
+------------------------------------------------------------------------
+r1 | jumius | 2004-11-25 00:43:18 +0900 (木, 25 11 2004) | 1 line
+
+SVN Repository for Springhead.
+------------------------------------------------------------------------
