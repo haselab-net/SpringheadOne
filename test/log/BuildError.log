@@ -3,7 +3,6 @@
 --- ビルドエラーのログ --- 
  
 *** Springhead *** 
-LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
  
  
 *** DynaHaptic *** 
@@ -118,14 +117,6 @@ C:\home\hase\C\Project\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309)
  
  
 *** TreeTestView *** 
-[C++ 警告] wspiapi.h(786): W8060 おそらく不正な代入
-  詳細な解析情報
-    WBSocket.cpp(3): #include C:\home\hase\C\Project\Springhead\src\WinBasis\WBSocket.h
-    WBSocket.h(6): #include c:\progra~1\borland\cbuild~1\include\ws2tcpip.h
-    ws2tcpip.h(566): #include c:\progra~1\borland\cbuild~1\include\wspiapi.h
-    wspiapi.h(814): 具体化対象の選択：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
-    --- 具体化のため構文解析を初期化しました
-    wspiapi.h(692): 構文解析対象：int __stdcall WspiapiLegacyGetNameInfo(const sockaddr *,int,char *,unsigned int,char *,unsigned int,int)
 [C++ エラー] WXGuid.cpp(10): E2209 インクルードファイル 'd3d9.h' をオープンできない
 [C++ エラー] WXGuid.cpp(11): E2209 インクルードファイル 'd3dx9.h' をオープンできない
  
