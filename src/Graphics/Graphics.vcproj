@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="Graphics"
 	ProjectGUID="{DDC7E01E-5983-487B-9183-7FEDF9F61262}"
-	SccProjectName="&quot;$/Project/Springhead/src/Graphics&quot;, XPUAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform

@@ -3,10 +3,10 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="SceneGraph"
-	SccProjectName="&quot;$/Project/Springhead/src/SceneGraph&quot;, DTUAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform

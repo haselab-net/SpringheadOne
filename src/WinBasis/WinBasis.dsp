@@ -152,44 +152,6 @@ PostBuild_Cmds=WinBasisLib.bat MFCRELEASE
 # Name "WinBasis - Win32 Debug"
 # Name "WinBasis - Win32 MFC Debug"
 # Name "WinBasis - Win32 MFC Release"
-# Begin Group "HID"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\HID\WBHid.cpp
-
-!IF  "$(CFG)" == "WinBasis - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "WinBasis - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "WinBasis - Win32 MFC Debug"
-
-!ELSEIF  "$(CFG)" == "WinBasis - Win32 MFC Release"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\HID\WBHid.h
-
-!IF  "$(CFG)" == "WinBasis - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "WinBasis - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "WinBasis - Win32 MFC Debug"
-
-!ELSEIF  "$(CFG)" == "WinBasis - Win32 MFC Release"
-
-!ENDIF 
-
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=.\WBComStream.cpp

@@ -4,6 +4,8 @@
 
 namespace Spr {;
 
+HIOBJECTIMP(HIMouse, HIForceDevice6D);
+
 bool HIMouse::Init(){
 	oldX = oldY = newX = newY = 0;
 	btnState = NONE;

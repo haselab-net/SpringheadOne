@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="Creature"
 	ProjectGUID="{4E86F5A3-C7D7-4c7a-8C06-9DB9C1ADF6CC}"
-	SccProjectName="&quot;$/Project/Springhead/src/Creature&quot;, OOXAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
@@ -245,6 +245,9 @@
 			RelativePath=".\CRActionPlanner.h">
 		</File>
 		<File
+			RelativePath=".\CRActionPlanning.h">
+		</File>
+		<File
 			RelativePath=".\CRBalance.cpp">
 		</File>
 		<File
@@ -284,10 +287,22 @@
 			RelativePath=".\CRPuppet.h">
 		</File>
 		<File
+			RelativePath=".\CRQuadPRBalance.cpp">
+		</File>
+		<File
+			RelativePath=".\CRQuadPRBalance.h">
+		</File>
+		<File
 			RelativePath=".\CRReachingMovment.cpp">
 		</File>
 		<File
 			RelativePath=".\CRReachingMovment.h">
+		</File>
+		<File
+			RelativePath=".\CRReachingMovmentPD.cpp">
+		</File>
+		<File
+			RelativePath=".\CRReachingMovmentPD.h">
 		</File>
 		<File
 			RelativePath=".\CRRegisterLoader.cpp">
@@ -303,6 +318,12 @@
 		</File>
 		<File
 			RelativePath=".\CRUser.h">
+		</File>
+		<File
+			RelativePath=".\CRVH.cpp">
+		</File>
+		<File
+			RelativePath=".\CRVH.h">
 		</File>
 		<File
 			RelativePath=".\CRVirtualHuman.cpp">

@@ -3,10 +3,10 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="Device"
-	SccProjectName="&quot;$/Project/Springhead/src/Device&quot;, MCKAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
@@ -357,6 +357,9 @@
 		</File>
 		<File
 			RelativePath="DRContecIsaDa.h">
+		</File>
+		<File
+			RelativePath=".\DREzUSB.h">
 		</File>
 		<File
 			RelativePath="DRNittaForce.cpp">

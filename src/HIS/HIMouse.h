@@ -27,7 +27,7 @@ public:
 	HIMouse(){ bGood = false; }
 	virtual ~HIMouse(){}
 	///	デバイスのタイプ
-	HIOBJECT_DEF(HIMouse);
+	HIOBJECTDEF(HIMouse);
 
 	bool IsGood(){return bGood;}
 

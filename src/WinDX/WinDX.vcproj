@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="WinDX"
 	ProjectGUID="{7D0453D2-4242-496A-AE09-A6883FA49CF7}"
-	SccProjectName="&quot;$/Project/Springhead/src/WinDX&quot;, ASUAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform

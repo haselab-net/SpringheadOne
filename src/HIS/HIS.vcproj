@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="HIS"
 	ProjectGUID="{7CA215F8-9252-474D-8FA1-0375E8B5D861}"
-	SccProjectName="&quot;$/Project/Springhead/src/HIS&quot;, WTBBAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
@@ -232,6 +232,12 @@
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath=".\HIBase.cpp">
+		</File>
+		<File
+			RelativePath=".\HIBase.h">
+		</File>
 		<File
 			RelativePath="HIHapticDevice.cpp">
 			<FileConfiguration
@@ -700,6 +706,12 @@
 		</File>
 		<File
 			RelativePath=".\HISpidarG6X2.h">
+		</File>
+		<File
+			RelativePath=".\HISpidarG6X3.cpp">
+		</File>
+		<File
+			RelativePath=".\HISpidarG6X3.h">
 		</File>
 		<File
 			RelativePath="HISpidarMotor.cpp">

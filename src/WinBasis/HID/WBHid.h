@@ -3,16 +3,6 @@
 
 #include <WinBasis/WBUtility.h>
 
-#ifndef ULONG_PTR
-typedef unsigned long * ULONG_PTR;
-#define ULONG_PTR ULONG_PTR
-#endif
-
-#ifndef DWORD_PTR
-typedef DWORD* DWORD_PTR;
-#define DWORD_PTR DWORD_PTR
-#endif
-
 extern "C" {
 #include "hidsdi.h"
 #include "hidpi.h"

@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="GraphicsGL"
 	ProjectGUID="{1925A922-3152-4BDE-A685-91FF5D21D23C}"
-	SccProjectName="&quot;$/Project/Springhead/src/GraphicsGL&quot;, XPUAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform

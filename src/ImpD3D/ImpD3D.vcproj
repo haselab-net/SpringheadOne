@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="ImpD3D"
 	ProjectGUID="{FD00421C-7973-4D61-86FF-7D1A332E8533}"
-	SccProjectName="&quot;$/Project/Springhead/src/ImpD3D&quot;, RUUAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath="."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="MFCProj">
 	<Platforms>
 		<Platform
