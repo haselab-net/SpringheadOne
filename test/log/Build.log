@@ -1,8 +1,52 @@
 --- ビルドのログ ---  
  
-*** Springhead *** 
-..\..\Springhead\src\Springhead\Springhead.dsp
-ﾌｧｲﾙが見つかりません。
-正しいﾊﾟｽとﾌｧｲﾙ名を入力してください。
-ｴﾗｰ: ﾌﾟﾛｼﾞｪｸﾄがﾛｰﾄﾞされていません。 
+*** DynaHaptic *** 
+--------------------構成: Base - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+Affine.cpp
+BaseDebug.cpp
+BaseTypeInfo.cpp
+BaseUtility.cpp
+StrbufBase.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Collision - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+CDCollisionEngine.cpp
+CDConvex.cpp
+CDDetectorImp.cpp
+CDFramePair.cpp
+CDGeometry.cpp
+C:\SVNWork\Springhead\src\Collision\CDGeometry.cpp(7) : error C2065: 'CDPhysicalMaterial' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDGeometry.cpp(7) : error C2065: 'pmat' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDGeometry.cpp(7) : error C2783: 'T *__cdecl Spr::UTDcastImp(P)' : 'T' 用のﾃﾝﾌﾟﾚｰﾄの引数を減少できませんでした。
+CDGJK.cpp
+CDMesh.cpp
+C:\SVNWork\Springhead\src\Collision\CDMesh.cpp(39) : error C2065: 'CDPhysicalMaterial' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDMesh.cpp(39) : error C2783: 'T *__cdecl Spr::UTDcastImp(P)' : 'T' 用のﾃﾝﾌﾟﾚｰﾄの引数を減少できませんでした。
+C:\SVNWork\Springhead\src\Collision\CDMesh.cpp(40) : error C2065: 'pm' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDMesh.cpp(40) : error C2059: 構文ｴﾗｰ : ')'
+CDPhysicalMaterial.cpp
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(5) : error C2065: 'CDPhysicalMaterial' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(5) : error C2653: 'CDPhysicalMaterial' : 識別子がｸﾗｽ名でも名前空間名でもありません。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(5) : error C2955: 'UTTypeInfoImp' : ｸﾗｽのﾃﾝﾌﾟﾚｰﾄ名で仮引数ﾘｽﾄの指定がありません。
+        C:\VSSWork\Springhead/src\Base/BaseTypeInfo.h(22) : 'UTTypeInfoImp' の宣言を確認してください。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(5) : error C2955: 'UTTypeInfoImp' : ｸﾗｽのﾃﾝﾌﾟﾚｰﾄ名で仮引数ﾘｽﾄの指定がありません。
+        C:\VSSWork\Springhead/src\Base/BaseTypeInfo.h(22) : 'UTTypeInfoImp' の宣言を確認してください。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(5) : error C2512: 'UTTypeInfoImp' : ｸﾗｽ、構造体、共用体にﾃﾞﾌｫﾙﾄ ｺﾝｽﾄﾗｸﾀがありません。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(5) : error C2262: 'typeInfo' : 壊せません。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(7) : error C2653: 'CDPhysicalMaterialData' : 識別子がｸﾗｽ名でも名前空間名でもありません。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(8) : error C2065: 'reflexSpring' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(8) : error C2065: 'reflexDamper' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(8) : error C2065: 'frictionSpring' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(8) : error C2065: 'frictionDamper' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(9) : error C2065: 'staticFriction' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(10) : error C2065: 'dynamicFriction' : 定義されていない識別子です。
+C:\SVNWork\Springhead\src\Collision\CDPhysicalMaterial.cpp(14) : fatal error C1903: 直前のｴﾗｰを修復できません; ｺﾝﾊﾟｲﾙを中止します。
+CDPolyhedron.cpp
+CDRegisterLoader.cpp
+CDSphere.cpp
+cl.exe の実行ｴﾗｰ
+
+DynaHaptic.exe - ｴﾗｰ 21、警告 0
+ 
  
