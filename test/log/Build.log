@@ -378,7 +378,9 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
  
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] BaseUtility.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] Affine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] StrbufBase.cpp(1): 
@@ -386,6 +388,7 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] BaseTypeInfo.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBWinDriver.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] WBDllLoader.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBMTimer.cpp(1): 
@@ -483,6 +486,7 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] DRADAPIO.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HITurnTable.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] HIHapticDevice.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HISpidarMotor.cpp(1): 
@@ -537,6 +541,7 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
     HIMouse.cpp(5): namespace Spr
     HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
 [C++] SGFrame.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] SGObject.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGScene.cpp(1): 
@@ -546,11 +551,13 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] SGEngine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGRegisterLoader.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] SGRenderEngine.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
 [C++] FITypeDesc.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocNode.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] FIFileDoc.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] FIDocScene.cpp(1): 
@@ -558,6 +565,7 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] CDGJK.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] CDSphere.cpp(1): 
