@@ -72,7 +72,7 @@ public:
 	///
 	HISpidar4();
 	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("Spidar4")
+	HIOBJECTDEF(HISpidar4);
 	///
 	virtual ~HISpidar4();
 	///	デバイスの初期化(使用前に呼ぶ)

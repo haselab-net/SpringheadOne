@@ -6,6 +6,9 @@
 
 using namespace Spr;
 
+HIOBJECTIMPABST(HIRuiBase, HIHapticDevice);
+HIOBJECTIMP(HIRuiKuma, HIRuiBase);
+
 bool HIRuiKuma::Init(){
 	comSt.boudRate = 57600;//38400;
 	comSt.flowControl = WBComStatus::FC_NONE;

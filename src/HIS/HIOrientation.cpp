@@ -3,6 +3,7 @@
 
 namespace Spr{;
 
+HIOBJECTIMPABST(HIOrientation, HIForceDevice6D);
 
 bool HIOrientation::Init(DVDeviceManager& devMan){
 	return devMan.VPool().Rent(dev);

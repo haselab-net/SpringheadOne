@@ -19,7 +19,7 @@ protected:
 
 public:
 	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("RuiKuma")
+	HIOBJECTDEF(HIRuiKuma);
 	///	ジョイント数
 
 	bool Init();

@@ -5,6 +5,7 @@
 #include "HISpidarG6.h"
 
 namespace Spr {;
+HIOBJECTIMP(HISpidarG6, HIForceDevice6D);
 //----------------------------------------------------------------------------
 HISpidarG6::HISpidarG6(){
 	SetWeight();
@@ -56,6 +57,7 @@ bool HISpidarG6::Calib(){
 	//	ポインタを原点(中心)に置いて、キャリブレーションを行う
 	for(unsigned i=0; i<motor.size(); i++) motor[i].SetLength( (motor[i].pos - motor[i].jointPos).norm() );
 	lengthDiffAve.clear();
+	for(int i=0; i<4; ++i) HISpidarCalc6Dof::Update();	//	姿勢を更新
 	return true;
 }
 void HISpidarG6::Update(float dt){

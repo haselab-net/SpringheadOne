@@ -1,4 +1,4 @@
-@echo off
+:@echo off
 @echo ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
 
 : ビルド構成にあわせたライブラリ名のサフィックスを設定
@@ -17,8 +17,11 @@ if exist c:\mssdk set DXROOT=c:\mssdk
 if exist d:\mssdk set DXROOT=d:\mssdk
 if exist c:\dxsdk set DXROOT=c:\dxsdk
 if exist d:\dxsdk set DXROOT=d:\dxsdk
+if exist c:\dx90sdk set DXROOT=c:\dx90sdk
+if exist d:\dx90sdk set DXROOT=d:\dx90sdk
 
 if not "%DXROOT%"=="" set DXLIB=%DXROOT%\lib
+if exist %DXLIB%\x86\nul set DXLIB=%DXLIB%\x86
 
 : DirectXのバージョン
 set DXVER=9
@@ -26,7 +29,7 @@ set DXVER=9
 
 if DXVER==9 set DINPUT=dinput.lib
 if DXVER==8 set DINPUT=dinput8.lib
-set LIBS=ddraw.lib d3d%DXVER%.lib d3dx%DXVER%.lib dsound.lib strmiids.lib Quartz.lib d3dxof.lib %DINPUT% setupapi.lib
+set LIBS=ddraw.lib d3d%DXVER%.lib d3dx%DXVER%.lib dsound.lib strmiids.lib Quartz.lib d3dxof.lib %DINPUT% setupapi.lib dxguid.lib
 
 : DirectShow の BaseClassライブラリがあればそれも追加
 if "%EXT%"=="D" if exist %DXROOT%\samples\Multimedia\DirectShow\BaseClasses\Debug\strmbasd.lib set DSHOW=%DXROOT%\samples\Multimedia\DirectShow\BaseClasses\Debug\strmbasd.lib

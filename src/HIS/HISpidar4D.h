@@ -43,6 +43,7 @@ sp->MaxForce(20.0f);
 
 class SPR_DLL HISpidar4D: public HIForceDevice3D{
 public:
+	HIOBJECTDEF(HISpidar4D);
 
 	typedef HIForceDevice3D superclass;
 protected:
@@ -71,8 +72,6 @@ protected:
 public:
 	///
 	HISpidar4D();
-	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("Spidar4D")
 	///
 	virtual ~HISpidar4D();
 	///	デバイスの初期化(使用前に呼ぶ)

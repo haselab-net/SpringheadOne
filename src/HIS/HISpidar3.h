@@ -58,7 +58,7 @@ public:
 	///
 	HISpidar3();
 	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("Spidar3")
+	HIOBJECTDEF(HISpidar3);
 	///
 	virtual ~HISpidar3();
 	///	デバイスの初期化(使用前に呼ぶ)

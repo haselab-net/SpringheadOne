@@ -11,27 +11,8 @@
 namespace Spr {;
 
 ///	SGObject を継承したクラスはメンバとしてこのマクロを持つ．
-#define SGOBJECTDEF(cls)								\
-public:													\
-	static UTTypeInfoImp<cls> typeInfo;					\
-	virtual const UTTypeInfo* GetTypeInfo() const {		\
-		return &typeInfo;								\
-	}													\
-	static const UTTypeInfo* GetTypeInfoStatic(){		\
-		return &typeInfo;								\
-	}													\
-
-#define SGOBJECTDEFABST(cls)							\
-public:													\
-	static UTTypeInfoImpAbst<cls> typeInfo;				\
-	virtual const UTTypeInfo* GetTypeInfo() const {		\
-		return &typeInfo;								\
-	}													\
-	static const UTTypeInfo* GetTypeInfoStatic(){		\
-		return &typeInfo;								\
-	}													\
-
-
+#define SGOBJECTDEF(cls)				DEF_UTTYPEINFODEF(cls)
+#define SGOBJECTDEFABST(cls)			DEF_UTTYPEINFOABSTDEF(cls)
 #define SGOBJECTIMPBASE(cls)			DEF_UTTYPEINFO(cls)
 #define SGOBJECTIMPBASEABST(cls)		DEF_UTTYPEINFOABST(cls)
 #define SGOBJECTIMP(cls, base)			DEF_UTTYPEINFO1(cls, base)

@@ -14,7 +14,7 @@ public:
 	bool Init(DVDeviceManager& dev, bool bLeft);
 
 	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("SpidarG6X3")
+	HIOBJECTDEF(HISpidarG6X3);
 };
 
 }	//	namespace Spr

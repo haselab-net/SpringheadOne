@@ -16,6 +16,14 @@ bool UTTypeInfo::Inherit(const UTTypeInfo* key) const {
 	}
 	return false;
 }
+bool UTTypeInfo::Inherit(const char* key) const {
+	const UTTypeInfo* info = this;
+	while (info){
+		if(strcmp(info->ClassName(),key)==0) return true;
+		info = info->base;
+	}
+	return false;
+}
 char* UTAcastError(const char* str){
 	DSTR << "ACAST: " << str << std::endl;
 	assert(0);

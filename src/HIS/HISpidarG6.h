@@ -9,15 +9,15 @@
 
 namespace Spr {;
 
-/**	エンドエフェクタ(グリップ)が剛体で6自由度なSPIDAR
-	糸の本数は可変	*/
+/**	@JA	エンドエフェクタ(グリップ)が剛体で6自由度なSPIDAR．糸の本数は可変．
+	@EN	A SPIDAR with a 6DOF solid grip. The number of the strings is variable.@@*/
 class SPR_DLL HISpidarG6: public HIForceDevice6D,public HISpidarCalc6Dof{
 public:
 	std::vector<HISpidarMotor> motor;	///<	モータ
 	std::vector<DVPioBase*> button;	///<	ボタン
 
 	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("SpidarG6")
+	HIOBJECTDEF(HISpidarG6);
 
 	HISpidarG6();
 	virtual ~HISpidarG6();

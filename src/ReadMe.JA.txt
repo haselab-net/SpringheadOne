@@ -16,60 +16,8 @@ Springhead					2004年6月 長谷川晶一
   Springheadも小さなモジュールでライブラリを構成することで，理解しやす
   く利用しやすいライブラリを目指しています．
 
-2.ライブラリの概要
-  ライブラリはいくつかのパッケージから構成されています．
-2.1
-
-3.インストール＆実行手順
-  以下の手順に従ってください．
-  1. Springheadのツリーを用意してください．
-  2. 環境変数に SPRINGHEAD に ツリーのトップディレクトリを設定して下さ
-     い．例えば次のような設定をすることになります．
-       Win98:  次の1行をAutoexec.batに加える
-               set SPRINGHEAD=C:\Home\C\Project\Springhead
-       Win2000:マイコンピュータ－プロパティ－詳細－環境変数－新規を選
-       び環境変数名 SPRINGHEAD に 値 C:\Home\C\Project\Springhead
-       を設定する．
-  3. DirectX8か9をインストールする．
-
-  Visual C++ 6.0を使う場合．
-  4. Visual C++ Service Pack 6 をインストールする．
-  5. Visual C++ の [ツール]-[オプション]-[ディレクトリ]の
-      インクルードディレクトリに，C:\DXSDK\include
-      ライブラリディレクトリに，C:\DXSDK\lib
-     を追加する．
-  6. src/samples/DynaHaptic/DynaHaptic.dsw を開き，MFC Release構成をビ
-     ルド，実行する．
-
-  C++ Builder 6 を使う場合．
-  4. Borland C++Builder 6 アップデートパック #4 をインストール
-  5. src/SpringheadBCB.bpg を開いて，すべてのプロジェクトをコンパイル
-     する．
-  6. src/BCBGui/TreeViewTest/TreeTestView.bpg を開いて実行してみる．
-  
-  Visual C++ 7.1を使う場合
-  VC6と同様だが，開発に使っていないため， .sln .vcproj ファイルが更新
-  されていないことが多い．プロジェクトのファイルを追加／削除すると動く
-  ことが多い．
-
-4.ドキュメント生成手順
-  サンプルソフトとしては，
-  ・SPIDARのサンプル
-    Springhead/src/HIS/Samples/Spidar/spidar.dsw
-  ・物理シミュレータのサンプル
-    Springhead/src/Samples/MFCD3DDyna/MFCD3DDyna.dsw
-  があります．
-
-  ドキュメントはまだできていません（２００４．６．１０）
-/*
-  リファレンスマニュアルは，ドキュメント生成ツール doxygen で生成でき
-  ます．
-
- - リファレンスマニュアルの生成方法
-   1. Springheadのインストールをする．
-   2. Springhead/src/SpringheadDoc.bat JA を実行する．
-   3. Springhead/src/html/index.html にドキュメントのトップページが生成される．
-*/
+2.使い方
+  SpringheadのWiki http://springhead.info/wiki をご覧ください．
 
 ◆配布・使用条件
   ・Springhead/src/Collision/CDGJK.cpp には， GPLで配布されている SOLID

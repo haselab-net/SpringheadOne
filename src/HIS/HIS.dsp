@@ -133,6 +133,14 @@ LIB32=link.exe -lib
 # Name "HIS - Win32 MFC Release"
 # Begin Source File
 
+SOURCE=.\HIBase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\HIBase.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\HIHapticDevice.cpp
 # End Source File
 # Begin Source File

@@ -1,4 +1,5 @@
 #include "WBHid.h"
+
 namespace Spr{;
 
 void WBHidDevice::Print(std::ostream& os) const{

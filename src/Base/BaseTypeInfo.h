@@ -10,6 +10,7 @@ public:
 
 	UTTypeInfo(const char* cn, UTTypeInfo* b): className(cn), base(b){}
 	virtual bool Inherit(const UTTypeInfo* key) const ;
+	virtual bool Inherit(const char* str) const ;
 	virtual const char* ClassName() const = 0;
 	virtual void* CreateInstance() const = 0;
 };
@@ -29,6 +30,27 @@ public:
 	virtual const char* ClassName() const { return className; }
 };
 
+#define DEF_UTTYPEINFODEF(cls)							\
+public:													\
+	static UTTypeInfoImp<cls> typeInfo;					\
+	virtual const UTTypeInfo* GetTypeInfo() const {		\
+		return &typeInfo;								\
+	}													\
+	static const UTTypeInfo* GetTypeInfoStatic(){		\
+		return &typeInfo;								\
+	}													\
+
+#define DEF_UTTYPEINFOABSTDEF(cls)						\
+public:													\
+	static UTTypeInfoImpAbst<cls> typeInfo;				\
+	virtual const UTTypeInfo* GetTypeInfo() const {		\
+		return &typeInfo;								\
+	}													\
+	static const UTTypeInfo* GetTypeInfoStatic(){		\
+		return &typeInfo;								\
+	}													\
+
+
 #define DEF_UTTYPEINFO(cls)			\
 UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, NULL);
 
@@ -40,6 +62,9 @@ UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, NULL);
 
 #define DEF_UTTYPEINFOABST1(cls, base)		\
 UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, &base::typeInfo);
+
+#define GETCLASSNAME(p)	(p->GetTypeInfo()->className);
+#define GETCLASSNAMES(T)	(T::GetTypeInfoStatic()->className);
 
 #define DCAST(T, p)	UTDcastImp<T>(p)
 template <class T, class P> T* UTDcastImp(P p){

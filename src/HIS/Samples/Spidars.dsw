@@ -7,10 +7,6 @@ Project: "Base"=..\..\Base\Base.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/Base", XPUAAAAA
-    ..\..\base
-    end source code control
 }}}
 
 Package=<4>
@@ -23,10 +19,6 @@ Project: "Device"=..\..\Device\Device.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/Device", MCKAAAAA
-    ..\..\device
-    end source code control
 }}}
 
 Package=<4>
@@ -39,10 +31,6 @@ Project: "HIS"=..\HIS.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/HIS", WTBBAAAA
-    ..
-    end source code control
 }}}
 
 Package=<4>
@@ -55,14 +43,22 @@ Project: "Spidar"=.\Spidar\Spidar.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/HIS/Samples/Spidar", YDCBAAAA
-    .\spidar
-    end source code control
 }}}
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Device
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HIS
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinBasis
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -71,10 +67,6 @@ Project: "SpidarG6"=.\SpidarG6\SpidarG6.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/HIS/Samples/SpidarG6", EECBAAAA
-    .\spidarg6
-    end source code control
 }}}
 
 Package=<4>
@@ -87,10 +79,6 @@ Project: "WinBasis"=..\..\WinBasis\WinBasis.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/WinBasis", WQUAAAAA
-    ..\..\winbasis
-    end source code control
 }}}
 
 Package=<4>
@@ -103,10 +91,6 @@ Global:
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Project/Springhead/src/HIS/Samples", SDCBAAAA
-    .
-    end source code control
 }}}
 
 Package=<3>

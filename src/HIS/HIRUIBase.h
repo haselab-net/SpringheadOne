@@ -8,8 +8,7 @@ namespace Spr {
 class SPR_DLL HIRuiBase: public HIHapticDevice{
 protected:
 public:
-	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("RuiBase")
+	HIOBJECTDEFABST(HIRuiBase);
 	///	ジョイント数
 	virtual int NJoint()=0;
 	virtual float GetJointAngle(int jn)=0;

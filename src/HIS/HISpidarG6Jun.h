@@ -9,6 +9,7 @@ namespace Spr {;
 	フレームのサイズやモータの符号を含む	*/
 class SPR_DLL HISpidarG6Jun: public HISpidarG6{
 public:
+	HIOBJECTDEF(HISpidarG6Jun);
 	HISpidarG6Jun();
 	bool Init(DVDeviceManager& dev);
 };

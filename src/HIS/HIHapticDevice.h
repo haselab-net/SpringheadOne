@@ -1,33 +1,19 @@
 #ifndef VR_HAPTIC_HDHAPTIC_H
 #define VR_HAPTIC_HDHAPTIC_H
-#include <Base/Env.h>
-#include <Base/Affine.h>
-#include <Base/BaseUtility.h>
-#include <set>
+#include "HIBase.h"
 
 namespace Spr {
-class DRRealDevice;
-
-#ifdef _MSC_VER
- #pragma warning(disable:4275)
- #pragma warning(disable:4251)
-#endif
 
 //----------------------------------------------------------------------------
 //	HIHapticDevice
-#define HI_DEVICE_TYPE_DEF(x)	\
-static const char* GetTypeStatic(){ return x; }	\
-virtual  const char* GetType(){ return x; }
-
 
 ///	力覚提示装置の基底クラス
-class SPR_DLL HIHapticDevice: public UTRefCount{
+class SPR_DLL HIHapticDevice: public HIBase{
 protected:
-	static std::set<DRRealDevice*> realDevices;
-	static int deviceUpdateStep;
 	int updateStep;
 	bool bGood;
 public:
+	HIOBJECTDEFABST(HIHapticDevice);
 	/**@name	初期化など	*/
 	//@{
 	/// 
@@ -48,8 +34,6 @@ public:
 	virtual void Update(float dt);
 	///	
 	bool IsGood(){ return bGood; }
-	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("HapticDevice")
 };
 
 //----------------------------------------------------------------------------
@@ -63,6 +47,7 @@ protected:
 	Vec3f lastPos;
 	Quaternionf lastOri;
 public:
+	HIOBJECTDEFABST(HIForceDevice6D);
 	///
 	HIForceDevice6D();
 	///
@@ -98,6 +83,7 @@ public:
 ///	並進3自由度のデバイス
 class SPR_DLL HIForceDevice3D: public HIForceDevice6D{
 public:
+	HIOBJECTDEFABST(HIForceDevice3D);
 	HIForceDevice3D();
 	///	デバイスの目標力出力を設定する
 	virtual void SetForce(const Vec3f& f)=0;

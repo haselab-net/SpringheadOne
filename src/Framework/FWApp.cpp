@@ -85,7 +85,7 @@ void FWApp::Init(HWND hw){
 
 
 #define IF_SPIDAR(t)										\
-		if (strcmp(t::GetTypeStatic(), type) == 0){			\
+		if (t::GetTypeInfoStatic()->Inherit(type)){			\
 			UTRef<t> dev = new t;							\
 			if (dev->Init(devMan)){							\
 				pointers.push_back(new FWPointer6D(dev));	\
@@ -98,28 +98,27 @@ bool FWApp::AddHis(const char* str){
 	cs.Enter();
 	bool rv = true;
 	std::istrstream is(str, strlen(str));
-	char type[100];
-	is >> type;
-	if (strcmp(HIRuiKuma::GetTypeStatic(), type) == 0){
+	char type[100]="HI";
+	is >> type+2;
+	if (HIRuiKuma::GetTypeInfoStatic()->Inherit(type)){
 		UTRef<HIRuiKuma> dev = new HIRuiKuma;
 		if (dev->Init()){
 			pointers.push_back(new FWPointerRui(&*dev));
 			rv = true;
 		}
-	}else if (strcmpi("Orientation", type) == 0){
+	}else if (HIOrientation::GetTypeInfoStatic()->Inherit(type)){
 		UTRef<HIOrientation> ori = new HIOrientation;
 		if (ori->Init(devMan)){
 			pointers.push_back(new FWPointer6D(ori));
 			rv = true;
 		}
-	}else if (strcmp(HIMouse::GetTypeStatic(), type) == 0){
+	}else if (HIMouse::GetTypeInfoStatic()->Inherit(type)){
 		if (!mouse->IsGood()){
 			mouse->Init();
 			pointers.push_back(new FWPointer6D(mouse));
 			rv = true;
 		}
-	}else if (strcmp(HISpidar4::GetTypeStatic(), type) == 0){
-
+	}else if (HISpidar4::GetTypeInfoStatic()->Inherit(type)){
 		//	Spidar4‚Ì‰Šú’l
 		#define PX	0.265f	//JA	x•ûŒü‚Ì•Ó‚Ì’·‚³/2	EN length of the x side of the frame /2
 		#define PY	0.265f	//JA	y•ûŒü‚Ì•Ó‚Ì’·‚³/2	EN length of the y side of the frame /2
@@ -167,8 +166,7 @@ bool FWApp::AddHis(const char* str){
 			pointers.push_back(new FWPointer6D(spidar));
 			rv = true;
 		}
-	}else if (strcmp(HISpidar4D::GetTypeStatic(), type) == 0){
-
+	}else if (HISpidar4D::GetTypeInfoStatic()->Inherit(type)){
 		//	Spidar4‚Ì‰Šú’l
 		/*
 		#define PX	0.265f	//JA	x•ûŒü‚Ì•Ó‚Ì’·‚³/2	EN length of the x side of the frame /2

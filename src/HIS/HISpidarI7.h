@@ -10,7 +10,7 @@ namespace Spr {;
 class SPR_DLL HISpidarI7: public HISpidarG6{
 public:
 	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("SpidarI7")
+	HIOBJECTDEF(HISpidarI7);
 
 	HISpidarI7();
 	virtual bool Init(DVDeviceManager& dev);

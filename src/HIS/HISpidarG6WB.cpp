@@ -4,6 +4,8 @@
 
 namespace Spr {;
 //----------------------------------------------------------------------------
+HIOBJECTIMP(HISpidarG6WB, HISpidarG6);
+
 HISpidarG6WB::HISpidarG6WB() : HISpidarG6() {
 }
 

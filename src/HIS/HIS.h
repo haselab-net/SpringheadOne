@@ -24,6 +24,7 @@ TBW
  #include <mmsystem.h>
 #endif
 #include <Device/DRRealDevice.h>
+#include "HIBase.h"
 #include "HIHapticDevice.h"
 #include "HISpidarCalc3DOF.h"
 #include "HISPidarCalc6DOF.h"

@@ -16,6 +16,7 @@ Vec3f HISpidar4::motorPosDef[][4] =	//	モータの取り付け位置(中心を原点とする)
 	};
 */
 //----------------------------------------------------------------------------
+HIOBJECTIMP(HISpidar4, HIForceDevice3D);
 
 HISpidar4::HISpidar4(){
     for (int i=0;i<4;i++){

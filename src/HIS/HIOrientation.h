@@ -9,12 +9,13 @@ namespace Spr {;
 
 class SPR_DLL HIOrientation: public HIForceDevice6D{
 public:
+	///	デバイスのタイプ
+	HIOBJECTDEFABST(HIOrientation);
+
 	DVOrientationBase* dev;
 	/// 
 	HIOrientation(){ bGood = false; }
 	virtual ~HIOrientation(){}
-	///	デバイスのタイプ
-	HI_DEVICE_TYPE_DEF("Orientation")
 
 	bool IsGood(){return bGood;}
 
