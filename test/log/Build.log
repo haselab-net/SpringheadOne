@@ -70,6 +70,6 @@ SDKD3DDyna.exe - ｴﾗｰ 5、警告 0
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
 [C++ エラー] BaseDebug.cpp(2): E2209 インクルードファイル 'WinBasis\WinBasis.h' をオープンできない
-[C++] char_traits.h(22): 
+[C++] cstddef.h(27): 
  
  
