@@ -19,7 +19,7 @@ goto END
 if not exist %2 mkdir %2
 cd %2
 rem ss Get $/Project/Springhead\src\%2 -R -W -I-
-svn export svn+ssh://sprserv/export/spr/svn/repository/Springhead/trunk/src/%2
+svn export svn+ssh://sprsvn/export/spr/svn/repository/Springhead/trunk/src/%2
 cd ..
 
 :END

@@ -11,7 +11,7 @@ rem ss Decloak $/Project/Springhead/src/samples/data/Tachikoma
 rem ss Cloak $/Project/Springhead/src/boost
 rem ss Cloak $/Project/Springhead/src/boost_libs
 
-svn export svn+ssh://sprserv/export/spr/svn/repository/Springhead/trunk ./Springhead
+svn export svn+ssh://sprsvn/export/spr/svn/repository/Springhead/trunk ./Springhead
 
 minitar -c -z9 ../Springhead.tar.gz *.*
 cd ..
