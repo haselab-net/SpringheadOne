@@ -1,4 +1,4 @@
-日付 : 2005.03.31 
+日付 : 2005.04.01 
  
 --- ビルドエラーのログ --- 
  
@@ -145,31 +145,6 @@ C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : fatal err
 [C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
   詳細な解析情報
     WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
     d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
 [C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
   詳細な解析情報
