@@ -8,10 +8,8 @@ if not exist SpidarPack\Springhead\src mkdir SpidarPack\Springhead\src
 cd SpidarPack\Springhead\src
 call %0 SUB Base
 call %0 SUB WinBasis
-call %0 SUB Device
-
-call %0 SUB HIS
-
+call %0 SUB Device
+call %0 SUB HIS
 cd ..\..
 minitar -c -z9 ../SprSpidar.tar.gz *.*
 cd ..
