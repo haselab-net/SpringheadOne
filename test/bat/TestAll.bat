@@ -58,7 +58,7 @@ if exist %SMBBASE%\result.log del %SMBBASE%\result.log
 if "%LABEL%" == "ビルド成功" echo %COMMENT%>%SMBBASE%\result.log
 copy log\BuildError.log %SMBBASE%
 
-rem **** ログをVSSにチェックインする ****
+rem **** ログをSVNにコミットする ****
 cd log 
 svn commit -m "Autobuild done."
 cd ..

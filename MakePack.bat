@@ -3,12 +3,15 @@ set SSDIR=\\192.168.251.1\VSS
 if exist pack del /F /S /Q pack
 if not exist pack mkdir pack
 cd pack
-ss Decloak $/Project/Springhead/src/boost
-ss Decloak $/Project/Springhead/src/boost_libs
-ss Cloak $/Project/Springhead/src/samples/data/Tachikoma
-ss Get $/Project/Springhead -R -W -I-
-ss Decloak $/Project/Springhead/src/samples/data/Tachikoma
-ss Cloak $/Project/Springhead/src/boost
-ss Cloak $/Project/Springhead/src/boost_libs
+rem ss Decloak $/Project/Springhead/src/boost
+rem ss Decloak $/Project/Springhead/src/boost_libs
+rem ss Cloak $/Project/Springhead/src/samples/data/Tachikoma
+rem ss Get $/Project/Springhead -R -W -I-
+rem ss Decloak $/Project/Springhead/src/samples/data/Tachikoma
+rem ss Cloak $/Project/Springhead/src/boost
+rem ss Cloak $/Project/Springhead/src/boost_libs
+
+svn export svn+ssh://sprserv/export/spr/svn/repository/Springhead/trunk ./Springhead
+
 minitar -c -z9 ../Springhead.tar.gz *.*
 cd ..

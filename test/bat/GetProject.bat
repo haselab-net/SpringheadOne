@@ -1,6 +1,7 @@
 rem Project以下をVSSから取得します
 
-rem …このファイルはすでに使われていないですか？
+rem このファイルはすでに使われていないように見えます
+rem SVNレポジトリにはSpringhead以下しか入れていないのであっても意味ないです
 
 cd ..\..
 ss Workfold $/Project .
