@@ -11,10 +11,11 @@ namespace Spr {;
 static WBDllLoader dllLoader("filename.dll");	//	グローバル変数でローダーを作る．
 
 //	int DllFunc(int arg)  の場合
+#define DLLFUNC_STR		"funcname"				//	dllの中での関数の名前
 #define DLLFUNC_RTYPE	int						//	返り値の型 voidの場合は定義してはならない．
 #define DLLFUNC_NAME	DllFunc					//	関数名
-#define DLLFUNC_ARG		(int arg)				//	関数宣言時の引数
-#define DLLFUNC_CALL	(arg)					//	関数呼び出しの引数
+#define DLLFUNC_ARGDEF	(int arg)				//	関数宣言時の引数
+#define DLLFUNC_ARGCALL	(arg)					//	関数呼び出しの引数
 #include "WBDllLoaderImp.h"
 */
 class SPR_DLL WBDllLoader{

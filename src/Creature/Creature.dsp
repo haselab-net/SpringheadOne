@@ -152,6 +152,14 @@ SOURCE=.\CRBalance.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRBalanceMultiLeg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBalanceMultiLeg.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRBalanceQuadPR.cpp
 # End Source File
 # Begin Source File
@@ -188,11 +196,19 @@ SOURCE=.\CRPuppet.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CRQuadPRBalance.cpp
+SOURCE=.\CRReachingMovment.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CRQuadPRBalance.h
+SOURCE=.\CRReachingMovment.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRReachingMovmentPD.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRReachingMovmentPD.h
 # End Source File
 # Begin Source File
 
@@ -213,6 +229,14 @@ SOURCE=.\CRUser.cpp
 # Begin Source File
 
 SOURCE=.\CRUser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRVH.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRVH.h
 # End Source File
 # Begin Source File
 

@@ -34,16 +34,22 @@ void PHJointPid::Step(SGScene* s){
 	double e = goal - now;
 	if (type==0) joint->LimitAngle(e);
 	double ed;
-	double goalVel = (goal - lastGoal) / s->GetTimeStep();
+	double goalVel;
+	if (dGoal == FLT_MAX){	//	–¢Ý’è‚È‚çŒvŽZ
+		goalVel = (goal - lastGoal) / s->GetTimeStep();
+	}else{					//	Ý’è‚³‚ê‚Ä‚¢‚ê‚Î‚»‚ê‚ðŽg—p
+		goalVel = dGoal;
+		dGoal = FLT_MAX;
+	}
 	if (type==0){
 		ed = goalVel - joint->GetJointVelocity(axis);
 	}else{
 		ed = goalVel - joint->GetJointAccel(axis);
 	}
-	integratedError += e * s->GetTimeStep();
-	p_torque = proportional*e;
-	i_torque = integral*integratedError;
-	d_torque = differential*ed;
+	integratedError += float(e * s->GetTimeStep());
+	p_torque = float(proportional*e);
+	i_torque = float(integral*integratedError);
+	d_torque = float(differential*ed);
 	double tq = p_torque + i_torque + d_torque;
 	joint->AddJointTorque(tq, axis);
 	lastGoal = goal;
@@ -167,9 +173,15 @@ void PHJointBallPid::Step(SGScene* s){
 	Quaternionf now = joint->position;
 	Quaternionf qtE = now.inv() * goal;
 	Vec3f e = qtE.rotation_half();
-	Vec3f goalVel = (lastGoal.inv() * goal).rotation() / s->GetTimeStep();
+	Vec3f goalVel;
+	if (dGoal.X() == FLT_MAX){
+		goalVel = (lastGoal.inv() * goal).rotation() / s->GetTimeStep();
+	}else{
+		goalVel = dGoal;
+		dGoal.X() = FLT_MAX;
+	}
 	Vec3f ed = goalVel - joint->velocity;
-	integratedError += e * s->GetTimeStep();
+	integratedError += e * (float)s->GetTimeStep();
 	p_torque = proportional*e;
 	i_torque = integral*integratedError;
 	d_torque = differential*ed;

@@ -397,8 +397,8 @@ void CRHuman::SetJointInfo(){
 	jinfo[8].initPos	= 0.0f;
 
 	// âEå®[9] (+X)
-	jinfo[9].rangeMin	= -66.00f;
-	jinfo[9].rangeMax	= 186.00f;
+//	jinfo[9].rangeMin	= -66.00f;
+//	jinfo[9].rangeMax	= 186.00f;
 	jinfo[9].axis		= 1.0;
 	jinfo[9].initPos	= 0.0f;
 
@@ -415,7 +415,7 @@ void CRHuman::SetJointInfo(){
 	jinfo[11].initPos	= 0.0f;
 
 	// âEïI[12] (+X)
-	jinfo[12].rangeMin	= -26.00f;
+	jinfo[12].rangeMin	= -6.00f;
 	jinfo[12].rangeMax	= 154.00f;
 	jinfo[12].axis		= 1.0;
 	jinfo[12].initPos	= 0.0f;
@@ -439,8 +439,8 @@ void CRHuman::SetJointInfo(){
 	jinfo[15].initPos	= 0.0f;
 
 	// ç∂å®[16] (+X)
-	jinfo[16].rangeMin  = -66.00f;
-	jinfo[16].rangeMax  = 186.00f;
+//	jinfo[16].rangeMin  = -66.00f;
+//	jinfo[16].rangeMax  = 186.00f;
 	jinfo[16].axis		= 1.0;
 	jinfo[16].initPos	= 0.0f;
 
@@ -457,7 +457,7 @@ void CRHuman::SetJointInfo(){
 	jinfo[18].initPos	= 0.0f;
 
 	// ç∂ïI[19] (+X)
-	jinfo[19].rangeMin	= -26.00f;
+	jinfo[19].rangeMin	= -6.00f;
 	jinfo[19].rangeMax	= 154.00f;
 	jinfo[19].axis		= 1.0;
 	jinfo[19].initPos	= 0.0f;

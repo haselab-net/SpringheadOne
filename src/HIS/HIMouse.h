@@ -96,6 +96,10 @@ public:
 	///	キャリブレーション(特に何もしない)
 	bool Calib(){ return true; }
 
+//-> 関口による変更 (2005/1/05)
+	void SetViewSize(float inWidth, float inHeight);
+//<-
+
 protected:
 	// マウスがアクティブかどうかのフラグ
 	bool bGood;
@@ -120,6 +124,12 @@ protected:
 	Affinef axis;
 	// 初期化用座標軸
 	Affinef axisInit;
+
+//-> 関口による変更 (2005/1/05)
+	float	viewCenterX, viewCenterY, trackBallRadius;
+
+	Vec3f	GetTrackBallRotation(float inX, float inY);
+//<-
 };
 
 }	//	namespace Spr

@@ -279,6 +279,18 @@
 			RelativePath=".\HIMouse.h">
 		</File>
 		<File
+			RelativePath=".\HIOrientation.cpp">
+		</File>
+		<File
+			RelativePath=".\HIOrientation.h">
+		</File>
+		<File
+			RelativePath=".\HIRUIBase.h">
+		</File>
+		<File
+			RelativePath=".\HIRUIKuma.cpp">
+		</File>
+		<File
 			RelativePath="HIS.h">
 		</File>
 		<File

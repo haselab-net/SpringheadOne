@@ -23,6 +23,10 @@ bool HIMouse::Init(){
 	// マウスがアクティブかどうかの検出方法がよくわからないのでとりあえずtrueにしてある
 	bGood = true;	
 
+//-> 関口による変更 (2005/1/05)
+	SetViewSize(640, 480);
+//<-
+
 	return true;
 }
 
@@ -32,6 +36,54 @@ void HIMouse::SetScale(float tp, float rp, float ta, float ra){
 	scaleTransAxis = ta;
 	scaleRotAxis = ra;
 }
+
+//-> 関口による変更 (2005/1/05)
+void HIMouse::SetViewSize(float inWidth, float inHeight){
+	//	VirtualTrackBallにはViewの大きさのパラメータが
+	//	必須なため、それをセットするためのメンバ関数
+
+	viewCenterX = inWidth / 2;
+	viewCenterY = inHeight / 2;
+
+	//	Viewの短軸側をVirtualTrackBallの半径とする
+	float	d;
+	if (viewCenterX < viewCenterY)
+		d = viewCenterX;
+	else
+		d = viewCenterY;
+	trackBallRadius = d * 1.0;
+}
+
+Vec3f HIMouse::GetTrackBallRotation(float inX, float inY){
+	//	クリックされたポイントをVirtualTrackBall内部の
+	//	点にマッピングするためのメンバ関数
+
+	Vec3f	v;
+	float	d;
+
+	//	TrackBallの中心が原点となるようにし、なおかつ
+	//	半径が1となるように座標を正規化
+	v.x = 1.0 * (inX - viewCenterX) / trackBallRadius;
+	v.y = -1.0 * (inY - viewCenterY) / trackBallRadius;
+	v.z = 0.0;
+
+	//	x, yが求まったのでzの決定
+	d = v.x * v.x + v.y * v.y;
+	if (d < 1.0)
+	{
+		v.z = sqrt(1.0 - d);
+	}
+	else
+	{
+		d = sqrt(d);
+		v.x = v.x / d;
+		v.y = v.y / d;
+		v.z = 0;
+	}
+
+	return v;
+}
+//<-
 
 void HIMouse::Update(float dt){
 
@@ -57,9 +109,39 @@ void HIMouse::Update(float dt){
 		Affinef afAxis = axis.inv();		
 
 		if (btnState == (MK_SHIFT + MK_LBUTTON) ){
+
+//-> 関口による変更 (2005/1/05)
+
+			//	Virtual Track Ballの実装
+			//		透視変換の影響を無視した（つまり平行投影を仮定）
+			//		微妙にいんちきなVirtual Track Ballであるが、
+			//		ちゃんと動いているように感じるのでよしとする。
+			//		（おそらく平行投影を仮定したことによる誤差は
+			//		無視できるくらいであろう...）
+			Vec3f	oldRot = GetTrackBallRotation(oldX, oldY);
+			Vec3f	newRot = GetTrackBallRotation(newX, newY);
+			Vec3f	rotAxis, rotDirection;
+			float	rotVelocity;
+
+			rotDirection = newRot - oldRot;
+			rotVelocity = rotDirection.norm();
+
+			if (rotVelocity > 0.001)
+			{
+				rotAxis = cross(newRot, oldRot);
+				rotAxis = afAxis.Rot() * rotAxis;
+				rotAxis.unitize();
+
+				afAxis = Affinef::Rot(rotVelocity * 1.0, rotAxis) * afAxis;
+				axis = afAxis.inv();
+			}
+
+			//-> オリジナル
 			// Shift + 左ドラッグのときは基準座標軸をx軸,y軸を中心にカメラを回転
-			afAxis = Affinef::Rot(dx*scaleRotAxis, afAxis.Ey()) * Affinef::Rot(dy*scaleRotAxis, afAxis.Ex()) * afAxis;
-			axis = afAxis.inv();
+			//afAxis = Affinef::Rot(dx*scaleRotAxis, afAxis.Ey()) * Affinef::Rot(dy*scaleRotAxis, afAxis.Ex()) * afAxis;
+			//axis = afAxis.inv();
+			//<- ここまで　（オリジナル）
+//<-
 		}
 		else if (btnState == (MK_SHIFT + MK_MBUTTON) ){
 			// Shift + 中ドラッグのときは基準座標軸をx-z平面で平行移動
@@ -178,7 +260,7 @@ bool HIMouse::PreviewMessage(void* m){
 bool HIMouse::OnKeyDown(unsigned nChar){
 	//	視点移動関係
 	Affinef afBody = GetAxis().inv();
-	float df = 1.0f ; //移動変化量
+	float df = 0.1f ; //移動変化量
 	// カメラの平行移動
 	if ( nChar == 'W' ) afBody.Pos() = afBody.Pos() + afBody.Ex() * df;
 	else if ( nChar == 'Q' ) afBody.Pos() = afBody.Pos() - afBody.Ex() * df;

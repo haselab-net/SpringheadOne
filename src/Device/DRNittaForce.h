@@ -54,6 +54,7 @@ public:
 protected:
 	char name[100];
 	unsigned int baseAdr;
+	unsigned int boardNumber;
 	unsigned short software_ver_no;
 	unsigned short serial_no;
 	unsigned short model_no;
@@ -63,7 +64,7 @@ protected:
 
 public:
 	///
-	DRNittaForce(int adr);
+	DRNittaForce(int boardNum);
 	///
 	virtual ~DRNittaForce();
 	///	‰Šú‰»

@@ -69,6 +69,7 @@ public:
 	virtual void CompCoriolisAccel();
 protected:
 	virtual void LimitAngle(double& d){ LimitCycle(d); }
+	void Integrate(double dt);
 };
 ///	ÉXÉâÉCÉhä÷êﬂ
 class PHJointSlider:public PHJoint1D{

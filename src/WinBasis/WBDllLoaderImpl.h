@@ -48,4 +48,3 @@ static void ReportError(const char* pname){
 #undef DLLFUNC_ARGDEF
 #undef DLLFUNC_ARGCALL
 #undef DLLFUNC_CTYPE 
-#undef tokenToString

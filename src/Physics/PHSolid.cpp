@@ -37,8 +37,8 @@ SGObject* PHSolid::ReferenceObject(size_t i){
 
 void PHSolid::Step(double dt){
 #ifdef _DEBUG
-	if (velocity.norm() > 100 || angVelocity.norm() > 100){	
-		DSTR << "Warning: solid '" << GetName() << "' has very fast velocity." << velocity << angVelocity << std::endl;
+	if (!_finite(velocity.norm()) || velocity.norm() > 100 || angVelocity.norm() > 100){	
+		DSTR << "Warning: solid '" << GetName() << "' has a very fast velocity. v:" << velocity << "w:" << angVelocity << std::endl;
 	}
 #endif
 	//k1 = f(y);

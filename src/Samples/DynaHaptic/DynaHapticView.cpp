@@ -31,6 +31,7 @@
 #include <fstream>
 #include <sstream>
 #include <strstream>
+#include ".\dynahapticview.h"
 using namespace Spr;
 
 #ifdef _DEBUG
@@ -62,6 +63,7 @@ BEGIN_MESSAGE_MAP(CDynaHapticView, CView)
 	ON_COMMAND(WGL_RENDER, OnGL)
 	ON_COMMAND(ID_HIS_CONFIG, OnHisConfig)
 	//}}AFX_MSG_MAP
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -176,7 +178,7 @@ void CDynaHapticView::ThrowSphere(float r){
 	if (!solid) solid = new PHSolid;
 	solid->SetMass(r*r*20);
 	Matrix3f in = Matrix3f::Unit();
-	in *= 0.4f* solid->GetMass() *r*r;
+	in *= float(0.4f* solid->GetMass() *r*r);
 	solid->SetInertia(in);
 
 	UTRef<SGFrame> frame = solid->GetFrame();
@@ -226,7 +228,7 @@ void CDynaHapticView::ThrowSphere(float r){
 
 	if (!csphere) csphere = new CDSphere;
 	csphere->radius = r;
-	csphere->pmaterial = new PHPhysicalMaterial;
+	csphere->pmaterial = new CDPhysicalMaterial;
 	csphere->pmaterial->pMatData.reflexDamper = 0.1f;
 	csphere->pmaterial->pMatData.reflexSpring = 1.0f;
 	frame->AddChildObject(csphere, app->scene);
@@ -335,4 +337,12 @@ void CDynaHapticView::OnHisConfig(){
 }
 
 
+//-> 関口による変更 (2005/1/05)
+void CDynaHapticView::OnSize(UINT nType, int cx, int cy)
+{
+	CView::OnSize(nType, cx, cy);
 
+	// TODO : ここにメッセージ ハンドラ コードを追加します。
+	app->mouse->SetViewSize(cx, cy);
+}
+//<-

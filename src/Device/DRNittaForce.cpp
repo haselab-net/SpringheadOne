@@ -3,9 +3,16 @@
 namespace Spr {
 
 
-DRNittaForce::DRNittaForce(int adr){
-	baseAdr = adr;
-	sprintf(name, "Nitta 6DOF force sensor at 0x%03X", baseAdr);
+DRNittaForce::DRNittaForce(int n){
+	if (n>10){
+		baseAdr = n;
+		boardNumber = -1;
+		sprintf(name, "Nitta 6DOF force sensor at 0x%03X", baseAdr);
+	}else{
+		boardNumber = n;
+		baseAdr = -1;
+		sprintf(name, "Nitta 6DOF force sensor #%d", boardNumber);
+	}
 	for(int i=0; i < DOF; ++i){
 		force[i] = 0;
 		full_range[i] = 1;
@@ -14,20 +21,54 @@ DRNittaForce::DRNittaForce(int adr){
 	software_ver_no = 0;
 	serial_no = 0;
 	units = 0;
-	WBGetPortIO();
 }
 DRNittaForce::~DRNittaForce(){
 }
+
+//	力センサのドライバDLL jr3.dll をロードする．
+
+static WBDllLoader dllLoader("jr3.dll");	//	グローバル変数でローダーを作る．
+
+//	int DllFunc(int arg)  の場合
+//	DWORD DllExport JR3read(short boardNumber, short address, short* data) ;
+#define DLLFUNC_RTYPE	DWORD		//	返り値の型 voidの場合は定義してはならない．
+#define DLLFUNC_NAME	JR3read		//	関数名
+#define DLLFUNC_STR		"JR3read"
+#define DLLFUNC_ARGDEF		(short boardNumber, short address, short* data)	
+									//	関数宣言時の引数
+#define DLLFUNC_ARGCALL	(boardNumber, address, data)
+									//	関数呼び出しの引数
+#include <WinBasis/WBDllLoaderImpl.h>
+//	DWORD DllExport JR3write(short boardNumber, short address, short data) ;
+#define DLLFUNC_RTYPE	DWORD		//	返り値の型 voidの場合は定義してはならない．
+#define DLLFUNC_NAME	JR3write	//	関数名
+#define DLLFUNC_STR		"JR3write"
+#define DLLFUNC_ARGDEF		(short boardNumber, short address, short data)	
+									//	関数宣言時の引数
+#define DLLFUNC_ARGCALL	(boardNumber, address, data)
+									//	関数呼び出しの引数
+#include <WinBasis/WBDllLoaderImpl.h>
+
 void DRNittaForce::ReadReg(unsigned short a, unsigned short* d){
-	_outpw(baseAdr, a);
-	*d = _inpw(baseAdr + 2);
+	if (baseAdr != -1){
+		_outpw(baseAdr, a);
+		*d = _inpw(baseAdr + 2);
+	}else{
+		JR3read(boardNumber, a, (short*)d);
+	}
 }
 void DRNittaForce::WriteReg(unsigned short a, unsigned short d){
-	_outpw(baseAdr, a);
-	_outpw(baseAdr + 2, d);
-}
+	if (baseAdr != -1){
+		_outpw(baseAdr, a);
+		_outpw(baseAdr + 2, d);
+	}else{
+		JR3write(boardNumber, a, d);
+	}
+}	
 bool DRNittaForce::Init(){
-	WBGetPortIO();
+	if (baseAdr != -1){	//	直接アクセスの場合はGiveIO.sysを使ってポートへのアクセス許可をもらう
+		WBGetPortIO();
+	}
 	ReadReg(software_ver_no_addr, &software_ver_no);
 	ReadReg(serial_no_addr, &serial_no);
  	ReadReg(model_no_addr, &model_no);

@@ -30,7 +30,10 @@ public:
 	void SetSprings();
 	void SetFixedPos();
 	void SetSpidarPos(std::vector<HISpidar4*> spidars);
-	void SetExpectedPos(float dt);
+	void SetExpectedPos(int count, float dt);
+	void SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpidar4*> spidars);
+
+	bool bSpidarForce;
 };
 
 }

@@ -27,9 +27,9 @@ void PHJoint1D::CompArticulatedInertia(double dt){
 	
 	//親ノードのZa,Iaに自分のZa,Iaを積み上げる
 	//Ia
-	OfParent(&PHJointBase::Ia) += pXc_Mat_cXp(Ia - (Ia * svmat(s, s) * Ia) * (1 / dot_s_Ia_s));
+	OfParent(&PHJoint1D::Ia) += pXc_Mat_cXp(Ia - (Ia * svmat(s, s) * Ia) * (1 / dot_s_Ia_s));
 	//Za
-	OfParent(&PHJointBase::Za) += pXc_Vec(Z_plus_Ia_c + (Ia_s * (torque - dot_s_Z_plus_Ia_c)) / dot_s_Ia_s);
+	OfParent(&PHJoint1D::Za) += pXc_Vec(Z_plus_Ia_c + (Ia_s * (torque - dot_s_Z_plus_Ia_c)) / dot_s_Ia_s);
 
 /*	if (abs(dot_s_Ia_s) < 1e-1){
 		DSTR << Ia << (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) << std::endl;
@@ -48,7 +48,7 @@ void PHJoint1D::CompArticulatedInertia(double dt){
 
 void PHJoint1D::CalcAccel(double dt){
 	GetParent()->CalcAccel(dt);	//	親の加速度を計算
-	a_p = cXp_Vec(OfParent(&PHJointBase::a));
+	a_p = cXp_Vec(OfParent(&PHJoint1D::a));
 	//加速度を計算
 	accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
 	//重心周りの加速度(子ノードの積分で使用する)
@@ -64,7 +64,7 @@ void PHJoint1D::ClearTorqueRecursive(){
 //・関節加速度計算・数値積分
 //・加速度計算
 void PHJoint1D::Integrate(double dt){
-	a_p = cXp_Vec(OfParent(&PHJointBase::a));
+	a_p = cXp_Vec(OfParent(&PHJoint1D::a));
 	bool bOutOfRange = false;
 	//可動範囲制限が有効な場合
 	if(!(maxPosition == 0.0 && minPosition == 0.0)){
@@ -91,7 +91,7 @@ void PHJoint1D::Integrate(double dt){
 		//回転関節の場合は[-π,π]
 		LimitAngle(position);
 		//速度を積分
-		velocity += float(accel * dt);		
+		velocity += float(accel * dt);
 #if 0
 		//	for DEBUG
 		if (accel > 100){
@@ -114,10 +114,10 @@ class PHJointState1D: public SGBehaviorState{
 public:
 	SGOBJECTDEF(PHJointState1D);
 	//非ルートノードの状態
-	float position;
-	float velocity;
-	float torque;
-	float accel;
+	double position;
+	double velocity;
+	double torque;
+	double accel;
 };
 SGOBJECTIMP(PHJointState1D, SGBehaviorState);
 void PHJoint1D::LoadState(const SGBehaviorStates& states){
@@ -151,10 +151,10 @@ DEF_RECORD(XJoint1D, {
 });
 
 void PHJoint1D::SaveX(XJoint1D& x) const{
-	x.minPosition = minPosition;
-	x.maxPosition = maxPosition;
-	x.position = position;
-	x.velocity = velocity;
+	x.minPosition = (float)minPosition;
+	x.maxPosition = (float)maxPosition;
+	x.position = (float)position;
+	x.velocity = (float)velocity;
 }
 void PHJoint1D::LoadX(const XJoint1D& x){
 	minPosition = x.minPosition;
@@ -179,18 +179,18 @@ void PHJointSlider::CompRelativePosition(){
 	Vec3d cp;
 	if(GetParent()->solid)cp = GetParent()->solid->GetCenter();
 	prc = (cRp * (v3fPositionParent - cp)) +
-		m3fRotationChild.Ez() * position - (v3fPositionChild - solid->GetCenter());
+		m3fRotationChild.Ez() * (float)position - (v3fPositionChild - solid->GetCenter());
 }
 
 void PHJointSlider::CompRelativeVelocity()
 {
-	pvc = m3fRotationChild.Ez() * velocity;
+	pvc = m3fRotationChild.Ez() * (float)velocity;
 	pwc.clear();
 }
 
 void PHJointSlider::CompCoriolisAccel()
 {
-	Vec3d wp = cRp * OfParent(&PHJointBase::w);
+	Vec3d wp = cRp * OfParent(&PHJointSlider::w);
 	svitem(c, 0).clear();
 	svitem(c, 1) = cross(wp, cross(wp, prc)) + 2.0 * cross(wp, m3fRotationChild.Ez() * velocity);
 }
@@ -221,12 +221,19 @@ void PHJointHinge::CompRelativeVelocity()
 
 void PHJointHinge::CompCoriolisAccel()
 {
-	Vec3d ud = m3fRotationChild.Ez() * velocity;
-	Vec3d wp = cRp * OfParent(&PHJointBase::w);
+	Vec3d ud = m3fRotationChild.Ez() * (float)velocity;
+	Vec3d wp = cRp * OfParent(&PHJointHinge::w);
 	Vec3d tmp = cross(ud, (v3fPositionChild - solid->GetCenter()));
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }
+void PHJointHinge::Integrate(double dt){
+	PHJoint1D::Integrate(dt);
+/*	double limit = 20;
+	if (velocity > limit) velocity = limit;
+	else if (velocity < -limit) velocity = -limit;	*/
+}
+
 
 DEF_RECORD(XJointHinge, {
 	GUID Guid(){ return WBGuid("F0FEE14B-9F53-44b2-815A-93503C471474"); }

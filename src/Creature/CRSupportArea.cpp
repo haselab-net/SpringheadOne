@@ -166,7 +166,7 @@ void CRSupportArea::CalcSupportArea()
 	}
 	qhull.Clear();
 	qhull.epsilon = 1e-3f;
-	qhull.CreateConvexHull(vtxs.begin(), vtxs.end());
+	qhull.CreateConvexHull(&*vtxs.begin(), &*vtxs.end());
 	if (qhull.nLines > 0){
 		CDQHLine<CRQHVtx>* cur = qhull.end-1;
 		do{

@@ -69,6 +69,8 @@ protected:
 	afx_msg void OnHisConfig();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // DynaHapticView.cpp ファイルがデバッグ環境の時使用されます。

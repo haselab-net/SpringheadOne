@@ -1,4 +1,5 @@
 #include <Base/TMatrix.h>
+#include <Base/TMatrixUtility.h>
 #include <Base/TinyVec.h>
 #include <iostream>
 
@@ -140,6 +141,13 @@ int main(){
 	cout << matA * matB;
 
 	main2();
+	
+	TMatrixCol<5,5,float> m;
+	init_unitize(m);
+	m*=2;
+	std::swap(m[0], m[1]);
+	std::swap(m[2], m[4]);
+	cout << m << "det:" << m.det() << std::endl;
 	return 0;
 }
 

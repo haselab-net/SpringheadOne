@@ -86,7 +86,7 @@ bool PHJointControlEngine::DelChildObject(SGObject* o, SGScene* s){
 	return false;
 }
 void PHJointControlEngine::Loaded(SGScene* s){
-	for(int i=0; i<jcs.size(); ++i){
+	for(unsigned i=0; i<jcs.size(); ++i){
 		jcs[i]->Loaded(s);
 	}
 }

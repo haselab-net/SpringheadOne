@@ -7,3 +7,7 @@ SCC_Project_Name = "$/Project/Springhead/src/Creature", UXHCAAAA
 [Creature.dsp]
 SCC_Aux_Path = "\\sklab\VSS\"
 SCC_Project_Name = "$/Project/Springhead/src/Creature", UXHCAAAA
+
+[Creature.vcproj]
+SCC_Aux_Path = "\\192.168.251.1\vss\"
+SCC_Project_Name = "$/Project/Springhead/src/Creature", UXHCAAAA

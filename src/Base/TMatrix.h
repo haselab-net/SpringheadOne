@@ -453,7 +453,7 @@ TYPENAME AD::element_type lu(MatrixImp<AD>& a, int* ip, TYPENAME AD::element_typ
 			t = ABS_LU_MATRIX(a.item(k,j));
             if (t > u) u = t;
 		}
-		if (u == 0) goto EXIT; // 0 なら行列はLU分解できない
+		if (u == 0) goto PTM_EXIT; // 0 なら行列はLU分解できない
 		weight[k] = 1 / u;     // 最大絶対値の逆数
 	}
 	det_ = 1;                   // 行列式の初期値
@@ -470,7 +470,7 @@ TYPENAME AD::element_type lu(MatrixImp<AD>& a, int* ip, TYPENAME AD::element_typ
 			det_ = -det_;  // 行を交換すれば行列式の符号が変わる
 		}
 		u = a.item(ik, k);  det_ *= u;  // 対角成分
-		if (u == 0) goto EXIT;    // 0 なら行列はLU分解できない
+		if (u == 0) goto PTM_EXIT;    // 0 なら行列はLU分解できない
 		for (i = k + 1; i < n; i++) {  // Gauss消去法
 			ii = ip[i];
 			t = (a.item(ii, k) /= u);
@@ -478,7 +478,7 @@ TYPENAME AD::element_type lu(MatrixImp<AD>& a, int* ip, TYPENAME AD::element_typ
 				a.item(ii, j) -= t * a.item(ik, j);
 		}
 	}
-	EXIT:
+	PTM_EXIT:
 	return det_;           // 戻り値は行列式
 }
 ///	a x + b = 0 の1次方程式を解く

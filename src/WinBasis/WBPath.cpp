@@ -15,7 +15,12 @@ void WBPath::Path(UTString p){
 bool WBPath::Search(UTString file){
 	char* fn=NULL;
 	char buf[1024];
-	if (!SearchPath(NULL, file.c_str(), NULL, sizeof(buf), buf, &fn)) return false;
+	if (!SearchPath(NULL, file.c_str(), NULL, sizeof(buf), buf, &fn)){
+		char sprPath[1024];
+		if (!GetEnvironmentVariable("SPRINGHEAD", sprPath, sizeof(sprPath))) return false;
+		strcat(sprPath, "\\bin");
+		if (!SearchPath(sprPath, file.c_str(), NULL, sizeof(buf), buf, &fn)) return false;
+	}
 	path = buf;
 	return true;
 }

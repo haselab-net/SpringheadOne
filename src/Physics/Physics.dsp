@@ -224,14 +224,6 @@ SOURCE=.\PHPenalty.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\PHPhysicalMaterial.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\PHPhysicalMaterial.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\PHRegisterLoader.cpp
 # End Source File
 # Begin Source File

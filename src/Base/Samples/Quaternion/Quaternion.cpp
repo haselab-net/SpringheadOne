@@ -11,7 +11,9 @@ void test(){
 	cout << "Z90 rotation:" << q.rotation() << endl;
 	q.to_matrix(m);
 	cout << m;
-	Quaternionf q2 = Quaternionf::Rot((float)Rad(90), 'z');
+//	Quaternionf q2 = Quaternionf::Rot((float)Rad(90), 'z');
+	Quaternionf q2;
+	q2.euler(0, 0, Rad(90));
 	cout << "q " << q << endl;
 	cout << "q2" << q2 << endl;
 	cout << "Z180:" << (q*q2).rotation() << endl;
@@ -67,7 +69,6 @@ int main(){
 		qu.from_matrix(rot);
 		cout << qu << std::endl;
 	}
-	test();
 	for(int i=0; i<100; ++i){
 		randTest();
 	}
@@ -96,5 +97,6 @@ int main(){
 	cout << q1-q2 << endl;
 	cout << q1*q2 << endl;
 	cout << q1*q2.inv() << endl;
+	test();
 	return 0;
 }

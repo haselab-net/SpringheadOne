@@ -6,6 +6,21 @@
 
 namespace Spr{;
 
+/**	そのうち入れたい，オイラー角への変換．
+heading = atan2(2*qy*qw-2*qx*qz , 1 - 2*qy2 - 2*qz2)
+attitude = asin(2*qx*qy + 2*qz*qw) 
+bank = atan2(2*qx*qw-2*qy*qz , 1 - 2*qx2 - 2*qz2)
+
+except when qx*qy + qz*qw = 0.5 (north pole)
+which gives:
+heading = 2 * atan2(x,w)
+bank = 0
+and when qx*qy + qz*qw = -0.5 (south pole)
+which gives:
+heading = -2 * atan2(x,w)
+bank = 0 
+*/
+
 //-----------------------------------------------------------------------------
 //		TQuaternion
 ///		4元数クラス.
@@ -203,16 +218,16 @@ public:
 
 	///オイラー角で指定
 	void euler(ET yaw, ET pitch, ET roll) {
-		ET cosYaw	= std::cos(yaw / 2);
-		ET sinYaw	= std::sin(yaw / 2);
-		ET cosPitch	= std::cos(pitch / 2);
-		ET sinPitch	= std::sin(pitch / 2);
-		ET cosRoll	= std::cos(roll / 2);
-		ET sinRoll	= std::sin(roll / 2);
-		set(cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw,
-			cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw,
-			sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw,
-			cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw);
+		ET cosYaw	= cos(yaw / 2);
+		ET sinYaw	= sin(yaw / 2);
+		ET cosPitch	= cos(pitch / 2);
+		ET sinPitch	= sin(pitch / 2);
+		ET cosRoll	= cos(roll / 2);
+		ET sinRoll	= sin(roll / 2);
+		W() = cosRoll * cosPitch * cosYaw - sinRoll * sinPitch * sinYaw;
+		X() = cosRoll * sinPitch * sinYaw + sinRoll * cosPitch * cosYaw;
+		Y() = cosRoll * cosPitch * sinYaw + sinRoll * sinPitch * cosYaw;
+		Z() = cosRoll * sinPitch * cosYaw - sinRoll * cosPitch * sinYaw;
 	}
 
 	//角速度からクウォータニオンの時間微分を計算

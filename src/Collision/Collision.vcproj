@@ -524,6 +524,12 @@
 			RelativePath="CDMesh.h">
 		</File>
 		<File
+			RelativePath=".\CDPhysicalMaterial.cpp">
+		</File>
+		<File
+			RelativePath=".\CDPhysicalMaterial.h">
+		</File>
+		<File
 			RelativePath="CDPolyhedron.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">

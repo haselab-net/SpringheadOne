@@ -62,7 +62,7 @@ void CALLBACK FWApp::WMTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTim
 	if (idEvent == FWApp::TIMER_SIMU){
 		int times = 1;
 		if (app->scene){
-			times = app->GetSimuTimerPeriod() / app->scene->GetTimeStep();
+			times = int(app->GetSimuTimerPeriod() / app->scene->GetTimeStep());
 		}
 		for(int i=0; i<times; ++i) app->Step();
 	}
@@ -75,7 +75,7 @@ void FWApp::Init(HWND hw){
 		CreateD3DRender();
 	}
 	//	シミュレーション用の普通のタイマーの設定
-	simuTimerId = SetTimer(hWnd, TIMER_SIMU, simuTimerPeriod*1000, (TIMERPROC)WMTimerProc);
+	simuTimerId = SetTimer(hWnd, TIMER_SIMU, (UINT)(simuTimerPeriod*1000), (TIMERPROC)WMTimerProc);
 	app = this;
 	//	シミュレーション用のマルチメディアタイマーの設定
 	timer.Set(TimerFunc, this);
@@ -269,7 +269,7 @@ bool FWApp::PreviewMessage(MSG* pMsg){
 	if (mouse->IsGood()){
 		for(FWPointers::iterator it = pointers.begin(); it != pointers.end(); ++it){
 			if ((*it)->device == mouse){
-				(*it)->Step(scene->GetTimeStep());
+				(*it)->Step((float) scene->GetTimeStep());
 				break;
 			}
 		}
@@ -306,11 +306,11 @@ bool FWApp::OnKeyDown(unsigned int nChar){
 		Step();
 	}else if (nChar == 'T'){		//	message timer
 		timer.Release();
-		SetTimer(hWnd, TIMER_SIMU, simuTimerPeriod*1000, (TIMERPROC)WMTimerProc);
+		SetTimer(hWnd, TIMER_SIMU, UINT(simuTimerPeriod*1000), (TIMERPROC)WMTimerProc);
 	}else if (nChar == 'M'){		//	multi media timer		
 		if (scene){
-			timer.Resolution(scene->GetTimeStep()*TIMERTICK);
-			timer.Interval(scene->GetTimeStep()*TIMERTICK);
+			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK));
+			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK));
 		}
 		timer.Create();				//	マルチメディアタイマー
 		KillTimer(hWnd, simuTimerId);
@@ -325,11 +325,11 @@ bool FWApp::OnKeyDown(unsigned int nChar){
 		Reset();
 	}else if ( nChar == VK_SPACE ){
 		bOutForce = !bOutForce;
-		for(int i=0; i<pointers.size(); ++i){
+		for(unsigned i=0; i<pointers.size(); ++i){
 			pointers[i]->SetOutForce(bOutForce);
 		}
 	}else if ( nChar == 'C'){
-		for(int i=0; i<pointers.size(); ++i){
+		for(unsigned i=0; i<pointers.size(); ++i){
 			if (pointers[i]->device){
 				pointers[i]->device->Calib();
 			}
@@ -419,8 +419,8 @@ void FWApp::Load(UTString fn){
 		if (scene) scene->SetTimeStep(defaultTimeStep);
 		LoadImp(fn);
 		if (scene){
-			timer.Resolution(scene->GetTimeStep()*TIMERTICK);
-			timer.Interval(scene->GetTimeStep()*TIMERTICK);
+			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK));
+			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK));
 		}
 	}
 }

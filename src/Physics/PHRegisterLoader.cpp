@@ -10,7 +10,6 @@ void RegisterLoaderForPhysics(FILoadScene* l){
 	REGISTER_LOADER(l, PHPenaltyEngine);
 	REGISTER_LOADER(l, PHContactEngine);
 	REGISTER_LOADER(l, PHContactInactive);
-	REGISTER_LOADER(l, PHPhysicalMaterial);
 	REGISTER_LOADER(l, PHGravityEngine);
 	REGISTER_LOADER(l, PHJoint);
 	REGISTER_LOADER(l, PHJointHinge);
@@ -38,7 +37,6 @@ void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHPenalty);
 	REGISTER_SAVER(l, PHPenaltyEngine);
 	REGISTER_SAVER(l, PHContactEngine);
-	REGISTER_SAVER(l, PHPhysicalMaterial);
 	REGISTER_SAVER(l, PHGravityEngine);
 	REGISTER_SAVER(l, PHJointHinge);
 	REGISTER_SAVER(l, PHJointSlider);

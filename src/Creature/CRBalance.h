@@ -31,12 +31,13 @@ public:
 	PHJointEngine*		jointEngine;		// 関節エンジン
 	PHGravityEngine*	gravityEngine;		// PHGravityEngine
 
-private:
+//protected:
+public:
 	Vec3f cogPos;					// VHの重心の位置
 	Quaterniond targetPostureQ;		// 目標の姿勢
 	Quaterniond nowPostureQ;		// 現在の姿勢
-	Vec3f targetTorque;				// 現在の姿勢から目標の姿勢にするのに必要なトルク
-	Vec3f targetForce;
+	Vec3f balanceTorque;				// 現在の姿勢から目標の姿勢にするのに必要なトルク
+	Vec3f balanceForce;
 	Vec3f targetZmp;				// 目標ＺＭＰ
 	Vec3f targetAccel;				// 重心の目標加速度
 
@@ -61,13 +62,14 @@ public:
 	virtual void ModifyBody(SGScene* scene,CRHuman* crHuman);	// 体にトルクをかけバランスをとる
 	virtual void SetBalanceParameter(CRHuman* crHuman);			// バランスをとるための目標のパラメータを設定
 
-	void CalcBalanceTorque(SGScene* scene,CRHuman* crHuman);	// バランスをとるために重心に必要なトルクの計算
+	virtual void CalcBalanceTorque(SGScene* scene,CRHuman* crHuman);	// バランスをとるために重心に必要なトルクの計算
+	virtual void CalcBalanceForce(SGScene* scene,CRHuman* crHuman);		// バランスをとるために重心に必要な力の計算
 	void CalcTargetZMP(SGScene* scene,CRHuman* crHuman);		// 目標ZMPの計算
 	void ControlBody(CRHuman* crHuman);							// バランスを取るための制御
 	void DrawZMP(GRRender* render);								// ZMPの描画
 	Vec3f GetTargetZMP(){return targetZmp;}						// 目標ZMPの取得
-	Vec3f GetTargetForce(){ return targetForce;}				// 重心にかかる目標の力を取得
-	Vec3f GetTargetTorque(){ return targetTorque;}				// バランスをとるのに必要な重心にかけるトルクを取得
+	Vec3f GetBalanceForce(){ return balanceForce;}				// 重心にかかる目標の力を取得
+	Vec3f GetBalanceTorque(){ return balanceTorque;}				// バランスをとるのに必要な重心にかけるトルクを取得
 	Vec3f GetTargetAccel(){ return targetAccel;}				// 重心の目標の加速度を取得
 
 	// ZMPが安定領域内にいるか監視 

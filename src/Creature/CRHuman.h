@@ -132,7 +132,7 @@ public:
 	CRHumanJointInfo	jinfo[JOINT_NUM];			// VHのJoint情報
 	CRHumanSolidInfo	sinfo[SOLID_NUM];			// VHのSolid情報
 
-private:
+protected:
 	bool bLoaded;	//　VHがロード(Connct)されたか否か
 
 	//VHのパラメータ
@@ -180,8 +180,8 @@ public:
 	void SetTotalHeight(float height);
 	void SetMass();
 
-	void SetSolidInfo();
-	void SetJointInfo();
+	virtual void SetSolidInfo();
+	virtual void SetJointInfo();
 	virtual void SetJointRange();
 	void SetOneJointRange(PHJoint1D* j, float min, float max);
 

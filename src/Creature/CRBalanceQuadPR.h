@@ -43,17 +43,18 @@ public:
 	void SetBalanceParameter(CRHuman* crHuman);					// バランスに必要なパラメータ設定
 
 	// 二次計画法でのバランス
-	void ModifyBody(SGScene* scene,CRHuman* crHuman);			// バランスをとる一連の処理(バランスに必要な重心トルク計算は別）
+	virtual void ModifyBody(SGScene* scene,CRHuman* crHuman);	// バランスをとる一連の処理(バランスに必要な重心トルク計算は別）
 	void SetTargetJointTorque(SGScene* scene,CRHuman* crHuman);	// 各関節の目標トルクの取得
 	void CalcTransMatrix(SGScene* scene,CRHuman* crHuman);		// 伝播行列の計算
 	void MakeTorquePattern(CRHuman* crHuman, int t);			// 伝播行列のためのトルク,力パターンの生成
 	Vec3d GetJointAccel(PHJoint1D* joint);						// 関節の並進加速度の取得
-	void SetQuadPR(CRHuman* crHuman);							// 二次計画法の目的関数を計算
+	virtual void SetQuadPR(CRHuman* crHuman);							// 二次計画法の目的関数を計算
 	void QuadPRSolve();											// 二次計画法を解く
 	void SetBalanceTorque(CRHuman* crHuman);					// 最適(バランス)トルクを関節にセットする
+	bool BalanceCheck(CRHuman* crHuman);
 	
 	// 足首でバランスを保障,足裏が浮かないようにする
-	void AnkleBalance(CRHuman* crHuman);						// 二次計画法で取りきれないバランスを足首で保障
+	virtual void AnkleBalance(CRHuman* crHuman);						// 二次計画法で取りきれないバランスを足首で保障
 	Vec3d AdjustAnkleTorque(CRHuman* crHuman,
 				Vec3d ankleForce,Vec3d ankleTorque,int ankle);	// 足裏が浮かないようにトルクを調節
 	bool AnkleZmpCheck(Vec3f zmp,CRSupportArea* supportArea);	// ZMPが接触多角形内にあるかチェック
@@ -68,7 +69,19 @@ public:
 	void NewConstraint(CRHuman* crHuman,PHSolid* heel,Vec3f* maxRange,Vec3f* minRange,int ankleSide);
 
 
+	// TEST
+	void AnkleBalance2(CRHuman* crHuman);
+	Vec3d AdjustAnkleTorque2(CRHuman* crHuman,Vec3d footForce,
+							Vec3d footTorque,Vec3d zmp,int ankle);	// 足裏が浮かないようにトルクを調節
+	Vec3d cog_zmp,footR_zmp,footL_zmp;
+	bool bAdjust;
+
+	void OffSpring();
+
 	//////////　 変数　　//////////
+	unsigned int ankleNum;							// 足の数
+	unsigned int ankelDof;							// 足首(踵)の自由度(並進3,回転3)
+	unsigned int balanceDof;						// バランスに必要な自由度(並進3,回転3)
 	// 伝播行列
 	PTM::VMatrixRow<float>	transT;					// 各関節トルクの伝播行列T(トルクの伝播）
 	PTM::VMatrixRow<float>	transF;					// 各関節トルクの伝播行列F(力の伝播)

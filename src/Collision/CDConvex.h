@@ -1,7 +1,7 @@
 #ifndef CDCONVEX_H
 #define CDCONVEX_H
 #include "CDGeometry.h"
-#include <Physics/PHPhysicalMaterial.h>
+#include "CDPhysicalMaterial.h"
 
 namespace Spr {;
 

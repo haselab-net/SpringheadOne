@@ -18,8 +18,10 @@ public:
 	UTRef<PHJointBase> joint;
 	///	対象の軸
 	int axis;
-	///	目標値
+	///	目標値		Step()を呼ぶ前に設定する．
 	float goal;
+	///	目標の速度	Step()を呼ぶ前に設定する．
+	float dGoal;
 	///	PIDの係数
 	float proportional, differential, integral;
 	///	目標のタイプ 0:位置制御	1：速度制御
@@ -31,9 +33,13 @@ public:
 	float GetProportionalTorque(){ return p_torque; }
 	float GetDifferentialTorque(){ return d_torque; }
 	float GetIntegralTorque(){ return i_torque; }
+
+	///	目標値,目標の速度	Step()を呼ぶ前に設定する
+	void SetPGoal(float p_goal){ goal = p_goal;}
+	void SetDGoal(float d_goal){ dGoal = d_goal;}
 	
 	///	
-	PHJointPid():type(0), proportional(0), differential(0), integral(0), goal(0), lastGoal(0), integratedError(0), axis(0){}
+	PHJointPid():type(0), proportional(0), differential(0), integral(0), goal(0), dGoal(FLT_MAX), lastGoal(0), integratedError(0), axis(0){}
 	///
 	static PHJointPid* Find(PHJoint1D* j, SGScene* scene);
 	///	プライオリティ
@@ -68,8 +74,10 @@ public:
 	SGOBJECTDEF(PHJointBallPid);
 	///	制御対象関節
 	UTRef<PHJointBall> joint;
-	///	目標値
+	///	目標値			Step()を呼ぶ前に設定する．
 	Quaternionf goal;
+	///	目標値の微分	Step()を呼ぶ前に設定する．設定しなくても良い．
+	Vec3f dGoal;
 	///	PIDの係数
 	float proportional, differential, integral;
 	/// proportional,differential,integralによるトルク(PID制御)
@@ -81,7 +89,7 @@ public:
 	Vec3f GetIntegralTorque(){ return i_torque; }
 	
 	///	
-	PHJointBallPid():proportional(0), differential(0), integral(0){}
+	PHJointBallPid():proportional(0), differential(0), integral(0), dGoal(FLT_MAX,0,0){}
 	///
 	static PHJointBallPid* Find(PHJointBall* j, SGScene* scene);
 	///	プライオリティ

@@ -55,6 +55,10 @@ public:
 	virtual Vec3f GetVel();
 	virtual Vec3f GetAngVel();
 
+	Quaternionf GetQTOffset()   { return qtOffset;    }
+	Quaternionf GetQTOffsetInv(){ return qtOffsetInv; }
+	Vec3f       GetV3Offset()   { return v3Offset;    }
+
 	virtual void  SetForce(Vec3f, Vec3f);
 
 	PHSolid* GetSolid(){ return UTRef<PHSolid>(obj); }

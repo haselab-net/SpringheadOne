@@ -186,6 +186,14 @@ SOURCE=.\CDMesh.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDPhysicalMaterial.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CDPhysicalMaterial.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CDPolyhedron.cpp
 # End Source File
 # Begin Source File

@@ -38,6 +38,7 @@ void CRBalance::Step(SGScene* scene,CRHuman* crHuman){
 }
 void CRBalance::Measure(SGScene* scene,CRHuman* crHuman){
 	CalcBalanceTorque(scene,crHuman);			// バランスに必要なトルクを計算
+	CalcBalanceForce(scene,crHuman);			// バランスに必要な力を計算
 	CalcTargetZMP(scene,crHuman);				// 目標ZMPの計算
 	ZmpIncludeCheck(crHuman->supportArea);		// 目標ZMPが安定領域に入ってるいるか否か
 }
@@ -53,26 +54,23 @@ void CRBalance::SetBalanceParameter(CRHuman* crHuman){
 	//目標姿勢の設定
 	targetPostureQ = Quaterniond(1.0,0.0,0.0,0.0);
 
-
 	// バランストルク計算のバネ・ダンパ設定
-	dampa_no = 0.0003f*18;
+	dampa_no = 0.0003f*19;
 	for(int i = 0; i < 3; i++)
 		spring_noV[i] = 0.0001f*0.3f;
 
 	// 重心を安定領域内にする力のバネ・ダンパの設定
-	springCog_no	= 0.000005f*0.4f;
-	dampaCog_no		= 0.000015f*18;
+	springCog_no	= 0.000005f*0.3f;
+	dampaCog_no		= 0.000015f*19;
 
 }
 
 void CRBalance::Load(SGScene* scene,CRHuman* crHuman){
 	if(crHuman->IsLoaded()){
 		Init(scene,crHuman);
-
 		scene->GetBehaviors().Find(jointEngine);	// jointEngineの取得
 		scene->GetBehaviors().Find(gravityEngine);	// gravityEngineの取得
 		SetBalanceParameter(crHuman);
-//		supportArea.Load(scene,crHuman);			// SupportAreaのLoad
 	}
 }
 
@@ -89,10 +87,7 @@ void CRBalance::Init(SGScene* scene,CRHuman* crHuman){
 }
 
 void CRBalance::OnKeyDown(UINT &nChar,CRHuman* crHuman){
-	if(nChar == 'E'){
-		crHuman->jointPids[9]->goal += 3*M_PI/180;
-		crHuman->jointPids[16]->goal += 3*M_PI/180;
-	}
+
 }
 
 void CRBalance::Draw(GRRender* render,CRSupportArea* supportArea){
@@ -115,13 +110,13 @@ void CRBalance::ControlBody(CRHuman* crHuman){
 	//　姿勢に応じてトルクをかける方法
 	//足首の制御
 	if(crHuman->joints[27] != NULL){	//右足首
-		Vec3f rightTorque = (crHuman->solids[11]->GetRotation()*targetTorque)/2;	//足首の座標へ変換
+		Vec3f rightTorque = (crHuman->solids[11]->GetRotation()*balanceTorque)/2;	//足首の座標へ変換
 		crHuman->joints[27]->SetJointTorque(-rightTorque.x, 0);
 		crHuman->joints[28]->SetJointTorque(-rightTorque.z, 0);
 		crHuman->joints[29]->SetJointTorque(-rightTorque.y, 0);
 	}
 	if(crHuman->joints[35] != NULL){	//左足首
-		Vec3f leftTorque = (crHuman->solids[15]->GetRotation()*targetTorque)/2;
+		Vec3f leftTorque = (crHuman->solids[15]->GetRotation()*balanceTorque)/2;
 		crHuman->joints[35]->SetJointTorque(-leftTorque.x, 0);
 		crHuman->joints[36]->SetJointTorque(leftTorque.z, 0);
 		crHuman->joints[37]->SetJointTorque(leftTorque.y, 0);
@@ -130,7 +125,27 @@ void CRBalance::ControlBody(CRHuman* crHuman){
 
 void CRBalance::CalcTargetZMP(SGScene* scene,CRHuman* crHuman){
 
+	// 重力 + 重心を安定領域の中心に近づける力
+	Vec3d cogForce = balanceForce + crHuman->GetTotalMass()*(targetAccel-gravityEngine->accel);
+	//Vec3d cogTorque = balanceTorque + crHuman->GetCOG()%cogForce;
+	Vec3d cogTorque = balanceTorque;
+
 	//目標ZMPの計算
+	targetZmp = -(cogForce % (-cogTorque)) / cogForce.square();
+	//targetZmp = (balanceForce % balanceTorque) / balanceForce.square();
+	targetZmp += cogPos;
+	targetZmp.Y() = 0;
+
+	/*
+	if(!ZmpIncludeCheck(crHuman->supportArea)){
+		// 最近傍点を求める
+		targetZmp=crHuman->supportArea.GetSupportArea().ClosestPoint(targetZmp);
+		balanceTorque = -targetZmp%cogForce;
+	}
+	*/
+}
+
+void CRBalance::CalcBalanceForce(SGScene* scene,CRHuman* crHuman){
 	//targetForce = crHuman->GetTotalMass()*(targetAccel-gravityEngine->accel);
 	std::vector<Vec3f> supportVetxs = crHuman->supportArea.GetSupportArea();
 	Vec3f center = Vec3f();
@@ -141,14 +156,8 @@ void CRBalance::CalcTargetZMP(SGScene* scene,CRHuman* crHuman){
 	float dt = scene->GetTimeStep();
 	float k = springCog_no*(2*crHuman->GetTotalMass()/(dt*dt));
 	float b = dampaCog_no*(crHuman->GetTotalMass()/dt);
-	Vec3f cogForce = k*(center - crHuman->GetCOG()) - b*crHuman->GetCogVelocity();
-	cogForce.y = 0.0f;
-	// 重力 + 重心を安定領域の中心に近づける力
-	targetForce = crHuman->GetTotalMass()*(targetAccel-gravityEngine->accel) + cogForce;
-
-	targetZmp = (targetForce % targetTorque) / targetForce.square();
-	targetZmp += cogPos;
-	targetZmp.Y() = 0;
+	balanceForce = k*(center - crHuman->GetCOG()) - b*crHuman->GetCogVelocity();
+	balanceForce.y = 0.0f;
 }
 
 void CRBalance::CalcBalanceTorque(SGScene* scene, CRHuman* crHuman){
@@ -205,7 +214,7 @@ void CRBalance::CalcBalanceTorque(SGScene* scene, CRHuman* crHuman){
 		}
 	}
 	// バランストルク
-	targetTorque = TMatrix3<float>::Diag(spring.x,spring.y,spring.z)*quatd.rotation() - dampa*L;
+	balanceTorque = TMatrix3<float>::Diag(spring.x,spring.y,spring.z)*quatd.rotation() - dampa*L;
 }
 
 bool CRBalance::ZmpIncludeCheck(CRSupportArea& supportArea){

@@ -16,7 +16,7 @@ enum CDGeometryID{
 	NGEOMETRYID
 };
 
-class PHPhysicalMaterial;
+class CDPhysicalMaterial;
 
 /**	衝突判定のための形状データ
 */
@@ -28,7 +28,7 @@ public:
 	///
 	virtual void CalcBBox(Vec3f& bbMin, Vec3f& bbMax){}
 	///	物理マテリアル
-	UTRef<PHPhysicalMaterial> pmaterial;
+	UTRef<CDPhysicalMaterial> pmaterial;
 	///	
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	///

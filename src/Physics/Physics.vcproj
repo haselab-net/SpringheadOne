@@ -408,10 +408,28 @@
 			RelativePath="PHJoint.h">
 		</File>
 		<File
+			RelativePath=".\PHJoint1D.cpp">
+		</File>
+		<File
+			RelativePath=".\PHJoint1D.h">
+		</File>
+		<File
 			RelativePath=".\PHJointControl.cpp">
 		</File>
 		<File
 			RelativePath=".\PHJointControl.h">
+		</File>
+		<File
+			RelativePath=".\PHJointMulti.cpp">
+		</File>
+		<File
+			RelativePath=".\PHJointMulti.h">
+		</File>
+		<File
+			RelativePath=".\PHJointPid.cpp">
+		</File>
+		<File
+			RelativePath=".\PHJointPid.h">
 		</File>
 		<File
 			RelativePath=".\PHMagneticEngine.cpp">
@@ -459,47 +477,6 @@
 		</File>
 		<File
 			RelativePath="PHPenalty.h">
-		</File>
-		<File
-			RelativePath="PHPhysicalMaterial.cpp">
-			<FileConfiguration
-				Name="MFC Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="3"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="MFC Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="3"
-					FavorSizeOrSpeed="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="PHPhysicalMaterial.h">
 		</File>
 		<File
 			RelativePath="PHRegisterLoader.cpp">

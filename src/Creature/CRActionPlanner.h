@@ -3,12 +3,10 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-#include <Creature/CRHuman.h>
 #include <Creature/CRUser.h>
 #include <Graphics/GRRender.h>
-#include <vector>
-#include <Physics/PHContactEngine.h>
 #include <SceneGraph/SGScene.h>
+#include <vector>
 
 #if !defined(AFX_MOVEMENTPREDICTOR_H__71A071B6_77BD_4835_9979_17A1DB9DF1F8__INCLUDED_)
 #define AFX_MOVEMENTPREDICTOR_H__71A071B6_77BD_4835_9979_17A1DB9DF1F8__INCLUDED_
@@ -40,36 +38,33 @@ class CRActionPlanner{
 
 public:
 	CRActionPlanner();
+	void Load();
 
 	void SaveState(SGScene* scene, bool type);
 	void LoadState(SGScene* scene, bool type);
 
-	void PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene);
-	void MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count);
 	void Step(CRPuppet* puppet, CRUser* user, SGScene* scene);
 
-	void ContactTest(CRHuman* human1, CRHuman* human2, SGScene* scene, int step);
+	void PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene);
+	void MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count);
+	void PredictionStep(CRPuppet* puppet, CRUser* user, SGScene* scene, int count);
+
+	void ContactTest(CRPuppet* puppet1, CRPuppet* puppet2, SGScene* scene, int step);
 	bool IsFirstContact(int vh, int user, int count);
-
-	Vec3f ContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
-	void SetContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene, Vec3f* pos);
-	bool ContactCheckOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
-	bool ContactCheckOfSolid(PHSolid* so, CRHuman* human, SGScene* scene);
-
-	Vec3f GetContactForceOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
-	Vec3f GetContactForceOfSolid(PHSolid* so, CRHuman* human, SGScene* scene);
 
 	bool ChooseTargetAction(CRPuppet* puppet, CRUser* user);
 
 	Vec3f GetNearestPoint(Vec3f a, Vec3f b, Vec3f c);
 	Vec3f GetPointToAvoid(Vec3f a, Vec3f b, Vec3f c, float d);
 	Vec3f GetPointToGuard(Vec3f a, Vec3f b, Vec3f c);
-		
+
+	bool bDraw;
 	bool bPlanner;
 	bool bPrediction;
 	bool bLoadReal, bLoadTemp;
 	int times;
 	float startTime, currentTime;
+	Vec3f cPos;
 
 	SGBehaviorStates stateReal, stateTemp;
 	ContactInfoSequence contactInfo;

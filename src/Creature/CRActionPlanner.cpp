@@ -5,7 +5,9 @@
 #include "CRActionPlanner.h"
 #include <Graphics/GRRender.h>
 
+#ifdef USE_VHCHECKDLG
 #include "../../../Experiments/VH/VHInteraction/VHCheckDialog.h"
+#endif
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -48,6 +50,10 @@ int CRActionPlanner::ContactInfo::CheckContactType(int vh, int user){
 
 //////////////////// ó\ë™çsìÆÉNÉâÉX ////////////////////
 CRActionPlanner::CRActionPlanner(){
+}
+	
+void CRActionPlanner::Load(){
+	bDraw       = false;
 	bPlanner    = false;
 	bPrediction = false;
 	bLoadReal   = false;
@@ -84,17 +90,57 @@ void CRActionPlanner::LoadState(SGScene* scene, bool type){
 	}
 }
 
+void CRActionPlanner::Step(CRPuppet* puppet, CRUser* user, SGScene* scene){
+	if(puppet->IsLoaded() && user->IsLoaded()){
+		if(bPlanner){
+			Spr::GRRender* render;
+			scene->GetRenderers().Find(render);
+			//user->locus.PrintLogPos(user);
+			if(bPrediction){
+				PredictionAction(puppet, user, scene);
+
+				// ó\ë™ãOìπÇï`âÊ
+				if(bDraw){
+					for(int i = 0; i < 2; ++i){
+						if(user->locus.bPrediction[i]){
+							user->locus.DrawFutureLocus(user->locus.ak[i], 10, 10, render, Vec4f(0,1,1,1));
+						}
+					}
+				}
+			}
+			else{
+				user->locus.SetLocusCoefficient(user, scene);
+				if(puppet->IsAimed(user, scene)){
+//					DSTR << "ó\ë™äJén: " << scene->GetCount() * scene->GetTimeStep() << std::endl;
+					//user->locus.PrintLocusCoefficient(user);
+					bPrediction = true;
+					times = 0;
+				}
+			}
+			if(cPos.norm() > 0){
+				// ê⁄êGó\ëzà íuÇï\é¶
+				if(bDraw){
+					render->SetModelMatrix(Affinef());
+					render->SetLineWidth(25);
+					render->SetMaterial(GRMaterialData(Vec4f(1,0,0,1)));
+					Vec3f pos = cPos;
+					render->DrawDirect(GRRender::POINTS, &pos, &pos+1);
+				}
+			}
+		}
+	}
+}
+
 void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene){
-	const int SETCOUNT =  20;
+	const int SETCOUNT =  15;
 
 	if(times >= SETCOUNT){
 		contactInfo.clear();
 		bPrediction = false;
 		// ì‡ïîìûíBâ^ìÆÇÃèâä˙âª
-		for(int i = 0; i < 3; ++i){
-			puppet->rm2[i].Init();
-			user->rm2[i].Init();
-		}
+		for(int i = 0; i < 3; ++i) puppet->reaching[1][i].Init();
+//		DSTR << "éûä‘êÿÇÍ: " << scene-> GetTimeStep() * scene->GetCount() << "\n" << std::endl;
+		cPos = Vec3f();
 		return;
 	}
 
@@ -102,10 +148,9 @@ void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* 
 		contactInfo.clear();
 		bPrediction = false;
 		// ì‡ïîìûíBâ^ìÆÇÃèâä˙âª
-		for(int i = 0; i < 3; ++i){
-			puppet->rm2[i].Init();
-			user->rm2[i].Init();
-		}
+		for(int i = 0; i < 3; ++i) puppet->reaching[1][i].Init();
+//		DSTR << "ó\ëzê⁄êGà íu: " << cPos << std::endl;
+//		DSTR << "ó\ë™äÆóπ: " << scene-> GetTimeStep() * scene->GetCount() << "\n" << std::endl;
 		return;
 	}
 
@@ -117,10 +162,7 @@ void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* 
 		startTime = currentTime;
 
 		// ìûíBâ^ìÆÇÃÉRÉsÅ[
-		for(int i = 0; i < 3; ++i){
-			puppet->rm2[i] = puppet->rm[i];
-			user->rm2[i]   = user->rm[i];
-		}
+		for(int i = 0; i < 3; ++i) puppet->reaching[1][i] = puppet->reaching[0][i];
 	}
 
 	MovementPrediction(puppet, user, scene, times);
@@ -131,42 +173,41 @@ void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* 
 }
 
 void CRActionPlanner::MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count){
-	const int STEPCOUNT = 3;
-	const float RATE = 2.0f;
+	const int STEPCOUNT = 2;
+	const float RATE = 1.5f;
 	
 	LoadState(scene, 0);	// ìríÜì‡ïîèÛë‘Ç©ÇÁçƒäJ
 	float dt = scene->GetTimeStep();
 	scene->SetTimeStep(dt * RATE);
 
 	for(int i = 0; i < STEPCOUNT; i++){
-		Step(puppet, user, scene);
+		PredictionStep(puppet, user, scene, count * STEPCOUNT + i);
 		ContactTest(puppet, user, scene, count * STEPCOUNT + i);
 	}
 
 	// çXêVåãâ Çï`âÊ
 	GRRender* render;
 	scene->GetRenderers().Find(render);
+#ifdef USE_VHCHECKDLG
 	vhCheckDialog->DrawTest(render, scene);
+#endif
 
 	scene->SetTimeStep(dt);
 	SaveState(scene, 0);	// ìríÜèÛë‘Çï€ë∂
 }
 
-void CRActionPlanner::Step(CRPuppet* puppet, CRUser* user, SGScene* scene){
+void CRActionPlanner::PredictionStep(CRPuppet* puppet, CRUser* user, SGScene* scene, int count){
 	float dt = scene->GetTimeStep();
 
 	scene->ClearForce();
 	scene->GenerateForce();
 	
-	puppet->SetExpectedPos(dt);
 	puppet->SetSpringForce(dt);
-	user->SetExpectedPos(dt);
+	if(user->locus.degree == 1) user->SetExpectedPos(3.0*count, dt);
+	else                        user->SetExpectedPos(count, dt);
 	user->SetSpringForce(dt);
 
-	for(int i = 0; i < 3; ++i){
-		puppet->rm2[i].Step(dt);
-		user->rm2[i].Step(dt);
-	}
+	for(int i = 0; i < 3; ++i) puppet->reaching[1][i].Step(scene);
 	
 	scene->Integrate();
 }
@@ -184,23 +225,23 @@ bool CRActionPlanner::IsFirstContact(int vh, int user, int count){
 	return true;
 }
 
-void CRActionPlanner::ContactTest(CRHuman* human1, CRHuman* human2, SGScene* scene, int step){
+void CRActionPlanner::ContactTest(CRPuppet* puppet1, CRPuppet* puppet2, SGScene* scene, int step){
 	ContactInfo cInfo;
-	for(int i = 0; i < human1->solids.size(); ++i){
-		if(human1->solids[i]){
-			for(int j = 0; j < human2->solids.size(); ++j){
-				if(human2->solids[j]){
+	for(int i = 0; i < puppet1->solids.size(); ++i){
+		if(puppet1->solids[i]){
+			for(int j = 0; j < puppet2->solids.size(); ++j){
+				if(puppet2->solids[j]){
 					// ÇQÇ¬ÇÃçÑëÃÇÃê⁄êGîªíË
-					if(ContactCheckOfSolidPair(human1->solids[i], human2->solids[j], scene)){
+					if(puppet1->humanContactInfo.ContactCheckOfSolidPair(puppet1->solids[i], puppet2->solids[j], scene)){
 						// ëOâÒÇ‡ê⁄êGÇµÇƒÇ¢ÇΩÇ©îªíË
 						if(IsFirstContact(i, j, step)){
 							int type = cInfo.CheckContactType(i,j);
 							if(type != 0){
 								float time = startTime + step * scene->GetTimeStep();
 								cInfo.SetContactInfo(i, j, step, time);
-								SetContactPointOfSolidPair(human1->solids[i], human2->solids[j], scene, cInfo.contactPoint);
-								cInfo.soVH   = human1->solids[i];
-								cInfo.soUser = human2->solids[j];
+								puppet1->humanContactInfo.SetContactPointOfSolidPair(puppet1->solids[i], puppet2->solids[j], scene, cInfo.contactPoint);
+								cInfo.soVH   = puppet1->solids[i];
+								cInfo.soUser = puppet2->solids[j];
 								cInfo.contactType = type;
 								// ê⁄êGèÓïÒÇìoò^
 								contactInfo.push_back(cInfo);
@@ -211,82 +252,6 @@ void CRActionPlanner::ContactTest(CRHuman* human1, CRHuman* human2, SGScene* sce
 			}
 		}
 	}
-}
-
-void CRActionPlanner::SetContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene, Vec3f* pos){
-	CDCollisionEngine* ce = NULL;
-	CDFramePair* fp = NULL;
-	scene->GetBehaviors().Find(ce);
-	fp = ce->GetFramePair(so1->GetFrame(), so2->GetFrame());
-	if(fp->intersections.size() > 0){
-		pos[0] = fp->intersections.begin()->convexPair->commonPoint;		// ÉOÉçÅ[ÉoÉãç¿ïWån
-		pos[1] = fp->intersections.begin()->convexPair->closestPoint[0];	// soVH ç¿ïWån
-		pos[2] = fp->intersections.begin()->convexPair->closestPoint[1];	// soUser ç¿ïWån
-	}
-}
-
-Vec3f CRActionPlanner::ContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
-	CDCollisionEngine* ce = NULL;
-	CDFramePair* fp = NULL;
-	scene->GetBehaviors().Find(ce);
-	fp = ce->GetFramePair(so1->GetFrame(), so2->GetFrame());
-	if(fp->intersections.size() > 0){
-		return fp->intersections.begin()->convexPair->commonPoint;
-	}
-	return Vec3f();
-}
-
-bool CRActionPlanner::ContactCheckOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
-	if(so2 == NULL) return false;
-	CDCollisionEngine* ce = NULL;
-	CDFramePair* fp = NULL;
-
-	scene->GetBehaviors().Find(ce);
-	fp = ce->GetFramePair(so1->GetFrame(), so2->GetFrame());
-	if(fp == NULL) fp = ce->GetFramePair(so2->GetFrame(), so1->GetFrame());
-
-	//return (fp->intersections.size() > 0);
-	return (fp->lastContactCount == scene->GetCount() - 1);
-}
-
-bool CRActionPlanner::ContactCheckOfSolid(PHSolid* so, CRHuman* human, SGScene* scene){
-	if(so == NULL) return false;
-	Vec3f rforce = Vec3f(0,0,0);
-	for(int i = 0; i < human->solids.size(); ++i){
-		if(ContactCheckOfSolidPair(so, human->solids[i], scene)) return true;
-	}
-	return false;
-}
-
-Vec3f CRActionPlanner::GetContactForceOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
-	PHContactEngine* pce = NULL;
-	PHContactEngine::FramePairRecord* fpr = NULL;
-	Vec3f rforce = Vec3f(0,0,0);
-	int sign = 1;
-	if(so1 == NULL || so2 == NULL) return rforce;
-
-	scene->GetBehaviors().Find(pce);
-	fpr = pce->GetFramePairRecord(so1->GetFrame(), so2->GetFrame());
-	if(fpr == NULL){
-		fpr = pce->GetFramePairRecord(so2->GetFrame(), so1->GetFrame());
-		sign = -1;
-	}
-
-	rforce  = fpr->GetReflexForce();
-	rforce += fpr->GetFrictionForce();
-
-	fpr->Clear();
-
-	return sign * rforce;
-}
-
-Vec3f CRActionPlanner::GetContactForceOfSolid(PHSolid* so, CRHuman* human, SGScene* scene){
-	Vec3f rforce = Vec3f(0,0,0);
-	if(so == NULL) return rforce;
-	for(int i = 0; i < human->solids.size(); ++i){
-		rforce += GetContactForceOfSolidPair(human->solids[i], so, scene);
-	}
-	return rforce;
 }
 
 bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
@@ -304,95 +269,65 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 	}
 
 	if(cInfo){
+		//DSTR << "Contact Solid: " << cInfo->soVHIndex << std::endl;
+		cPos = cInfo->contactPoint[0];
+		float tTime = cInfo->firstTime - currentTime;
+
 		switch(cType){
 		case 1:	// ÉÜÅ[ÉUÇÃçUåÇÇ™êÊÇ…ÉqÉbÉgÇµÇƒÇµÇ‹Ç§èÍçá
-			//DSTR << "OH! No! " << "ê⁄êGÇ‹Ç≈écÇË " <<  cInfo->firstTime - currentTime << std::endl;
-
-			if(cInfo->firstTime - currentTime < 0.02f){
-				//DSTR << "ç°âÒÇÕÇ†Ç´ÇÁÇﬂÇÍ" << std::endl;
-				//puppet->rm[0].Init();
-				//puppet->rm[1].Init();
-				//puppet->rm[2].Init();
-				/*if(cInfo->soVHIndex == 3){
-					puppet->rm[2].SetSpring(cInfo->soVH, Vec3f());
-					Vec3f p = (cInfo->soVH->GetCenterPosition() - cInfo->contactPoint[0]).unit() * 0.05f + cInfo->soVH->GetCenterPosition();
-					puppet->rm[2].SetTargetPos(p, Vec3f());
-					puppet->rm[2].SetTimer(0.01f, 0.0f);
-					puppet->rm[2].SetType(3);
-					//DSTR << "äÁÇÕîÇØÇÎÅI" << std::endl;
-				}*/
-				contactInfo.clear();
-				return true;
-			}
 			// ëÃÇÃçsìÆ
-			if(cInfo->soVHIndex == 3){
-				if(puppet->rm[2].state == 0){
-					puppet->rm[2].SetSpring(cInfo->soVH, Vec3f());
-					Vec3f p = GetPointToAvoid(cInfo->soVH->GetFrame()->GetPosture() * cInfo->contactPoint[2], cInfo->contactPoint[0], puppet->rm[2].GetPos(), 0.25f);
-					puppet->rm[2].SetTargetPos(p, Vec3f());
-					puppet->rm[2].SetTimer(cInfo->firstTime - currentTime, 0.05f);
-					puppet->rm[2].SetType(3);
-					//DSTR << "äÁÇÕîÇØÇÎÅI" << std::endl;
-				}
-				else if(puppet->rm[2].state == 3){
-					//puppet->rm[2].Init();
-					if(puppet->rm[0].state == 0){
-						puppet->rm[0].SetSpring(puppet->solids[6], Vec3f());
-						Vec3f p = GetPointToGuard(cInfo->soVH->GetFrame()->GetPosture() * cInfo->contactPoint[2], cInfo->contactPoint[0], puppet->rm[0].GetPos());
-						puppet->rm[0].SetTargetPos(p, Vec3f());
-						puppet->rm[0].SetTimer((cInfo->firstTime - currentTime) * 0.5, (cInfo->firstTime - currentTime) * 0.5);
-						puppet->rm[0].SetType(2);
-					}
-					else if(puppet->rm[0].state == 1){
-						puppet->rm[0].Init();
-					}
-					if(puppet->rm[1].state == 0){
-						puppet->rm[1].SetSpring(puppet->solids[9], Vec3f());
-						Vec3f p = GetPointToGuard(cInfo->soVH->GetFrame()->GetPosture() * cInfo->contactPoint[2], cInfo->contactPoint[0], puppet->rm[1].GetPos());
-						puppet->rm[1].SetTargetPos(p, Vec3f());
-						puppet->rm[1].SetTimer((cInfo->firstTime - currentTime) * 0.5, (cInfo->firstTime - currentTime) * 0.5);
-						puppet->rm[1].SetType(2);
-					}
-				}
+			//if(cInfo->soVHIndex == 3){
+			if(cInfo->soVHIndex == 3 || cInfo->soVHIndex == 2){
+				float rate = 0.2f;
+				if(tTime > rate) rate = tTime;
+
+				puppet->reaching[0][2].SetSpring(cInfo->soVH, Vec3f(0.0f, 0.1f, 0.05f));
+				Vec3f p = GetPointToAvoid(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][2].GetPos(), 0.25f);
+				puppet->reaching[0][2].SetTargetPos(p, Vec3f());
+				puppet->reaching[0][2].SetTimer(rate, 0.25f);
+				puppet->reaching[0][2].SetType(3);
 			}
 
-			else if(cInfo->soVHIndex == 2){
-				// âEòrÇÃçsìÆ
-				if(puppet->rm[0].state == 1){
-					puppet->rm[0].Init();
-					//DSTR << "âEòrÇÕãxÇﬂÅI" << std::endl;
+			// âEòrÇÃçsìÆ
+			if(puppet->bGuard){
+			//else{
+				if(puppet->reaching[0][0].state == 1){
+					puppet->reaching[0][0].Init();
 				}
-				else if(puppet->rm[0].state == 0){
-					puppet->rm[0].SetSpring(puppet->solids[5], Vec3f(0,-0.8 * puppet->GetSolidInfo(5).scale.Y(),0));
-					Vec3f p = GetPointToGuard(cInfo->soVH->GetFrame()->GetPosture() * cInfo->contactPoint[2], cInfo->contactPoint[0], puppet->rm[0].GetPos());
-					puppet->rm[0].SetTargetPos(p, Vec3f());
-					puppet->rm[0].SetTimer((cInfo->firstTime - currentTime) * 0.7, (cInfo->firstTime - currentTime) * 0.4);
-					puppet->rm[0].SetType(2);
+				else{
+					float rate = 0.1f;
+					if(tTime > 0.2f) rate = tTime * 0.5f;
 
-					//DSTR << "âEòrÇÕéÁÇÍÅI" << std::endl;
-				}
-				else if(puppet->rm[0].state == 2){
-					//puppet->rm[0].SetTarget(cInfo->contactPoint[0], Vec3f());
-					//DSTR << "âEòrÇÕÇªÇÃÇ‹Ç‹ÅI" << std::endl;
+					if((puppet->solids[5]->GetCenterPosition() - cPos).norm() > (puppet->solids[6]->GetCenterPosition() - cPos).norm()){
+						puppet->reaching[0][0].SetSpring(puppet->solids[5], Vec3f(0.0f,-0.9f * puppet->GetSolidInfo(5).scale.Y(),0));
+					}
+					else{
+						puppet->reaching[0][0].SetSpring(puppet->solids[5], Vec3f());
+					}
+					Vec3f p = GetPointToGuard(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][0].GetPos());
+					puppet->reaching[0][0].SetTargetPos(p, Vec3f());
+					puppet->reaching[0][0].SetTimer(rate, 0.3f - rate);
+					puppet->reaching[0][0].SetType(2);
 				}
 
 				// ç∂òrÇÃçsìÆ
-				if(puppet->rm[1].state == 1){
-					puppet->rm[1].Init();
-					//DSTR << "ç∂òrÇÕãxÇﬂÅI" << std::endl;
+				if(puppet->reaching[0][1].state == 1){
+					puppet->reaching[0][1].Init();
 				}
-				else if(puppet->rm[1].state == 0){
-					puppet->rm[1].SetSpring(puppet->solids[8], Vec3f(0,-0.8 * puppet->GetSolidInfo(8).scale.Y(),0));
-					Vec3f p = GetPointToGuard(cInfo->soVH->GetFrame()->GetPosture() * cInfo->contactPoint[2], cInfo->contactPoint[0], puppet->rm[1].GetPos());
-					puppet->rm[1].SetTargetPos(p, Vec3f());
-					puppet->rm[1].SetTimer((cInfo->firstTime - currentTime) * 0.7, (cInfo->firstTime - currentTime) * 0.4);
-					puppet->rm[1].SetType(2);
+				else{
+					float rate = 0.11f;
+					if(tTime > 0.2f) rate = tTime * 0.5f;
 
-					//DSTR << "ç∂òrÇÕéÁÇÍÅI" << std::endl;
-				}
-				else if(puppet->rm[1].state == 2){
-					//puppet->rm[1].SetTarget(cInfo->contactPoint[0], Vec3f());
-					//DSTR << "ç∂òrÇÕÇªÇÃÇ‹Ç‹ÅI" << std::endl;
+					if((puppet->solids[8]->GetCenterPosition() - cPos).norm() > (puppet->solids[9]->GetCenterPosition() - cPos).norm()){
+						puppet->reaching[0][1].SetSpring(puppet->solids[8], Vec3f(0.0f,-0.9f * puppet->GetSolidInfo(8).scale.Y(),0));
+					}
+					else{
+						puppet->reaching[0][1].SetSpring(puppet->solids[8], Vec3f());
+					}
+					Vec3f p = GetPointToGuard(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][0].GetPos());
+					puppet->reaching[0][1].SetTargetPos(p, Vec3f());
+					puppet->reaching[0][1].SetTimer(rate, 0.3f - rate);
+					puppet->reaching[0][1].SetType(2);
 				}
 			}
 
@@ -438,15 +373,18 @@ Vec3f CRActionPlanner::GetNearestPoint(Vec3f a, Vec3f b, Vec3f c){
 }
 
 Vec3f CRActionPlanner::GetPointToAvoid(Vec3f a, Vec3f b, Vec3f c, float d){
-	Vec3f p = GetNearestPoint(a, (b - a).unit() * 0.25f + b, c);
+	Vec3f p = GetNearestPoint(a, (b - a).unit() * 0.2f + b, c);
 	Vec3f q = (c - p);
-	q.y = 0.0f;
-	if(q.Z() > 0) q.z = 0.0f;
-	return d * q.unit() + p;
+	q.y  = 0.0f;
+	q.z *= 0.05f;
+	//if(q.Z() > 0) q.z = 0.0f;
+	//return d * q.unit() + p;
+	return d * q.unit() + c;
 }
 
 Vec3f CRActionPlanner::GetPointToGuard(Vec3f a, Vec3f b, Vec3f c){
-	return GetNearestPoint(a, (b - a) * 0.7f + a, c);
+	//return GetNearestPoint(a, (b - a) * 0.4f + a, c);
+	return GetNearestPoint(a, (a - b).unit() * 0.1f + b, c);
 }
 
 }

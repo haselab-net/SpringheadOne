@@ -36,8 +36,8 @@ void CDMesh::CalcBBox(Vec3f& bbMin, Vec3f& bbMax){
 }
 
 bool CDMesh::AddChildObject(SGObject* o, SGScene* s){
-	if (DCAST(PHPhysicalMaterial, o)){
-		PHPhysicalMaterial* pm = (PHPhysicalMaterial*)o;
+	if (DCAST(CDPhysicalMaterial, o)){
+		CDPhysicalMaterial* pm = (CDPhysicalMaterial*)o;
 		for(CDGeometries::iterator it = conveces.begin(); it != conveces.end(); ++it){
 			(*it)->pmaterial = pm;
 		}

@@ -75,7 +75,7 @@ void FWPointer6D::SetForce(Vec3f force, Vec3f torque){
 
 void FWPointerRui::Init(HIRuiBase* dev){
 	jointPids.resize(dev->NJoint());
-	for(int i=0; i<jointPids.size(); ++i){
+	for(unsigned i=0; i<jointPids.size(); ++i){
 		jointPids[i] = NULL;
 	}
 }
@@ -87,8 +87,8 @@ void FWPointerRui::Connect(SGScene* scene){
 		"joHandL2",
 		NULL
 	};
-	for(int ii=0; ii < jointPids.size(); ++ii){
-		for(int i=0; names[i]; ++i){
+	for(unsigned ii=0; ii < jointPids.size(); ++ii){
+		for(unsigned i=0; names[i]; ++i){
 			PHJoint1D* joint;
 			scene->FindObject(joint, names[i]);
 			PHJointPid* pid = PHJointPid::Find(joint, scene);
@@ -106,11 +106,11 @@ void FWPointerRui::Connect(SGScene* scene){
 }
 void FWPointerRui::Step(float dt){
 	Device()->Update(dt);
-	for(int i=0; i<jointPids.size(); ++i){
+	for(unsigned i=0; i<jointPids.size(); ++i){
 		float angle = Device()->GetJointAngle(i);
 		if (jointPids[i]){
 			jointPids[i]->goal = angle;
-			Device()->SetTorque(i, jointPids[i]->GetJointTorque());
+			Device()->SetTorque(i, (float)jointPids[i]->GetJointTorque());
 		}
 	}
 }

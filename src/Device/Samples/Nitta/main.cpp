@@ -11,8 +11,12 @@ void main(){
 	
 	//	デバイス管理クラスにデバイスを登録
 	
+#if 0	//	IOポートを直接アクセスする場合：
 	//	ここでボードのアドレスを設定(マニュアルを見て直してください)
 	devMan.RPool().Register(new DRNittaForce(0x230));
+#else	//	jr3.dll を使う場合．ボード番号を指定する．
+	devMan.RPool().Register(new DRNittaForce(0));
+#endif
 	//	デバイスの初期化と結果の表示
 	devMan.Init();
 	std::cout << devMan;

@@ -3,7 +3,6 @@
 #include "CDGeometry.h"
 #include "CDConvex.h"
 #include "CDQuickHull3D.h"
-#include <Physics/PHPhysicalMaterial.h>
 
 namespace Spr {;
 

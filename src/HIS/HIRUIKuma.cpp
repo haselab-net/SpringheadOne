@@ -32,7 +32,7 @@ bool HIRuiKuma::Init(){
 }
 
 float HIRuiKuma::GetJointAngle(int jn){
-	float ang = (data[jn]/1024.0*M_PI*4.0/3.0 - M_PI*2.0/3.0);
+	float ang = (float)(data[jn]/1024.0*M_PI*4.0/3.0 - M_PI*2.0/3.0);
 		return ang;
 }
 
@@ -50,7 +50,7 @@ void HIRuiKuma::SetTorque(int jn, float torque){
 		else if(senddata[i]<0)senddata[i] = 0;
 	}
 */
-	senddata[jn] = data[jn] - torque;
+	senddata[jn] = (int)(data[jn] - torque);
 	if(senddata[jn]>1023)senddata[jn] = 1023;
 	else if(senddata[jn]<0)senddata[jn] = 0;
 

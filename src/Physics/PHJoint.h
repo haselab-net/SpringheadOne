@@ -125,6 +125,8 @@ public:
 	Vec3f GetSolidAngularVelocity(){ return w_abs; }
 	///	子剛体の加速度(World系)
 	Vec3f GetSolidVelocity(){ return v_abs; }
+	/// 絶対座標での関節の向き
+	Matrix3d GetOrientation(){return R;}
 	
 	///	関節の自由度
 	virtual int GetJointDof()=0;
