@@ -51,6 +51,7 @@ FITypeDesc.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: HIS - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
+HIBase.cpp
 HIHapticDevice.cpp
 HIMouse.cpp
 HIOrientation.cpp
@@ -121,7 +122,6 @@ SGScene.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: WinBasis - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
-WBHid.cpp
 WBComStream.cpp
 WBDllLoader.cpp
 WBMMTimer.cpp
@@ -237,112 +237,9 @@ MainFrm.cpp
 MFCD3DDyna.cpp
 MFCD3DDynaDoc.cpp
 MFCD3DDynaView.cpp
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(292) : error C2061: 構文ｴﾗｰ : 識別子 'PHPhysicalMaterial' がｼﾝﾀｯｸｽｴﾗｰを起こしました。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : warning C4390: ';' : 制御が空の文が見つかりました。意図した記述でしょうか?
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : error C2143: 構文ｴﾗｰ : ';' が '{' の前に必要です。
-C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(309) : fatal error C1003: ﾌﾟﾛｸﾞﾗﾑ内のｴﾗｰが 100 個を超えました。ｺﾝﾊﾟｲﾙは中断されます。
-cl.exe の実行ｴﾗｰ
+ﾘﾝｸ中...
 
-MFCD3DDyna.exe - ｴﾗｰ 102、警告 1
+MFCD3DDyna.exe - ｴﾗｰ 0、警告 0
  
  
 *** SDKD3DDyna *** 
@@ -481,9 +378,7 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
  
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] BaseUtility.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] Affine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] StrbufBase.cpp(1): 
@@ -491,7 +386,6 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] BaseTypeInfo.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBWinDriver.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] WBDllLoader.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBMTimer.cpp(1): 
@@ -589,7 +483,6 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] DRADAPIO.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HITurnTable.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] HIHapticDevice.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HISpidarMotor.cpp(1): 
@@ -627,24 +520,23 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HIMouse.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
-[C++ 警告] HIMouse.cpp(241): W8004 'yPos' に代入した値は使われていない
+[C++ 警告] HIMouse.cpp(243): W8004 'yPos' に代入した値は使われていない
   詳細な解析情報
     HIMouse.cpp(5): namespace Spr
-    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
-[C++ 警告] HIMouse.cpp(241): W8004 'xPos' に代入した値は使われていない
+    HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(243): W8004 'xPos' に代入した値は使われていない
   詳細な解析情報
     HIMouse.cpp(5): namespace Spr
-    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
-[C++ 警告] HIMouse.cpp(254): W8004 'lKeyData' に代入した値は使われていない
+    HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(256): W8004 'lKeyData' に代入した値は使われていない
   詳細な解析情報
     HIMouse.cpp(5): namespace Spr
-    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
-[C++ 警告] HIMouse.cpp(254): W8066 実行されないコード
+    HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] HIMouse.cpp(256): W8066 実行されないコード
   詳細な解析情報
     HIMouse.cpp(5): namespace Spr
-    HIMouse.cpp(211): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+    HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
 [C++] SGFrame.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGObject.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGScene.cpp(1): 
@@ -654,13 +546,11 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] SGEngine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGRegisterLoader.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGRenderEngine.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
 [C++] FITypeDesc.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocNode.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] FIFileDoc.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] FIDocScene.cpp(1): 
@@ -668,7 +558,6 @@ SDKD3DDyna.exe - ｴﾗｰ 0、警告 8
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] CDGJK.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] CDSphere.cpp(1): 
