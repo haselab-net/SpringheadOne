@@ -234,7 +234,7 @@ public:
 	}
 	///
 	template <class M>
-	void MemberTraverse(M m){
+	void ForEachChild(M m){
 		for(TYPENAME ARRAY::iterator it = children.begin(); it !=children.end(); ++it){
 			T* t = *it;
 			(t->*m)();
@@ -243,20 +243,30 @@ public:
 	///
 	template <class M>
 	void Traverse(M m){
+		  m(this);
 		for(TYPENAME ARRAY::iterator it = children.begin(); it !=children.end(); ++it){
-			m(*it);
+			(*it)->Traverse(m);
 		}
 	}
 	template <class M, class A>
 	void Traverse(M m, A a){
+		m((T*)this, a);
 		for(TYPENAME ARRAY::iterator it = children.begin(); it !=children.end(); ++it){
-			m(*it, a);
+			(*it)->Traverse(m, a);
 		}
 	}
 	template <class T2, class M>
-	void MemberTraverse(T2 t, M* m){
+	void MemberTraverse(T2 t, M m){
+		(t->*m)(this);
 		for(TYPENAME ARRAY::iterator it = children.begin(); it !=children.end(); ++it){
-			t->m(*it);
+			(*it)->MemberTraverse(t, m);
+		}
+	}
+	template <class E, class M, class A>
+	void MemberTraverse(E e, M m, A& a){
+		(e->*m)((T*)this, a);
+		for(TYPENAME ARRAY::iterator it = children.begin(); it !=children.end(); ++it){
+			(*it)->MemberTraverse(e, m, a);
 		}
 	}
 };

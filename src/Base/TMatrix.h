@@ -1,6 +1,5 @@
 #ifndef PTMATRIX_TMATRIX_H
 #define PTMATRIX_TMATRIX_H
-
 /** 
 	@page PTM ポータブル テンプレート 行列クラスライブラリ
 	
@@ -751,16 +750,23 @@ public:
 	///@name	ストリーム入出力
 	//@{
 	///	出力
-	void print(std::ostream& os) const {
+	void print(std::ostream& os, char* sep="( )") const {
 //		os << "sz:" << height() << "," << width() << std::endl;
 		int w = os.width();
 		os.width(0);
 		for(size_t i=0; i<height(); ++i){
-			for(int j=0; j<w; ++j) os << " ";
-			if (i == 0) os << "(";
-			else os << " ";
+			for(int j=0; j<w; ++j){
+				if (sep[1]) os << sep[1];
+			}
+			if (i == 0){
+				if(sep[0]) os << sep[0];
+			}else{
+				if(sep[1]) os << sep[1];
+			}
 			row(i).print(os);
-			if (i==height()-1) os << ")";
+			if (i==height()-1){
+				if(sep[2]) os << sep[2];
+			}
 			os << std::endl;
 		}
 		os.width(w);
@@ -918,7 +924,7 @@ public:
 									row_vector_type;		///<	行ベクトル型
 	typedef row_vector_type&		row_vector_ref;			///<	行ベクトルの参照
 	typedef const row_vector_type&	const_row_vector_ref;	///<	行ベクトルの参照
-	typedef TVector<W,T>			col_vector_type;		///<	列ベクトル型
+	typedef TVector<H,T>			col_vector_type;		///<	列ベクトル型
 	typedef col_vector_type&		col_vector_ref;			///<	列ベクトルの参照
 	typedef const col_vector_type&	const_col_vector_ref;	///<	列ベクトルの参照
 };

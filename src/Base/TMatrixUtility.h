@@ -306,6 +306,22 @@ void init_quaternion(TVectorBase<DIMENC(4), QD>& q, T angle, const TVectorBase<D
 }
 
 /**	4行ベクトルを回転をあらわすクォータニオンとして初期化	*/
+template <class QD, class AD>
+void init_quaternion(TVectorBase<DIMENC(4), QD>& q, const TVectorBase<DIMENC(3),AD>& rot){
+	typedef TYPENAME QD::element_type ET;
+	ET angle = rot.norm();
+	ET s = (ET)(sin(angle / 2));
+	q[0] = (ET)( cos(angle / 2) );
+	if (angle > 1e-10f){
+		q.sub_vector(TSubVectorDim<1,3>()) = s/angle * rot;
+	}else{
+		q[1] = (ET)0;
+		q[2] = (ET)0;
+		q[3] = (ET)0;
+	}
+}
+
+/**	4行ベクトルを回転をあらわすクォータニオンとして初期化	*/
 template <class QD, class T>
 void init_quaternion(TVectorBase<DIMENC(4), QD>& q, T angle, char axis){
 	q[0] = (TYPENAME QD::element_type) cos(angle / 2);

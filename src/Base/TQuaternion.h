@@ -54,11 +54,27 @@ public:
 	element_type& Z(){ return z; }
 	/// 
 	vector_type& V() {return sub_vector(1,vector_type());}
-	/// 回転ベクトル (angleから関数名変更)
+	/// 回転ベクトル．0..PIの範囲で回転ベクトルを返す．
+	TVec3<ET> rotation_half() {
+		TQuaternion<ET> tmp;
+		if (tmp.W() < 0) tmp = -*this;
+		else tmp = *this;
+		TVec3<ET> r;
+		if (tmp.W() > 1) W() = 1;
+		ET theta = (ET)( acos(tmp.W()) * 2 );
+		r = tmp.sub_vector(1, vector_type());
+		ET len = r.norm();
+		if (len > 1e-20){
+			r = r/len;
+		}
+		r *= theta;
+		return r;
+	}
+	///	回転ベクトル2． 0..2PIの範囲で回転ベクトルを返す．	angle から関数名変更
 	TVec3<ET> rotation() {
 		//	W() = cos(theta/2) なので
 		TVec3<ET> r;
-		if (W() < -1) W() = 1;
+		if (W() < -1) W() = -1;
 		if (W() > 1) W() = 1;
 		ET theta = (ET)( acos(W()) * 2 );
 		r = sub_vector(1, vector_type());
@@ -110,6 +126,11 @@ public:
 	static TQuaternion<ET> Rot(element_type angle, char axis){
 		TQuaternion<ET> quat;
 		PTM::init_quaternion(quat, angle, axis);
+		return quat;
+	}
+	static TQuaternion<ET> Rot(const TVec3<element_type>& rot){
+		TQuaternion<ET> quat;
+		PTM::init_quaternion(quat, rot);
 		return quat;
 	}
 

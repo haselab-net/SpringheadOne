@@ -370,12 +370,14 @@ public:
 	//@{
 	/**	表示.
 		@param os 出力先ストリーム	*/
-	void print(std::ostream& os) const {
-//		os << size();
-		os << "(";
+	void print(std::ostream& os, char* sep="( )") const {
+		if (sep[0]) os << sep[0];
 		if (size()){ os.width(6); os << item(0); }
-		for(size_t i=1; i<size(); ++i){ os << " "; os.width(6); os << item(i); }
-		os << ")";
+		for(size_t i=1; i<size(); ++i){
+			if (sep[1]) os << sep[1];
+			os.width(6); os << item(i);
+		}
+		if (sep[2]) os << sep[2];
 	}
 	/**	表示.
 		@param is 入力元ストリーム	*/

@@ -52,6 +52,19 @@ template <class T, class P> T* UTAcastImp(P p){
 	UTAcastError((p)->GetTypeInfo()->className);
 	return NULL;
 }
+#define DCASTP(TP, p)	UTDcastpImp<TP>(p)
+template <class TP, class P> TP UTDcastpImp(P p){
+	TP tp=NULL;
+	if (p && p->GetTypeInfo()->Inherit(tp->GetTypeInfoStatic())) return (TP)&*(p);
+	return NULL;
+}
+#define ACASTP(TP, p)	UTAcastpImp<TP>(p)
+template <class TP, class P> TP UTAcastpImp(P p){
+	TP tp=NULL;
+	if (p && p->GetTypeInfo()->Inherit(tp->GetTypeInfoStatic())) return (TP)&*(p);
+	UTAcastError((p)->GetTypeInfo()->className);
+	return NULL;
+}
 char* UTAcastError(const char* );
 
 }

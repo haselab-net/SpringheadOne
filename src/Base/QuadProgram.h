@@ -268,6 +268,11 @@ public:
 		SetDim(minT.size());
 		base_type::Init(minT, maxT);
 	}
+
+	void SetOneRange(int num, ET max,ET min){
+		minX[num] = -min;
+		maxX[num] = max;
+	}
 };
 
 
