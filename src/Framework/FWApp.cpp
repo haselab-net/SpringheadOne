@@ -239,7 +239,19 @@ bool FWApp::AddHis(const char* str){
 	else IF_SPIDAR(HISpidarG6O)
 	else IF_SPIDAR(HISpidarG6X)
 	else IF_SPIDAR(HISpidarG6X2)
-	else IF_SPIDAR(HISpidarG6X3)
+	else if (strcmp("SpidarG6X3R", type) == 0){
+		UTRef<HISpidarG6X3> dev = new HISpidarG6X3;
+		if (dev->Init(devMan, false)){
+			pointers.push_back(new FWPointer6D(dev));
+			rv = true;
+		}
+	}else if (strcmp("SpidarG6X3L", type) == 0){
+		UTRef<HISpidarG6X3> dev = new HISpidarG6X3;
+		if (dev->Init(devMan, true)){
+			pointers.push_back(new FWPointer6D(dev));
+			rv = true;
+		}
+	}
 	else IF_SPIDAR(HISpidarG6WB)
 	else IF_SPIDAR(HISpidarG6Jun)
 	bBusy = false;
