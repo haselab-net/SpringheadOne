@@ -29,7 +29,9 @@ int main(){
 	devMan.RPool().Register(new DRIHCSh4);		//	SH4からアクセスするコントローラのI/O
 #else
 	devMan.RPool().Register(new DRUsb20Simple(10));	//	USB2.0版コントローラ 8モータ
+	devMan.RPool().Register(new DRUsb20Sh4(0));		//	Sh4版コントローラ 8モータ
 	devMan.RPool().Register(new DRUsb20Sh4(1));		//	Sh4版コントローラ 8モータ
+	devMan.RPool().Register(new DRUsb20Sh4(2));		//	Sh4版コントローラ 8モータ
 //	devMan.RPool().Register(new DRUsbH8Simple(0));	//	H8版コントローラ 8モータ
 /*	devMan.RPool().Register(new DRContecIsaDa(0x300));	//	ISAボード版(3つで8モータ用)
 	devMan.RPool().Register(new DRContecIsaCounter(0x200));
@@ -64,7 +66,7 @@ int main(){
 	}
 	spidarG6.Calib();
 */
-	spidarG6.Init(devMan);			//	SPIDARの初期化，キャリブレーションもする．
+	spidarG6.Init(devMan, true);			//	SPIDARの初期化，キャリブレーションもする．
 #ifdef __sh__
 	cyg_thread_delay(10000);
 #else
