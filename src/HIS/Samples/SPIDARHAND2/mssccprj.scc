@@ -1,9 +1,0 @@
-SCC = This is a Source Code Control file
-
-[SpidarHand2.dsp]
-SCC_Aux_Path = "\\192.168.251.1\vss\"
-SCC_Project_Name = "$/Project/Springhead/src/HIS/Samples/SPIDARHAND2", IECBAAAA
-
-[SpidarHand2.dsw]
-SCC_Aux_Path = "\\192.168.251.1\vss\"
-SCC_Project_Name = "$/Project/Springhead/src/HIS/Samples/SPIDARHAND2", IECBAAAA

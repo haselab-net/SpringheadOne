@@ -1,9 +1,0 @@
-SCC = This is a Source Code Control file
-
-[Framework.dsp]
-SCC_Aux_Path = "\\192.168.251.1\vss\"
-SCC_Project_Name = "$/Project/Springhead/src/Framework", IWKBAAAA
-
-[Framework.vcproj]
-SCC_Aux_Path = "\\192.168.251.1\vss\"
-SCC_Project_Name = "$/Project/Springhead/src/Framework", IWKBAAAA
