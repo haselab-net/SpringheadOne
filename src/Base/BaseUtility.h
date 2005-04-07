@@ -51,23 +51,6 @@ struct UTEatWhite{
 };
 std::istream& operator >> (std::istream& is, const UTEatWhite& e);
 
-/**	@defgroup UTRef 参照カウンタ
-	C++では，メモリを new で確保して delete で削除します．
-	new してない領域を指すポインタを delete したり，delete を忘れると
-	一般保護違反やメモリリークというやな問題が起き，特にメモリリークを
-	なくすのはとても面倒です．<br>
-	そこで，C++に便利なポインタを導入するのが参照カウンタテンプレート
-	クラスです．<br>
-
-	参照カウンタとは，ポインタに指されるオブジェクトに，参照しているポインタ
-	の数を書いておき，0になったら自動的に削除する仕組みです．<br>
-	参照ポインタ(Spr::UTRef)は，参照するときにカウンタ値を増やし，
-	参照しなくなるときにカウンタ値を減らし，カウンタが0だったら
-	delete します．<br>
-
-	参照カウンタは Spr::UTRefCount 基本クラスに定義されています．
-	参照ポインタはUTRefCountクラスを継承したクラスにだけ使えます．	*/
-//@{
 ///	参照カウンタ．カウントが0になっても勝手に消えはしない．
 class SPR_DLL UTRefCount{
 	mutable int refCount;
@@ -98,14 +81,6 @@ public:
 /**	参照カウンタ用のポインタ．自動的に参照カウンタを増減，
 	オブジェクトのdeleteをする．
 */
-/*
-class UTRefBase{
-public:
-	void* obj;
-	void ForceOverWrite(void* o){
-		obj = o;
-	}
-};*/
 template <class T>
 class UTRef{
 	T* obj;
@@ -154,7 +129,6 @@ public:
 	T* operator->() const {return Obj();}
 	bool operator <(const UTRef& r) const { return Obj() < r.Obj(); }
 };
-//@}
 
 ///	シングルトンクラス
 template <class T>
