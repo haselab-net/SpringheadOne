@@ -11,6 +11,7 @@
 #include <HIS/HISpidarG6X.h>
 #include <HIS/HISpidarG6X2.h>
 #include <HIS/HISpidarG6X3.h>
+#include <HIS/HISpidarCanoe.h>
 #include <HIS/HISpidarG6WB.h>
 #include <HIS/HISpidarG6Jun.h>
 #include <HIS/HIRuiKuma.h>
@@ -250,6 +251,7 @@ bool FWApp::AddHis(const char* str){
 			rv = true;
 		}
 	}
+	else IF_SPIDAR(HISpidarCanoe)
 	else IF_SPIDAR(HISpidarG6WB)
 	else IF_SPIDAR(HISpidarG6Jun)
 	bBusy = false;

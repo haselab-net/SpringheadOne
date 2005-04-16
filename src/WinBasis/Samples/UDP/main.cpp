@@ -23,9 +23,10 @@ void main(int argc, char** argv){
 		WBSocket sock(AF_INET, SOCK_DGRAM, 0);
 		WBSockAddr adr;
 		adr.AdrIn().sin_family = AF_INET;
-		adr.AdrIn().sin_port = htons(10000);
+		adr.AdrIn().sin_port = htons(11111);
 		adr.AdrIn().sin_addr.s_addr = htonl(INADDR_ANY);		//	ƒAƒhƒŒƒX
 		if(bind(sock, (LPSOCKADDR)&adr, sizeof(adr))==SOCKET_ERROR){
+			int error = WSAGetLastError();
 			closesocket(sock);
 			sock = INVALID_SOCKET;
 			return;

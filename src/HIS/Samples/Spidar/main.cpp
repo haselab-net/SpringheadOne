@@ -76,8 +76,12 @@ int main(){
 	spidar2.Init(devMan, motorPos[1], 0.3776f, -2.924062107079e-5f, 0.5f, 20.0f);
 	cout.flush();
 	printf("Waiting...");
-	Sleep(2000);
+	Sleep(1000);
 	printf("Calibration\n");
+	spidar.Motor()[0].lengthPerPulse *= -1;
+	spidar2.Motor()[0].lengthPerPulse *= -1;
+	spidar2.Motor()[2].lengthPerPulse *= -1;
+
 	spidar.Calib();
 	spidar2.Calib();
 	
@@ -123,7 +127,7 @@ int main(){
 		cout << "P:" << spidar.GetPos() << "\tF:" << spidar.GetForce() << std::endl;
 #endif
 		//	デバッグ用：糸の長さを表示
-#if 0
+#if 1
 		for(int i=0; i<4; i++){
 			cout << spidar.Motor()[i].GetLength() << " ";
 		}

@@ -261,6 +261,14 @@ SOURCE=.\HISpidarCalcBase.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\HISpidarCanoe.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\HISpidarCanoe.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\HISpidarG6.cpp
 # End Source File
 # Begin Source File
