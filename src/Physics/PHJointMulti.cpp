@@ -19,8 +19,7 @@ PTM::TMatrixCol<DIMDEC(M::WIDTH), DIMDEC(M::HEIGHT), TYPENAME M::element_type> s
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointBall, PHJointBase);
 void PHJointBall::Integrate(double dt){
-	PreIntegrate(dt);	
-	
+	PreIntegrate(dt);
 	//	delta_position Ç©ÇÁÅCä÷êﬂÇÃépê®ÇåvéZÅD
 	position = position * Quaterniond::Rot(delta_position);
 

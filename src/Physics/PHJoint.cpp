@@ -23,7 +23,10 @@ PHJointBase* PHJointBase::Search(PHSolid* s)
 //	èâä˙âª
 SGOBJECTIMPABST(PHJointBase, SGObject);
 
-PHJointBase::PHJointBase():solid(0), frame(0){}
+PHJointBase::PHJointBase():solid(0), frame(0){
+	intType = SYMPLETIC;
+//	intType = ANALYTIC;
+}
 
 void PHJointBase::Loaded(SGScene* scene)
 {

@@ -86,12 +86,21 @@ void PHJoint1D::Integrate(double dt){
 	if(!bOutOfRange){
 		//‰Á‘¬“x‚ðŒvŽZ
 		accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
-		//ˆÊ’u‚ðÏ•ª
-		position += float ( (velocity + 0.5 * accel * dt) * dt );
-		//‰ñ“]ŠÖß‚Ìê‡‚Í[-ƒÎ,ƒÎ]
-		LimitAngle(position);
-		//‘¬“x‚ðÏ•ª
-		velocity += float(accel * dt);
+		if (intType == SYMPLETIC){
+			//‘¬“x‚ðÏ•ª
+			velocity += float(accel * dt);
+			//ˆÊ’u‚ðÏ•ª
+			position += float (velocity * dt);
+			//‰ñ“]ŠÖß‚Ìê‡‚Í[-ƒÎ,ƒÎ]
+			LimitAngle(position);
+		}else{
+			//ˆÊ’u‚ðÏ•ª
+			position += float ( (velocity + 0.5 * accel * dt) * dt );
+			//‰ñ“]ŠÖß‚Ìê‡‚Í[-ƒÎ,ƒÎ]
+			LimitAngle(position);
+			//‘¬“x‚ðÏ•ª
+			velocity += float(accel * dt);
+		}
 #if 0
 		//	for DEBUG
 		if (accel > 100){

@@ -57,6 +57,10 @@ public:
 	UTRef<PHSolid> solid;	//	子Solid．関節は親Solidと子Solidをつなぐ
 	UTRef<SGFrame> frame;	//	ルートノードが固定の場合のFrame
 protected:
+	enum IntType{
+		SYMPLETIC,
+		ANALYTIC,
+	}intType;
 	/**	@name ファイルからロードされる変数
 		関節フレームの説明
 			関節の位置と傾きを表現するためのフレーム。

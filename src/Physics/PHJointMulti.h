@@ -54,12 +54,24 @@ public:
 	*/
 	void PreIntegrate(double dt){
 		a_p = cXp_Vec(OfParent(&PHJointMulti::a));
-		//加速度を計算
-		accel = Iss*(torque - S_tr*(Z_plus_Ia_c + Ia*a_p));
-		//位置を積分する準備
-		delta_position = (velocity + 0.5 * accel * dt) * dt;
-		//速度を積分
-		velocity += accel * dt;
+
+		if (intType == SYMPLETIC){
+			//	x(dt) = x(0) + dt*v(0)/m
+			//	v(dt) = v(0) + dt*f(dt)
+			//加速度を計算
+			accel = Iss*(torque - S_tr*(Z_plus_Ia_c + Ia*a_p));
+			//速度を積分
+			velocity += accel * dt;
+			//位置を積分する準備
+			delta_position = velocity * dt;
+		}else{
+			//加速度を計算
+			accel = Iss*(torque - S_tr*(Z_plus_Ia_c + Ia*a_p));
+			//位置を積分する準備
+			delta_position = (velocity + 0.5 * accel * dt) * dt;
+			//速度を積分
+			velocity += accel * dt;
+		}
 		//重心周りの加速度(子ノードの積分で使用する)
 		a = a_p + c + S*accel;
 	}
