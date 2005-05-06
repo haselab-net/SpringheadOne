@@ -14,6 +14,7 @@ enum PHIntegrationMode{
 		PHINT_ARISTOTELIAN,	//f = mv
 		PHINT_EULER,		//オイラー法
 		PHINT_SIMPLETIC,
+		PHINT_ANALYTIC,
 		PHINT_RUNGEKUTTA2,	//２次ルンゲクッタ法
 		PHINT_RUNGEKUTTA4	//４次ルンゲクッタ法
 };

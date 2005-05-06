@@ -10,6 +10,7 @@ SGOBJECTIMP(PHSolid, SGObject);
 PHSolid::PHSolid(){
 	mass = 1.0;
 	inertia = Matrix3d::Unit();
+//	integrationMode = PHINT_ANALYTIC;
 	integrationMode = PHINT_SIMPLETIC;
 }
 bool PHSolid::AddChildObject(SGObject* o, SGScene* s){
@@ -53,7 +54,7 @@ void PHSolid::Step(double dt){
 		switch(GetIntegrationMode()){
 		case PHINT_EULER:
 			//平行移動量の積分
-			SetFramePosition(GetFramePosition() + velocity * dt);
+			SetCenterPosition(GetCenterPosition() + velocity * dt);
 			velocity += force * (dt / mass);
 			//角速度からクウォータニオンの時間微分を求め、積分、正規化
 			quat += quat.derivative(angVelocity) * dt;
@@ -65,7 +66,7 @@ void PHSolid::Step(double dt){
 			angVelocity = quat * angVelocity;
 			break;
 		case PHINT_ARISTOTELIAN:{
-			SetFramePosition(GetFramePosition() + velocity * dt);
+			SetCenterPosition(GetCenterPosition() + velocity * dt);
 			velocity = force / mass;		//速度は力に比例する
 			Vec3d tq = quat.conjugated() * torque;	//トルクをローカルへ
 			angVelocity = quat * (inertia_inv * tq);	//角速度はトルクに比例する
@@ -73,26 +74,50 @@ void PHSolid::Step(double dt){
 			quat += quat.derivative(angVelocity) * dt;
 			quat.unitize();
 			}break;
-		case PHINT_SIMPLETIC:
-			//平行移動量の積分（解析解に一致）
-			dv = force * (dt / mass);									//速度変化量
-			SetFramePosition(GetFramePosition() + (velocity + 0.5 * dv) * dt);	//位置の積分
-			velocity += dv;												//速度の積分
+		case PHINT_SIMPLETIC:{
+			//	x(dt) = x(0) + dt*v(0)/m
+			//	v(dt) = v(0) + dt*f(dt)
+			//回転量の積分
+			torque		= quat.conjugated() * torque;				//	トルクと角速度をローカル座標へ
+			angVelocity = quat.conjugated() * angVelocity;
+
+			dw = Euler(inertia, torque, angVelocity) * dt;			//角速度変化量
+			angVelocity += dw;
+			Quaterniond dq = Quaterniond::Rot(angVelocity * dt);
+			Vec3d dp = quat * (dq*(-center) - (-center));
+			quat = quat * dq;
+			quat.unitize();
+			angVelocity += dw;										//角速度の積分
+			torque = quat * torque;									//トルクと角速度をワールドへ
+			angVelocity = quat * angVelocity;
+			//平行移動量の積分
+			velocity += force * (dt / mass);								//	速度の積分
+			SetCenterPosition(GetCenterPosition() + velocity * dt + dp);	//	位置の積分
+			}break;
+		case PHINT_ANALYTIC:{
 			//回転量の積分
 			//回転は解析的に積分できないので、形式的に↑の公式を回転の場合に当てはめる
 			torque		= quat.conjugated() * torque;					//トルクと角速度をローカル座標へ
 			angVelocity = quat.conjugated() * angVelocity;
 			dw = Euler(inertia, torque, angVelocity) * dt;			//角速度変化量
-			quat += quat.derivative(quat * (angVelocity + 0.5 * dw)) * dt;
+
+			Quaterniond dq = Quaterniond::Rot((angVelocity+0.5*dw) * dt);
+			Vec3d dp = quat * (dq*(-center) - (-center));
+			quat = quat * dq;
 			quat.unitize();
+
 			angVelocity += dw;										//角速度の積分
-			torque = quat * torque;								//トルクと角速度をワールドへ
+			torque = quat * torque;									//トルクと角速度をワールドへ
 			angVelocity = quat * angVelocity;
-			break;
+			//平行移動量の積分（解析解に一致）
+			dv = force * (dt / mass);									//速度変化量
+			SetCenterPosition(GetCenterPosition() + (velocity+0.5*dv) * dt + dp);	//	位置の積分
+			velocity += dv;												//速度の積分
+			}break;
 		case PHINT_RUNGEKUTTA2:
 			//平行移動量の積分(まじめにルンゲクッタ公式に従っても結果は同じ＝解析解)
 			dv = force * (dt / mass);
-			SetFramePosition(GetFramePosition() + (velocity + 0.5 * dv) * dt);
+			SetCenterPosition(GetCenterPosition() + (velocity + 0.5 * dv) * dt);
 			velocity += dv;
 			//回転量の計算
 			//回転は解析的に積分できないので、ルンゲクッタ公式を使う
@@ -110,7 +135,7 @@ void PHSolid::Step(double dt){
 		case PHINT_RUNGEKUTTA4:
 			//平行移動量の積分(まじめにルンゲクッタ公式に従っても結果は同じ＝解析解)
 			dv = force * (dt / mass);
-			SetFramePosition(GetFramePosition() + (velocity + 0.5 * dv) * dt);
+			SetCenterPosition(GetCenterPosition() + (velocity + 0.5 * dv) * dt);
 			velocity += dv;
 			//回転量の計算
 			_angvel[0]	= angVelocity;
