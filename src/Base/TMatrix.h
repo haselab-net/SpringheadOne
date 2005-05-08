@@ -481,7 +481,7 @@ TYPENAME AD::element_type lu(MatrixImp<AD>& a, int* ip, TYPENAME AD::element_typ
 	PTM_EXIT:
 	return det_;           // 戻り値は行列式
 }
-///	a x + b = 0 の1次方程式を解く
+//	a x + b = 0 の1次方程式を解く．LU分解済みの必要あり．
 template <class AD, class XD, class BD>
 void solve(MatrixImp<AD>& a, VectorImp<XD>& x, const VectorImp<BD>& b, int* ip){
 	int i, j, ii;
@@ -735,7 +735,7 @@ public:
 	void multi(element_type b){ PTM::multi(exp(), b); }
 	///	LU分解を行う。thisを書き換える。行列式を返す。
 	element_type lu(int* ip, element_type* weight){ return PTM::lu(exp(), ip, weight); }
-	///	(*this) x + b = 0 の1次方程式を解く
+	//	(*this) x + b = 0 の1次方程式を解く．LU分解済みの行列でないとだめ．
 	template <class XD, class BD> void solve(VectorImp<XD>& x, const VectorImp<BD>& b, int* ip){ PTM::solve(exp(), x, b, ip); }
 	///	コレスキー法
 	template <class VBASE> void cholesky(VectorImp<VBASE>& s){ PTM::cholesky(exp(), s); }
