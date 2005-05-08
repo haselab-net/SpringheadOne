@@ -94,7 +94,7 @@ void initMat(M& a){
 	}
 }
 
-int main(){
+int main3(){
 	VMatrixCol<float> va;
 	VMatrixCol<float> vb;
 	va.resize(4,4);
@@ -151,5 +151,25 @@ int main(){
 	return 0;
 }
 
-
+int main(){
+	main3();
+	const float p[]={
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+	};
+	TMatrixCol<3,3,float> mat = (TMatrixCol<3,3,float>&)p;
+	TVector<3, float> x, b;
+	b[0] = 1;
+	b[1] = 2;
+	b[2] = 3;
+	x.clear();
+	TVector<3, int> ip;
+	ip.clear();
+	mat.gauss(x, b, ip);
+	cout << "mat:" << mat << std::endl;
+	cout << "x:" << x << std::endl;
+	cout << "b:" << b << std::endl;
+	return 0;
+}
 
