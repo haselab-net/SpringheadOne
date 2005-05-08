@@ -486,7 +486,7 @@ template <class AD, class XD, class BD>
 void solve(MatrixImp<AD>& a, VectorImp<XD>& x, const VectorImp<BD>& b, int* ip){
 	int i, j, ii;
 	TYPENAME XD::element_type t;
-	const int n = height();
+	const int n = a.height();
 	for (i = 0; i < n; i++) {       // Gauss消去法の残り
 		ii = ip[i];  t = b[ii];
 		for (j = 0; j < i; j++) t -= a.item(ii, j) * x[j];
@@ -537,9 +537,10 @@ void cholesky(MatrixImp<AD>& a, VectorImp<BD>& s){
 ///	ガウスの消去法，作業領域(行交換の記録)として， int ip[height()];  が必要．
 template <class AD, class XD, class BD>
 TYPENAME AD::element_type gauss(MatrixImp<AD>& a, VectorImp<XD>& x, const VectorImp<BD>& b, int* ip){
-	TYPENAME AD::element_type det_;	// 行列式
-	det_ = lu(ip);					// LU分解
-	if (det_ != 0) solve(x, b, ip);	// LU分解の結果を使って連立方程式を解く
+	TYPENAME AD::element_type det_;		// 行列式
+	AD::col_vector_type::ret_type w;
+	det_ = lu(a, ip, w);				// LU分解
+	if (det_ != 0) solve(a, x, b, ip);	// LU分解の結果を使って連立方程式を解く
 	return det_;						// 戻り値は行列式
 }
 
