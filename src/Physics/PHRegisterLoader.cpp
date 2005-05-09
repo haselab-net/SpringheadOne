@@ -30,6 +30,7 @@ void RegisterLoaderForPhysics(FILoadScene* l){
 	REGISTER_LOADER(l, PHChangeObjectContainer);
 	REGISTER_LOADER(l, PHSpring);
 	REGISTER_LOADER(l, PHMagneticEngine);
+	REGISTER_LOADER(l, PHMagnet);
 }
 void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHSolid);
@@ -54,6 +55,7 @@ void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHChangeObjectContainer);
 	REGISTER_SAVER(l, PHSpring);
 	REGISTER_SAVER(l, PHMagneticEngine);
+	REGISTER_SAVER(l, PHMagnet);
 }
 }
 
