@@ -5,7 +5,6 @@
 namespace Spr {;
 //----------------------------------------------------------------------------
 HIOBJECTIMP(HISpidarG6X3, HISpidarG6);
-
 HISpidarG6X3::HISpidarG6X3() : HISpidarG6() {
 }
 
@@ -26,7 +25,7 @@ bool HISpidarG6X3::Init(DVDeviceManager& dev, bool bLeft=false){
 	const float GX = 0.048f/2;		//	x方向の辺の長さ/2
 	const float GY = 0.048f/2;		//	y方向の辺の長さ/2
 	Matrix3f rotR = Matrix3f::Rot(Rad(-45), 'y');
-	Matrix3f rotL = Matrix3f::Rot(Rad(45), 'y');
+	Matrix3f rotL = Matrix3f::Rot(Rad(-45), 'y');
 	Vec3f motorPos[2][8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
 		{
 			{rotR*Vec3f(-PX,-PY, PZ), rotR*Vec3f( -GX, 0.0f, 0.0f)},
@@ -39,14 +38,14 @@ bool HISpidarG6X3::Init(DVDeviceManager& dev, bool bLeft=false){
 			{rotR*Vec3f(-PX, PY,-PZ), rotR*Vec3f(0.0f,   GY, 0.0f)}
 		},
 		{
-			{rotL*Vec3f(-PX, PY,-PZ), rotL*Vec3f(0.0f,   GY, 0.0f)},
-			{rotL*Vec3f(-PX, PY, PZ), rotL*Vec3f( -GX, 0.0f, 0.0f)},
-			{rotL*Vec3f( PX, PY, PZ), rotL*Vec3f(  GX, 0.0f, 0.0f)},
-			{rotL*Vec3f( PX, PY,-PZ), rotL*Vec3f(0.0f,   GY, 0.0f)},
-			{rotL*Vec3f(-PX,-PY,-PZ), rotL*Vec3f(0.0f,  -GY, 0.0f)},
-			{rotL*Vec3f(-PX,-PY, PZ), rotL*Vec3f( -GX, 0.0f, 0.0f)},
-			{rotL*Vec3f( PX,-PY, PZ), rotL*Vec3f(  GX, 0.0f, 0.0f)},
-			{rotL*Vec3f( PX,-PY,-PZ), rotL*Vec3f(0.0f,  -GY, 0.0f)},
+			{rotL*Vec3f( PX, PY,-PZ), rotL*Vec3f(0, 0.0f,  -GX)},
+			{rotL*Vec3f( PX, PY, PZ), rotL*Vec3f(0, 0.0f,   GX)},
+			{rotL*Vec3f(-PX, PY, PZ), rotL*Vec3f(0,   GY, 0.0f)},
+			{rotL*Vec3f(-PX, PY,-PZ), rotL*Vec3f(0,   GY, 0.0f)},
+			{rotL*Vec3f( PX,-PY,-PZ), rotL*Vec3f(0, 0.0f,  -GX)},
+			{rotL*Vec3f( PX,-PY, PZ), rotL*Vec3f(0, 0.0f,   GX)},
+			{rotL*Vec3f(-PX,-PY, PZ), rotL*Vec3f(0,  -GY, 0.0f)},
+			{rotL*Vec3f(-PX,-PY,-PZ), rotL*Vec3f(0,  -GY, 0.0f)},
 		}
 	};
 /*
@@ -58,10 +57,10 @@ bool HISpidarG6X3::Init(DVDeviceManager& dev, bool bLeft=false){
 		return false;
 	}
 	if (bLeft){
-		motor[0].lengthPerPulse *= -1;
+		motor[2].lengthPerPulse *= -1;
 		motor[3].lengthPerPulse *= -1;
+		motor[4].lengthPerPulse *= -1;
 		motor[5].lengthPerPulse *= -1;
-		motor[6].lengthPerPulse *= -1;
 
 	}else{
 		motor[2].lengthPerPulse *= -1;
