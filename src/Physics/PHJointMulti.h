@@ -112,6 +112,10 @@ class PHJointBall:public PHJointMulti<3>{
 public:
 	SGOBJECTDEF(PHJointBall);
 	Quaterniond position;					///<	ŠÖß‚ÌŒü‚«
+	Vec3d center;			//	‰Â“®ˆæ‚Ì’†S
+	double minDot;			//	‰Â“®”ÍˆÍ
+	double minTwist;			//	‚Ð‚Ë‚è‚Ì‰Â“®”ÍˆÍ
+	double maxTwist;			//	‚Ð‚Ë‚è‚Ì‰Â“®”ÍˆÍ
 	///	ŠÖßˆÊ’u‚ÌŽæ“¾
 	virtual double GetJointPosition(int i){ return position.rotation()[i]; }
 

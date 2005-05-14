@@ -66,7 +66,7 @@ int main(){
 	}
 	spidarG6.Calib();
 */
-	spidarG6.Init(devMan, true);			//	SPIDARの初期化，キャリブレーションもする．
+	spidarG6.Init(devMan, false);			//	SPIDARの初期化，キャリブレーションもする．
 #ifdef __sh__
 	cyg_thread_delay(10000);
 #else

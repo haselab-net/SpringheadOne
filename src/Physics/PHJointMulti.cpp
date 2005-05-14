@@ -19,6 +19,40 @@ PTM::TMatrixCol<DIMDEC(M::WIDTH), DIMDEC(M::HEIGHT), TYPENAME M::element_type> s
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointBall, PHJointBase);
 void PHJointBall::Integrate(double dt){
+	//可動範囲制限が有効な場合
+	if(minDot < 1){
+		Vec3d dir = Vec3d(0,0,1);
+		dir = position * dir;
+		double d = center * dir;
+		if (d < minDot){
+			double theta = acos(d) - acos(minDot);
+			Vec3d axis = (dir^center).unit();
+			if (velocity * axis < 0){				//	可動域から遠ざかっている場合
+				accel = accel - (accel*axis)*axis;	//	加速度を0に
+				velocity = velocity - (1.2*velocity*axis)*axis;
+													//	速度を逆向きに
+				position = Quaterniond::Rot(theta, axis) * position;
+													//	位置を可動域内に
+			}
+		}
+		Vec3d rot = position.rotation();
+		double rz = rot.Z();
+		double vz = velocity * dir;
+		bool bLimit = false;
+		if (rz < minTwist && vz < 0){
+			rz = minTwist;
+			bLimit = true;
+		}else if (rz > maxTwist && vz > 0){
+			rz = maxTwist;
+			bLimit = true;
+		}
+		if (bLimit){
+			rot.Z() = rz;
+			position = Quaterniond::Rot(rot);
+			velocity = velocity - (1.2*velocity*dir)*dir;
+		}
+
+	}	
 	PreIntegrate(dt);
 	//	delta_position から，関節の姿勢を計算．
 	position = position * Quaterniond::Rot(delta_position);
@@ -68,8 +102,12 @@ typedef Quaternionf Quaternion;
 DEF_RECORD(XJointBall, {
 	GUID Guid(){ return WBGuid("F8E58987-603F-458c-9F29-F90CE6E3B17C"); }
 	XJointBase jointBase;
-	Quaternion position;
-	Vector velocity;
+	Quaternion position;	//	関節角の初期値
+	Vector velocity;		//	関節速度の初期値
+	Vector center;			//	可動域の中心
+	FLOAT minDot;			//	可動範囲
+	FLOAT minTwist;			//	ひねりの可動範囲
+	FLOAT maxTwist;			//	ひねりの可動範囲
 });
 class PHJointBallLoader : public FIObjectLoader<PHJointBall>
 {
@@ -90,6 +128,10 @@ public:
 		j->PHJointBase::LoadX(x.jointBase);
 		j->position = x.position.unit();
 		j->velocity = x.velocity;
+		j->center = x.center;
+		j->minDot = x.minDot;
+		j->minTwist = x.minTwist;
+		j->maxTwist = x.maxTwist;
 		return true;
 	}
 };
@@ -101,6 +143,10 @@ protected:
 		j->PHJointBase::SaveX(x.jointBase);
 		x.position = j->position;
 		x.velocity = j->velocity;
+		x.center = j->center;
+		x.minDot = j->minDot;
+		x.minTwist = j->minTwist;
+		x.maxTwist = j->maxTwist;
 		doc->SetWholeData(x);
 	}
 };

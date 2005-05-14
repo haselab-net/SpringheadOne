@@ -64,6 +64,16 @@ public:
 protected:
 };
 
+
+
+/*	可動域について
+	ニュートラルをまっすぐとして，
+	- θ・φのグラフで可動域を表す．折れ線近似．
+	- 最後の軸は,定数 or 中心と θ・φの設定点について設定．
+	- θ・φは違反したら，最寄のθ・φに向かってPID制御．
+コーンで良い説．
+コーンの中心の向きVec3f と角度θだけでよい．
+*/
 class PHJointBallPid:public SGBehaviorEngine{
 protected:
 	///	前回のゴール
