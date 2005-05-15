@@ -1,5 +1,5 @@
 #ロード時に 最大化 マルチメディアタイマー使用 を実行
-:FM
+#:FM
 #ENTERで切り替えるデモファイル
 mechanism\HapGears.x
 mechanism\fourLegRobo.x

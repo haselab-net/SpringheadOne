@@ -564,6 +564,12 @@
 			RelativePath="HISpidarCalcBase.h">
 		</File>
 		<File
+			RelativePath=".\HISpidarCanoe.cpp">
+		</File>
+		<File
+			RelativePath=".\HISpidarCanoe.h">
+		</File>
+		<File
 			RelativePath="HISpidarG6.cpp">
 			<FileConfiguration
 				Name="Release|Win32">

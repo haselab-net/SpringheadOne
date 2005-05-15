@@ -269,7 +269,7 @@ void CRBeetle::Step(SGScene* s){
 	if(nState == FORWARD || nState == BACKWARD){
 		Vec3f pos[2][3];
 		for(int i = 0; i < 2; i++){
-			for(int j = 0; j < 4; j++){
+			for(int j = 0; j < 3; j++){
 				//‰˜H
 				if(cnt[i][j] < th)
 					pos[i][j] = Vec3f(0.0f, 0.0f, fStride * (0.5f - cnt[i][j] / th));
