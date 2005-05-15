@@ -19,6 +19,7 @@ PTM::TMatrixCol<DIMDEC(M::WIDTH), DIMDEC(M::HEIGHT), TYPENAME M::element_type> s
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointBall, PHJointBase);
 void PHJointBall::Integrate(double dt){
+	PreIntegrate(dt);
 	//可動範囲制限が有効な場合
 	if(minDot < 1){
 		Vec3d dir = Vec3d(0,0,1);
@@ -36,24 +37,21 @@ void PHJointBall::Integrate(double dt){
 			}
 		}
 		Vec3d rot = position.rotation();
-		double rz = rot.Z();
-		double vz = velocity * dir;
+		double vz = velocity[2];
 		bool bLimit = false;
-		if (rz < minTwist && vz < 0){
-			rz = minTwist;
+		if (rot.Z() < minTwist && vz < 0){
+			rot.Z() = minTwist;
 			bLimit = true;
-		}else if (rz > maxTwist && vz > 0){
-			rz = maxTwist;
+		}else if (rot.Z() > maxTwist && vz > 0){
+			rot.Z() = maxTwist;
 			bLimit = true;
 		}
 		if (bLimit){
-			rot.Z() = rz;
 			position = Quaterniond::Rot(rot);
-			velocity = velocity - (1.2*velocity*dir)*dir;
+			velocity[2] -= 1.2*velocity[2];
 		}
 
-	}	
-	PreIntegrate(dt);
+	}
 	//	delta_position から，関節の姿勢を計算．
 	position = position * Quaterniond::Rot(delta_position);
 
@@ -67,8 +65,8 @@ void PHJointBall::Integrate(double dt){
 
 void PHJointBall::CompJointAxis(){
 	for(int i=0; i<3; ++i){
-		S.col(i).sub_vector(0, Vec3d()) = m3fRotationChild.col(i);
-		S.col(i).sub_vector(3, Vec3d()) = cross(m3fRotationChild.col(i), -(v3fPositionChild - solid->GetCenter()));
+		S.col(i).sub_vector(0, Vec3d()) = cRj.col(i);
+		S.col(i).sub_vector(3, Vec3d()) = cross(cRj.col(i), -(crj - solid->GetCenter()));
 	}
 	S_tr = spMatTrans(S);
 }
@@ -76,11 +74,11 @@ void PHJointBall::CompJointAxis(){
 void PHJointBall::CompRelativePosition(){
 	Matrix3d rot;
 	position.to_matrix(rot);
-	pRc = m3fRotationParent * rot * m3fRotationChild.trans();
+	pRc = pRj * rot * cRj.trans();
 	cRp = pRc.trans();
 	Vec3d cp;
 	if(GetParent()->solid) cp = GetParent()->solid->GetCenter();
-	prc = (cRp * (v3fPositionParent - cp)) - (v3fPositionChild - solid->GetCenter());
+	prc = (cRp * (prj - cp)) - (crj - solid->GetCenter());
 }
 
 void PHJointBall::CompRelativeVelocity()
@@ -93,7 +91,7 @@ void PHJointBall::CompCoriolisAccel()
 {
 	Vec3d ud = S.sub_matrix(0,0, PTM::TMatDim<3,3>()) * velocity;
 	Vec3d wp = cRp * OfParent(&PHJointBall::w);
-	Vec3d tmp = cross(ud, (v3fPositionChild - solid->GetCenter()));
+	Vec3d tmp = cross(ud, (crj - solid->GetCenter()));
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }
@@ -171,10 +169,10 @@ void PHJointUniversal::Integrate(double dt){
 
 void PHJointUniversal::CompJointAxis()
 {
-	Matrix3f mat = m3fRotationChild * Matrix3f::Rot((float)position[0], 'x');
+	Matrix3f mat = cRj * Matrix3f::Rot((float)position[0], 'x');
 	for(int i=0; i<2; ++i){
 		S.col(i).sub_vector(0, Vec3d()) = mat.col(i);
-		S.col(i).sub_vector(3, Vec3d()) = cross(mat.col(i), -(v3fPositionChild - solid->GetCenter()));
+		S.col(i).sub_vector(3, Vec3d()) = cross(mat.col(i), -(crj - solid->GetCenter()));
 	}
 	S_tr = spMatTrans(S);
 }
@@ -182,15 +180,15 @@ void PHJointUniversal::CompJointAxis()
 void PHJointUniversal::CompRelativePosition(){
 	rotX = Matrix3f::Rot((float)position.x, 'x');
 	rotY = Matrix3f::Rot((float)position.y, 'y');
-	Vec3f sy = rotX * m3fRotationChild.Ey();
+	Vec3f sy = rotX * cRj.Ey();
 	S.col(1).sub_vector(0, Vec3d()) = sy;
-	S.col(1).sub_vector(3, Vec3d()) = cross(sy, -(v3fPositionChild - solid->GetCenter()));
+	S.col(1).sub_vector(3, Vec3d()) = cross(sy, -(crj - solid->GetCenter()));
 
-	pRc = m3fRotationParent * rotY * rotX * m3fRotationChild.trans();
+	pRc = pRj * rotY * rotX * cRj.trans();
 	cRp = pRc.trans();
 	Vec3d cp;
 	if(GetParent()->solid) cp = GetParent()->solid->GetCenter();
-	prc = (cRp * (v3fPositionParent - cp)) - (v3fPositionChild - solid->GetCenter());
+	prc = (cRp * (prj - cp)) - (crj - solid->GetCenter());
 }
 
 void PHJointUniversal::CompRelativeVelocity(){
@@ -201,7 +199,7 @@ void PHJointUniversal::CompRelativeVelocity(){
 void PHJointUniversal::CompCoriolisAccel(){
 	Vec3d ud = S.sub_matrix(0,0, PTM::TMatDim<3,2>()) * velocity;
 	Vec3d wp = cRp * OfParent(&PHJointUniversal::w);
-	Vec3d tmp = cross(ud, (v3fPositionChild - solid->GetCenter()));
+	Vec3d tmp = cross(ud, (crj - solid->GetCenter()));
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }

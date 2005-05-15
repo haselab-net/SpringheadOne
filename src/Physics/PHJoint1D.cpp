@@ -178,22 +178,22 @@ SGOBJECTIMP(PHJointSlider, PHJoint1D);
 void PHJointSlider::CompJointAxis()
 {
 	svitem(s, 0).clear();
-	svitem(s, 1) = m3fRotationChild.Ez();
+	svitem(s, 1) = cRj.Ez();
 }
 
 void PHJointSlider::CompRelativePosition(){
 	TMatrixRow<3,3,float,float,float> work_around_for_bcb;
-	pRc = m3fRotationParent * m3fRotationChild.trans();
+	pRc = pRj * cRj.trans();
 	cRp = pRc.trans();
 	Vec3d cp;
 	if(GetParent()->solid)cp = GetParent()->solid->GetCenter();
-	prc = (cRp * (v3fPositionParent - cp)) +
-		m3fRotationChild.Ez() * (float)position - (v3fPositionChild - solid->GetCenter());
+	prc = (cRp * (prj - cp)) +
+		cRj.Ez() * (float)position - (crj - solid->GetCenter());
 }
 
 void PHJointSlider::CompRelativeVelocity()
 {
-	pvc = m3fRotationChild.Ez() * (float)velocity;
+	pvc = cRj.Ez() * (float)velocity;
 	pwc.clear();
 }
 
@@ -201,7 +201,7 @@ void PHJointSlider::CompCoriolisAccel()
 {
 	Vec3d wp = cRp * OfParent(&PHJointSlider::w);
 	svitem(c, 0).clear();
-	svitem(c, 1) = cross(wp, cross(wp, prc)) + 2.0 * cross(wp, m3fRotationChild.Ez() * velocity);
+	svitem(c, 1) = cross(wp, cross(wp, prc)) + 2.0 * cross(wp, cRj.Ez() * velocity);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -209,17 +209,17 @@ void PHJointSlider::CompCoriolisAccel()
 SGOBJECTIMP(PHJointHinge, PHJoint1D);
 void PHJointHinge::CompJointAxis()
 {
-	svitem(s, 0) = m3fRotationChild.Ez();
-	svitem(s, 1) = cross(m3fRotationChild.Ez(), -(v3fPositionChild - solid->GetCenter()));
+	svitem(s, 0) = cRj.Ez();
+	svitem(s, 1) = cross(cRj.Ez(), -(crj - solid->GetCenter()));
 }
 
 void PHJointHinge::CompRelativePosition()
 {
-	pRc = m3fRotationParent * Matrix3d::Rot(position, 'z') * m3fRotationChild.trans();
+	pRc = pRj * Matrix3d::Rot(position, 'z') * cRj.trans();
 	cRp = pRc.trans();
 	Vec3d cp;
 	if(GetParent()->solid) cp = GetParent()->solid->GetCenter();
-	prc = (cRp * (v3fPositionParent - cp)) - (v3fPositionChild - solid->GetCenter());
+	prc = (cRp * (prj - cp)) - (crj - solid->GetCenter());
 }
 
 void PHJointHinge::CompRelativeVelocity()
@@ -230,9 +230,9 @@ void PHJointHinge::CompRelativeVelocity()
 
 void PHJointHinge::CompCoriolisAccel()
 {
-	Vec3d ud = m3fRotationChild.Ez() * (float)velocity;
+	Vec3d ud = cRj.Ez() * (float)velocity;
 	Vec3d wp = cRp * OfParent(&PHJointHinge::w);
-	Vec3d tmp = cross(ud, (v3fPositionChild - solid->GetCenter()));
+	Vec3d tmp = cross(ud, (crj - solid->GetCenter()));
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }

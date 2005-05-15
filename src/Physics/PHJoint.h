@@ -38,10 +38,10 @@ typedef Vec3f Vector;
 typedef Matrix3f Matrix3x3;
 DEF_RECORD(XJointBase, {
 	GUID Guid(){ return WBGuid("23F6D545-8987-4aa6-BBE1-2FE32C096D5A"); }	
-	Matrix3x3	m3fRotationParent;
-	Vector		v3fPositionParent;
-	Matrix3x3	m3fRotationChild;
-	Vector		v3fPositionChild;
+	Matrix3x3	pRj;
+	Vector		prj;
+	Matrix3x3	cRj;
+	Vector		crj;
 });
 
 ///	関節の基本クラス．ツリー構造を作る．PHJointEngineがツリーを持つ．
@@ -67,21 +67,14 @@ protected:
 			関節フレーム原点は関節軸の位置を表す。
 			回転関節(TYPE_HINGE)の場合、
 				フレームのＺ軸が回転軸の向きを表す。
-			m3fRotationParent =: pRj
-			m3fRotationChild  =: cRj
+			pRj =: pRj
+			cRj  =: cRj
 			fPosition =: q
 			とおくと、
 			子ノードから親ノードへの回転変換は、
 				pRc = pRj * Rot(q, 'z') * cRj.trans()
 			直動関節(TYPE_SLIDER)の場合、
-				フレームのＺ軸が直動軸の向きを表す。	*/
-	//@{
-	Vec3f		v3fPositionParent;			///<	親剛体のフレームから見た関節位置
-	Matrix3f	m3fRotationParent;			///<	親剛体のフレームから見た関節姿勢
-	Vec3f		v3fPositionChild;			///<	子剛体のフレームから見た関節位置
-	Matrix3f	m3fRotationChild;			///<	子剛体のフレームから見た関節姿勢
-	//@}
-	
+				フレームのＺ軸が直動軸の向きを表す。	*/	
 	/**	@name 状態変数．
 		以下のコメントで，
 		- Fc := child frame
@@ -118,9 +111,9 @@ public:
 	///	指定したPHSolidを小に持つノードを検索する
 	PHJointBase* Search(PHSolid*);
 	///	親剛体のフレームから見た関節姿勢
-	Affinef GetPostureFromParent(){ Affinef rv; rv.Pos()=v3fPositionParent; rv.Rot()=m3fRotationParent; return rv; }
+	Affinef GetPostureFromParent(){ Affinef rv; rv.Pos()=prj; rv.Rot()=pRj; return rv; }
 	///	子剛体のフレームから見た関節姿勢
-	Affinef GetPostureFromChild(){ Affinef rv; rv.Pos()=v3fPositionChild; rv.Rot()=m3fRotationChild; return rv; }
+	Affinef GetPostureFromChild(){ Affinef rv; rv.Pos()=crj; rv.Rot()=cRj; return rv; }
 	///	子剛体の角加速度(World系)
 	Vec3f GetSolidAngularAccel(){ return solid->GetRotation() * a.sub_vector(0, Vec3f()); }
 	///	子剛体の加速度(World系)

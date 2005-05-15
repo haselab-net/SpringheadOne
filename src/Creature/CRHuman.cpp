@@ -250,12 +250,12 @@ void CRHuman::SetSolidScale(){
 void CRHuman::SetJointScale(){
 	for(unsigned i = 0; i < joints.size(); i++){
 		if(joints[i] != NULL){
-			joints[i]->v3fPositionParent *= totalHeight; 
-			joints[i]->v3fPositionChild  *= totalHeight; 
+			joints[i]->prj *= totalHeight; 
+			joints[i]->crj  *= totalHeight; 
 			//TEST
 			if(i == 9 || i == 16){
-				joints[i]->v3fPositionParent *= 1.1;
-				joints[i]->v3fPositionChild *= 1.1;
+				joints[i]->prj *= 1.1;
+				joints[i]->crj *= 1.1;
 			}
 		}
 	}

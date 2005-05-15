@@ -241,16 +241,16 @@ void PHJointBase::SaveState(SGBehaviorStates& states) const{
 	}
 }
 void PHJointBase::SaveX(XJointBase& x) const{
-	x.v3fPositionChild = v3fPositionChild;
-	x.v3fPositionParent = v3fPositionParent;
-	x.m3fRotationChild = m3fRotationChild;
-	x.m3fRotationParent = m3fRotationParent;
+	x.crj = crj;
+	x.prj = prj;
+	x.cRj = cRj;
+	x.pRj = pRj;
 }
 void PHJointBase::LoadX(const XJointBase& x){
-	v3fPositionChild = x.v3fPositionChild;
-	v3fPositionParent = x.v3fPositionParent;
-	m3fRotationChild = x.m3fRotationChild;
-	m3fRotationParent = x.m3fRotationParent;
+	crj = x.crj;
+	prj = x.prj;
+	cRj = x.cRj;
+	pRj = x.pRj;
 }
 
 
@@ -483,10 +483,10 @@ enum PHInputType{
 ///関節情報．そのままファイルのJointタグのエントリと同じ
 struct PHJointInfo{
 	DWORD		nType;				///<	関節種類 @see PHJointType
-	Vec3f		v3fPositionParent;	///<	親剛体のフレームから見た関節位置
-	Matrix3f	m3fRotationParent;	///<	親剛体のフレームから見た関節姿勢
-	Vec3f		v3fPositionChild;	///<	子剛体のフレームから見た関節位置
-	Matrix3f	m3fRotationChild;	///<	子剛体のフレームから見た関節姿勢
+	Vec3f		prj;	///<	親剛体のフレームから見た関節位置
+	Matrix3f	pRj;	///<	親剛体のフレームから見た関節姿勢
+	Vec3f		crj;	///<	子剛体のフレームから見た関節位置
+	Matrix3f	cRj;	///<	子剛体のフレームから見た関節姿勢
 
 	float		fPosition;			///<	変位
 	float		fVelocity;			///<	速度
@@ -511,16 +511,16 @@ protected:
 		PHJointInfo info;
 		ctx->docs.Top()->GetWholeData(info);
 		//	左手系→右手系変換
-		info.m3fRotationChild.ExZ() *= -1;
-		info.m3fRotationChild.EyZ() *= -1;
-		info.m3fRotationChild.EzX() *= -1;
-		info.m3fRotationChild.EzY() *= -1;
-		info.v3fPositionChild.Z() *= -1;
-		info.m3fRotationParent.ExZ() *= -1;
-		info.m3fRotationParent.EyZ() *= -1;
-		info.m3fRotationParent.EzX() *= -1;
-		info.m3fRotationParent.EzY() *= -1;
-		info.v3fPositionParent.Z() *= -1;
+		info.cRj.ExZ() *= -1;
+		info.cRj.EyZ() *= -1;
+		info.cRj.EzX() *= -1;
+		info.cRj.EzY() *= -1;
+		info.crj.Z() *= -1;
+		info.pRj.ExZ() *= -1;
+		info.pRj.EyZ() *= -1;
+		info.pRj.EzX() *= -1;
+		info.pRj.EzY() *= -1;
+		info.prj.Z() *= -1;
 
 		UTRef<PHJoint1D> joint=NULL;
 		if (info.nType == TYPE_HINGE){
@@ -534,10 +534,10 @@ protected:
 		ctx->AddObject(joint);
 		ctx->AddContainer(joint);
 		
-		joint->m3fRotationChild = info.m3fRotationChild;
-		joint->m3fRotationParent = info.m3fRotationParent;
-		joint->v3fPositionChild = info.v3fPositionChild;
-		joint->v3fPositionParent = info.v3fPositionParent;
+		joint->cRj = info.cRj;
+		joint->pRj = info.pRj;
+		joint->crj = info.crj;
+		joint->prj = info.prj;
 		joint->position = info.fPosition;
 		joint->velocity = info.fVelocity;
 		joint->maxPosition = info.fMaxPosition;
