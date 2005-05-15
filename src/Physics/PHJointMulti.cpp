@@ -49,7 +49,7 @@ void PHJointBall::Integrate(double dt){
 			bLimit = true;
 		}
 		if (bLimit){
-			AddTorque(Vec3f(0,0, (K*prop - B*vz))*0.1f);
+			AddTorque(Vec3f(0,0, (K*prop - B*vz))*0.2f);
 		}
 	}
 

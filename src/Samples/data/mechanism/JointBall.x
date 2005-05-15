@@ -31,7 +31,7 @@ Scene {
 			#	コーンの内部が可動域となる．
 			#	z軸周り回転の可動域は，別にラジアンで， minTwist, maxTwist で指定する．
 			0.0; 0.0; 1.0;;			#	可動域	center	
-			0.8; -0.6; 0.6;			#	可動域	dot minTwist maxTwist
+			0.8; -0.2; 0.2;			#	可動域	dot minTwist maxTwist
 			{soBlock1}				#	子剛体
 			JointBallPid {
 				0.0; 0.0; 0.0;		#PID
@@ -52,7 +52,7 @@ Scene {
 				1.0; 0.0; 0.0; 0.0;;	#姿勢(Quaternion w x y z)
 				10.0; 10.0; 20.0;		#速度(速度ベクトル)
 				0.0; 0.0; 1.0;;			#可動域	center
-				0.3; -0.6; 0.6;			#可動域	dot twist twist
+				0.3; -0.2; 0.2;			#可動域	dot twist twist
 				{soBlock2}
 				JointBallPid {
 					0.0; 0.0; 0.0;		#PID
