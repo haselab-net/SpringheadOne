@@ -19,39 +19,42 @@ PTM::TMatrixCol<DIMDEC(M::WIDTH), DIMDEC(M::HEIGHT), TYPENAME M::element_type> s
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointBall, PHJointBase);
 void PHJointBall::Integrate(double dt){
-	PreIntegrate(dt);
 	//可動範囲制限が有効な場合
 	if(minDot < 1){
+		double K=.5;
+		double B=.5;
+		K*= solid->GetMass()/(dt*dt);
+		B*= solid->GetMass()/dt;
+
 		Vec3d dir = Vec3d(0,0,1);
 		dir = position * dir;
 		double d = center * dir;
 		if (d < minDot){
 			double theta = acos(d) - acos(minDot);
 			Vec3d axis = (dir^center).unit();
-			if (velocity * axis < 0){				//	可動域から遠ざかっている場合
-				accel = accel - (accel*axis)*axis;	//	加速度を0に
-				velocity = velocity - (1.2*velocity*axis)*axis;
-													//	速度を逆向きに
-				position = Quaterniond::Rot(theta, axis) * position;
-													//	位置を可動域内に
+			double vel = velocity * axis;
+			if (vel < 0){				//	可動域から遠ざかっている場合
+				AddTorque(K*theta*axis -B*axis*vel);
 			}
 		}
 		Vec3d rot = position.rotation();
 		double vz = velocity[2];
 		bool bLimit = false;
+		double prop;
 		if (rot.Z() < minTwist && vz < 0){
-			rot.Z() = minTwist;
+			prop = minTwist - rot.Z();
 			bLimit = true;
 		}else if (rot.Z() > maxTwist && vz > 0){
-			rot.Z() = maxTwist;
+			prop = maxTwist - rot.Z();
 			bLimit = true;
 		}
 		if (bLimit){
-			position = Quaterniond::Rot(rot);
-			velocity[2] -= 1.2*velocity[2];
+			AddTorque(Vec3f(0,0, (K*prop - B*vz))*0.1f);
 		}
-
 	}
+
+
+	PreIntegrate(dt);
 	//	delta_position から，関節の姿勢を計算．
 	position = position * Quaterniond::Rot(delta_position);
 

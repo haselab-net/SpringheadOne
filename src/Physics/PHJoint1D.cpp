@@ -65,48 +65,44 @@ void PHJoint1D::ClearTorqueRecursive(){
 //・加速度計算
 void PHJoint1D::Integrate(double dt){
 	a_p = cXp_Vec(OfParent(&PHJoint1D::a));
-	bool bOutOfRange = false;
 	//可動範囲制限が有効な場合
 	if(!(maxPosition == 0.0 && minPosition == 0.0)){
+		bool bOutOfRange = false;
+		double prop;
+		double K=1;
+		double B=1;
+		K*= solid->GetMass()/(dt*dt);
+		B*= solid->GetMass()/dt;
 		if(maxPosition > minPosition){
 			if(position >= maxPosition && velocity > 0.0){
-				accel = 0;
-				velocity *= -0.2f;				//速度を０に
-				position = maxPosition;
+				prop = maxPosition - position;
 				bOutOfRange = true;
 			}
 			else if(position <= minPosition && velocity < 0.0){
-				accel = 0;
-				velocity *= -0.2f;
-				position = minPosition;
+				prop = minPosition - position;
 				bOutOfRange = true;
 			}
 		}
+		if(bOutOfRange){
+			AddTorque(K*prop -B*velocity);
+		}
 	}
-	if(!bOutOfRange){
-		//加速度を計算
-		accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
-		if (intType == SYMPLETIC){
-			//速度を積分
-			velocity += float(accel * dt);
-			//位置を積分
-			position += float (velocity * dt);
-			//回転関節の場合は[-π,π]
-			LimitAngle(position);
-		}else{
-			//位置を積分
-			position += float ( (velocity + 0.5 * accel * dt) * dt );
-			//回転関節の場合は[-π,π]
-			LimitAngle(position);
-			//速度を積分
-			velocity += float(accel * dt);
-		}
-#if 0
-		//	for DEBUG
-		if (accel > 100){
-			DSTR << GetName() << " accel:" << accel << "vel: " << velocity << std::endl;
-		}
-#endif
+	//加速度を計算
+	accel = (torque - svdot(s, Ia * a_p) - dot_s_Z_plus_Ia_c) / dot_s_Ia_s;	
+	if (intType == SYMPLETIC){
+		//速度を積分
+		velocity += float(accel * dt);
+		//位置を積分
+		position += float (velocity * dt);
+		//回転関節の場合は[-π,π]
+		LimitAngle(position);
+	}else{
+		//位置を積分
+		position += float ( (velocity + 0.5 * accel * dt) * dt );
+		//回転関節の場合は[-π,π]
+		LimitAngle(position);
+		//速度を積分
+		velocity += float(accel * dt);
 	}
 	//重心周りの加速度(子ノードの積分で使用する)
 	a = a_p + c + accel * s;
