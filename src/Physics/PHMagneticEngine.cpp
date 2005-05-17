@@ -96,7 +96,6 @@ void PHMagneticEngine::Step(SGScene *s)
     mat[1][0] = 3;  mat[1][1] = 4;
 	const Vec2f vec(1,0);       //  2ŸŒ³‚ÌƒxƒNƒgƒ‹‚ğéŒ¾
     //vec[0] = 1; vec[1] = 0;
-	int ip[2];
 	PTM::TVector<2,float> xx;
 
 	//PTM::gauss(mat,xx,vec,ip);
