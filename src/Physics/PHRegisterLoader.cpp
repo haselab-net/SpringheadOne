@@ -16,6 +16,7 @@ void RegisterLoaderForPhysics(FILoadScene* l){
 	REGISTER_LOADER(l, PHJointSlider);
 	REGISTER_LOADER(l, PHJointUniversal);
 	REGISTER_LOADER(l, PHJointBall);
+	REGISTER_LOADER(l, PHConeLimit);
 	REGISTER_LOADER(l, PHJointEngine);
 	REGISTER_LOADER(l, PHJointPid);
 	REGISTER_LOADER(l, PHJointBallPid);

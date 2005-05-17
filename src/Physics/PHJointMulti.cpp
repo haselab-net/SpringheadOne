@@ -105,6 +105,10 @@ DEF_RECORD(XJointBall, {
 	XJointBase jointBase;
 	Quaternion position;	//	関節角の初期値
 	Vector velocity;		//	関節速度の初期値
+});
+
+DEF_RECORD(XConeLimit, {
+	GUID Guid(){ return WBGuid("B912DED0-E4A1-454a-B75C-C7024DD21F3E"); }
 	Vector center;			//	可動域の中心
 	FLOAT minDot;			//	可動範囲
 	FLOAT minTwist;			//	ひねりの可動範囲
@@ -124,18 +128,20 @@ public:
 		db->REG_RECORD_PROTO(XJointBall);
 	}
 	bool LoadData(FILoadScene* ctx, PHJointBall* j){
+		ctx->objects.Push(j);
 		XJointBall x;
 		ctx->docs.Top()->GetWholeData(x);
 		j->PHJointBase::LoadX(x.jointBase);
 		j->position = x.position.unit();
 		j->velocity = x.velocity;
-		j->center = x.center;
-		j->minDot = x.minDot;
-		j->minTwist = x.minTwist;
-		j->maxTwist = x.maxTwist;
 		return true;
 	}
+	void Loaded(FILoadScene* ctx){
+		ACAST(PHJointBall, ctx->objects.back());
+		ctx->objects.Pop();
+	}
 };
+
 class PHJointBallSaver : public FIObjectSaver<PHJointBall>
 {
 protected:
@@ -144,17 +150,49 @@ protected:
 		j->PHJointBase::SaveX(x.jointBase);
 		x.position = j->position;
 		x.velocity = j->velocity;
-		x.center = j->center;
-		x.minDot = j->minDot;
-		x.minTwist = j->minTwist;
-		x.maxTwist = j->maxTwist;
 		doc->SetWholeData(x);
+		if (j->minDot > -1 && j->center.norm() > 0){
+			XConeLimit x;
+			x.center = j->center;
+			x.minDot = j->minDot;
+			x.minTwist = j->minTwist;
+			x.maxTwist = j->maxTwist;
+			UTRef<FIDocNodeBase> docCone = ctx->CreateDocNode("ConeLimit");
+			docCone->SetWholeData(x);
+			doc->AddChild(docCone);
+		}
 	}
 };
 DEF_REGISTER_BOTH(PHJointBall);
 
 
-
+class PHConeLimitLoader : public FIBaseLoader
+{
+public:
+	virtual UTString GetNodeType() const{
+		return "ConeLimit";
+	}
+	PHConeLimitLoader(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_FIELD(FLOAT);
+		db->REG_FIELD(Vector);
+		db->REG_RECORD_PROTO(XConeLimit);
+	}
+	virtual void Load(class FILoadScene* ctx){
+		XConeLimit x;
+		ctx->docs.Top()->GetWholeData(x);
+		PHJointBall* ball = DCAST(PHJointBall, ctx->objects.Top());
+		if (ball){
+			ball->center = x.center;
+			ball->minDot = x.minDot;
+			ball->minTwist = x.minTwist;
+			ball->maxTwist = x.maxTwist;
+		}
+		return;
+	}
+};
+DEF_REGISTER_LOADER(PHConeLimit);
 
 
 //-----------------------------------------------------------------------------

@@ -46,8 +46,10 @@ Scene {
 
 				1.0; 0.0; 0.0; 0.0;;	#姿勢(Quaternion w x y z)
 				0.0; 0.0; 1.0;			#速度(速度ベクトル)
-				0.0; 0.0; 1.0;;			#可動域	center
-				0.6; -0.6; 0.6;			#可動域	dot twist twist
+				ConeLimit{
+					0.0; 0.0; 1.0;;			#可動域	center
+					0.6; -0.6; 0.6;			#可動域	dot twist twist
+				}
 				{soBlock2}
 				JointBallPid {
 					0.0; 0.0; 1000.0;		#PID
@@ -67,8 +69,10 @@ Scene {
 
 					1.0; 0.0; 0.0; 0.0;;	#姿勢(Quaternion w x y z)
 					0.0; 0.0; 0.0;			#速度(速度ベクトル)
-					0.0; 0.0; 1.0;;			#可動域	center
-					0.6; -0.6; 0.6;			#可動域	dot twist twist
+					ConeLimit{
+						0.0; 0.0; 1.0;;			#可動域	center
+						0.6; -0.6; 0.6;			#可動域	dot twist twist
+					}
 					{soBlock3}
 					JointBallPid {
 						0.0; 0.0; 1000.0;		#PID
