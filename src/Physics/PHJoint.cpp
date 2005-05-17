@@ -115,14 +115,8 @@ const UTTypeInfo** PHJointBase::ChildCandidates(){
 }
 
 void PHJointBase::UpdateSolid(){
-	if(solid){
-		m = solid->GetMass();
-		I = solid->GetInertia();
-	}
-	else{
-		m = 0.0;
-		I.clear();
-	}
+	double m = solid ? solid->GetMass() : 0.0;
+	Matrix3d I = solid ? solid->GetInertia(): Matrix3d();
 	Ii.clear();
 	smitem(Ii, 0, 1) = Matrix3d::Diag(m, m, m);
 	smitem(Ii, 1, 0) = I;
@@ -151,9 +145,9 @@ void PHJointBase::CompArticulatedInertia(double dt){
 	if(solid){
 		svitem(Za, 0) += -R.trans() * solid->GetForce();
 		svitem(Za, 1) += -R.trans() * solid->GetTorque() + Vec3d(
-			(I[2][2] - I[1][1]) * w.Y() * w.Z(),
-			(I[0][0] - I[2][2]) * w.Z() * w.X(),
-			(I[1][1] - I[0][0]) * w.X() * w.Y());
+			(smitem(Ii, 1, 0)[2][2] - smitem(Ii, 1, 0)[1][1]) * w.Y() * w.Z(),
+			(smitem(Ii, 1, 0)[0][0] - smitem(Ii, 1, 0)[2][2]) * w.Z() * w.X(),
+			(smitem(Ii, 1, 0)[1][1] - smitem(Ii, 1, 0)[0][0]) * w.X() * w.Y());
 	}
 	//Ia
 	Ia += Ii;

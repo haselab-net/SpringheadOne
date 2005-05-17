@@ -50,7 +50,7 @@ Scene {
 				0.6; -0.6; 0.6;			#‰Â“®ˆæ	dot twist twist
 				{soBlock2}
 				JointBallPid {
-					0.0; 0.0; 100.0;		#PID
+					0.0; 0.0; 1000.0;		#PID
 					1.0; 0.0; 0.0; 0.0;;	#–Ú•Wp¨(Quaternion w x y z)
 					{jnt12}
 				}
@@ -71,7 +71,7 @@ Scene {
 					0.6; -0.6; 0.6;			#‰Â“®ˆæ	dot twist twist
 					{soBlock3}
 					JointBallPid {
-						0.0; 0.0; 100.0;		#PID
+						0.0; 0.0; 1000.0;		#PID
 						1.0; 0.0; 0.0; 0.0;;	#–Ú•Wp¨(Quaternion w x y z)
 						{jnt23}
 					}

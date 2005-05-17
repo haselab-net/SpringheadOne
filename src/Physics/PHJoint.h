@@ -54,45 +54,50 @@ public:
 	friend class CRHuman;
 public:
 	SGOBJECTDEFABST(PHJointBase);
-	UTRef<PHSolid> solid;	//	子Solid．関節は親Solidと子Solidをつなぐ
-	UTRef<SGFrame> frame;	//	ルートノードが固定の場合のFrame
-protected:
+	///	積分の方法． Method of solver 
 	enum IntType{
 		SYMPLETIC,
 		ANALYTIC,
 	}intType;
-	/**	@name ファイルからロードされる変数
+
+	UTRef<PHSolid> solid;	///<	子Solid．関節は親Solidと子Solidをつなぐ
+	UTRef<SGFrame> frame;	///<	ルートノードが固定の場合のFrame
+	/** @name 座標系の説明
 		関節フレームの説明
 			関節の位置と傾きを表現するためのフレーム。
 			関節フレーム原点は関節軸の位置を表す。
-			回転関節(TYPE_HINGE)の場合、
-				フレームのＺ軸が回転軸の向きを表す。
-			pRj =: pRj
-			cRj  =: cRj
-			fPosition =: q
-			とおくと、
-			子ノードから親ノードへの回転変換は、
-				pRc = pRj * Rot(q, 'z') * cRj.trans()
-			直動関節(TYPE_SLIDER)の場合、
-				フレームのＺ軸が直動軸の向きを表す。	*/	
-	/**	@name 状態変数．
+			軸と座標の関係は関節の種類(派生クラス)によって異なる．
+			- PHJointHinge:	フレームのZ軸が回転軸の向きを表す。
+							pRc = pRj * Rot(position, 'z') * cRj.trans()
+							prc = cRp*(-parent->solid->center + prj) - (crj - solid->center)
+			- PHJointSlider:	フレームのZ軸が直動軸の向きを表す。
+							pRc = pRj * cRj.trans()
+							prc = cRp*(-parent->solid->center + prj) + cRj*(0,0,position) - (crj - solid->center)  
+			- PHJointUniv:	フレームのX,Y軸が，第1軸・第2軸を表す．
+							pRc = pRj * Rot(position[0], 'x') * Rot(position[1], 'y') * cRj.trans()
+							prc = cRp*(-parent->solid->center + prj) - (crj - solid->center)
+			- PHJointBall:	3軸動く．可動域はZ軸が動く範囲を円錐で指定する．
+							pRc = pRj * position * cRj.trans()
+							prc = cRp*(-parent->solid->center + prj) - (crj - solid->center)
 		以下のコメントで，
-		- Fc := child frame
-		- Fp := parent frame
-		- Fj := joint frame
+		- Fc := child solid's frame		子剛体の座標系
+		- Fp := parent solid's frame	親剛体の座標系
+		- Fj := joint's frame			ジョイントの座標系(親側Fjpと子側Fjcがある)
 		を意味する
 	*/
 	//@{
+	Matrix3d		pRj, cRj;			///<	3x3回転行列  rotation matrix(Fp to Fjp, Fc to Fjc)
+	Vec3d			prj, crj;			///<	並進ベクトル radius vector(Fp to Fjp in Fp, Fc to Fjc in Fc)
+
+protected:
+	Vec3d			prc;				///<	並進ベクトル radius vector(Fp to Fc in Fc)
+	Matrix3d		pRc, cRp;			///<	3x3回転行列  rotation matrix(Fp to Fc, Fc to Fp)
 	Matrix3d		R;					///<	orientation matrix
 	Quaterniond		quat;				///<	orientation quaternion
 	Vec3d			p;					///<	position vector
-	Matrix3d		pRj, cRj, pRc, cRp;	///<	rotation matrix(Fp to Fj, Fj to Fc, Fp to Fc, Fc to Fp)
-	Vec3d			prc, prj, crj;		///<	radius vector(Fp to Fc in Fc, Fp to Fj in Fp, Fc to Fj in Fc)
 	Vec3d			v, v_abs;			///<	velocity in Fc/world coord.
 	Vec3d			w, w_abs;			///<	angular velocity in Fc/world coord.
 	Vec3d			pvc, pwc;			///<	[angular]velocity relative to Fp in Fc coord. 
-	double			m;					///<	mass
-	Matrix3d		I;					///<	inertia matrix
 	SpMatrix6d		Ii;					///<	spatial isolated inertia
 	SpMatrix6d		Ia;					///<	spatial articulated inertia
 	SpVec6d			Za;					///<	zero accelaration force in Fc coord.
