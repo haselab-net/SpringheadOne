@@ -168,6 +168,22 @@ SOURCE=.\CRBalanceQuadPR.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRBallHuman.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallHuman.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallVirtualHuman.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallVirtualHuman.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRBeetle.cpp
 # End Source File
 # Begin Source File
