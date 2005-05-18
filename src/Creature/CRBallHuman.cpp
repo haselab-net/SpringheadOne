@@ -20,7 +20,7 @@ CRBallHuman::CRBallHuman()
 	totalMass = 60.0f;
 	totalHeight = 1.7f;
 	SetSolidInfo();
-	//SetJointInfo();
+	SetJointInfo();
 }
 
 CRBallHuman::~CRBallHuman()
@@ -47,7 +47,7 @@ void CRBallHuman::SetModel(SGScene* scene){
 		SetMass();
 		SetInertia();
 		SetJointSpring((float)scene->GetTimeStep());
-		SetJointRange();
+		//SetJointRange();
 		//SetJointInitAngle();
 		
 		totalMass = 0.0;
@@ -97,6 +97,7 @@ bool CRBallHuman::Connect(UTRef<SGScene> scene){
 	solids.clear();
 	joints.clear();
 	jointPids.clear();
+	jointBallPids.clear();
 	supportSolidNum[0].clear();
 	supportSolidNum[1].clear();
 	ankleJointNum[0].clear();
@@ -151,9 +152,13 @@ bool CRBallHuman::Connect(UTRef<SGScene> scene){
 	ConnectJoint("joLToe", scene);
 
 	for(int i=0; i<joints.size(); ++i){
-		jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
+		if(joints[i]->GetJointDof() == 1){
+			jointPids.push_back(PHJointPid::Find((PHJointHinge*)joints[i], scene));
+		}
+		else if(joints[i]->GetJointDof() == 3){
+			jointBallPids.push_back(PHJointBallPid::Find((PHJointBall*)joints[i], scene));
+		}
 	}
-
 	return bLoaded;
 }
 
@@ -230,11 +235,6 @@ void CRBallHuman::SetJointScale(){
 		if(joints[i] != NULL){
 			joints[i]->prj *= totalHeight; 
 			joints[i]->crj  *= totalHeight; 
-			//TEST
-			if(i == 9 || i == 16){
-				joints[i]->prj *= 1.1;
-				joints[i]->crj *= 1.1;
-			}
 		}
 	}
 }
@@ -321,7 +321,7 @@ void CRBallHuman::SetSolidInfo(){
 
 void CRBallHuman::SetJointInfo(){
 	// 腰[0] (-X)
-	jinfo[0].rangeMin	= -51.00f;
+/*	jinfo[0].rangeMin	= -51.00f;
 	jinfo[0].rangeMax	= 102.65f;
 	jinfo[0].axis		= -1.0;
 	jinfo[0].initPos	= 0.0f;
@@ -553,7 +553,75 @@ void CRBallHuman::SetJointInfo(){
 	jinfo[38].rangeMax	= 45.00f;
 	jinfo[38].axis		= -1.0;
 	jinfo[38].initPos	= 0.0f;
+*/
+	// 腰
+	jinfo[0].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
+	// 胸
+	jinfo[1].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 首
+	jinfo[2].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 右肩
+	jinfo[3].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 右肘
+	jinfo[4].rangeMin	= -6.00f;
+	jinfo[4].rangeMax	= 154.00f;
+	jinfo[4].axis		= 1.0;
+	jinfo[4].initPos	= 0.0f;
+
+	// 右手首
+	jinfo[5].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 左肩
+	jinfo[6].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 左肘
+	jinfo[7].rangeMin	= -6.00f;
+	jinfo[7].rangeMax	= 154.00f;
+	jinfo[7].axis		= 1.0;
+	jinfo[7].initPos	= 0.0f;
+
+	// 左手首
+	jinfo[8].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 右股
+	jinfo[9].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 右膝
+	jinfo[10].rangeMin	= -8.00f;
+	jinfo[10].rangeMax	= 164.00f;
+	jinfo[10].axis		= -1.0;
+	jinfo[10].initPos	= 0.0f;
+
+	// 右足首
+	jinfo[11].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	//右爪先
+	jinfo[12].rangeMin	= -30.00f;
+	jinfo[12].rangeMax	= 45.00f;
+	jinfo[12].axis		= -1.0;
+	jinfo[12].initPos	= 0.0f;
+
+	//左股
+	jinfo[13].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	//左膝
+	jinfo[14].rangeMin	= -8.00f;
+	jinfo[14].rangeMax	= 164.00f;
+	jinfo[14].axis		= -1.0;
+	jinfo[14].initPos	= 0.0f;
+
+	//右足首
+	jinfo[15].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+	//右爪先
+	jinfo[16].rangeMin	= -30.00f;
+	jinfo[16].rangeMax	= 45.00f;
+	jinfo[16].axis		= -1.0;
+	jinfo[16].initPos	= 0.0f;
 }
 
 void CRBallHuman::SetJointInitAngle(){
@@ -563,7 +631,7 @@ void CRBallHuman::SetJointInitAngle(){
 				((PHJointHinge*)joints[i])->position = jointPids[i]->goal = jinfo[i].initPos;
 			}
 			else if(joints[i]->GetJointDof() == 3){
-				((PHJointBall*)joints[i])->position = jointBallPids[i]->goal = Quaternionf (1.0f, 0.0f, 0.0f, 0.0f);
+				((PHJointBall*)joints[i])->position = jointBallPids[i]->goal = jinfo[i].initQt;
 			}
 		}
 	}

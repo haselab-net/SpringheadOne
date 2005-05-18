@@ -102,19 +102,7 @@ struct CRBallHumanJointInfo{
 	float torqueMin;		// トルクの最小値
 	float axis;				// ワールド座標系に対しての軸の正の方向
 	float initPos;			// 基本姿勢
-};
-
-struct CRBallHumanJointBallInfo{
-	Vec3f parentPosScale;	// 各親剛体からの関節位置の身長に対する比
-	Vec3f childPosScale;	// 各子剛体からの関節位置の身長に対する比
-	float rangeMax;			// 可動域最大値
-	float rangeMin;			// 可動域最小値
-	float danpa;			// ダンパ係数
-	float spring;			// バネ係数
-	float torqueMax;		// トルクの最大値
-	float torqueMin;		// トルクの最小値
-	float axis;				// ワールド座標系に対しての軸の正の方向
-	float initPos;			// 基本姿勢
+	Quaternionf initQt;		// 基本姿勢(Quaternion)
 };
 
 DEF_RECORD(XBallHuman,{
