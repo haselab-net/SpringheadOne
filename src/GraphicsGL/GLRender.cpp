@@ -234,6 +234,31 @@ void GLRender::InitTree(SGFrame* fr, SGScene* scene){
 	}
 }
 
+
+Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found){
+	float depth;
+//	glReadPixels(x, screenHeight()-y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+	found = depth < 1.0;
+	Vec3f res;
+	if(found){
+		Vec3f point(x, y, depth);
+		GLdouble x,y,z;
+		GLdouble proj[16];  
+		glGetDoublev(GL_PROJECTION_MATRIX, proj);
+		GLdouble modelview[16];  
+		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);			
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		gluUnProject(point.x,point.y,point.z, modelview,  proj,  viewport,  &x,&y,&z);
+		res.x = x; res.y = y; res.z = z;
+	}
+	return res;
+}
+
+
+
+
 }	//	Spr
 
 

@@ -42,7 +42,7 @@ public:
 	FWApp();
 	virtual ~FWApp();
 
-	void InitDevice();
+	virtual void InitDevice();
 	float GetSimuTimerPeriod(){return simuTimerPeriod;}
 	virtual void Init(HWND hWnd);
 	virtual void Step();

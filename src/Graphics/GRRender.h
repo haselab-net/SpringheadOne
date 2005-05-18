@@ -77,6 +77,12 @@ public:
 	//@}
 	///	ƒJƒƒ‰‚Ìİ’è
 	virtual void Set(SGObject* obj);
+
+	///Get 3d position under pixel x, y. Found is false if the point is on the background, true ortherwise
+	virtual Vec3f getPointUnderPixel(int x, int y, bool& found){
+		found=false; Vec3f res; return res;}
+
+
 };
 
 }

@@ -42,23 +42,23 @@ public:
 	///@name 個別のメッセージハンドラで呼び出す場合
 	//@{
 	///	キー処理
-	bool OnKeyDown(unsigned nChar);
+	virtual bool OnKeyDown(unsigned nChar);
 	/// ドラッグ時の処理
-	void OnButtonMove(UINT state, int x, int y);
+	virtual void OnButtonMove(UINT state, int x, int y);
 	/// ボタンを押したときの処理
-	void OnButtonDown(int x, int y);
+	virtual void OnButtonDown(int x, int y);
 	/// ボタンを離したときの処理
-	void OnButtonUp();
+	virtual void OnButtonUp();
 	///	ダブルクリック時の処理
-	void OnDblClick(unsigned fwKeys, int x, int y);
+	virtual void OnDblClick(unsigned fwKeys, int x, int y);
 	/// 左ダブルクリック時の処理(ポインタの姿勢を水平に初期化)
-	void OnLButtonDClick();
+	virtual void OnLButtonDClick();
 	/// 右ダブルクリック時の処理(ポインタの位置を原点に初期化)
-	void OnRButtonDClick();
+	virtual void OnRButtonDClick();
 	/// Shift+左ダブルクリック時の処理(基準座標軸の位置・姿勢を初期化)
-	void OnShiftLButtonDClick();
+	virtual void OnShiftLButtonDClick();
 	/// ホイールをまわしたときの処理(ポインタor基準座標軸をZ軸方向に水平移動)
-	void OnWheel(UINT state, short dz);
+	virtual void OnWheel(UINT state, short dz);
 	//@}
 
 	///	位置の取得

@@ -261,6 +261,7 @@ bool HIMouse::PreviewMessage(void* m){
 }
 bool HIMouse::OnKeyDown(unsigned nChar){
 	//	‹“_ˆÚ“®ŠÖŒW
+	
 	Affinef afBody = GetAxis().inv();
 	float df = 1.0f ; //ˆÚ“®•Ï‰»—Ê
 	// ƒJƒƒ‰‚Ì•½sˆÚ“®
@@ -283,7 +284,7 @@ bool HIMouse::OnKeyDown(unsigned nChar){
 		pos = Vec3f();
 		ori = Quaternionf();
 	}
-	else return false;
+	else return false;	
 	SetAxis(afBody.inv());
 	return true;
 }
