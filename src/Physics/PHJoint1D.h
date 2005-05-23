@@ -22,7 +22,7 @@ public:
 	double GetTorque(){ return torque; }	///<	トルクを取得
 	double GetPosition(){ return position; }///<	関節角度を取得
 	double GetVelocity(){ return velocity; }///<	関節速度を取得
-	virtual void Integrate(double dt);		///<	積分
+	virtual void Integrate(SGScene* scene);	///<	積分
 	void CompArticulatedInertia(double dt);	///<	articulated inertia & ZA-force
 	void CalcAccel(double dt);				///<	このジョイントの加速度計算．詳細は基本クラスのコメントを参照．
 
@@ -69,7 +69,6 @@ public:
 	virtual void CompCoriolisAccel();
 protected:
 	virtual void LimitAngle(double& d){ LimitCycle(d); }
-	void Integrate(double dt);
 };
 ///	スライド関節
 class PHJointSlider:public PHJoint1D{

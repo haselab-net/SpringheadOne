@@ -63,7 +63,8 @@ void PHJoint1D::ClearTorqueRecursive(){
 ////////////////////////////////////////////////////////
 //・関節加速度計算・数値積分
 //・加速度計算
-void PHJoint1D::Integrate(double dt){
+void PHJoint1D::Integrate(SGScene* scene){
+	double dt = scene->GetTimeStep();
 	a_p = cXp_Vec(OfParent(&PHJoint1D::a));
 	//可動範囲制限が有効な場合
 	if(!(maxPosition == 0.0 && minPosition == 0.0)){
@@ -106,7 +107,9 @@ void PHJoint1D::Integrate(double dt){
 	}
 	//重心周りの加速度(子ノードの積分で使用する)
 	a = a_p + c + accel * s;
-	
+
+	velocity *= scene->GetVelocityLossPerStep();
+
 	if (abs(velocity) > 2*M_PI*10){
 		DSTR << "Joint " << GetName() << " has velocity of " << velocity << std::endl;
 		DebugBreak();
@@ -114,7 +117,7 @@ void PHJoint1D::Integrate(double dt){
 	//位置・速度の伝播
 	PropagateState();
 	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
-	PHJointBase::Integrate(dt);
+	PHJointBase::Integrate(scene);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -236,13 +239,6 @@ void PHJointHinge::CompCoriolisAccel()
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }
-void PHJointHinge::Integrate(double dt){
-	PHJoint1D::Integrate(dt);
-/*	double limit = 20;
-	if (velocity > limit) velocity = limit;
-	else if (velocity < -limit) velocity = -limit;	*/
-}
-
 
 DEF_RECORD(XJointHinge, {
 	GUID Guid(){ return WBGuid("F0FEE14B-9F53-44b2-815A-93503C471474"); }

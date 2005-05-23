@@ -103,6 +103,8 @@ protected:
 	double timeStep;
 	/// 積分した回数
 	unsigned int count;
+	///	1ステップあたりの速度の減衰率．粘性のように働く．大きくすると粘性が増し安定になる．
+	double velocityLossPerStep;
 public:
 
 	///	コンストラクタ
@@ -139,7 +141,13 @@ public:
 	/// 積分ステップを返す
 	double GetTimeStep()const{return timeStep;}
 	/// 積分ステップを設定する
-	void SetTimeStep(double dt){timeStep = dt;}
+	void SetTimeStep(double dt);
+	///	1ステップあたりの減衰率の取得
+	double GetVelocityLossPerStep(){ return velocityLossPerStep; }
+	///	減衰率の取得
+	double GetVelocityLoss();
+	///	減衰率の設定
+	void SetVelocityLoss(double dt);
 	/// カウント数を返す
 	unsigned GetCount()const{return count;}
 	/// カウント数を設定する

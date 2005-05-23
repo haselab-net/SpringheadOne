@@ -36,7 +36,8 @@ SGObject* PHSolid::ReferenceObject(size_t i){
 	}
 }*/
 
-void PHSolid::Step(double dt){
+void PHSolid::Step(SGScene* s){
+	double dt = s->GetTimeStep();
 #ifdef _DEBUG
 	if (!_finite(velocity.norm()) || velocity.norm() > 100 || angVelocity.norm() > 100){	
 		DSTR << "Warning: solid '" << GetName() << "' has a very fast velocity. v:" << velocity << "w:" << angVelocity << std::endl;
@@ -154,6 +155,10 @@ void PHSolid::Step(double dt){
 			break;
 		}
 	}
+	double loss = s->GetVelocityLossPerStep();
+	velocity *= loss;
+	angVelocity *= loss;
+	
 	UpdateFrame();
 }
 
@@ -202,7 +207,7 @@ bool PHSolidContainer::AddChildObject(SGObject* o, SGScene* s){
 
 void  PHSolidContainer::Step(SGScene* s){
 	for(PHSolids::iterator it = solids.begin(); it != solids.end(); ++it){
-		(*it)->Step(s->GetTimeStep());
+		(*it)->Step(s);
 	}
 }
 

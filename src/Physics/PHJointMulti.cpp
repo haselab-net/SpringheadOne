@@ -19,7 +19,13 @@ PTM::TMatrixCol<DIMDEC(M::WIDTH), DIMDEC(M::HEIGHT), TYPENAME M::element_type> s
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointBall, PHJointBase);
-void PHJointBall::Integrate(double dt){
+PHJointBall::PHJointBall(){
+	maxTwist = 100.0;
+	minTwist = -100.0;
+	minDot = 10.0f;
+}
+void PHJointBall::Integrate(SGScene* scene){
+	double dt = scene->GetTimeStep();
 	//可動範囲制限が有効な場合
 	if(minDot < 1){
 		double K=.5;
@@ -55,12 +61,12 @@ void PHJointBall::Integrate(double dt){
 	}
 
 
-	PreIntegrate(dt);
+	PreIntegrate(scene);
 	//	delta_position から，関節の姿勢を計算．
 	position = position * Quaterniond::Rot(delta_position);
 
 	PropagateState();
-	PHJointBase::Integrate(dt);	
+	PHJointBase::Integrate(scene);	
 /*	double v = velocity.norm();
 	double limit = 40;
 	if (v > limit) velocity = limit*velocity.unit();
@@ -199,14 +205,14 @@ DEF_REGISTER_LOADER(PHConeLimit);
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointUniversal, PHJointBase);
-void PHJointUniversal::Integrate(double dt){
-	PreIntegrate(dt);
+void PHJointUniversal::Integrate(SGScene* scene){
+	PreIntegrate(scene);
 	
 	//	delta_position から，関節の姿勢を計算．
 	position += delta_position;
 
 	PropagateState();
-	PHJointBase::Integrate(dt);	
+	PHJointBase::Integrate(scene);	
 }
 
 void PHJointUniversal::CompJointAxis()

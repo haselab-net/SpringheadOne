@@ -104,7 +104,7 @@ protected:
 	SpVec6d			c;					///<	Coriolis vector in Fc coord.
 	SpVec6d			a;					///<	spatial accelaration in Fc coord.
 	//@}
-	
+
 	//	sを含まない変数のキャッシュ．
 	Matrix3d	rcross, rpcross, rcross_cRp, rpcross_pRc;
 	SpVec6d		a_p, Ia_c, Z_plus_Ia_c;
@@ -152,7 +152,7 @@ public:
 	///	articulated inertia & ZA-force
 	virtual void CompArticulatedInertia(double dt);
 	///	積分
-	virtual void Integrate(double dt);
+	virtual void Integrate(SGScene* scene);
 	/**	このノードの加速度を計算したい場合に呼ぶ．
 		親ノードの加速度は副作用で求まる．子ノードについては計算しない．
 		
@@ -225,7 +225,7 @@ public:
 	virtual void CompRelativePosition(){}
 	virtual void CompRelativeVelocity(){}
 	virtual void CompCoriolisAccel(){}
-	virtual void Integrate(double dt);
+	virtual void Integrate(SGScene* scene);
 	///	状態の読み出し
 	virtual void LoadState(const SGBehaviorStates& states);
 	///	状態の保存

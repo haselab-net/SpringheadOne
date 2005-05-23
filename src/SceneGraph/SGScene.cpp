@@ -37,6 +37,7 @@ void SGScene::Loaded(SGScene* scene){
 }
 SGScene::SGScene(){
 	timeStep = 0.005;
+	velocityLossPerStep = 0.9999;
 	Clear();
 }
 void SGScene::Clear(){
@@ -133,6 +134,17 @@ void SGScene::SaveState(SGBehaviorStates& states) const{
 	GetBehaviors().SaveState(states);
 }
 
+void SGScene::SetTimeStep(double dt){
+	velocityLossPerStep = pow(velocityLossPerStep, dt/timeStep);
+	timeStep = dt;
+}
+void SGScene::SetVelocityLoss(double v){
+	velocityLossPerStep = pow(v, timeStep);
+}
+double SGScene::GetVelocityLoss(){
+	 return pow(velocityLossPerStep, 1/timeStep);
+}
+
 //----------------------------------------------------------------------------
 //	DocIO
 //
@@ -167,6 +179,7 @@ typedef float FLOAT;
 DEF_RECORD(XSimulator,{
 	GUID Guid(){ return WBGuid("A3AD84FC-CF04-4541-A284-D9267D58E0AA"); }
 	FLOAT dt;
+	FLOAT velocityLoss;
 });
 class SGSimulator:public SGObject{
 	SGOBJECTDEF(SGSimulator);
@@ -183,8 +196,15 @@ public:
 	}
 	virtual bool LoadData(FILoadScene* ctx, SGSimulator* s){
 		XSimulator sim;
-		ctx->docs.Top()->GetWholeData(sim);
+		sim.dt = 0.005f;
+		sim.velocityLoss = 0.999f;
+		ctx->docs.Top()->GetData(sim.dt, "dt");
+		ctx->docs.Top()->GetData(sim.velocityLoss, "velocityLoss");
+		if (sim.velocityLoss<=0.1f || sim.velocityLoss > 1.0f){
+			sim.velocityLoss = 0.999f;
+		}
 		ctx->scene->SetTimeStep(sim.dt);
+		ctx->scene->SetVelocityLoss(sim.velocityLoss);
 		return true;
 	}
 };
@@ -194,6 +214,7 @@ class SGSimulatorSaver:public FIObjectSaver<SGSimulator>{
 	virtual void SaveData(FISaveScene* ctx, FIDocNodeBase* doc, SGSimulator* s){
 		XSimulator sim;
 		sim.dt = (float)ctx->scene->GetTimeStep();
+		sim.velocityLoss = (float)ctx->scene->GetVelocityLoss();
 		doc->SetWholeData(sim);
 	}
 };

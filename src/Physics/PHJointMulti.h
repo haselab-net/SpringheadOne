@@ -52,7 +52,8 @@ public:
 			PHJointBase::Integrate(dt);
 		}
 	*/
-	void PreIntegrate(double dt){
+	void PreIntegrate(SGScene* scene){
+		double dt = scene->GetTimeStep();
 		a_p = cXp_Vec(OfParent(&PHJointMulti::a));
 
 		if (intType == SYMPLETIC){
@@ -61,9 +62,9 @@ public:
 			//加速度を計算
 			accel = Iss*(torque - S_tr*(Z_plus_Ia_c + Ia*a_p));
 			//速度を積分
-			velocity += accel * dt;
+			velocity += accel * scene->GetTimeStep();
 			//位置を積分する準備
-			delta_position = velocity * dt;
+			delta_position = velocity * scene->GetTimeStep();
 		}else{
 			//加速度を計算
 			accel = Iss*(torque - S_tr*(Z_plus_Ia_c + Ia*a_p));
@@ -72,6 +73,7 @@ public:
 			//速度を積分
 			velocity += accel * dt;
 		}
+		velocity *= scene->GetVelocityLossPerStep();
 		//重心周りの加速度(子ノードの積分で使用する)
 		a = a_p + c + S*accel;
 		if (velocity.norm() > 2*M_PI*10){
@@ -120,10 +122,12 @@ public:
 	double minDot;			//	可動範囲
 	double minTwist;			//	ひねりの可動範囲
 	double maxTwist;			//	ひねりの可動範囲
+
+	PHJointBall();
 	///	関節位置の取得
 	virtual double GetJointPosition(int i){ return position.rotation()[i]; }
 
-	virtual void Integrate(double dt);
+	virtual void Integrate(SGScene* scene);
 	virtual void CompJointAxis();
 	virtual void CompRelativePosition();
 	virtual void CompRelativeVelocity();
@@ -138,7 +142,7 @@ public:
 	///	関節位置の取得
 	virtual double GetJointPosition(int i){ return position[i]; }
 
-	virtual void Integrate(double dt);
+	virtual void Integrate(SGScene* scene);
 	virtual void CompJointAxis();
 	virtual void CompRelativePosition();
 	virtual void CompRelativeVelocity();

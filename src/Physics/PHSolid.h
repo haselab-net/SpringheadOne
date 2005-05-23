@@ -58,7 +58,7 @@ public:
 	size_t		NReferenceObjects();					///< 1
 	SGObject*	ReferenceObject(size_t i);				///< フレームを返す．
 	void		Loaded(SGScene* scene);					///< ロード終了時の初期化
-	void		Step(double dt);						///< 時刻を dt 進める．
+	void		Step(SGScene* s);						///< 時刻を進める．
 	
 	void		AddForce(Vec3d f);						///< 力を質量中心に加える
 	void		AddTorque(Vec3d t){ torque += t; }		///< トルクを加える

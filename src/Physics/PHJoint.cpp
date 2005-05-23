@@ -167,7 +167,7 @@ void PHJointBase::ClearTorqueRecursive(){
 	}
 }
 
-void PHJointBase::Integrate(double dt){
+void PHJointBase::Integrate(SGScene* scene){
 	if(solid){
 #if 0	//	hase
 		if (pos.norm() > 100){
@@ -184,7 +184,7 @@ void PHJointBase::Integrate(double dt){
 		solid->SetIntegrationMode(PHINT_NONE);
 	}	
 	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
-		(*it)->Integrate(dt);
+		(*it)->Integrate(scene);
 }
 
 void PHJointBase::PropagateState()
@@ -290,7 +290,8 @@ void PHJointRoot::CalcAccel(double dt){
 		a.clear();
 	}
 }
-void PHJointRoot::Integrate(double dt){
+void PHJointRoot::Integrate(SGScene* scene){
+	double dt = scene->GetTimeStep();
 	//physical
 	if(solid){
 		//加速度を計算
@@ -315,6 +316,9 @@ void PHJointRoot::Integrate(double dt){
 
 		Vec3d a_rot = R * svitem(a, 0);
 		Vec3d a_trn = R * svitem(a, 1);
+
+		v_abs *= scene->GetVelocityLossPerStep();
+		w_abs *= scene->GetVelocityLossPerStep();
 
 		/* 旧形式
 		//加速度を積分して新しい速度を求める
@@ -343,7 +347,7 @@ void PHJointRoot::Integrate(double dt){
 		a.clear();
 	}
 	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
-	PHJointBase::Integrate(dt);
+	PHJointBase::Integrate(scene);
 }
 
 //-----------------------------------------------------------------------------
@@ -368,7 +372,7 @@ void PHJointEngine::Step(SGScene* scene)
 	double dt = scene->GetTimeStep();
 	root->CompCoriolisAccelRecursive(dt);
 	root->CompArticulatedInertia(dt);
-	root->Integrate(dt);
+	root->Integrate(scene);
 	timer.Stop();
 }
 
