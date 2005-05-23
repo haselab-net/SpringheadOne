@@ -46,7 +46,6 @@ void FWPointer6D::Step(float dt){
 	Solid()->SetOrientation(GetOri());
 	Solid()->SetVelocity(GetVel());
 	Solid()->SetAngularVelocity(GetAngVel());
-	Solid()->UpdateFrame();
 }
 
 void FWPointer6D::Update(float dt){

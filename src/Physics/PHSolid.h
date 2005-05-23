@@ -105,12 +105,20 @@ public:
 	///	向きの取得
 	Matrix3d	GetRotation(){ Matrix3d rv; quat.to_matrix(rv); return rv; }
 	///	向きの設定
-	void		SetRotation(const Matrix3d& r){ quat.from_matrix(r); }
+	void		SetRotation(const Matrix3d& r){
+		quat.from_matrix(r);
+		frame->SetRotation(r);
+	}
 
 	///	向きの取得
 	Quaterniond GetOrientation(){return quat;}
 	///	向きの設定
-	void		SetOrientation(const Quaterniond& q){ quat = q; }
+	void		SetOrientation(const Quaterniond& q){
+		quat = q;
+		Matrix3f m;
+		quat.to_matrix(m);
+		frame->SetRotation(m);
+	}
 
 	///	質量中心の速度の取得
 	Vec3d		GetVelocity(){return velocity;}
@@ -126,12 +134,17 @@ public:
 	Vec3d		GetCenter(){return center;}
 	///	ローカルフレームから見た，剛体の質量中心位置の取得
 	void		SetCenter(const Vec3d& c){center = c;}		
-	///	角度をフレームに反映
-	void UpdateFrame();
 };
 
 class PHSolids:public std::vector< UTRef<PHSolid> >{
 public:
+	UTRef<PHSolid> Erase(const UTRef<PHSolid>& s){
+		iterator it = std::find(begin(), end(), s);
+		if (it == end()) return NULL;
+		UTRef<PHSolid> rv = *it;
+		erase(it);
+		return *it;
+	}
 	UTRef<PHSolid>* Find(const UTRef<PHSolid>& s){
 		iterator it = std::find(begin(), end(), s);
 		if (it == end()) return NULL;
@@ -141,16 +154,28 @@ public:
 		return ((PHSolids*)this)->Find(s);
 	}
 };
+
+///	Solidの積分を行うクラスのベース
+class PHSolverBase:public SGBehaviorEngine{
+	SGOBJECTDEFABST(PHSolverBase);
+public:
+	virtual void ClearForce()=0;
+};
+
 /**	Solidを保持するクラス．Solidの更新も行う．	*/
-class PHSolidContainer:public SGBehaviorEngine{
+class PHSolidContainer:public PHSolverBase{
 	SGOBJECTDEF(PHSolidContainer);
 public:
 	PHSolids solids;
 	bool AddChildObject(SGObject* o, SGScene* s);
+	bool DelChildObject(SGObject* o, SGScene* s);
 	///
 	int GetPriority() const {return SGBP_SOLIDCONTAINER;}
 	///	速度→位置、加速度→速度の積分
 	virtual void Step(SGScene* s);
+	///	剛体にかかった力のクリア
+	virtual void ClearForce();
+	
 	virtual void Loaded(SGScene* scene);
 	virtual void Clear(SGScene* s){ solids.clear(); }
 	///	所有しているsolidの数
@@ -168,7 +193,8 @@ public:
 class PHSolidClearForce:public SGBehaviorEngine{
 	SGOBJECTDEF(PHSolidClearForce);
 public:
-	UTRef<PHSolidContainer> cont;
+	typedef std::vector< UTRef<PHSolverBase> > PHSolvers;
+	PHSolvers solvers;
 	///	クリアする
 	virtual void Step(SGScene* s);
 	virtual int GetPriority() const { return SGBP_CLEARFORCE; }

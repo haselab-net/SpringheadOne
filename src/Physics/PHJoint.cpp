@@ -37,7 +37,11 @@ void PHJointBase::Loaded(SGScene* scene)
 		solid->SetInertia(0.1f * Matrix3d());
 		solid->SetFrame(new SGFrame);
 	}
-	if(solid)solid->Loaded(scene);
+	if(solid) solid->Loaded(scene);
+	//	PHSolidContainerからSolidを削除
+	PHSolidContainer* sc = NULL;
+	scene->GetBehaviors().Find(sc);
+	if (sc) sc->DelChildObject(solid, scene);
 	
 	//諸変数の初期化
 	UpdateSolid();
@@ -87,6 +91,7 @@ size_t PHJointBase::NChildObjects(){
 bool PHJointBase::AddChildObject(SGObject* o, SGScene* s){
 	if (DCAST(PHSolid, o)){
 		solid = (PHSolid*)o;
+		solid->SetIntegrationMode(PHINT_NONE);
 		return true;
 	}
 	if (DCAST(PHJointBase, o)){
@@ -166,14 +171,20 @@ void PHJointBase::ClearTorqueRecursive(){
 		(*it)->ClearTorqueRecursive();
 	}
 }
+void PHJointBase::ClearForce(){
+	if (solid) solid->ClearForce();
+	for(array_type::iterator it = Children().begin(); it != Children().end(); ++it){
+		(*it)->ClearForce();
+	}
+}
 
 void PHJointBase::Integrate(SGScene* scene){
-	solid->SetCenterPosition(p);
-	solid->SetRotation(R);
+	//	Solidに速度・位置を反映させる．
 	solid->SetVelocity(v_abs);
 	solid->SetAngularVelocity(w_abs);
-	solid->SetIntegrationMode(PHINT_NONE);
-	solid->UpdateFrame();
+	solid->SetRotation(R);
+	solid->SetCenterPosition(p);
+	//	子ジョイントの計算
 	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
 		(*it)->Integrate(scene);
 }
@@ -197,19 +208,9 @@ void PHJointBase::PropagateState()
 	w_abs = R * w;
 }
 void PHJointBase::Reset(){
-	//非ルートノード
-	if(GetParent()){	
-		PropagateState();
-		solid->SetCenterPosition(p);
-		solid->SetRotation(R);
-		solid->UpdateFrame();
-	}
-	//ルートノード
-	else{
-		quat.from_matrix(R);
-		v = R.trans() * v_abs;
-		w = R.trans() * w_abs;
-	}
+	PropagateState();
+	solid->SetCenterPosition(p);
+	solid->SetRotation(R);
 }
 
 void PHJointBase::LoadState(const SGBehaviorStates& states){
@@ -242,7 +243,9 @@ void PHJointBase::LoadX(const XJointBase& x){
 //-----------------------------------------------------------------------------
 SGOBJECTIMP(PHJointRoot, PHJointBase);
 void PHJointRoot::Reset(){
-	PHJointBase::Reset();
+	quat.from_matrix(R);
+	v = R.trans() * v_abs;
+	w = R.trans() * w_abs;
 }
 
 class PHJointStateRoot: public SGBehaviorState{
@@ -310,12 +313,12 @@ void PHJointRoot::Integrate(SGScene* scene){
 
 		v_abs *= scene->GetVelocityLossPerStep();
 		w_abs *= scene->GetVelocityLossPerStep();
-
+		PHJointBase::Integrate(scene);
 	}else{		//non-physical
 		a.clear();
+		for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
+			(*it)->Integrate(scene);
 	}
-	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
-		(*it)->Integrate(scene);
 }
 
 //-----------------------------------------------------------------------------
@@ -401,10 +404,21 @@ void PHJointEngine::SaveState(SGBehaviorStates& states) const{
 class PHJointEngineLoader : public FIObjectLoader<PHJointEngine>{
 public:
 	bool LoadData(FILoadScene* ctx, PHJointEngine* engine){
+		//	JointEngineの初期化
 		engine->root = new PHJointRoot;
 		PHJointClearForce* jcf = new PHJointClearForce;
 		jcf->je = engine;
 		ctx->scene->AddChildObject(jcf, ctx->scene);
+		
+		//	clearForce への登録
+		UTRef<PHSolidClearForce> clearForce;
+		ctx->scene->GetBehaviors().Find(clearForce);
+		if(!clearForce){
+			clearForce= new PHSolidClearForce;
+			ctx->scene->GetBehaviors().Add(clearForce);
+		}
+		clearForce->solvers.push_back(engine);
+		
 		return true;
 	}
 };

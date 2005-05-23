@@ -208,6 +208,7 @@ protected:
 	void UpdateJointPosture();
 	void PropagateState();				///<	位置・速度の伝播（非再帰関数）	
 	virtual void ClearTorqueRecursive();
+	virtual void ClearForce();
 	/**	姿勢などの再設定	非再帰
 		基本的な状態量(PHJointStateの内容)がLoadedやLoadStateでセットされた後に、
 		従属変数を計算するための関数	*/
@@ -244,11 +245,12 @@ protected:
 /**	PHJointEngine
 	関節エンジン．1つのArticulated Bodyに対応する．
 */
-class PHJointEngine	: public SGBehaviorEngine{
+class PHJointEngine	: public PHSolverBase{
 public:
 	SGOBJECTDEF(PHJointEngine);
 	typedef PHJointBase::array_type array_type;		///<	ジョイントの配列
 	UTRef<PHJointBase> root;						///<	ルートノード．関節ではない．
+	void ClearForce(){ root->ClearForce(); }
 	typedef std::set< UTRef<PHSolid> > PHSolidSet;	///<	剛体のセット．
 	PHSolidSet solids;
 
