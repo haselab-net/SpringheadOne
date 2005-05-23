@@ -331,12 +331,18 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 	const float SAFETYRATE = 0.001f;
 	float k = 0.2f * SAFETYRATE;
 	float b = 0.6f*10 * SAFETYRATE;
-	for(int i=0; i<jointPids.size(); ++i){
+	for(int i=0; i<joints.size(); ++i){
 		if(jointPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointPids[i]->differential = b * mass / dt;
-			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+			//jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+		}
+		else if(jointBallPids[i] != NULL){
+			float mass = GetChildMass(joints[i]);
+			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
+			jointBallPids[i]->differential = b * mass / dt;
+			//jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}
 

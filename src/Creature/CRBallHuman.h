@@ -76,9 +76,7 @@
 #include "CRSupportArea.h"
 
 #define JOINTS_NUM 17
-#define SOLID_NUM 18
-#define JOINTHINGE_NUM 6
-#define JOINTBALL_NUM 11
+#define SOLIDS_NUM 18
 
 namespace Spr{;
 
@@ -133,7 +131,7 @@ public:
 
 
 	CRBallHumanJointInfo	jinfo[JOINTS_NUM];			// VHÇÃJointèÓïÒ
-	CRBallHumanSolidInfo	sinfo[SOLID_NUM];			// VHÇÃSolidèÓïÒ
+	CRBallHumanSolidInfo	sinfo[SOLIDS_NUM];			// VHÇÃSolidèÓïÒ
 
 protected:
 	bool bLoaded;	//Å@VHÇ™ÉçÅ[Éh(Connct)Ç≥ÇÍÇΩÇ©î€Ç©

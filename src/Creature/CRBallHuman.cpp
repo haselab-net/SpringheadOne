@@ -155,10 +155,12 @@ bool CRBallHuman::Connect(UTRef<SGScene> scene){
 
 	for(int i=0; i<joints.size(); ++i){
 		if(joints[i]->GetJointDof() == 1){
-			jointPids.push_back(PHJointPid::Find((PHJointHinge*)joints[i], scene));
+			jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
+			jointBallPids.push_back(NULL);
 		}
 		else if(joints[i]->GetJointDof() == 3){
 			jointBallPids.push_back(PHJointBallPid::Find((PHJointBall*)joints[i], scene));
+			jointPids.push_back(NULL);
 		}
 	}
 	return bLoaded;
@@ -236,7 +238,7 @@ void CRBallHuman::SetJointScale(){
 	for(unsigned i = 0; i < joints.size(); i++){
 		if(joints[i] != NULL){
 			joints[i]->prj *= totalHeight; 
-			joints[i]->crj  *= totalHeight; 
+			joints[i]->crj *= totalHeight; 
 		}
 	}
 }
@@ -702,8 +704,7 @@ void CRBallHuman::SetJointSpring(float dt){
 	float b = 0.6f * SAFETYRATE;
 	//float k = 0.008f * SAFETYRATE;
 	//float b = 0.9f * SAFETYRATE;
-//	for(int i=0; i<joints.size(); ++i){
-	for(int i=0; i<jointPids.size(); ++i){
+	for(int i=0; i<joints.size(); ++i){
 		//if(joints[i] != NULL){
 		if(jointPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
@@ -711,6 +712,12 @@ void CRBallHuman::SetJointSpring(float dt){
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointPids[i]->differential = b * mass / dt;
 			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+		}
+		else if(jointBallPids[i] != NULL){
+			float mass = GetChildMass(joints[i]);
+			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
+			jointBallPids[i]->differential = b * mass / dt;
+			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(âEòr)
