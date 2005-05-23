@@ -168,21 +168,12 @@ void PHJointBase::ClearTorqueRecursive(){
 }
 
 void PHJointBase::Integrate(SGScene* scene){
-	if(solid){
-#if 0	//	hase
-		if (pos.norm() > 100){
-			DSTR << "Strange position:" << std::endl;
-			DSTR << p << std::endl;
-			DSTR << R << solid->GetCenter() << std::endl;
-			DSTR << GetParent()->p << std::endl;
-		}
-#endif
-		solid->SetCenterPosition(p);
-		solid->SetRotation(R);
-		solid->SetVelocity(v_abs);
-		solid->SetAngularVelocity(w_abs);
-		solid->SetIntegrationMode(PHINT_NONE);
-	}	
+	solid->SetCenterPosition(p);
+	solid->SetRotation(R);
+	solid->SetVelocity(v_abs);
+	solid->SetAngularVelocity(w_abs);
+	solid->SetIntegrationMode(PHINT_NONE);
+	solid->UpdateFrame();
 	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
 		(*it)->Integrate(scene);
 }
@@ -320,34 +311,11 @@ void PHJointRoot::Integrate(SGScene* scene){
 		v_abs *= scene->GetVelocityLossPerStep();
 		w_abs *= scene->GetVelocityLossPerStep();
 
-		/* 旧形式
-		//加速度を積分して新しい速度を求める
-		Vec3d w_new = (w_abs + a_rot * dt);
-		Vec3d v_new = (v_abs + a_trn * dt);
-
-		//速度を積分して位置を求める
-		p += (v_abs + (0.5 * dt) * (R * a_trn)) * dt;
-
-		double wnorm = w.norm();
-		//クヲータニオンを微小回転
-		if(wnorm > 1.0e-10){
-			quat = Quaterniond::Rot(wnorm * dt, w_abs / wnorm) * quat;
-			quat.unitize();
-		}
-		//これを回転行列に変換
-		quat.to_matrix(R);
-
-		//速度を更新
-		v_abs = v_new;
-		w_abs = w_new;
-		v = R.trans() * v_abs;
-		w = R.trans() * w_abs;
-		*/
 	}else{		//non-physical
 		a.clear();
 	}
-	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
-	PHJointBase::Integrate(scene);
+	for(array_type::const_iterator it = Children().begin(); it != Children().end(); it++)
+		(*it)->Integrate(scene);
 }
 
 //-----------------------------------------------------------------------------

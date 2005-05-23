@@ -37,7 +37,7 @@ void SGScene::Loaded(SGScene* scene){
 }
 SGScene::SGScene(){
 	timeStep = 0.005;
-	velocityLossPerStep = 0.9999;
+	velocityLossPerStep = 0.98;
 	Clear();
 }
 void SGScene::Clear(){
@@ -197,11 +197,11 @@ public:
 	virtual bool LoadData(FILoadScene* ctx, SGSimulator* s){
 		XSimulator sim;
 		sim.dt = 0.005f;
-		sim.velocityLoss = 0.999f;
+		sim.velocityLoss = 0.98f;
 		ctx->docs.Top()->GetData(sim.dt, "dt");
 		ctx->docs.Top()->GetData(sim.velocityLoss, "velocityLoss");
 		if (sim.velocityLoss<=0.1f || sim.velocityLoss > 1.0f){
-			sim.velocityLoss = 0.999f;
+			sim.velocityLoss = 0.98f;
 		}
 		ctx->scene->SetTimeStep(sim.dt);
 		ctx->scene->SetVelocityLoss(sim.velocityLoss);

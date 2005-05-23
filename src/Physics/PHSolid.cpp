@@ -154,12 +154,11 @@ void PHSolid::Step(SGScene* s){
 			
 			break;
 		}
+		double loss = s->GetVelocityLossPerStep();
+		velocity *= loss;
+		angVelocity *= loss;
+		UpdateFrame();
 	}
-	double loss = s->GetVelocityLossPerStep();
-	velocity *= loss;
-	angVelocity *= loss;
-	
-	UpdateFrame();
 }
 
 void PHSolid::Loaded(SGScene* scene){
