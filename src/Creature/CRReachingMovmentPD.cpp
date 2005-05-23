@@ -1,3 +1,5 @@
+#include "Creature.h"
+#pragma hdrstop
 // CRReachingMovmentPD.cpp: CRReachingMovmentPD クラスのインプリメンテーション
 //
 //////////////////////////////////////////////////////////////////////

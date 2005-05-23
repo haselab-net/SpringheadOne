@@ -1,3 +1,5 @@
+#include "Creature.h"
+#pragma hdrstop
 // CRBallVirtualHuman.cpp: CRBallVirtualHuman クラスのインプリメンテーション
 //
 //////////////////////////////////////////////////////////////////////

@@ -107,6 +107,10 @@ void PHJoint1D::Integrate(double dt){
 	//重心周りの加速度(子ノードの積分で使用する)
 	a = a_p + c + accel * s;
 	
+	if (abs(velocity) > 2*M_PI*10){
+		DSTR << "Joint " << GetName() << " has velocity of " << velocity << std::endl;
+		DebugBreak();
+	}
 	//位置・速度の伝播
 	PropagateState();
 	//関連コンポーネントの位置、速度、関節変位、関節速度を更新

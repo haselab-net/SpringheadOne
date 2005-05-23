@@ -1,8 +1,9 @@
+#include "Creature.h"
+#pragma hdrstop
 // CRBalanceQuadPR.cpp: CRBalanceQuadPR クラスのインプリメンテーション
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "Creature.h"
 #include "CRBalanceQuadPR.h"
 #include "CRHuman.h"
 #include "CRVirtualHuman.h"

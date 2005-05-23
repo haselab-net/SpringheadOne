@@ -1,3 +1,5 @@
+#include "Creature.h"
+#pragma hdrstop
 #include "CRBeetle.h"
 #include <assert.h>
 #include <Physics/PHContactEngine.h>

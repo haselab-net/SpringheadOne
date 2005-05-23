@@ -1,3 +1,5 @@
+#include "Creature.h"
+#pragma hdrstop
 // CRBalanceMultiLeg.cpp: CRBalanceMultiLeg クラスのインプリメンテーション
 //
 //////////////////////////////////////////////////////////////////////

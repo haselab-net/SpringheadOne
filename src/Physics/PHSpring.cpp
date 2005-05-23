@@ -1,3 +1,5 @@
+#include "Physics.h"
+#pragma hdrstop
 #include "PHSpring.h"
 
 namespace Spr{;

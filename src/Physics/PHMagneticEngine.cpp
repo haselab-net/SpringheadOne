@@ -1,3 +1,5 @@
+#include "Physics.h"
+#pragma hdrstop
 // PHMagneticEngine.cpp: PHMagneticEngine クラスのインプリメンテーション
 //
 //////////////////////////////////////////////////////////////////////
