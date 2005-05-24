@@ -123,9 +123,9 @@ void CRBallVirtualHuman::LoadDerivedModel(SGScene* scene){
 
 	// 到達運動するSolidの登録とk,b,到達運動時間の設定
 	std::vector<int> joints0,joints1;
-	for(int i = 9; i <=15; i++)
+	for(int i = 3; i <=5; i++)
 		joints0.push_back(i);
-	for(int i = 16; i <=22; i++)
+	for(int i = 6; i <=8; i++)
 		joints1.push_back(i);
 	//rMovmentPD.RegistMovmentSolid(scene,solids[6],0.0005,0.3,0.5,joints0);
 	//rMovmentPD.RegistMovmentSolid(scene,solids[9],0.0002,0.3,0.3,joints1);
@@ -139,44 +139,30 @@ void CRBallVirtualHuman::RegistNoUSeJoint(){
 	// 上半身
 	// (腰:X,Z,Y)
 	//noUseJoint.push_back(0);
-	//noUseJoint.push_back(1);
-	//noUseJoint.push_back(2);
 
 	// (胸:X,Z,Y）
-	noUseJoint.push_back(3);
-	noUseJoint.push_back(4);
-	noUseJoint.push_back(5);
+	noUseJoint.push_back(1);
 
 	// (首:X,Z,Y）
-	noUseJoint.push_back(6);
-	noUseJoint.push_back(7);
-	noUseJoint.push_back(8);
+	noUseJoint.push_back(2);
 
 	// (右肩:X,Z,Y）
-	//noUseJoint.push_back(9);
-	//noUseJoint.push_back(10);
-	noUseJoint.push_back(11);
+	noUseJoint.push_back(3);
 
 	// (右肘:X,Y）
-	noUseJoint.push_back(12);
-	noUseJoint.push_back(13);
+	noUseJoint.push_back(4);
 
 	//	(右手首:Z,X)
-	noUseJoint.push_back(14);
-	noUseJoint.push_back(15);
+	noUseJoint.push_back(5);
 
 	// (左肩:X,Z,Y）
-	//noUseJoint.push_back(16);
-	//noUseJoint.push_back(17);
-	noUseJoint.push_back(18);
+	noUseJoint.push_back(6);
 
 	// (左肘:X,Y）
-	noUseJoint.push_back(19);
-	noUseJoint.push_back(20);
+	noUseJoint.push_back(7);
 
 	//	(左手首:Z,X)
-	noUseJoint.push_back(21);
-	noUseJoint.push_back(22);
+	noUseJoint.push_back(8);
 
 #endif
 	// 下半身
@@ -336,70 +322,57 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 			float mass = GetChildMass(joints[i]);
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointPids[i]->differential = b * mass / dt;
-			//jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointBallPids[i]->differential = b * mass / dt;
-			//jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}
 
 	/*
 	// 手首を硬くする(右)
-	if(jointPids[14] != NULL)
-			JointPIDMul(jointPids[14], 10.0f, 10.0f);
-	if(jointPids[15] != NULL)
-			JointPIDMul(jointPids[15], 10.0f, 10.0f);
+	if(jointBallPids[5] != NULL)
+			JointBallPIDMul(jointBallPids[5], 10.0f, 10.0f);
 	// 手首を硬くする(左)
-	if(jointPids[21] != NULL)
-			JointPIDMul(jointPids[21], 10.0f, 10.0f);
-	if(jointPids[22] != NULL)
-			JointPIDMul(jointPids[22], 10.0f, 10.0f);
+	if(jointBallPids[8] != NULL)
+			JointBallPIDMul(jointBallPids[8], 10.0f, 10.0f);
 	*/
 
 	//　膝を柔らかくする
-	//JointPIDMul(jointPids[26], 0.1f, 0.8f);
-	//JointPIDMul(jointPids[34], 0.1f, 0.8f);
+	//JointPIDMul(jointPids[10], 0.1f, 0.8f);
+	//JointPIDMul(jointPids[14], 0.1f, 0.8f);
 
 
-	//JointPIDMul(jointPids[9], 0.01f, 0.01f);
-	//JointPIDMul(jointPids[16], 0.01f, 0.01f);
-
-	/*
 	//　肩を柔らかくする(右)
-	for(int i = 9; i <= 11; i++){
-		if(jointPids[i] != NULL)
-			JointPIDMul(jointPids[i], 0.9f, 1.0f);
+	if(jointBallPids[3] != NULL){
+		JointBallPIDMul(jointBallPids[3], 0.9f, 1.0f);
 	}
 
 	//　肩を柔らかくする(左)
-	for(int i = 16; i <= 18; i++){
-		if(jointPids[i] != NULL)
-			JointPIDMul(jointPids[i], 0.8f, 1.0f);
+	if(jointBallPids[6] != NULL){
+		JointBallPIDMul(jointBallPids[6], 0.9f, 1.0f);
 	}
 
 	// 肘を柔らかくする(右)
-	for(int i = 12; i <= 13; i++){
-		if(jointPids[i] != NULL)
-			JointPIDMul(jointPids[i], 0.1f, 1.0f);
+	if(jointPids[4] != NULL){
+		JointPIDMul(jointPids[4], 0.1f, 1.0f);
 	}
 
 	// 肘を柔らかくする(左)
-	for(int i = 19; i <= 20; i++){
-		if(jointPids[i] != NULL)
-			JointPIDMul(jointPids[i], 0.1f, 1.0f);
+	if(jointPids[7] != NULL){
+			JointPIDMul(jointPids[7], 0.1f, 1.0f);
 	}
 
 	// 爪先を硬くする(右足)
-	if(jointPids[30] != NULL)
-			JointPIDMul(jointPids[30], 10.0f, 10.0f);
+	if(jointPids[12] != NULL)
+			JointPIDMul(jointPids[12], 10.0f, 10.0f);
 	
 	// 爪先を硬くする(左足)
-	if(jointPids[38] != NULL)
-			JointPIDMul(jointPids[38], 10.0f, 10.0f);
-	*/
+	if(jointPids[16] != NULL)
+			JointPIDMul(jointPids[16], 10.0f, 10.0f);
 
 }
 
@@ -415,7 +388,6 @@ void CRBallVirtualHuman::SetJointInitAngle(){
 
 	((PHJoint1D*)joints[16])->position = jointPids[16]->goal = 5*angle;
 	((PHJoint1D*)joints[19])->position = jointPids[19]->goal = 20*angle;
-	*/
 
 	// 下半身
 	((PHJoint1D*)joints[23])->position = jointPids[23]->goal = angle;
@@ -425,7 +397,7 @@ void CRBallVirtualHuman::SetJointInitAngle(){
 	((PHJoint1D*)joints[31])->position = jointPids[31]->goal = angle;
 	((PHJoint1D*)joints[34])->position = jointPids[34]->goal = 2*angle;
 	((PHJoint1D*)joints[35])->position = jointPids[35]->goal = angle;
-
+	*/
 }
 
 

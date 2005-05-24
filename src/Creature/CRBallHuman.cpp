@@ -46,7 +46,7 @@ void CRBallHuman::Loaded(SGScene* scene){
 void CRBallHuman::SetModel(SGScene* scene){
 	if(bLoaded){
 		SetScale(scene);
-		SetMass();
+		//SetMass();
 		SetInertia();
 		SetJointSpring((float)scene->GetTimeStep());
 		//SetJointRange();
@@ -720,42 +720,27 @@ void CRBallHuman::SetJointSpring(float dt){
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}
+
 	// ŠÖß‚ğ_‚ç‚©‚ß‚Éİ’è(‰E˜r)
-	/*
-	for(int i = 9; i < 15; ++i){ 
-		//if(joints[i] != NULL){
-		if(jointPids[i] != NULL){
-			JointPIDMul(jointPids[i], 0.01f, 1.0f);
-		}
-	}
-	*/
-	if(jointPids[3] != NULL){
-		//JointBallPIDMul(jointPids[3], 0.01f, 1.0f);
+	if(jointBallPids[3] != NULL){
+		JointBallPIDMul(jointBallPids[3], 0.01f, 1.0f);
 	}
 	if(jointPids[4] != NULL){
-		//JointPIDMul(jointPids[4], 0.01f, 1.0f);
+		JointPIDMul(jointPids[4], 0.01f, 1.0f);
 	}
-	if(jointPids[5] != NULL){
-		//JointPIDMul(jointPids[5], 0.01f, 1.0f);
+	if(jointBallPids[5] != NULL){
+		JointBallPIDMul(jointBallPids[5], 0.01f, 1.0f);
 	}
 
 	// ŠÖß‚ğ_‚ç‚©‚ß‚Éİ’è(¶˜r)
-	/*
-	for(int i = 16; i < 22; ++i){ 
-		//if(joints[i] != NULL){
-		if(jointPids[i] != NULL){
-			JointPIDMul(jointPids[i], 0.01f, 1.0f);
-		}
-	}
-	*/
-	if(jointPids[6] != NULL){
-		//JointBallPIDMul(jointPids[3], 0.01f, 1.0f);
+	if(jointBallPids[6] != NULL){
+		JointBallPIDMul(jointBallPids[6], 0.01f, 1.0f);
 	}
 	if(jointPids[7] != NULL){
-		//JointPIDMul(jointPids[4], 0.01f, 1.0f);
+		JointPIDMul(jointPids[7], 0.01f, 1.0f);
 	}
-	if(jointPids[8] != NULL){
-		//JointPIDMul(jointPids[5], 0.01f, 1.0f);
+	if(jointBallPids[8] != NULL){
+		JointBallPIDMul(jointBallPids[8], 0.01f, 1.0f);
 	}
 
 }
