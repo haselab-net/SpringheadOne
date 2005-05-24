@@ -372,12 +372,12 @@ bool FWApp::OnKeyDown(unsigned int nChar){
 }
 void FWApp::Draw(){
 	if (!render) return;
+	render->ClearBuffer();			//	バッファクリア
+	render->BeginScene();			//	描画開始
 	render->Render(scene);			//	シーンの描画
 	render->EndScene();				//	描画終了
 	render->Present();				//	表示
 	render->SetViewport(hWnd);	//	Viewportの設定
-	render->ClearBuffer();			//	バッファクリア
-	render->BeginScene();			//	描画開始
 }
 void FWApp::CreateD3DRender(){
 	if (render) render->EndScene();

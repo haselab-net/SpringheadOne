@@ -81,6 +81,10 @@ public:
 	virtual void SetDepthFunc(TDepthFunc f);
 	virtual bool CanDraw();
 	void InitTree(SGFrame* fr, SGScene* scene);
+
+	virtual Vec3f getPointUnderPixel(int x, int y, bool& found);
+
+
 protected:
 };
 

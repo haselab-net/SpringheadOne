@@ -1,5 +1,7 @@
 #include "GraphicsGL.h"
 #include <Graphics/GRLoadBmp.h>
+#include <Base/BaseDebug.h>
+
 #pragma hdrstop
 
 
@@ -62,6 +64,7 @@ void GLRender::Render(SGScene* s){
 	}
 	//	•s“§–¾•”‚Ì•`‰æ
 	drawState = DRAW_OPAQUE;
+	//glDepthMask(GL_TRUE);
 	glBlendFunc(GL_ONE, GL_ZERO);
 	RenderRecurse(s->GetWorld());
 	//	Engine‚Ì•`‰æ
@@ -71,6 +74,7 @@ void GLRender::Render(SGScene* s){
 	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	RenderRecurse(s->GetWorld());
+	
 	glDepthMask(GL_TRUE);
 	drawState = DRAW_BOTH;
 	glBlendFunc(GL_ONE, GL_ZERO);
@@ -236,10 +240,16 @@ void GLRender::InitTree(SGFrame* fr, SGScene* scene){
 
 
 Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found){
-	float depth;
+	GLfloat depth;
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
 //	glReadPixels(x, screenHeight()-y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+	y = viewport[3]-y;
 	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-	found = depth < 1.0;
+	//DSTR<<"Depth:"<<depth<<std::endl;
+	if (depth < 1.0) {
+		found = true;
+	}
 	Vec3f res;
 	if(found){
 		Vec3f point(x, y, depth);

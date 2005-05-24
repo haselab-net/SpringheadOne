@@ -61,6 +61,8 @@ public:
 	virtual void OnWheel(UINT state, short dz);
 	//@}
 
+	
+
 	///	�ʒu�̎擾
 	Vec3f GetPos(){ return pos; }
 	///	�͂̎擾

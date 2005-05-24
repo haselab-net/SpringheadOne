@@ -266,5 +266,13 @@ bool D3Render::CanDraw(){
 	return device.CanDraw();
 }
 
+
+Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
+	Vec3f res;
+	return res;
+}
+
+
+
 }	//	Spr
 
