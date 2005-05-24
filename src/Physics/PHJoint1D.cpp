@@ -70,8 +70,8 @@ void PHJoint1D::Integrate(SGScene* scene){
 	if(!(maxPosition == 0.0 && minPosition == 0.0)){
 		bool bOutOfRange = false;
 		double prop;
-		double K=1;
-		double B=1;
+		double K=.1;
+		double B=.1;
 		K*= solid->GetMass()/(dt*dt);
 		B*= solid->GetMass()/dt;
 		if(maxPosition > minPosition){

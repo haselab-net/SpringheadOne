@@ -76,7 +76,7 @@ public:
 		velocity *= scene->GetVelocityLossPerStep();
 		//重心周りの加速度(子ノードの積分で使用する)
 		a = a_p + c + S*accel;
-		if (velocity.norm() > 2*M_PI*10){
+		if (velocity.norm() > 2*M_PI*30){
 			DSTR << "Joint " << GetName() << " has velocity of " << velocity << std::endl;
 			DebugBreak();
 		}
