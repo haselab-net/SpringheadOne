@@ -269,6 +269,52 @@ bool D3Render::CanDraw(){
 
 Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
 	Vec3f res;
+//	device.getDepthStencilSurface();
+	IDirect3DDevice9 * d3ddev = device.Intf();
+	IDirect3DSurface9 **ppZStencilSurface;
+	if (d3ddev->GetDepthStencilSurface(ppZStencilSurface) == D3D_OK) {
+		DSTR<<"depth test OK"<<std::endl;	
+	}
+	D3DLOCKED_RECT lockedRect;
+	RECT rect;
+	rect.left=x;
+	rect.top=y;
+	rect.right=x+1;
+	rect.bottom=y+1;
+
+    (*ppZStencilSurface)->LockRect(&lockedRect, &rect, D3DFMT_D16_LOCKABLE);
+	
+//	float* zvalues = (float*) lockedRect.pBits[0];
+	DSTR<<"Pitch :"<<lockedRect.Pitch;
+	//DSTR<<"Depth :"<<(float)lockedRect.pBits[0];
+    (*ppZStencilSurface)->UnlockRect();
+
+    
+
+	
+	/*GLfloat depth;
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+//	glReadPixels(x, screenHeight()-y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+	y = viewport[3]-y;
+	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+	//DSTR<<"Depth:"<<depth<<std::endl;
+	if (depth < 1.0) {
+		found = true;
+	}
+	if(found){
+		Vec3f point(x, y, depth);
+		GLdouble x,y,z;
+		GLdouble proj[16];  
+		glGetDoublev(GL_PROJECTION_MATRIX, proj);
+		GLdouble modelview[16];  
+		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);			
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+		gluUnProject(point.x,point.y,point.z, modelview,  proj,  viewport,  &x,&y,&z);
+		res.x = x; res.y = y; res.z = z;
+	}
+*/
 	return res;
 }
 
