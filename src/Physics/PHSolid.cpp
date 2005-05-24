@@ -38,6 +38,7 @@ SGObject* PHSolid::ReferenceObject(size_t i){
 
 void PHSolid::Step(SGScene* s){
 	double dt = s->GetTimeStep();
+	assert(GetIntegrationMode() != PHINT_NONE);
 #ifdef _DEBUG
 	if (!_finite(velocity.norm()) || velocity.norm() > 100 || angVelocity.norm() > 100){	
 		DSTR << "Warning: solid '" << GetName() << "' has a very fast velocity. v:" << velocity << "w:" << angVelocity << std::endl;
@@ -48,7 +49,6 @@ void PHSolid::Step(SGScene* s){
 	//k3 = f(y + k2 * h / 2);
 	//k4 = f(y + k3);
 	//y += (k1 + 2 * k2 + 2 * k3 + k4) * h / 6;
-	assert(GetIntegrationMode() != PHINT_NONE);
 	//	Ï•ªŒvŽZ
 	Vec3d dv, dw;
 	switch(GetIntegrationMode()){

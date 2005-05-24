@@ -1,6 +1,7 @@
 xof 0303txt 0032
 Simulator{
 	0.002;
+	0.98;
 }
 Frame frLight {
 	FrameTransformMatrix  {
