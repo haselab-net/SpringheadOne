@@ -70,10 +70,11 @@ void PHJoint1D::Integrate(SGScene* scene){
 	if(!(maxPosition == 0.0 && minPosition == 0.0)){
 		bool bOutOfRange = false;
 		double prop;
-		double K=.1;
-		double B=.1;
-		K*= solid->GetMass()/(dt*dt);
-		B*= solid->GetMass()/dt;
+		double K=.5;
+		double B=.5;
+		double massFactor = MassFactor();
+		K *= massFactor/(dt*dt);
+		B *= massFactor/dt;
 		if(maxPosition > minPosition){
 			if(position >= maxPosition && velocity > 0.0){
 				prop = maxPosition - position;
@@ -206,6 +207,19 @@ void PHJointSlider::CompCoriolisAccel()
 	svitem(c, 0).clear();
 	svitem(c, 1) = cross(wp, cross(wp, prc)) + 2.0 * cross(wp, cRj.Ez() * velocity);
 }
+void PHJointSlider::Loaded(SGScene* scene){
+	PHJoint1D::Loaded(scene);
+	double pMass = 1e10;
+	if (GetParent()->solid){
+		pMass = GetParent()->solid->GetMass();
+	}
+	double m1 = pMass;
+	double m2 = solid->GetMass();
+	massFactor = (m1*m2)/(m1+m2);
+}
+double PHJointSlider::MassFactor(){
+	return massFactor;
+}
 
 //////////////////////////////////////////////////////////////////////
 //PHJointHinge
@@ -239,6 +253,30 @@ void PHJointHinge::CompCoriolisAccel()
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }
+void PHJointHinge::Loaded(SGScene* s){
+	PHJoint1D::Loaded(s);
+	Vec3d axis = pRj.Ez();
+	Matrix3d pInertia = Matrix3d::Unit() * 1e10;
+	double pMass = 1e10;
+	Vec3d pCenter;
+	if (GetParent()->solid){
+		pMass = GetParent()->solid->GetMass();
+		pInertia = GetParent()->solid->GetInertia();
+		pCenter = GetParent()->solid->GetCenter();
+	}
+	Vec3d psrj = -pCenter+prj;
+	double i1 = (psrj - axis*psrj*axis).square() * pMass
+		+ (pRj * pInertia * pRj.inv())[2][2];
+	axis = cRj;
+	Vec3d csrj = -solid->GetCenter()+crj;
+	double i2 = (csrj - axis*csrj*axis).square() * solid->GetMass()
+		+ (cRj * solid->GetInertia() * cRj.inv())[2][2];
+	massFactor = (i1*i2)/(i1+i2);
+}
+double PHJointHinge::MassFactor(){
+	return massFactor;
+}
+
 
 DEF_RECORD(XJointHinge, {
 	GUID Guid(){ return WBGuid("F0FEE14B-9F53-44b2-815A-93503C471474"); }

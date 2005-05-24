@@ -115,6 +115,7 @@ protected:
 
 /**	ボールジョイント，軸は子剛体側に固定される．*/
 class PHJointBall:public PHJointMulti<3>{
+	double massFactor;
 public:
 	SGOBJECTDEF(PHJointBall);
 	Quaterniond position;					///<	関節の向き
@@ -127,11 +128,14 @@ public:
 	///	関節位置の取得
 	virtual double GetJointPosition(int i){ return position.rotation()[i]; }
 
+protected:
 	virtual void Integrate(SGScene* scene);
 	virtual void CompJointAxis();
 	virtual void CompRelativePosition();
 	virtual void CompRelativeVelocity();
 	virtual void CompCoriolisAccel();
+	virtual void Loaded(SGScene* s);
+	virtual double MassFactor();
 };
 
 /**	ユニバーサルジョイント，軸は子剛体側に固定される x軸と y軸が動く．*/

@@ -30,8 +30,9 @@ void PHJointBall::Integrate(SGScene* scene){
 	if(minDot < 1){
 		double K=.5;
 		double B=.5;
-		K*= solid->GetMass()/(dt*dt);
-		B*= solid->GetMass()/dt;
+		double mass = MassFactor();
+		K*= mass/(dt*dt);
+		B*= mass/dt;
 
 		Vec3d dir = Vec3d(0,0,1);
 		dir = position * dir;
@@ -104,6 +105,28 @@ void PHJointBall::CompCoriolisAccel()
 	Vec3d tmp = cross(ud, (crj - solid->GetCenter()));
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
+}
+void PHJointBall::Loaded(SGScene* s){
+	PHJointMulti<3>::Loaded(s);
+	Vec3d axis = pRj.Ez();
+	Matrix3d pInertia = Matrix3d::Unit() * 1e10;
+	double pMass = 1e10;
+	Vec3d pCenter;
+	if (GetParent()->solid){
+		pMass = GetParent()->solid->GetMass();
+		pInertia = GetParent()->solid->GetInertia();
+		pCenter = GetParent()->solid->GetCenter();
+	}
+	Vec3d psrj = -pCenter+prj;
+	double i1 = psrj.square() * pMass
+		+ min(pInertia[0][0], min(pInertia[1][1], pInertia[2][2]));
+	Vec3d csrj = -solid->GetCenter()+crj;
+	double i2 = csrj.square() * pMass
+		+ min(solid->GetInertia()[0][0], min(solid->GetInertia()[1][1], solid->GetInertia()[2][2]));
+	massFactor = (i1*i2)/(i1+i2);
+}
+double PHJointBall::MassFactor(){
+	return massFactor;
 }
 
 typedef Quaternionf Quaternion;

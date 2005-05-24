@@ -61,6 +61,8 @@ protected:
 
 ///	’±”ÔŠÖß
 class PHJointHinge:public PHJoint1D{
+protected:
+	double massFactor;
 public:
 	SGOBJECTDEF(PHJointHinge);
 	virtual void CompJointAxis();
@@ -68,12 +70,37 @@ public:
 	virtual void CompRelativeVelocity();
 	virtual void CompCoriolisAccel();
 protected:
-	virtual void LimitAngle(double& d){ LimitCycle(d); }
+	virtual void Loaded(SGScene* s);
+	virtual double MassFactor();
+	virtual void LimitAngle(double& t){
+		if (!_finite(t) || t > 1e6 || t < -1e6){
+			if (t>0) t = (double)M_PI;
+			else t= - (double)M_PI;
+			return;
+		}
+		int times;
+		if (t > M_PI){
+			times = int((t+M_PI) / (2*M_PI));
+		}else if (t < -M_PI){
+			times = int((t-M_PI) / (2*M_PI));
+		}else{
+			return;
+		}
+		t -= (double)(times*(2*M_PI));
+		if (t < -M_PI || M_PI <= t){
+			DSTR << t << std::endl;
+			assert(0);
+		}
+	}
 };
 ///	ƒXƒ‰ƒCƒhŠÖß
 class PHJointSlider:public PHJoint1D{
+protected:
+	double massFactor;
 public:
 	SGOBJECTDEF(PHJointSlider);
+	virtual void Loaded(SGScene* s);
+	virtual double MassFactor();
 	virtual void CompJointAxis();
 	virtual void CompRelativePosition();
 	virtual void CompRelativeVelocity();

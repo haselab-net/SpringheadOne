@@ -215,6 +215,7 @@ protected:
 	virtual void Reset();
 	virtual void LoadState(const SGBehaviorStates& states);
 	virtual void SaveState(SGBehaviorStates& states) const;
+	virtual double MassFactor(){ return 0; }
 };
 
 class PHJointRoot:public PHJointBase{
@@ -340,46 +341,6 @@ inline SpMatrix6d svmat(const SpVec6d& v1, const SpVec6d& v2){
 	y.sub_matrix(3, 3, PTM::TMatDim<3, 3>()) = mat(v12, v21);
 	return y;
 }
-inline void LimitCycle(float& t){
-	const float M_PIf = (float)M_PI;
-	if (!_finite(t) || t > 1e6 || t < -1e6){
-		assert(0);
-		if (t>0) t = M_PIf;
-		else t= - M_PIf;
-		return;
-	}
-	int times;
-	if (t > M_PIf){
-		times = int((t+M_PIf) / (2*M_PIf));
-	}else if (t < -M_PIf){
-		times = int((t-M_PIf) / (2*M_PIf));
-	}else{
-		return;
-	}
-	t -= (float)(times*(2*M_PIf));
-	assert(-M_PIf <= t &&  t < M_PIf);
-}
-inline void LimitCycle(double& t){
-	if (!_finite(t) || t > 1e6 || t < -1e6){
-		if (t>0) t = (double)M_PI;
-		else t= - (double)M_PI;
-		return;
-	}
-	int times;
-	if (t > M_PI){
-		times = int((t+M_PI) / (2*M_PI));
-	}else if (t < -M_PI){
-		times = int((t-M_PI) / (2*M_PI));
-	}else{
-		return;
-	}
-	t -= (double)(times*(2*M_PI));
-	if (t < -M_PI || M_PI <= t){
-		DSTR << t << std::endl;
-		assert(0);
-	}
-}
-
 SpMatrix6d PHJointBase::pXc_Mat_cXp(SpMatrix6d& m){
 	static Matrix3d pRc_m11_cRp, pRc_m12_cRp, pRc_m21_cRp, pRc_m22_cRp, tmp;
 	pRc_m11_cRp = pRc * smitem(m, 0, 0) * cRp;

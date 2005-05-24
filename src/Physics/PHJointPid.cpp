@@ -28,7 +28,6 @@ bool PHJointPid::DelChildObject(SGObject* o, SGScene* s){
 	}
 	return false;
 }
-extern void LimitCycle(float& t);
 void PHJointPid::Step(SGScene* s){
 	double now = type ? joint->GetJointVelocity(axis) : joint->GetJointPosition(axis);
 	double e = goal - now;
