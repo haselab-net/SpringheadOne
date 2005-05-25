@@ -71,11 +71,14 @@ void CRBallVirtualHuman::Draw(GRRender* render){
 	*/
 }
 void CRBallVirtualHuman::OnKeyDown(unsigned int nChar,SGScene* scene){
+	Quaternionf qtx,qty;
+	qtx.from_matrix(Matrix3f::Rot(Rad(1), 'x'));
+	qty.from_matrix(Matrix3f::Rot(Rad(1), 'y'));
 
 	// —¼è‚ğ‘O‚Ö(Œ¨‚ğ+x‚É‰ñ“])
 	if(nChar == '3'){
-		jointPids[9]->goal += Rad(1);
-		jointPids[16]->goal += Rad(1);
+		jointBallPids[3]->goal += qtx;
+		jointBallPids[6]->goal += qtx;
 	}
 	// —¼è‚ğŒã‚ë‚Ö(Œ¨‚ğ+y‚É‰ñ“])
 	else if(nChar == '4'){
@@ -123,9 +126,10 @@ void CRBallVirtualHuman::LoadDerivedModel(SGScene* scene){
 
 	// “’B‰^“®‚·‚éSolid‚Ì“o˜^‚Æk,b,“’B‰^“®ŠÔ‚Ìİ’è
 	std::vector<int> joints0,joints1;
-	for(int i = 3; i <=5; i++)
+	for(int i = 3; i <= 5; i++)
 		joints0.push_back(i);
-	for(int i = 6; i <=8; i++)
+	
+	for(int i = 6; i <= 8; i++)
 		joints1.push_back(i);
 	//rMovmentPD.RegistMovmentSolid(scene,solids[6],0.0005,0.3,0.5,joints0);
 	//rMovmentPD.RegistMovmentSolid(scene,solids[9],0.0002,0.3,0.3,joints1);
@@ -314,7 +318,8 @@ void CRBallVirtualHuman::OffSpring(){
 }
 
 void CRBallVirtualHuman::SetJointSpring(float dt){
-	const float SAFETYRATE = 0.001f;
+	//const float SAFETYRATE = 0.001f;	// Hinge Human —p
+	const float SAFETYRATE = 0.0001f;
 	float k = 0.2f * SAFETYRATE;
 	float b = 0.6f*10 * SAFETYRATE;
 	for(int i=0; i<joints.size(); ++i){
@@ -323,12 +328,14 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointPids[i]->differential = b * mass / dt;
 			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+			//DSTR << i << " " << jointPids[i]->proportional << ", " << jointPids[i]->differential << ", " << jointPids[i]->integral << std::endl;
 		}
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointBallPids[i]->differential = b * mass / dt;
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+			//DSTR << i << " " << jointBallPids[i]->proportional << ", " << jointBallPids[i]->differential << ", " << jointBallPids[i]->integral << std::endl;
 		}
 	}
 
@@ -345,6 +352,10 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 	//JointPIDMul(jointPids[10], 0.1f, 0.8f);
 	//JointPIDMul(jointPids[14], 0.1f, 0.8f);
 
+	// ‹¹‚ğ_‚ç‚©‚­‚·‚é
+	if(jointBallPids[1] != NULL){
+		JointBallPIDMul(jointBallPids[1], 0.9f, 1.0f);
+	}
 
 	//@Œ¨‚ğ_‚ç‚©‚­‚·‚é(‰E)
 	if(jointBallPids[3] != NULL){

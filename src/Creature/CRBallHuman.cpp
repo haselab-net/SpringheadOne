@@ -46,7 +46,7 @@ void CRBallHuman::Loaded(SGScene* scene){
 void CRBallHuman::SetModel(SGScene* scene){
 	if(bLoaded){
 		SetScale(scene);
-		//SetMass();
+		SetMass();
 		SetInertia();
 		SetJointSpring((float)scene->GetTimeStep());
 		//SetJointRange();
@@ -571,9 +571,6 @@ void CRBallHuman::SetJointInfo(){
 	jinfo[3].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
 	// 右肘
-	jinfo[4].rangeMin	= -6.00f;
-	jinfo[4].rangeMax	= 154.00f;
-	jinfo[4].axis		= 1.0;
 	jinfo[4].initPos	= 0.0f;
 
 	// 右手首
@@ -583,9 +580,6 @@ void CRBallHuman::SetJointInfo(){
 	jinfo[6].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
 	// 左肘
-	jinfo[7].rangeMin	= -6.00f;
-	jinfo[7].rangeMax	= 154.00f;
-	jinfo[7].axis		= 1.0;
 	jinfo[7].initPos	= 0.0f;
 
 	// 左手首
@@ -595,36 +589,24 @@ void CRBallHuman::SetJointInfo(){
 	jinfo[9].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
 	// 右膝
-	jinfo[10].rangeMin	= -8.00f;
-	jinfo[10].rangeMax	= 164.00f;
-	jinfo[10].axis		= -1.0;
 	jinfo[10].initPos	= 0.0f;
 
 	// 右足首
 	jinfo[11].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
 	//右爪先
-	jinfo[12].rangeMin	= -30.00f;
-	jinfo[12].rangeMax	= 45.00f;
-	jinfo[12].axis		= -1.0;
 	jinfo[12].initPos	= 0.0f;
 
 	//左股
 	jinfo[13].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
 	//左膝
-	jinfo[14].rangeMin	= -8.00f;
-	jinfo[14].rangeMax	= 164.00f;
-	jinfo[14].axis		= -1.0;
 	jinfo[14].initPos	= 0.0f;
 
 	//右足首
 	jinfo[15].initQt = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
 
 	//右爪先
-	jinfo[16].rangeMin	= -30.00f;
-	jinfo[16].rangeMax	= 45.00f;
-	jinfo[16].axis		= -1.0;
 	jinfo[16].initPos	= 0.0f;
 }
 
@@ -632,7 +614,7 @@ void CRBallHuman::SetJointInitAngle(){
 	for(unsigned i = 0; i < joints.size(); i++){
 		if(joints[i] != NULL){
 			if(joints[i]->GetJointDof() == 1){
-				((PHJointHinge*)joints[i])->position = jointPids[i]->goal = jinfo[i].initPos;
+				((PHJoint1D*)joints[i])->position = jointPids[i]->goal = jinfo[i].initPos;
 			}
 			else if(joints[i]->GetJointDof() == 3){
 				((PHJointBall*)joints[i])->position = jointBallPids[i]->goal = jinfo[i].initQt;
@@ -708,7 +690,6 @@ void CRBallHuman::SetJointSpring(float dt){
 		//if(joints[i] != NULL){
 		if(jointPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
-			//float mass = GetAllChildrenMass(joints[i]);
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointPids[i]->differential = b * mass / dt;
 			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
