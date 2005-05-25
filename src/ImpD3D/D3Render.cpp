@@ -269,8 +269,38 @@ bool D3Render::CanDraw(){
 
 Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
 	Vec3f res;
-//	device.getDepthStencilSurface();
+	Vec3f vPickRayDir;
+	Vec3f vPickRayOrig;
+
 	IDirect3DDevice9 * d3ddev = device.Intf();
+
+    D3DXMATRIXA16 matProj;
+    d3ddev->GetTransform( D3DTS_PROJECTION, &matProj );
+    
+	// Compute the vector of the pick ray in screen space
+    /*D3DXVECTOR3 v;
+    v.x =  ( ( ( 2.0f * x ) / m_d3dsdBackBuffer.Width  ) - 1 ) / matProj._11;
+    v.y = -( ( ( 2.0f * y ) / m_d3dsdBackBuffer.Height ) - 1 ) / matProj._22;
+    v.z =  1.0f;
+
+    // Get the inverse of the composite view and world matrix
+    D3DXMATRIXA16 matView, matWorld, m;
+    m_pd3dDevice->GetTransform( D3DTS_VIEW, &matView );
+    m_pd3dDevice->GetTransform( D3DTS_WORLD, &matWorld );
+        
+    m = matWorld * matView;
+    D3DXMatrixInverse( &m, NULL, &m );
+
+    // Transform the screen space pick ray into 3D space
+    vPickRayDir.x  = v.x*m._11 + v.y*m._21 + v.z*m._31;
+    vPickRayDir.y  = v.x*m._12 + v.y*m._22 + v.z*m._32;
+    vPickRayDir.z  = v.x*m._13 + v.y*m._23 + v.z*m._33;
+    vPickRayOrig.x = m._41;
+    vPickRayOrig.y = m._42;
+    vPickRayOrig.z = m._43;
+	D3DXIntersect/*
+	//	device.getDepthStencilSurface();
+/*	IDirect3DDevice9 * d3ddev = device.Intf();
 	IDirect3DSurface9 **ppZStencilSurface;
 	if (d3ddev->GetDepthStencilSurface(ppZStencilSurface) == D3D_OK) {
 		DSTR<<"depth test OK"<<std::endl;	
@@ -288,7 +318,7 @@ Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
 	DSTR<<"Pitch :"<<lockedRect.Pitch;
 	//DSTR<<"Depth :"<<(float)lockedRect.pBits[0];
     (*ppZStencilSurface)->UnlockRect();
-
+*/
     
 
 	
