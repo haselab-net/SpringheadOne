@@ -20,7 +20,7 @@ public:
 	void WaitUS(int time);			///<	μs単位で待つ
 	int CountUS();					///<	前回からの経過時間をμs単位で計測
 	void CountAndWaitUS(int time);	///<	前回からの経過時間をμs単位で計測し，全体としてus単位で待つ（一定ループ生成用）
-	//	ストップウォッチ機能
+	//ストップウォッチ機能	
 	DWORD Start();					///<	計測開始
 	DWORD Stop();					///<	計測停止
 	DWORD Clear();					///<	クリア

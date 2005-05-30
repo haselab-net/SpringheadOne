@@ -92,6 +92,10 @@ protected:
 	///	衝突のリスナ
 	CDCollisionListeners listeners;
 	///	フレームとフレーム番号の対応表
+
+	
+	
+	
 	std::map<SGFrame*, int> frameMap;
 
 public:
