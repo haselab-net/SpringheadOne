@@ -62,7 +62,7 @@ public:
 	virtual void SetDepthFunc(TDepthFunc f);
 	virtual bool CanDraw();
 
-	virtual Vec3f getPointUnderPixel(int x, int y, bool& found);
+	virtual Vec3f getPointUnderPixel(int x, int y, bool& found, SGScene* scene);
 	
 
 protected:

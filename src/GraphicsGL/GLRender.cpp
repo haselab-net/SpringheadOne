@@ -239,14 +239,14 @@ void GLRender::InitTree(SGFrame* fr, SGScene* scene){
 }
 
 
-Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found){
+Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 	GLfloat depth;
 	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT, viewport);
 //	glReadPixels(x, screenHeight()-y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 	y = viewport[3]-y;
 	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-	//DSTR<<"Depth:"<<depth<<std::endl;
+	DSTR<<"Depth:"<<depth<<std::endl;
 	if (depth < 1.0) {
 		found = true;
 	}
@@ -263,6 +263,7 @@ Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found){
 		gluUnProject(point.x,point.y,point.z, modelview,  proj,  viewport,  &x,&y,&z);
 		res.x = x; res.y = y; res.z = z;
 	}
+	DSTR<<"res :"<<res<<std::endl;
 	return res;
 }
 

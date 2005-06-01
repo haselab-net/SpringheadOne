@@ -79,7 +79,7 @@ public:
 	virtual void Set(SGObject* obj);
 
 	///Get 3d position under pixel x, y. Found is false if the point is on the background, true ortherwise
-	virtual Vec3f getPointUnderPixel(int x, int y, bool& found){
+	virtual Vec3f getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 		found=false; Vec3f res; return res;}
 
 

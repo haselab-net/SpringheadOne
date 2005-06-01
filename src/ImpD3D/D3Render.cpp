@@ -267,27 +267,34 @@ bool D3Render::CanDraw(){
 }
 
 
-Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
+Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 	Vec3f res;
-	Vec3f vPickRayDir;
-	Vec3f vPickRayOrig;
+/*	D3DXVECTOR3 vPickRayDir;
+	D3DXVECTOR3 vPickRayOrig;
 
 	IDirect3DDevice9 * d3ddev = device.Intf();
-
     D3DXMATRIXA16 matProj;
     d3ddev->GetTransform( D3DTS_PROJECTION, &matProj );
     
 	// Compute the vector of the pick ray in screen space
-    /*D3DXVECTOR3 v;
-    v.x =  ( ( ( 2.0f * x ) / m_d3dsdBackBuffer.Width  ) - 1 ) / matProj._11;
-    v.y = -( ( ( 2.0f * y ) / m_d3dsdBackBuffer.Height ) - 1 ) / matProj._22;
+    D3DXVECTOR3 v;	
+    IDirect3DSurface9 *ppBackBuffer;
+
+	D3DSURFACE_DESC desc;
+	
+	d3ddev->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &ppBackBuffer);    
+	ppBackBuffer->GetDesc(&desc);
+	ppBackBuffer->Release();
+	
+    v.x =  ( ( ( 2.0f * x ) / desc.Width  ) - 1 ) / matProj._11;
+    v.y = -( ( ( 2.0f * y ) / desc.Height ) - 1 ) / matProj._22;
     v.z =  1.0f;
 
     // Get the inverse of the composite view and world matrix
     D3DXMATRIXA16 matView, matWorld, m;
-    m_pd3dDevice->GetTransform( D3DTS_VIEW, &matView );
-    m_pd3dDevice->GetTransform( D3DTS_WORLD, &matWorld );
-        
+    d3ddev->GetTransform( D3DTS_VIEW, &matView );
+    d3ddev->GetTransform( D3DTS_WORLD, &matWorld );
+	        
     m = matWorld * matView;
     D3DXMatrixInverse( &m, NULL, &m );
 
@@ -298,13 +305,56 @@ Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
     vPickRayOrig.x = m._41;
     vPickRayOrig.y = m._42;
     vPickRayOrig.z = m._43;
-	D3DXIntersect/*
-	//	device.getDepthStencilSurface();
-/*	IDirect3DDevice9 * d3ddev = device.Intf();
-	IDirect3DSurface9 **ppZStencilSurface;
-	if (d3ddev->GetDepthStencilSurface(ppZStencilSurface) == D3D_OK) {
-		DSTR<<"depth test OK"<<std::endl;	
+	// Use inverse of matrix
+	D3DXMATRIX matInverse;
+	D3DXMatrixInverse(&matInverse,NULL,&matWorld);
+	
+	// Transform ray origin and direction by inv matrix
+	D3DXVECTOR3 rayObjOrigin;
+	D3DXVECTOR3	rayObjDirection;
+
+	D3DXVec3TransformCoord(&rayObjOrigin,&vPickRayOrig,&matInverse);
+	D3DXVec3TransformNormal(&rayObjDirection,&vPickRayDir,&matInverse);
+	D3DXVec3Normalize(&rayObjDirection,&rayObjDirection);
+
+	//We can now call the intersect function on our untransformed graphic mesh data:	
+	BOOL hasHit;
+	int nbObj = scene->NChildObjects();
+	DSTR<<"NB objects :"<<nbObj<<std::endl;
+	float minDistanceToCollision=-1;
+	float distanceToCollision=-1;
+	for (int i = 0; i < nbObj; i++) {
+		hasHit = false;		
+		D3Mesh * mesh = dynamic_cast<D3Mesh *> (scene->ChildObject(i));
+		if (mesh) {
+			ID3DXBaseMesh * d3dmesh  = mesh->intf;
+			DSTR<<"Intersect"<<std::endl;
+			D3DXIntersect(d3dmesh, &rayObjOrigin, &rayObjDirection, &hasHit, NULL, NULL, NULL, &distanceToCollision, NULL, NULL);
+			DSTR<<"Intersect end"<<std::endl;
+			if (hasHit && (distanceToCollision>=0)) {
+				if (minDistanceToCollision==-1) {
+					minDistanceToCollision= distanceToCollision;
+				} else {
+					if (minDistanceToCollision>distanceToCollision){
+						minDistanceToCollision= distanceToCollision;
+					}
+				}	
+			}
+		}
 	}
+	if (minDistanceToCollision >= 0) {
+		D3DXVECTOR3 result = rayObjOrigin + distanceToCollision * rayObjDirection;
+		res.x = result.x;
+		res.y = result.y;
+		res.z = result.z;
+	}*/
+
+
+	
+	
+	IDirect3DDevice9 * d3ddev = device.Intf();
+	IDirect3DSurface9 *ppZStencilSurface;
+	d3ddev->GetDepthStencilSurface(&ppZStencilSurface);
 	D3DLOCKED_RECT lockedRect;
 	RECT rect;
 	rect.left=x;
@@ -312,39 +362,35 @@ Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found){
 	rect.right=x+1;
 	rect.bottom=y+1;
 
-    (*ppZStencilSurface)->LockRect(&lockedRect, &rect, D3DFMT_D16_LOCKABLE);
+    ppZStencilSurface->LockRect(&lockedRect, &rect, D3DLOCK_READONLY);
 	
-//	float* zvalues = (float*) lockedRect.pBits[0];
-	DSTR<<"Pitch :"<<lockedRect.Pitch;
-	//DSTR<<"Depth :"<<(float)lockedRect.pBits[0];
-    (*ppZStencilSurface)->UnlockRect();
-*/
-    
+	D3DXFLOAT16*  zvalues= (D3DXFLOAT16*) lockedRect.pBits;
+	DSTR<<"Pitch :"<<lockedRect.Pitch<<std::endl;
+	//DSTR<<"Depth :"<<zvalues[0].FLOAT()<<std::endl;
+    ppZStencilSurface->UnlockRect();
+	ppZStencilSurface->Release();
+	
+	D3DXVECTOR3 p2d;
+	p2d.x=x;
+	p2d.y=y;
+	p2d.z=zvalues[0];
 
 	
-	/*GLfloat depth;
-	GLint viewport[4];
-	glGetIntegerv(GL_VIEWPORT, viewport);
-//	glReadPixels(x, screenHeight()-y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-	y = viewport[3]-y;
-	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-	//DSTR<<"Depth:"<<depth<<std::endl;
-	if (depth < 1.0) {
-		found = true;
-	}
-	if(found){
-		Vec3f point(x, y, depth);
-		GLdouble x,y,z;
-		GLdouble proj[16];  
-		glGetDoublev(GL_PROJECTION_MATRIX, proj);
-		GLdouble modelview[16];  
-		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);			
-		GLint viewport[4];
-		glGetIntegerv(GL_VIEWPORT, viewport);
-		gluUnProject(point.x,point.y,point.z, modelview,  proj,  viewport,  &x,&y,&z);
-		res.x = x; res.y = y; res.z = z;
-	}
-*/
+	D3DXMATRIXA16 matView, matWorld, matProj;
+	D3DVIEWPORT9 pViewport;
+
+    d3ddev->GetTransform( D3DTS_PROJECTION, &matProj );    
+    d3ddev->GetTransform( D3DTS_VIEW, &matView );
+    d3ddev->GetTransform( D3DTS_WORLD, &matWorld );
+	d3ddev->GetViewport(&pViewport);
+	
+	D3DXVECTOR3 p3d;
+	
+	D3DXVec3Unproject(&p3d, &p2d, &pViewport, &matProj, &matView,  &matWorld);
+
+	
+	res.x = p3d.x; res.y=p3d.y; res.z=p3d.z;
+DSTR<<"res :"<<res<<std::endl;
 	return res;
 }
 

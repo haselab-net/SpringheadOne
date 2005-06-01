@@ -27,7 +27,7 @@ WXD3DPresentParameters::WXD3DPresentParameters(){
 	SwapEffect = D3DSWAPEFFECT_DISCARD;
 	Windowed = true;
 	EnableAutoDepthStencil = true;
-	AutoDepthStencilFormat = D3DFMT_D16;
+	AutoDepthStencilFormat = D3DFMT_D16_LOCKABLE;
 }
 void WXD3DPresentParameters::Window(int adapterID, int width, int height){
 	WXD3D d3d;
