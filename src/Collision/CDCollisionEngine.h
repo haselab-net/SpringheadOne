@@ -231,6 +231,8 @@ public:
 	///	凸形状のペア(CDConvexPairWithRecord) ごとのユーザレコードの場所取り．
 	int ReserveConvexPairRecord();
 	//}
+
+	void RayCheck(Vec3f from, Vec3f dir);
 	
 	///	状態の読み出し
 	virtual void LoadState(const SGBehaviorStates& states);

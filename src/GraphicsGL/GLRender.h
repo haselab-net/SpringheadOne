@@ -55,6 +55,7 @@ public:
 	virtual void DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f* vtx);
 	virtual void SetMaterial(const GRMaterialData& m);
 	virtual void SetTexture(const char* fn);
+	virtual void DrawText(FIString str, Vec2f pos, int nHeight=10, const char* facename="MS ÉSÉVÉbÉN", int nWeight=FW_NORMAL){}
 	virtual void PushLight(const GRLightData& m);
 	virtual void PopLight();
 	virtual void SetLineWidth(float w);

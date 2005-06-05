@@ -301,6 +301,21 @@ void CDCollisionEngine::Step(SGScene* scene){
 }
 
 
+void CDCollisionEngine::RayCheck(Vec3f from, Vec3f dir){
+/*	float depth = 1e20;
+	for(Frames::iterator it = frames.begin(); it != frames.end() ++it){
+		CDFrame& frame = **it;
+		float d = frame->RayCheck(from, dir);
+		if (d < depth){
+			depth = d;
+
+		}
+	}
+*/
+}
+
+
+
 class CDCollisionEngineState:public SGBehaviorState{
 public:
 	SGOBJECTDEF(CDCollisionEngineState);
