@@ -112,7 +112,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "MFCRelease"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /G6 /Gr /MD /W3 /GX /Zi /Ox /Ot /Og /Oi /Op /Oy- /Ob2 /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
+# ADD CPP /nologo /G6 /Gr /MD /W3 /GR- /GX /Zi /Ox /Ot /Og /Oi /Op /Oy- /Ob2 /I ".." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
 # SUBTRACT CPP /Oa
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG" /d "_AFXDLL"

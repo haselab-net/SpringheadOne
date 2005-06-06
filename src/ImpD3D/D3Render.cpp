@@ -269,7 +269,7 @@ bool D3Render::CanDraw(){
 
 Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 	Vec3f res;
-/*	D3DXVECTOR3 vPickRayDir;
+	D3DXVECTOR3 vPickRayDir;
 	D3DXVECTOR3 vPickRayOrig;
 
 	IDirect3DDevice9 * d3ddev = device.Intf();
@@ -325,34 +325,23 @@ Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 	float distanceToCollision=-1;
 	for (int i = 0; i < nbObj; i++) {
 		hasHit = false;		
-		D3Mesh * mesh = dynamic_cast<D3Mesh *> (scene->ChildObject(i));
-		if (mesh) {
-			ID3DXBaseMesh * d3dmesh  = mesh->intf;
-			DSTR<<"Intersect"<<std::endl;
-			D3DXIntersect(d3dmesh, &rayObjOrigin, &rayObjDirection, &hasHit, NULL, NULL, NULL, &distanceToCollision, NULL, NULL);
-			DSTR<<"Intersect end"<<std::endl;
-			if (hasHit && (distanceToCollision>=0)) {
-				if (minDistanceToCollision==-1) {
-					minDistanceToCollision= distanceToCollision;
-				} else {
-					if (minDistanceToCollision>distanceToCollision){
-						minDistanceToCollision= distanceToCollision;
-					}
-				}	
-			}
-		}
+		SGObject* obj = scene->ChildObject(i);
+		//TODO : write ray/ collision detection engine intersection proc and use it here
+		
+		
+		
 	}
 	if (minDistanceToCollision >= 0) {
 		D3DXVECTOR3 result = rayObjOrigin + distanceToCollision * rayObjDirection;
 		res.x = result.x;
 		res.y = result.y;
 		res.z = result.z;
-	}*/
+	}
 
 
 	
-	
-	IDirect3DDevice9 * d3ddev = device.Intf();
+//this method does not work if the zbuffer format is not 16... so bad idea!!!
+/*	IDirect3DDevice9 * d3ddev = device.Intf();
 	IDirect3DSurface9 *ppZStencilSurface;
 	d3ddev->GetDepthStencilSurface(&ppZStencilSurface);
 	D3DLOCKED_RECT lockedRect;
@@ -386,11 +375,10 @@ Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 	
 	D3DXVECTOR3 p3d;
 	
-	D3DXVec3Unproject(&p3d, &p2d, &pViewport, &matProj, &matView,  &matWorld);
+	D3DXVec3Unproject(&p3d, &p2d, &pViewport, &matProj, &matView,  &matWorld);*/
 
 	
-	res.x = p3d.x; res.y=p3d.y; res.z=p3d.z;
-DSTR<<"res :"<<res<<std::endl;
+	DSTR<<"res :"<<res<<std::endl;
 	return res;
 }
 
