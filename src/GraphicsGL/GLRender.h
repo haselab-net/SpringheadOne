@@ -16,6 +16,7 @@ public:
 	Texs texs;
 };
 
+
 /**	グラフィックレンダラのDirect3Dによる実装．
 */
 class SPR_DLL GLRender:public GRRender{
@@ -53,9 +54,9 @@ public:
 	virtual void SetProjectionMatrix(const Affinef& afp);
 	virtual void DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end);
 	virtual void DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f* vtx);
+	virtual void DrawText(Vec2f pos, FIString str, const GRFont& font);
 	virtual void SetMaterial(const GRMaterialData& m);
 	virtual void SetTexture(const char* fn);
-	virtual void DrawText(FIString str, Vec2f pos, int nHeight=10, const char* facename="MS ゴシック", int nWeight=FW_NORMAL){}
 	virtual void PushLight(const GRLightData& m);
 	virtual void PopLight();
 	virtual void SetLineWidth(float w);

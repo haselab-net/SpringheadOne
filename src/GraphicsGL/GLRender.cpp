@@ -148,6 +148,19 @@ void GLRender::DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f*
 	for(;begin!=end; ++begin) glVertex3fv(vtx[*begin]);
 	glEnd();
 }
+void GLRender::DrawText(Vec2f pos, FIString str, const GRFont& font){
+/*	int texId = textureManager.GetText(str, font);
+	Vec2f sz = textureManager.GetTextSize();
+	if (texId){
+		glBindTexture(GL_TEXTURE_2D, texId);
+		glEnable(GL_TEXTURE_2D);
+
+		
+
+		glDisable(GL_TEXTURE_2D);
+	}
+*/
+}
 void GLRender::SetTexture(const char* fn){
 	if (fn){
 		int texId = textureManager.Get(fn);

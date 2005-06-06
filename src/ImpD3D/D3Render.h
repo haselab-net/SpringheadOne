@@ -72,6 +72,7 @@ public:
 	void SetModelMatrix(const Affinef& afw);
 	virtual void DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end);
 	virtual void DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f* vtx);
+	virtual void DrawText(Vec2f pos, FIString str, const GRFont& font);
 	virtual void SetMaterial(const GRMaterialData& m);
 	virtual void SetTexture(const char* fn);
 	virtual void PushLight(const GRLightData& m);

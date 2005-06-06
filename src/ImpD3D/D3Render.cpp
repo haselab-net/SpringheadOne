@@ -217,6 +217,23 @@ void D3Render::DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f*
 	device->DrawIndexedPrimitiveUP(type, 0, end-begin, (end-begin)/nVtx,
 		begin, D3DFMT_INDEX32, vtx, sizeof(Vec3f));
 }
+void D3Render::DrawText(Vec2f pos, FIString str, const GRFont& font){
+	WXINTF(D3DXFont) xf;
+	HRESULT hr = D3DXCreateFont(device, font.height, font.width, font.weight,
+	1, font.bItalic, ANSI_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 
+    DEFAULT_PITCH|FF_DONTCARE, font.face.c_str(), &xf.Intf());
+	if (!xf) return;
+	RECT rc;
+	HDC hdc = xf->GetDC();
+	SIZE sz;
+	GetTextExtentPoint32(hdc, str.c_str(), str.length(), &sz);
+	rc.left = pos.X();
+	rc.top = pos.Y();
+	rc.right = rc.left + sz.cx;
+	rc.bottom = rc.top + sz.cy;
+	xf->DrawText(NULL, str.c_str(), str.length(), &rc, DT_LEFT, font.color);
+}
+
 void D3Render::SetMaterial(const GRMaterialData& m){
 	D3DMATERIAL_SPR& mat = (D3DMATERIAL_SPR&)m;
 	device->SetMaterial(&mat);

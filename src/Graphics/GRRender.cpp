@@ -3,6 +3,24 @@
 #include "GRRender.h"
 
 namespace Spr{;
+
+//----------------------------------------------------------------------------
+//	GRFont
+GRFont::GRFont(int h, const char* f){
+	height=h;
+	width=0;
+	face=f ? f : "";
+	weight = 400;
+	color=0xffffffff;
+	bItalic=false;
+}
+bool GRFont::operator < (GRFont& f){
+	if (face < f.face) return true;
+	if (height < f.height) return true;
+	if (color < f.color) return true;
+	return false;
+}
+
 //----------------------------------------------------------------------------
 //	GRRender
 SGOBJECTIMPABST(GRRender, SGObject);
