@@ -233,6 +233,17 @@ void D3Render::DrawText(Vec2f pos, FIString str, const GRFont& font){
 	rc.bottom = rc.top + sz.cy;
 	xf->DrawText(NULL, str.c_str(), str.length(), &rc, DT_LEFT, font.color);
 }
+Vec2f D3Render::GetTextExtent(FIString str, const GRFont& font){
+	WXINTF(D3DXFont) xf;
+	HRESULT hr = D3DXCreateFont(device, font.height, font.width, font.weight,
+	1, font.bItalic, ANSI_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 
+    DEFAULT_PITCH|FF_DONTCARE, font.face.c_str(), &xf.Intf());
+	if (!xf) return Vec2f();
+	HDC hdc = xf->GetDC();
+	SIZE sz;
+	GetTextExtentPoint32(hdc, str.c_str(), str.length(), &sz);
+	return Vec2f(sz.cx, sz.cy);
+}
 
 void D3Render::SetMaterial(const GRMaterialData& m){
 	D3DMATERIAL_SPR& mat = (D3DMATERIAL_SPR&)m;
