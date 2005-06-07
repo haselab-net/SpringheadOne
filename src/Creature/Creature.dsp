@@ -115,7 +115,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "MFCRelease"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
-# ADD CPP /nologo /G6 /Gr /MD /W3 /vd0 /GR- /GX /Zi /Ox /Ot /Og /Oi /Op /Ob2 /Gf /I "$(SPRINGHEAD)\src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
+# ADD CPP /nologo /G6 /Gr /MD /W3 /vd0 /GX /Zi /Ox /Ot /Og /Oi /Op /Ob2 /Gf /I "$(SPRINGHEAD)\src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
 # SUBTRACT CPP /Gy /Fr
 # ADD BASE RSC /l 0x411 /d "NDEBUG" /d "_AFXDLL"
 # ADD RSC /l 0x411 /d "NDEBUG" /d "_AFXDLL"
@@ -168,11 +168,35 @@ SOURCE=.\CRBalanceQuadPR.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRBallActionPlanner.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallActionPlanner.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRBallHuman.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\CRBallHuman.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallPuppet.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallPuppet.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallUser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallUser.h
 # End Source File
 # Begin Source File
 
