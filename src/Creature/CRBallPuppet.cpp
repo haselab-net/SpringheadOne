@@ -684,7 +684,7 @@ void CRBallPuppet::SetJointSpring(float dt){
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
-			jointBallPids[i]->differential = b * mass / dt;
+			jointBallPids[i]->differential = b * mass * 2 / dt;
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}
@@ -697,6 +697,12 @@ void CRBallPuppet::SetJointSpring(float dt){
 		}
 	}
 	*/
+	if(jointBallPids[0] != NULL){
+		JointBallPIDMul(jointBallPids[0], 0.5f, 1.0f);
+	}
+	if(jointPids[1] != NULL){
+		JointPIDMul(jointPids[1], 0.3f, 0.8f);
+	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(éÒ)
 	/*
 	for(int i = 6; i < 9; ++i){
