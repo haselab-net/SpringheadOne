@@ -133,6 +133,7 @@ bool FWApp::AddHis(const char* str){
 		float maxForce = 20.0f;
 		float vpn = 0.3776f;
 		float lpp = 2.924062107079e-5f;
+		float sign[4]={1.0f, 1.0f, 1.0f, 1.0f};
 		while(is.good()){
 			char argType[100];
 			is >> argType;
@@ -150,6 +151,18 @@ bool FWApp::AddHis(const char* str){
 						}
 					}
 				}
+			}else if (stricmp(argType, "pos")==0){
+				for(int i=0; i<4; ++i){
+					for(int j=0; j<3; ++j){
+						is >> motorPos[i][j];
+					}
+				}
+			}else if (stricmp(argType, "sign")==0){
+				for(int i=0; i<4; ++i){
+					char ch;
+					is >> ch;
+					if (ch == '-') sign[i] *= -1;
+				}
 			}else if (stricmp(argType, "range")==0){
 				is >> minForce;
 				is >> maxForce;
@@ -164,6 +177,8 @@ bool FWApp::AddHis(const char* str){
 		}
 		UTRef<HISpidar4> spidar = new HISpidar4;
 		if (spidar->Init(devMan, motorPos, vpn, lpp, minForce, maxForce)){
+			for(int i=0; i<4; ++i) spidar->Motor()[i].lengthPerPulse *= sign[i];
+			spidar->Calib();
 			pointers.push_back(new FWPointer6D(spidar));
 			rv = true;
 		}
