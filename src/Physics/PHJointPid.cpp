@@ -193,8 +193,8 @@ class PHJointBallPidState:public SGBehaviorState{
 public:
 	SGOBJECTDEF(PHJointBallPidState);
 	Vec3f integratedError;
-	Vec3f goal;
-	Vec3f lastGoal;
+	Quaterniond goal;
+	Quaterniond  lastGoal;
 };
 SGOBJECTIMP(PHJointBallPidState, SGBehaviorState);
 

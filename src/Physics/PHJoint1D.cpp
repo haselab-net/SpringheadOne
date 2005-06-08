@@ -111,11 +111,11 @@ void PHJoint1D::Integrate(SGScene* scene){
 
 	velocity *= scene->GetVelocityLossPerStep();
 
-	if (abs(velocity) > 2*M_PI*30){
+/*	if (abs(velocity) > 2*M_PI*30){
 		DSTR << "Joint " << GetName() << " has velocity of " << velocity << std::endl;
 		DebugBreak();
 	}
-	//位置・速度の伝播
+*/	//位置・速度の伝播
 	PropagateState();
 	//関連コンポーネントの位置、速度、関節変位、関節速度を更新
 	PHJointBase::Integrate(scene);

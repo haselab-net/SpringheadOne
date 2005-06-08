@@ -28,8 +28,8 @@ void PHJointBall::Integrate(SGScene* scene){
 	double dt = scene->GetTimeStep();
 	//‰Â“®”ÍˆÍ§ŒÀ‚ª—LŒø‚Èê‡
 	if(minDot < 1){
-		double K=.2;
-		double B=.2;
+		double K=.1;
+		double B=.1;
 		double mass = MassFactor();
 		K*= mass/(dt*dt);
 		B*= mass/dt;
