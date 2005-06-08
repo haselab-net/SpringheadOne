@@ -733,13 +733,13 @@ void CRPuppet::SetJointSpring(float dt){
 			else           JointPIDMul(jointPids[i], 0.3f, 0.8f);
 		}
 	}
-	*/
-	/*if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.1f, 1.0f);
+*/
+	if(jointBallPids[0] != NULL){
+		JointBallPIDMul(jointBallPids[0], 0.3f, 0.8f);
 	}
 	if(jointPids[1] != NULL){
 		JointPIDMul(jointPids[1], 0.04f, 0.2f);
-	}*/
+	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(éÒ)
 	/*
 	for(int i = 6; i < 9; ++i){
@@ -785,7 +785,7 @@ void CRPuppet::SetJointSpring(float dt){
 }
 
 void CRPuppet::ChangeJointRange(){
-	SetOneJointRange((PHJoint1D*)joints[5], -90, 90);
+	SetOneJointRange((PHJoint1D*)joints[1], -90, 90);
 }
 
 void CRPuppet::SetJointBasicPos(){
