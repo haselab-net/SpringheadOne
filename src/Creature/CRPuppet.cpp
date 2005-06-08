@@ -460,7 +460,7 @@ CRPuppet::CRPuppet(){
 
 void CRPuppet::LoadDerivedModel(SGScene* scene){
 	if(IsLoaded()){
-		//ChangeJointRange();
+		ChangeJointRange();
 		SetJointBasicPos();
 		SetSprings();
 		for(int i = 0; i < 3; ++i) reaching[0][i].Init();
@@ -732,13 +732,13 @@ void CRPuppet::SetJointSpring(float dt){
 			else           JointPIDMul(jointPids[i], 0.3f, 0.8f);
 		}
 	}
-	
+	*/
 	if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.5f, 1.0f);
+		JointBallPIDMul(jointBallPids[0], 0.3f, 0.8f);
 	}
 	if(jointPids[1] != NULL){
 		JointPIDMul(jointPids[1], 0.04f, 0.2f);
-	}*/
+	}
 	// ŠÖß‚ð_‚ç‚©‚ß‚ÉÝ’è(Žñ)
 	/*
 	for(int i = 6; i < 9; ++i){
@@ -803,6 +803,8 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointPids[18]) jointPids[18]->goal = jinfo[18].initPos = 0.5f;
 	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;
 	*/
+	//if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].iniQt = Quaternionf(0.9950f, 0.0998f, 0.0f, 0.0f);
+	if(jointBallPids[0]) jointBallPids[0]->goal = Quaternionf(0.9950f, -0.0998f, 0.0f, 0.0f);
 	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.5f;
 	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
 

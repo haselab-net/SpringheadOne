@@ -164,6 +164,7 @@ bool CRUser::Connect(UTRef<SGScene> scene){
 		if(joints[i]->GetJointDof() == 1){
 			jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
 			jointBallPids.push_back(NULL);
+			//DSTR << jointPids[i]->propotional << std::endl;
 		}
 		else if(joints[i]->GetJointDof() == 3){
 			jointBallPids.push_back(PHJointBallPid::Find((PHJointBall*)joints[i], scene));
