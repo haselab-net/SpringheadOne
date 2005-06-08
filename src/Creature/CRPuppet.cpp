@@ -7,8 +7,6 @@
 #include "CRPuppet.h"
 #include <time.h>
 
-//// サウンド再生用 (^jumius^)
-//#include <mmsystem.h>
 
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
@@ -996,7 +994,7 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 	}
 	if(bHitted && !bLastTime){ 
 		hittingCount++;
-		//sndPlaySound("..\\SoundSet\\00.wav",SND_ASYNC);
+		GRSound::instance()->play( SAMPLE0 );
 	}
 }
 

@@ -7,6 +7,7 @@
 #include <SceneGraph/SGScene.h>
 #include <Graphics/GRRender.h>
 #include <Graphics/GRMaterial.h>
+#include <Graphics/GRSound.h>
 #include <Base/Affine.h>
 
 #if !defined(AFX_CRPUPPET_H__FDCEF5A1_DD97_452F_A5F7_382CB8002AB4__INCLUDED_)
