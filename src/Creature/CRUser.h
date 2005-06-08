@@ -32,6 +32,7 @@ public:
 	void SetSpidarPos(std::vector<HISpidar4*> spidars);
 	void SetExpectedPos(int count, float dt);
 	void SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpidar4*> spidars);
+	virtual void PlayHitSound();
 
 	bool bSpidarForce;
 };

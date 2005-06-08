@@ -994,8 +994,12 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 	}
 	if(bHitted && !bLastTime){ 
 		hittingCount++;
-		GRSound::instance()->play( SAMPLE0 );
+		PlayHitSound();
 	}
+}
+
+void CRPuppet::PlayHitSound(){
+	GRSound::instance()->play( SAMPLE0 );
 }
 
 DEF_RECORD(XPuppet,{

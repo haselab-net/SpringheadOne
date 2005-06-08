@@ -255,6 +255,10 @@ void CRUser::SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpid
 	}
 }
 
+void CRUser::PlayHitSound(){
+	GRSound::instance()->play( SAMPLE2 );
+}
+
 DEF_RECORD(XUser,{
 	GUID Guid(){ return WBGuid("2E2E7E73-162A-4b36-9FA0-89E2BCEB7102"); }
 });

@@ -3,7 +3,10 @@
 
 #include <WinDX/Base/WXComBase.h>
 
-typedef DWORD* DWORD_PTR;
+#ifndef _WIN64
+typedef DWORD DWORD_PTR;
+#endif
+
 #include <sstream>
 #include <mmsystem.h>
 #include <dsound.h>
