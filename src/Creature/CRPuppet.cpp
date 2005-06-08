@@ -721,7 +721,7 @@ void CRPuppet::SetJointSpring(float dt){
 	float k = 0.1f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;*/
 	//const float SAFETYRATE = 0.01f;	//Hinge Rate
-	const float SAFETYRATE = 0.009f;
+	const float SAFETYRATE = 0.01f;
 	float k = 0.6f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;
 	dt = 0.006f;
@@ -750,7 +750,7 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 */
 	if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.3f, 0.8f);
+		JointBallPIDMul(jointBallPids[0], 0.6f, 1.6f);
 	}
 	if(jointPids[1] != NULL){
 		JointPIDMul(jointPids[1], 0.04f, 0.2f);
@@ -764,7 +764,7 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 	*/
 	if(jointBallPids[2] != NULL){
-		JointBallPIDMul(jointBallPids[2], 0.08f, 0.2f);
+		JointBallPIDMul(jointBallPids[2], 0.3f, 0.8f);
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(âEòr)
 	/*
@@ -825,7 +825,6 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.6f), sinf(0.6f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
 	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.5f;
 	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
-	//if(jointPids[1]) jointPids[1]->goal = jinfo[1].initPos = -2.5f;
 }
 
 void CRPuppet::Draw(GRRender* render){
@@ -837,7 +836,8 @@ void CRPuppet::SetSprings(){
 	positionSprings.clear();
 
 	// [0] çò(äÓñ{óßÇøà íuÇ…å≈íË)
-	postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
+	//postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
+	postureSpring.SetSolid(solids[0], 0.04f, 0.8f);
 	PositionSpring positionSpr;
 	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
 	positionSprings.push_back(positionSpr);
