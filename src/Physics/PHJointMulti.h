@@ -77,8 +77,8 @@ public:
 		//重心周りの加速度(子ノードの積分で使用する)
 		a = a_p + c + S*accel;
 		if (velocity.norm() > PHJOINT_MAX_VELOCITY){
-			DSTR << "The velocity of " << GetName() << ":" << velocity << "was limited";
-			velocity = PHJOINT_MAX_VELOCITY * velocity;
+			DSTR << "The velocity of " << GetName() << ":" << velocity << "was limited" << std::endl;
+			velocity = PHJOINT_MAX_VELOCITY * velocity.unit();
 		}
 	}
 	void CalcAccel(double dt){				///<	このジョイントの加速度計算．詳細は基本クラスのコメントを参照．
