@@ -129,6 +129,36 @@ double PHJointBall::MassFactor(){
 	return massFactor;
 }
 
+class PHJointBallState: public SGBehaviorState{
+public:
+	SGOBJECTDEF(PHJointBallState);
+	//非ルートノードの状態
+	Quaterniond position;
+	Vec3d velocity;
+	Vec3d torque;
+	Vec3d accel;
+};
+SGOBJECTIMP(PHJointBallState, SGBehaviorState);
+void PHJointBall::LoadState(const SGBehaviorStates& states){
+	PHJointBallState* js = DCAST(PHJointBallState, states.GetNext());	
+	position = js->position;
+	velocity = js->velocity;
+	accel = js->accel;
+	torque = js->torque;
+	PHJointBase::LoadState(states);
+}
+
+void PHJointBall::SaveState(SGBehaviorStates& states) const{
+	UTRef<PHJointBallState> js = new PHJointBallState;
+	states.push_back(js);
+	js->position = position;
+	js->velocity = velocity;
+	js->accel = accel;
+	js->torque = torque;
+	PHJointBase::SaveState(states);
+}
+
+
 typedef Quaternionf Quaternion;
 DEF_RECORD(XJointBall, {
 	GUID Guid(){ return WBGuid("F8E58987-603F-458c-9F29-F90CE6E3B17C"); }
@@ -249,8 +279,8 @@ void PHJointUniversal::CompJointAxis()
 }
 
 void PHJointUniversal::CompRelativePosition(){
-	rotX = Matrix3f::Rot((float)position.x, 'x');
-	rotY = Matrix3f::Rot((float)position.y, 'y');
+	Matrix3f rotX = Matrix3f::Rot((float)position.x, 'x');
+	Matrix3f rotY = Matrix3f::Rot((float)position.y, 'y');
 	Vec3f sy = rotX * cRj.Ey();
 	S.col(1).sub_vector(0, Vec3d()) = sy;
 	S.col(1).sub_vector(3, Vec3d()) = cross(sy, -(crj - solid->GetCenter()));
@@ -274,6 +304,36 @@ void PHJointUniversal::CompCoriolisAccel(){
 	svitem(c, 0) = cross(wp, ud);
 	svitem(c, 1) = cross(wp, cross(wp, prc)) - 2.0 * cross(wp, tmp) - cross(ud, tmp);
 }
+
+class PHJointUniversalState: public SGBehaviorState{
+public:
+	SGOBJECTDEF(PHJointUniversalState);
+	//非ルートノードの状態
+	Vec2d position;
+	Vec2d velocity;
+	Vec2d torque;
+	Vec2d accel;
+};
+SGOBJECTIMP(PHJointUniversalState, SGBehaviorState);
+void PHJointUniversal::LoadState(const SGBehaviorStates& states){
+	PHJointUniversalState* js = DCAST(PHJointUniversalState, states.GetNext());	
+	position = js->position;
+	velocity = js->velocity;
+	accel = js->accel;
+	torque = js->torque;
+	PHJointBase::LoadState(states);
+}
+
+void PHJointUniversal::SaveState(SGBehaviorStates& states) const{
+	UTRef<PHJointUniversalState> js = new PHJointUniversalState;
+	states.push_back(js);
+	js->position = position;
+	js->velocity = velocity;
+	js->accel = accel;
+	js->torque = torque;
+	PHJointBase::SaveState(states);
+}
+
 
 typedef Quaternionf Quaternion;
 typedef Vec2f Coords2d;

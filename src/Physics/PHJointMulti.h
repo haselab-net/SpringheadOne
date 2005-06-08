@@ -136,6 +136,10 @@ protected:
 	virtual void CompCoriolisAccel();
 	virtual void Loaded(SGScene* s);
 	virtual double MassFactor();
+	///	状態の読み出し
+	virtual void LoadState(const SGBehaviorStates& states);
+	///	状態の保存
+	virtual void SaveState(SGBehaviorStates& states) const;
 };
 
 /**	ユニバーサルジョイント，軸は子剛体側に固定される x軸と y軸が動く．*/
@@ -151,9 +155,10 @@ public:
 	virtual void CompRelativePosition();
 	virtual void CompRelativeVelocity();
 	virtual void CompCoriolisAccel();
-
-	//キャッシュ変数	X軸，Y軸周りの回転行列
-	Matrix3f rotX, rotY;
+	///	状態の読み出し
+	virtual void LoadState(const SGBehaviorStates& states);
+	///	状態の保存
+	virtual void SaveState(SGBehaviorStates& states) const;
 };
 
 }

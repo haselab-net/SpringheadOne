@@ -66,8 +66,8 @@ public:
 	//混乱するしGravityEngineしか使ってなかったので廃棄候補
 	//void		AddForceLocal(Vec3d f, Vec3d r);		///< 力を 位置r(Local系) に加える
 	void		ClearForce();							///< 力とトルクをクリア
-	Vec3d		GetForce(){return force;}				///< 加えられた力
-	Vec3d		GetTorque(){return torque;}				///< 加えられたトルク
+	Vec3d		GetForce() const {return force;}		///< 加えられた力
+	Vec3d		GetTorque() const {return torque;}		///< 加えられたトルク
 	void		SetForce(Vec3d f){force = f;}			///< 力を設定する
 	void		SetTorque(Vec3d t){torque = t;}			///< トルクをセットする
 
@@ -94,16 +94,16 @@ public:
 	///	積分方式の設定
 	void SetIntegrationMode(PHIntegrationMode m){ integrationMode=m; }
 
-	Vec3d		GetFramePosition(){return frame->GetPosition();}
+	Vec3d		GetFramePosition() const {return frame->GetPosition();}
 	void		SetFramePosition(const Vec3d& p){frame->SetPosition(p);}
-	Vec3d		GetCenterPosition(){return frame->GetPosture()*center;}
+	Vec3d		GetCenterPosition() const {return frame->GetPosture()*center;}
 														///< 重心位置の取得
 	void		SetCenterPosition(const Vec3d& p){		///< 重心位置の設定
 		frame->SetPosition(p - frame->GetRotation()*center);
 	}
 
 	///	向きの取得
-	Matrix3d	GetRotation(){ Matrix3d rv; quat.to_matrix(rv); return rv; }
+	Matrix3d	GetRotation() const { Matrix3d rv; quat.to_matrix(rv); return rv; }
 	///	向きの設定
 	void		SetRotation(const Matrix3d& r){
 		quat.from_matrix(r);
@@ -111,7 +111,7 @@ public:
 	}
 
 	///	向きの取得
-	Quaterniond GetOrientation(){return quat;}
+	Quaterniond GetOrientation() const {return quat;}
 	///	向きの設定
 	void		SetOrientation(const Quaterniond& q){
 		quat = q;
@@ -121,19 +121,24 @@ public:
 	}
 
 	///	質量中心の速度の取得
-	Vec3d		GetVelocity(){return velocity;}
+	Vec3d		GetVelocity() const {return velocity;}
 	///	質量中心の速度の設定
 	void		SetVelocity(const Vec3d& v){velocity = v;}
 
 	///	角速度の取得
-	Vec3d		GetAngularVelocity(){return angVelocity;}
+	Vec3d		GetAngularVelocity() const {return angVelocity;}
 	///	角速度の設定
 	void		SetAngularVelocity(const Vec3d& av){angVelocity = av;}
 
 	///	ローカルフレームから見た，剛体の質量中心位置の設定
-	Vec3d		GetCenter(){return center;}
+	Vec3d		GetCenter() const {return center;}
 	///	ローカルフレームから見た，剛体の質量中心位置の取得
 	void		SetCenter(const Vec3d& c){center = c;}		
+
+	///	状態の読み出し
+	virtual void LoadState(const SGBehaviorStates& states);
+	///	状態の保存
+	virtual void SaveState(SGBehaviorStates& states) const;
 };
 
 class PHSolids:public std::vector< UTRef<PHSolid> >{

@@ -27,12 +27,12 @@ public:
 	///	目標のタイプ 0:位置制御	1：速度制御
 	int type;
 	/// proportional,differential,integralによるトルク(PID制御)
-	float p_torque, d_torque, i_torque;
+	float pTorque, dTorque, iTorque;
 
 	/// p_torque, d_torque,i_torqueの取得
-	float GetProportionalTorque(){ return p_torque; }
-	float GetDifferentialTorque(){ return d_torque; }
-	float GetIntegralTorque(){ return i_torque; }
+	float GetProportionalTorque(){ return pTorque; }
+	float GetDifferentialTorque(){ return dTorque; }
+	float GetIntegralTorque(){ return iTorque; }
 
 	///	目標値,目標の速度	Step()を呼ぶ前に設定する
 	void SetPGoal(float p_goal){ goal = p_goal;}
@@ -91,12 +91,12 @@ public:
 	///	PIDの係数
 	float proportional, differential, integral;
 	/// proportional,differential,integralによるトルク(PID制御)
-	Vec3f p_torque, d_torque, i_torque;
+	Vec3f pTorque, dTorque, iTorque;
 
 	/// p_torque, d_torque,i_torqueの取得
-	Vec3f GetProportionalTorque(){ return p_torque; }
-	Vec3f GetDifferentialTorque(){ return d_torque; }
-	Vec3f GetIntegralTorque(){ return i_torque; }
+	Vec3f GetProportionalTorque(){ return pTorque; }
+	Vec3f GetDifferentialTorque(){ return dTorque; }
+	Vec3f GetIntegralTorque(){ return iTorque; }
 	
 	///	
 	PHJointBallPid():proportional(0), differential(0), integral(0), dGoal(FLT_MAX,0,0){}

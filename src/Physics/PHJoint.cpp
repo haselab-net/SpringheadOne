@@ -216,12 +216,14 @@ void PHJointBase::Reset(){
 void PHJointBase::LoadState(const SGBehaviorStates& states){
 	Reset();
 	//	子ジョイントをロード
+	if (solid) solid->LoadState(states);
 	for(unsigned i=0; i<Children().size(); ++i){
 		Children()[i]->LoadState(states);
 	}
 }
 
 void PHJointBase::SaveState(SGBehaviorStates& states) const{
+	if (solid) solid->SaveState(states);
 	for(unsigned i=0; i<Children().size(); ++i){
 		Children()[i]->SaveState(states);
 	}

@@ -1,11 +1,9 @@
 #ifndef __GRSOUND_H__
 #define __GRSOUND_H__
 
-#include <afxwin.h>         // MFC のコアおよび標準コンポーネント
-//#include <afxext.h>         // MFC の拡張部分
-//#include <afxdtctl.h>		// MFC の Internet Explorer 4 コモン コントロール サポート
-//#include <afxcmn.h>			// MFC の Windows コモン コントロール サポート
+#include <WinDX/Base/WXComBase.h>
 
+typedef DWORD* DWORD_PTR;
 #include <sstream>
 #include <mmsystem.h>
 #include <dsound.h>

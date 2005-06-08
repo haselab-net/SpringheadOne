@@ -227,9 +227,8 @@ void  PHSolidContainer::Loaded(SGScene* scene){
 	}
 }
 
-class PHSolidState{
+class PHSolidState: public SGBehaviorState{
 public:
-	PHSolid* solid;
 	Vec3d pos;
 	Quaterniond ori;
 	Vec3d vel;
@@ -237,6 +236,29 @@ public:
 	Vec3d force;
 	Vec3d torque;
 };
+void PHSolid::LoadState(const SGBehaviorStates& states){
+	PHSolidState* state = DCAST(PHSolidState, states.GetNext());
+	assert(state);
+	SetFramePosition( state->pos );
+	SetOrientation( state->ori );
+	SetVelocity( state->vel);
+	SetAngularVelocity( state->angVel);
+	SetForce( state->force);
+	SetTorque( state->torque);
+}
+void PHSolid::SaveState(SGBehaviorStates& states) const{
+	UTRef<PHSolidState> state = new PHSolidState;
+	states.push_back(state);
+	state->pos = GetFramePosition();
+	state->ori = GetOrientation();
+	state->vel = GetVelocity();
+	state->angVel = GetAngularVelocity();
+	state->force = GetForce();
+	state->torque = GetTorque();
+}
+
+
+
 class PHSolidContainerState: public SGBehaviorState, public std::vector<PHSolidState>{
 public:
 	SGOBJECTDEF(PHSolidContainerState);

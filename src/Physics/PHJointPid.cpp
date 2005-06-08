@@ -46,10 +46,10 @@ void PHJointPid::Step(SGScene* s){
 		ed = goalVel - joint->GetJointAccel(axis);
 	}
 	integratedError += float(e * s->GetTimeStep());
-	p_torque = float(proportional*e);
-	i_torque = float(integral*integratedError);
-	d_torque = float(differential*ed);
-	double tq = p_torque + i_torque + d_torque;
+	pTorque = float(proportional*e);
+	iTorque = float(integral*integratedError);
+	dTorque = float(differential*ed);
+	double tq = pTorque + iTorque + dTorque;
 	joint->AddJointTorque(tq, axis);
 	lastGoal = goal;
 }
@@ -61,6 +61,7 @@ public:
 	float integratedError;
 	float lastGoal;
 	float goal;
+	float pTorque, iTorque, dTorque;
 };
 SGOBJECTIMP(PHJointPidState, SGBehaviorState);
 
@@ -68,7 +69,10 @@ void PHJointPid::LoadState(const SGBehaviorStates& states){
 	PHJointPidState* pState = DCAST(PHJointPidState, states.GetNext());
 	lastGoal = pState->lastGoal;
 	integratedError = pState->integratedError;
-	goal = pState->goal;	
+	goal = pState->goal;
+	pTorque = pState->pTorque;
+	iTorque = pState->iTorque;
+	dTorque = pState->dTorque;
 }
 void PHJointPid::SaveState(SGBehaviorStates& states) const{
 	UTRef<PHJointPidState> state = new PHJointPidState;
@@ -76,6 +80,9 @@ void PHJointPid::SaveState(SGBehaviorStates& states) const{
 	state->lastGoal = lastGoal;
 	state->integratedError = integratedError;
 	state->goal = goal;	
+	state->pTorque = pTorque;
+	state->iTorque = iTorque;
+	state->dTorque = dTorque;
 }
 
 typedef float FLOAT;
@@ -181,10 +188,10 @@ void PHJointBallPid::Step(SGScene* s){
 	}
 	Vec3f ed = goalVel - joint->velocity;
 	integratedError += e * (float)s->GetTimeStep();
-	p_torque = proportional*e;
-	i_torque = integral*integratedError;
-	d_torque = differential*ed;
-	Vec3f tq = p_torque + i_torque + d_torque;
+	pTorque = proportional*e;
+	iTorque = integral*integratedError;
+	dTorque = differential*ed;
+	Vec3f tq = pTorque + iTorque + dTorque;
 	joint->AddTorque(tq);
 	lastGoal = goal;
 }
@@ -195,6 +202,7 @@ public:
 	Vec3f integratedError;
 	Quaternionf goal;
 	Quaternionf lastGoal;
+	Vec3f pTorque, iTorque, dTorque;
 };
 SGOBJECTIMP(PHJointBallPidState, SGBehaviorState);
 
@@ -202,7 +210,10 @@ void PHJointBallPid::LoadState(const SGBehaviorStates& states){
 	PHJointBallPidState* pState = DCAST(PHJointBallPidState, states.GetNext());
 	lastGoal = pState->lastGoal;
 	integratedError = pState->integratedError;
-	goal = pState->goal;	
+	goal = pState->goal;
+	pTorque = pState->pTorque;
+	iTorque = pState->iTorque;
+	dTorque = pState->dTorque;
 }
 void PHJointBallPid::SaveState(SGBehaviorStates& states) const{
 	UTRef<PHJointBallPidState> state = new PHJointBallPidState;
@@ -210,6 +221,9 @@ void PHJointBallPid::SaveState(SGBehaviorStates& states) const{
 	state->lastGoal = lastGoal;
 	state->integratedError = integratedError;
 	state->goal = goal;	
+	state->pTorque = pTorque;
+	state->iTorque = iTorque;
+	state->dTorque = dTorque;
 }
 
 typedef float FLOAT;
