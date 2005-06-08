@@ -750,10 +750,10 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 */
 	if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.6f, 1.6f);
+		JointBallPIDMul(jointBallPids[0], 0.4f, 1.0f);
 	}
 	if(jointPids[1] != NULL){
-		JointPIDMul(jointPids[1], 0.04f, 0.2f);
+		JointPIDMul(jointPids[1], 0.04f, 0.8f);
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(éÒ)
 	/*
@@ -804,7 +804,6 @@ void CRPuppet::ChangeJointRange(){
 }
 
 void CRPuppet::SetJointBasicPos(){
-	Quaternionf qt;
 	/*
 	if(jointPids[0])  jointPids[0]->goal  = jinfo[0].initPos  = 0.2f;
 //	if(jointPids[5])  jointPids[5]->goal  = jinfo[5].initPos  = -0.2f;
@@ -837,10 +836,10 @@ void CRPuppet::SetSprings(){
 
 	// [0] çò(äÓñ{óßÇøà íuÇ…å≈íË)
 	//postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
-	postureSpring.SetSolid(solids[0], 0.2f, 0.8f);
+	postureSpring.SetSolid(solids[0], 0.4f, 1.0f);
 	PositionSpring positionSpr;
 	//positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
-	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 2.0f, 4.0f);
+	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
 	positionSprings.push_back(positionSpr);
 }
 
