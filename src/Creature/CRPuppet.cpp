@@ -721,7 +721,7 @@ void CRPuppet::SetJointSpring(float dt){
 	float k = 0.1f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;*/
 	//const float SAFETYRATE = 0.01f;	//Hinge Rate
-	const float SAFETYRATE = 0.01f;
+	const float SAFETYRATE = 0.4f;
 	float k = 0.6f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;
 	dt = 0.006f;
@@ -750,7 +750,7 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 */
 	if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.6f, 1.6f);
+		JointBallPIDMul(jointBallPids[0], 0.2f, 0.8f);
 	}
 	if(jointPids[1] != NULL){
 		JointPIDMul(jointPids[1], 0.04f, 0.2f);
@@ -837,7 +837,7 @@ void CRPuppet::SetSprings(){
 
 	// [0] çò(äÓñ{óßÇøà íuÇ…å≈íË)
 	//postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
-	postureSpring.SetSolid(solids[0], 0.04f, 0.8f);
+	postureSpring.SetSolid(solids[0], 0.2f, 0.8f);
 	PositionSpring positionSpr;
 	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
 	positionSprings.push_back(positionSpr);
