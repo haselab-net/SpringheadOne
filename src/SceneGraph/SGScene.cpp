@@ -20,11 +20,16 @@ void SGScene::Step(){
 void SGScene::ClearForce(){
 	behaviors.ClearForce(this);
 }
+#define FP_ERROR_MASK	(_EM_INEXACT|_EM_UNDERFLOW)
 void SGScene::GenerateForce(){
+	_controlfp(FP_ERROR_MASK, _MCW_EM);
 	behaviors.GenerateForce(this);
+	_controlfp(_MCW_EM, _MCW_EM);
 }
 void SGScene::Integrate(){
+	_controlfp(FP_ERROR_MASK, _MCW_EM);
 	behaviors.Integrate(this);
+	_controlfp(_MCW_EM, _MCW_EM);
 //	time += timeStep;
 	count++;
 }
@@ -200,7 +205,7 @@ public:
 		sim.velocityLoss = 0.98f;
 		ctx->docs.Top()->GetData(sim.dt, "dt");
 		ctx->docs.Top()->GetData(sim.velocityLoss, "velocityLoss");
-		if (sim.velocityLoss<=0.1f || sim.velocityLoss > 1.0f){
+		if (sim.velocityLoss<1e-20f || sim.velocityLoss > 1.0f){
 			sim.velocityLoss = 0.98f;
 		}
 		ctx->scene->SetTimeStep(sim.dt);
