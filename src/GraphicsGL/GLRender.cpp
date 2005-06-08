@@ -163,7 +163,14 @@ void GLRender::RenderRecurse(SGFrame* n){
 void GLRender::ClearBuffer(){
 	glClearColor(0,0,0,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 }
+
+void GLRender::ClearColor(float r, float g, float b) {
+	glClearColor(r,g,b,1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
 ///	レンダリングの開始前に呼ぶ関数
 void GLRender::BeginScene(){
 }

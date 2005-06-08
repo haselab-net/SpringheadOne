@@ -43,6 +43,9 @@ public:
 	virtual void RenderRecurse(SGFrame* n);
 	///	バッファクリア
 	virtual void ClearBuffer();
+
+	virtual void ClearColor(float r, float g, float b);
+
 	///	バッファの表示
 	void Present();
 	///	バッファの表示

@@ -176,6 +176,7 @@ public:
 	bool bHitted;
 	int atc;
 	int hittingCount;
+	
 };
 
 }

@@ -990,18 +990,18 @@ int inbetweenNotHits=0;
 int inbetweenHits=0;
 void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 	bool now =false;
-	bool bLastTime = bHitted;
-	bHitted = false;
+
 	for(int i = 0; i < 2; ++i){
 		now |= humanContactInfo.ContactCheckOfSolid(solids[i+2], puppet, scene);
 		//if(humanContactInfo.GetContactForceOfSolid(solids[i+2], puppet, scene).norm() > 50) bHitted = true;
 	}
-	if (now && (inbetweenNotHits > 10)) {
-		hittingCount++;
+	if (now && (inbetweenNotHits > 5)) {
+		hittingCount++;		
 		bHitted = true;
-		bLastTime = bHitted;
 		PlayHitSound();
-	} 
+	}else {
+		bHitted = false;
+	}
 	if (now == true) {
 		inbetweenHits++;	
 		inbetweenNotHits = 0;

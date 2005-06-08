@@ -41,6 +41,9 @@ public:
 	virtual void RenderRecurse(SGFrame* n);
 	///	バッファクリア
 	virtual void ClearBuffer();
+
+	virtual void ClearColor(float r, float g, float b);
+
 	///	レンダリングの開始前に呼ぶ関数
 	virtual void BeginScene();
 	///	レンダリングの終了後に呼ぶ関数

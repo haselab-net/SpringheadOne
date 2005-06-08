@@ -52,6 +52,8 @@ public:
 	//@{
 	///	バッファのクリア
 	virtual void ClearBuffer(){}
+	virtual void ClearColor(float r, float g, float b){}
+
 	///	レンダリングの開始前に呼ぶ関数
 	virtual void BeginScene(){}
 	///	シーンのレンダリング(視点の設定を含む)
