@@ -810,6 +810,7 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.6f), sinf(0.6f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
 	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.5f;
 	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
+	//if(jointPids[1]) jointPids[1]->goal = jinfo[1].initPos = -2.5f;
 }
 
 void CRPuppet::Draw(GRRender* render){
