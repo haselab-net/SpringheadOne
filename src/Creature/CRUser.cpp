@@ -256,7 +256,7 @@ void CRUser::SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpid
 }
 
 void CRUser::PlayHitSound(){
-	GRSound::instance()->play( SAMPLE2 );
+	// GRSound::instance()->play( SAMPLE2 );
 }
 
 DEF_RECORD(XUser,{

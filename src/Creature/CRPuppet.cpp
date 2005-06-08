@@ -999,7 +999,7 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 }
 
 void CRPuppet::PlayHitSound(){
-	GRSound::instance()->play( SAMPLE0 );
+	GRSound::instance()->play( SAMPLE4 );
 }
 
 DEF_RECORD(XPuppet,{
