@@ -720,7 +720,7 @@ void CRPuppet::SetJointSpring(float dt){
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
-			jointBallPids[i]->differential = b * mass * 2 / dt;
+			jointBallPids[i]->differential = b * mass / dt;
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}

@@ -32,7 +32,7 @@ CRUser::CRUser(){
 void CRUser::Load(SGScene* scene){
 	scene->FindObject(jointEngine, "jeUser");
 	if (!jointEngine){
-		DSTR << "JointEngen 'jeUser' is not found." << std::endl;
+		DSTR << "JointEngine 'jeUser' is not found." << std::endl;
 		scene->GetBehaviors().Find(jointEngine);
 	}
 	Loaded(scene);
@@ -43,6 +43,7 @@ bool CRUser::Connect(UTRef<SGScene> scene){
 	solids.clear();
 	joints.clear();
 	jointPids.clear();
+	jointBallPids.clear();
 
 	SetLoaded(true);
 
@@ -164,7 +165,6 @@ bool CRUser::Connect(UTRef<SGScene> scene){
 		if(joints[i]->GetJointDof() == 1){
 			jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
 			jointBallPids.push_back(NULL);
-			//DSTR << jointPids[i]->propotional << std::endl;
 		}
 		else if(joints[i]->GetJointDof() == 3){
 			jointBallPids.push_back(PHJointBallPid::Find((PHJointBall*)joints[i], scene));
