@@ -78,7 +78,19 @@ bool CRUser::Connect(UTRef<SGScene> scene){
 //	ConnectSolid("soLToeU", scene);
 	solids.push_back(NULL);
 */
-	//Joint Connect	
+	//Joint Connect
+	ConnectJoint("joWaistU", scene);
+	ConnectJoint("joChestU", scene);
+	ConnectJoint("joNeckU", scene);
+	
+	ConnectJoint("joRShoulderU", scene);
+	ConnectJoint("joRElbowU", scene);
+	ConnectJoint("joRWristU", scene);
+
+	ConnectJoint("joLShoulderU", scene);
+	ConnectJoint("joLElbowU", scene);
+	ConnectJoint("joLWristU", scene);
+/*
 	ConnectJoint("joWaist1U", scene);
 	ConnectJoint("joWaist2U", scene);
 //	ConnectJoint("joWaist3U", scene);
@@ -112,6 +124,7 @@ bool CRUser::Connect(UTRef<SGScene> scene){
 	ConnectJoint("joLWrist1U", scene);
 //	ConnectJoint("joLWrist2U", scene);
 	joints.push_back(NULL);
+*/
 /*
 //	ConnectJoint("joRHip1U", scene);
 	joints.push_back(NULL);
@@ -148,7 +161,14 @@ bool CRUser::Connect(UTRef<SGScene> scene){
 	joints.push_back(NULL);
 */
 	for(int i=0; i<joints.size(); ++i){
-		jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
+		if(joints[i]->GetJointDof() == 1){
+			jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
+			jointBallPids.push_back(NULL);
+		}
+		else if(joints[i]->GetJointDof() == 3){
+			jointBallPids.push_back(PHJointBallPid::Find((PHJointBall*)joints[i], scene));
+			jointPids.push_back(NULL);
+		}
 	}
 	return IsLoaded();
 }

@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////
 namespace Spr{;
 
-SGOBJECTIMP(CRPuppet, CRHuman);
+SGOBJECTIMP(CRPuppet, CRBallHuman);
 
 //////////////////// PuppetSpringÉNÉâÉX ////////////////////
 inline bool IsValid(const Vec3f& v){
@@ -401,7 +401,7 @@ bool CRPuppet::HumanContactInfo::ContactCheckOfSolidPair(PHSolid* so1, PHSolid* 
 	return (fp->lastContactCount == scene->GetCount() - 1);
 }
 
-bool CRPuppet::HumanContactInfo::ContactCheckOfSolid(PHSolid* so, CRHuman* human, SGScene* scene){
+bool CRPuppet::HumanContactInfo::ContactCheckOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene){
 	if(so == NULL) return false;
 	Vec3f rforce = Vec3f(0,0,0);
 	for(int i = 0; i < human->solids.size(); ++i){
@@ -432,7 +432,7 @@ Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolidPair(PHSolid* so1, PHSol
 	return sign * rforce;
 }
 
-Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolid(PHSolid* so, CRHuman* human, SGScene* scene){
+Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene){
 	Vec3f rforce = Vec3f(0,0,0);
 	if(so == NULL) return rforce;
 	for(int i = 0; i < human->solids.size(); ++i){
@@ -460,7 +460,7 @@ CRPuppet::CRPuppet(){
 
 void CRPuppet::LoadDerivedModel(SGScene* scene){
 	if(IsLoaded()){
-		ChangeJointRange();
+		//ChangeJointRange();
 		SetJointBasicPos();
 		SetSprings();
 		for(int i = 0; i < 3; ++i) reaching[0][i].Init();
@@ -476,6 +476,7 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 	solids.clear();
 	joints.clear();
 	jointPids.clear();
+	jointBallPids.clear();
 
 	SetLoaded(true);
 
@@ -510,7 +511,19 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 //	ConnectSolid("soLToe", scene);
 	solids.push_back(NULL);
 */
-	//Joint Connect	
+	//Joint Connect
+	ConnectJoint("joWaist", scene);
+	ConnectJoint("joChest", scene);
+	ConnectJoint("joNeck", scene);
+	
+	ConnectJoint("joRShoulder", scene);
+	ConnectJoint("joRElbow", scene);
+	ConnectJoint("joRWrist", scene);
+
+	ConnectJoint("joLShoulder", scene);
+	ConnectJoint("joLElbow", scene);
+	ConnectJoint("joLWrist", scene);
+/*
 	ConnectJoint("joWaist1", scene);
 	ConnectJoint("joWaist2", scene);
 //	ConnectJoint("joWaist3", scene);
@@ -544,6 +557,7 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 	ConnectJoint("joLWrist1", scene);
 //	ConnectJoint("joLWrist2", scene);
 	joints.push_back(NULL);
+*/
 /*
 //	ConnectJoint("joRHip1", scene);
 	joints.push_back(NULL);
@@ -580,7 +594,14 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 	joints.push_back(NULL);
 */
 	for(int i=0; i<joints.size(); ++i){
-		jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
+		if(joints[i]->GetJointDof() == 1){
+			jointPids.push_back(PHJointPid::Find((PHJoint1D*)joints[i], scene));
+			jointBallPids.push_back(NULL);
+		}
+		else if(joints[i]->GetJointDof() == 3){
+			jointBallPids.push_back(PHJointBallPid::Find((PHJointBall*)joints[i], scene));
+			jointPids.push_back(NULL);
+		}
 	}
 	return IsLoaded();
 }
@@ -683,19 +704,27 @@ void CRPuppet::SetJointSpring(float dt){
 	const float SAFETYRATE = 0.002f;
 	float k = 0.1f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;*/
-	const float SAFETYRATE = 0.01f;
+	//const float SAFETYRATE = 0.01f;	//Hinge Rate
+	const float SAFETYRATE = 0.007f;
 	float k = 0.6f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;
 	dt = 0.006f;
 
 	for(int i=0; i<joints.size(); ++i){
-		if(joints[i] != NULL){
+		if(jointPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
 			jointPids[i]->differential = b * mass / dt;
 			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
+		else if(jointBallPids[i] != NULL){
+			float mass = GetChildMass(joints[i]);
+			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
+			jointBallPids[i]->differential = b * mass * 2 / dt;
+			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+		}
 	}
+	/*
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(è„îºêg)
 	for(int i = 0; i < 6; ++i){
 		if(jointPids[i] != NULL){
@@ -703,25 +732,54 @@ void CRPuppet::SetJointSpring(float dt){
 			else           JointPIDMul(jointPids[i], 0.3f, 0.8f);
 		}
 	}
+	
+	if(jointBallPids[0] != NULL){
+		JointBallPIDMul(jointBallPids[0], 0.5f, 1.0f);
+	}
+	if(jointPids[1] != NULL){
+		JointPIDMul(jointPids[1], 0.04f, 0.2f);
+	}*/
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(éÒ)
+	/*
 	for(int i = 6; i < 9; ++i){
 		if(jointPids[i] != NULL){
 			JointPIDMul(jointPids[i], 0.08f, 0.2f);
 		}
 	}
+	*/
+	if(jointBallPids[2] != NULL){
+		JointBallPIDMul(jointBallPids[2], 0.08f, 0.2f);
+	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(âEòr)
-	for(int i = 9; i <= 13; ++i){ 
+	/*
+		for(int i = 9; i <= 13; ++i){ 
 		if(jointPids[i] != NULL){
 			JointPIDMul(jointPids[i], 0.04f, 0.5f);
 			//JointPIDMul(jointPids[i], 0.03f, 0.3f);
 		}
 	}
+	*/
+	if(jointBallPids[3] != NULL){
+		JointBallPIDMul(jointBallPids[3], 0.04f, 0.5f);
+	}
+	if(jointPids[4] != NULL){
+		JointPIDMul(jointPids[4], 0.04f, 0.5f);
+	}
+
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(ç∂òr)
+	/*
 	for(int i = 16; i <= 20; ++i){ 
 		if(jointPids[i] != NULL){
 			JointPIDMul(jointPids[i], 0.04f, 0.5f);
 			//JointPIDMul(jointPids[i], 0.03f, 0.3f);
 		}
+	}
+	*/
+	if(jointBallPids[6] != NULL){
+		JointBallPIDMul(jointBallPids[6], 0.04f, 0.5f);
+	}
+	if(jointPids[7] != NULL){
+		JointPIDMul(jointPids[7], 0.04f, 0.5f);
 	}
 }
 
@@ -730,6 +788,7 @@ void CRPuppet::ChangeJointRange(){
 }
 
 void CRPuppet::SetJointBasicPos(){
+	/*
 	if(jointPids[0])  jointPids[0]->goal  = jinfo[0].initPos  = 0.2f;
 //	if(jointPids[5])  jointPids[5]->goal  = jinfo[5].initPos  = -0.2f;
 	jinfo[5].rangeMin	= -49.00f;
@@ -743,6 +802,10 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointPids[17]) jointPids[17]->goal = jinfo[17].initPos = 0.0f;
 	if(jointPids[18]) jointPids[18]->goal = jinfo[18].initPos = 0.5f;
 	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;
+	*/
+	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.5f;
+	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
+
 }
 
 void CRPuppet::Draw(GRRender* render){

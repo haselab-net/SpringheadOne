@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 #include <Physics/PHSolid.h>
 #include <Physics/PHJoint.h>
-#include <Creature/CRHuman.h>
+#include <Creature/CRBallHuman.h>
 #include <SceneGraph/SGScene.h>
 #include <Graphics/GRRender.h>
 #include <Graphics/GRMaterial.h>
@@ -18,7 +18,7 @@
 
 namespace Spr{;
 
-class CRPuppet : public CRHuman{
+class CRPuppet : public CRBallHuman{
 public:
 	SGOBJECTDEF(CRPuppet);
 	//////////////////// PositionSpringクラス ////////////////////
@@ -130,10 +130,10 @@ public:
 		Vec3f ContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
 		void SetContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene, Vec3f* pos);
 		bool ContactCheckOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
-		bool ContactCheckOfSolid(PHSolid* so, CRHuman* human, SGScene* scene);
+		bool ContactCheckOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene);
 
 		Vec3f GetContactForceOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene);
-		Vec3f GetContactForceOfSolid(PHSolid* so, CRHuman* human, SGScene* scene);
+		Vec3f GetContactForceOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene);
 	};
 	//////////////////// CRPuppetクラス ////////////////////
 

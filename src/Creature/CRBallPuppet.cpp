@@ -701,7 +701,7 @@ void CRBallPuppet::SetJointSpring(float dt){
 		JointBallPIDMul(jointBallPids[0], 0.5f, 1.0f);
 	}
 	if(jointPids[1] != NULL){
-		JointPIDMul(jointPids[1], 0.3f, 0.8f);
+		JointPIDMul(jointPids[1], 0.04f, 0.2f);
 	}
 	// ŠÖß‚ð_‚ç‚©‚ß‚ÉÝ’è(Žñ)
 	/*
@@ -754,6 +754,7 @@ void CRBallPuppet::ChangeJointRange(){
 void CRBallPuppet::SetJointBasicPos(){
 	Quaternionf qt;
 	//if(jointBallPids[0])  jointBallPids[0]->goal = jinfo[0].initQt = qt.from_matrix(Matrix3f::Rot(0.2f, 'x'));
+	//if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].iniQt = Quaternionf(0.9950f, 0.0998f, 0.0f, 0.0f);
 //	if(jointPids[5])  jointPids[5]->goal  = jinfo[5].initPos  = -0.2f;
 	//jinfo[1].rangeMin	= -49.00f;
 	//jinfo[1].rangeMax	= 49.00f;
