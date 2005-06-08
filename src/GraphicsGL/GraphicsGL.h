@@ -15,7 +15,7 @@ namespace Spr{}
 
 #include "GLSphere.h"
 #include "GLMesh.h"
-#include "GLRenderWgl.h"
+#include "GLRender.h"
 
 #include <gl/gl.h>
 #include <gl/glu.h>

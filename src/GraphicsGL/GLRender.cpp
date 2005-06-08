@@ -2,6 +2,14 @@
 #include <Graphics/GRLoadBmp.h>
 #include <Base/BaseDebug.h>
 
+#include <windows.h>						// Header File For Windows
+#include <gl/gl.h>						// Header File For The OpenGL32 Library
+#include <gl/glu.h>						// Header File For The GLu32 Library
+#include <gl/glaux.h>						// Header File For The GLaux Library
+
+
+
+
 #pragma hdrstop
 
 
@@ -50,11 +58,73 @@ int GLTextureManager::Get(const UTString& fn){
 
 SGOBJECTIMP(GLRender, GRRender);
 
+
 GLRender::GLRender(){
+	hWnd = NULL;
+	hgl = NULL;
+	hdc = NULL;
 	nLights = 0;
 }
 GLRender::~GLRender(){
+	Release();
 }
+bool GLRender::Create(void* arg){
+	hWnd = (HWND)arg;
+	PIXELFORMATDESCRIPTOR pfd = { 
+		  sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd 
+		  1,                     // version number 
+		  PFD_DRAW_TO_WINDOW |   // support window 
+		  PFD_SUPPORT_OPENGL |   // support OpenGL 
+		  PFD_DOUBLEBUFFER,      // double buffered 
+		  PFD_TYPE_RGBA,         // RGBA type 
+		  24,                    // 24-bit color depth 
+		  0, 0, 0, 0, 0, 0,      // color bits ignored 
+		  0,                     // no alpha buffer 
+		  0,                     // shift bit ignored 
+		  0,                     // no accumulation buffer 
+		  0, 0, 0, 0,            // accum bits ignored 
+		  32,                    // 32-bit z-buffer 
+		  0,                     // no stencil buffer 
+		  0,                     // no auxiliary buffer 
+		  PFD_MAIN_PLANE,        // main layer 
+		  0,                     // reserved 
+		  0, 0, 0                // layer masks ignored 
+	}; 
+	hdc = GetDC(hWnd);
+    int pixelFormat=ChoosePixelFormat(hdc,&pfd);
+	SetPixelFormat(hdc, pixelFormat, &pfd);	
+	hgl = wglCreateContext(hdc);
+    wglMakeCurrent(hdc, hgl);
+	glDrawBuffer(GL_BACK);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	return true;
+}
+bool GLRender::SetViewport(void* arg){
+	HWND hw = (HWND) arg;
+	RECT rc;
+	GetClientRect(hw, &rc);
+	Resize(Vec2f(rc.right-rc.left, rc.bottom-rc.top));
+	return true;
+}
+
+void GLRender::Release(){
+	if (hgl){
+		wglDeleteContext(hgl);
+		hgl = NULL;
+	}
+	if (hWnd && hdc){
+		ReleaseDC(hWnd, hdc);
+		hWnd = NULL;
+	}
+}
+void GLRender::Present(){
+	SwapBuffers(hdc);
+}
+
+
 ///	レンダリング(視点を含む)
 void GLRender::Render(SGScene* s){
 	//	視点行列の設定
@@ -149,6 +219,62 @@ void GLRender::DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f*
 	glEnd();
 }
 void GLRender::DrawText(Vec2f pos, FIString str, const GRFont& font){
+
+//SAMPLE TAKEN in NEHE GAMEDEV SITE. For details see the web page http://nehe.gamedev.net/
+
+	//DSTR<<"printing "<<pos.x<<" "<<pos.y<<std::endl;
+// Build Our Bitmap Font
+
+HFONT	fontID;					// Windows Font ID
+HFONT	oldfont;					// Used For Good House Keeping
+GLuint	base;				// Base Display List For The Font Set
+base = glGenLists(96);					// Storage For 96 Characters ( NEW )
+fontID = CreateFont(font.height,// Height Of Font ( NEW )
+					  font.width,// Width Of Font
+	   				  0,// Angle Of Escapement
+				      0,// Orientation Angle
+					  FW_DONTCARE,// Font Weight		
+					  FALSE,// Italic
+					  FALSE,// Underline
+					  FALSE,// Strikeout
+					  ANSI_CHARSET,// Character Set Identifier		
+					  OUT_TT_PRECIS,// Output Precision
+					  CLIP_DEFAULT_PRECIS,// Clipping Precision
+					  ANTIALIASED_QUALITY,// Output Quality
+					  FF_DONTCARE|DEFAULT_PITCH,// Family And Pitch			
+					  font.face.c_str());// Font Name
+		
+	oldfont = (HFONT)SelectObject(hdc, fontID);		// Selects The Font We Want
+	glDisable(GL_LIGHTING);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	wglUseFontBitmaps(hdc, 32, 96, base);			// Builds 96 Characters Starting At Character 32
+	SelectObject(hdc, oldfont);				// Selects The Font We Want
+	DeleteObject(fontID);					// Delete The Font
+
+	glPushMatrix();	
+	glLoadIdentity();									// Reset The Current Modelview Matrix
+	glTranslatef(0.0f,0.0f,-1.0f);						// Move One Unit Into The Screen
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	int height = viewport[3];	
+	int width = viewport[2];
+	float ratio = ((float)height) / width;
+	float drawx = (((float)pos.x) / width) - 0.5;
+	float drawy = -1*((((float)pos.y) / height) - 0.4)*ratio;
+	//DSTR<<"Pos : "<<drawx<<" "<<drawy<<std::endl;
+	glRasterPos2f(drawx, drawy);
+
+	glPushAttrib(GL_LIST_BIT);				// Pushes The Display List Bits		( NEW )
+	glListBase(base - 32);					// Sets The Base Character to 32	( NEW )
+	glCallLists(str.size(), GL_UNSIGNED_BYTE, str.c_str());	// Draws The Display List Text	( NEW )
+	glPopAttrib();						// Pops The Display List Bits	( NEW )
+	
+	glDeleteLists(base, 96);				// Delete All 96 Characters ( NEW )
+
+	glPopMatrix();
+	glEnable(GL_LIGHTING);
 /*	int texId = textureManager.GetText(str, font);
 	Vec2f sz = textureManager.GetTextSize();
 	if (texId){
@@ -259,7 +385,7 @@ Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 //	glReadPixels(x, screenHeight()-y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 	y = viewport[3]-y;
 	glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-	DSTR<<"Depth:"<<depth<<std::endl;
+	//DSTR<<"Depth:"<<depth<<std::endl;
 	if (depth < 1.0) {
 		found = true;
 	}
@@ -276,7 +402,7 @@ Vec3f GLRender::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
 		gluUnProject(point.x,point.y,point.z, modelview,  proj,  viewport,  &x,&y,&z);
 		res.x = x; res.y = y; res.z = z;
 	}
-	DSTR<<"res :"<<res<<std::endl;
+	//DSTR<<"res :"<<res<<std::endl;
 	return res;
 }
 

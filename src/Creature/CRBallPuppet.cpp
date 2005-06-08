@@ -1,31 +1,30 @@
 #include "Creature.h"
 #pragma hdrstop
-// CRPuppet.cpp: CRPuppet クラスのインプリメンテーション
+// CRBallPuppet.cpp: CRBallPuppet クラスのインプリメンテーション
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "CRPuppet.h"
+#include "CRBallPuppet.h"
 #include <time.h>
-
 
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
 //////////////////////////////////////////////////////////////////////
 namespace Spr{;
 
-SGOBJECTIMP(CRPuppet, CRBallHuman);
+SGOBJECTIMP(CRBallPuppet, CRBallHuman);
 
 //////////////////// PuppetSpringクラス ////////////////////
 inline bool IsValid(const Vec3f& v){
 	return v.square() < Square(900);
 }
 
-Vec3f CRPuppet::PositionSpring::GetPos(){
+Vec3f CRBallPuppet::PositionSpring::GetPos(){
 	if (solid) return solid->GetFrame()->GetPosture() * pos;
 	return Vec3f();
 }
 
-Vec3f CRPuppet::PositionSpring::GetVel(){
+Vec3f CRBallPuppet::PositionSpring::GetVel(){
 	if (solid){
 		Vec3f gPos = solid->GetOrientation() * pos;
 		Vec3f vel = solid->GetVelocity() + (solid->GetAngularVelocity() ^ gPos);
@@ -34,29 +33,29 @@ Vec3f CRPuppet::PositionSpring::GetVel(){
 	return Vec3f();
 }
 
-Vec3f CRPuppet::PositionSpring::GetForce(){
+Vec3f CRBallPuppet::PositionSpring::GetForce(){
 	return force;
 }
 
-void CRPuppet::PositionSpring::SetSolid(PHSolid* s, Vec3f p, float spr, float dmp){
+void CRBallPuppet::PositionSpring::SetSolid(PHSolid* s, Vec3f p, float spr, float dmp){
 	solid   = s;
 	pos     = p;
 	sprRate = spr;
 	dmpRate = dmp;
 }
 
-void CRPuppet::PositionSpring::SetTarget(Vec3f pos, Vec3f vel, bool b){
+void CRBallPuppet::PositionSpring::SetTarget(Vec3f pos, Vec3f vel, bool b){
 	targetPos = pos;
 	targetVel = vel;
 	bForce   = b;
 }
 
-void CRPuppet::PositionSpring::AddForce(Vec3f f){
+void CRBallPuppet::PositionSpring::AddForce(Vec3f f){
 	force = f;
 	if (solid) solid->AddForce(f, GetPos());
 }
 
-void CRPuppet::PositionSpring::AddSpringForce(float dt){
+void CRBallPuppet::PositionSpring::AddSpringForce(float dt){
 /*	const float SPRING = 0.04f * sprRate;		//	バネ
 	const float DAMPER = 0.9f  * dmpRate;		//	ダンパ*/
 	const float SPRING = 0.06f * sprRate;		//	バネ
@@ -87,7 +86,7 @@ void CRPuppet::PositionSpring::AddSpringForce(float dt){
 }
 
 //////////////////// PostureSpringsクラス ////////////////////
-void CRPuppet::PositionSprings::Draw(GRRender* render){
+void CRBallPuppet::PositionSprings::Draw(GRRender* render){
 	render->SetModelMatrix(Affinef());
 	render->SetLineWidth(15);
 	for(iterator it = begin(); it != end(); ++it){
@@ -100,38 +99,38 @@ void CRPuppet::PositionSprings::Draw(GRRender* render){
 }
 
 //////////////////// PostureSpringクラス ////////////////////
-Quaterniond CRPuppet::PostureSpring::GetQuaternion(){
+Quaterniond CRBallPuppet::PostureSpring::GetQuaternion(){
 	if (solid) return solid->GetOrientation();
 	return Quaterniond();
 }
 
-Vec3f CRPuppet::PostureSpring::GetAngularVelocity(){
+Vec3f CRBallPuppet::PostureSpring::GetAngularVelocity(){
 	if (solid) return solid->GetAngularVelocity();
 	return Vec3f();
 }
 
-Vec3f CRPuppet::PostureSpring::GetTorque(){
+Vec3f CRBallPuppet::PostureSpring::GetTorque(){
 	return torque;
 }
 
-void CRPuppet::PostureSpring::SetSolid(PHSolid* s, float spr, float dmp){
+void CRBallPuppet::PostureSpring::SetSolid(PHSolid* s, float spr, float dmp){
 	solid   = s;
 	sprRate = spr;
 	dmpRate = dmp;
 }
 
-void CRPuppet::PostureSpring::SetTarget(Quaterniond quat, Vec3f angVel, bool b){
+void CRBallPuppet::PostureSpring::SetTarget(Quaterniond quat, Vec3f angVel, bool b){
 	targetQuat = quat;
 	targetAngV = angVel;
 	bTorque   = b;
 }
 
-void CRPuppet::PostureSpring::AddTorque(Vec3f t){
+void CRBallPuppet::PostureSpring::AddTorque(Vec3f t){
 	torque = t;
 	if (solid) solid->AddTorque(t);
 }
 
-void CRPuppet::PostureSpring::AddSpringTorque(float dt){
+void CRBallPuppet::PostureSpring::AddSpringTorque(float dt){
 /*	const float SPRING = 0.008f * sprRate;		//	バネ
 	const float DAMPER = 1.2f * dmpRate;		//	ダンパ*/
 	const float SPRING = 2.0f * sprRate;		//	バネ
@@ -161,11 +160,11 @@ void CRPuppet::PostureSpring::AddSpringTorque(float dt){
 }
 
 //////////////////// ReachingMovementクラス ////////////////////
-CRPuppet::ReachingMovement::ReachingMovement(){
+CRBallPuppet::ReachingMovement::ReachingMovement(){
 	Init();
 }
 
-void CRPuppet::ReachingMovement::Init(){
+void CRBallPuppet::ReachingMovement::Init(){
 	bForce = false;
 	bActive = false;
 	state = 0;
@@ -173,7 +172,7 @@ void CRPuppet::ReachingMovement::Init(){
 	targetSolid = NULL;
 }
 
-void CRPuppet::ReachingMovement::SetSpring(PHSolid* s, Vec3f r){
+void CRBallPuppet::ReachingMovement::SetSpring(PHSolid* s, Vec3f r){
 	solid = s;
 	pos   = r;
 	//sprRate = 1.0f;
@@ -183,28 +182,28 @@ void CRPuppet::ReachingMovement::SetSpring(PHSolid* s, Vec3f r){
 	firstPos = s->GetFrame()->GetPosture() * r;
 }
 
-void CRPuppet::ReachingMovement::SetTimer(float t, float o){
+void CRBallPuppet::ReachingMovement::SetTimer(float t, float o){
 	time     = t;
 	offset   = o;
 	bActive  = true;
 }
 
-void CRPuppet::ReachingMovement::SetTargetPos(Vec3f p, Vec3f v){
+void CRBallPuppet::ReachingMovement::SetTargetPos(Vec3f p, Vec3f v){
 	finalPos = p;
 	finalVel = v;
 }
 
-void CRPuppet::ReachingMovement::SetTargetSolid(PHSolid* so, Vec3f p, Vec3f v){
+void CRBallPuppet::ReachingMovement::SetTargetSolid(PHSolid* so, Vec3f p, Vec3f v){
 	targetSolid = so;
 	localPos = p;
 	finalVel = v;
 }
 
-void CRPuppet::ReachingMovement::SetType(int type){
+void CRBallPuppet::ReachingMovement::SetType(int type){
 	state = type;
 }
 
-void CRPuppet::ReachingMovement::Draw(GRRender* render){
+void CRBallPuppet::ReachingMovement::Draw(GRRender* render){
 	if(bActive){
 		render->SetModelMatrix(Affinef());
 		render->SetLineWidth(10);
@@ -218,7 +217,7 @@ void CRPuppet::ReachingMovement::Draw(GRRender* render){
 	}
 }
 
-void CRPuppet::ReachingMovement::Step(SGScene* scene){
+void CRBallPuppet::ReachingMovement::Step(SGScene* scene){
 	float dt = scene->GetTimeStep();
 	if(bActive){
 		if(time <= -offset){
@@ -246,7 +245,7 @@ void CRPuppet::ReachingMovement::Step(SGScene* scene){
 }
 
 //////////////////// LocusGeneratorクラス ////////////////////
-void CRPuppet::LocusGenerator::SaveLog(CRPuppet* puppet){
+void CRBallPuppet::LocusGenerator::SaveLog(CRBallPuppet* puppet){
 
 	for(int i = LogNum-1; i > 0; --i) logPos[0][i] = logPos[0][i-1];
 	logPos[0][0] = puppet->solids[6]->GetCenterPosition();
@@ -274,7 +273,7 @@ inline float SumX(int n, int p, float* y){
 	return sum;
 }
 
-void CRPuppet::LocusGenerator::WeightedLeastSquares(float* y, int n, int m, PTM::VVector<float>* a){
+void CRBallPuppet::LocusGenerator::WeightedLeastSquares(float* y, int n, int m, PTM::VVector<float>* a){
 	// 重み付き最小二乗法
 	// n 点(y[i])から m 次近似 (x[i] は等間隔, n > m)
 	PTM::VMatrixRow<float> sum_x;
@@ -294,7 +293,7 @@ void CRPuppet::LocusGenerator::WeightedLeastSquares(float* y, int n, int m, PTM:
 	*a = sum_x.inv() * sum_y;
 }
 
-void CRPuppet::LocusGenerator::CalFutureLocus(Vec3f* past, int n, int m, Vec3f* a){
+void CRBallPuppet::LocusGenerator::CalFutureLocus(Vec3f* past, int n, int m, Vec3f* a){
 	// 過去ｎ点から最小二乗法でｍ次近似して今後の軌跡を求める
 	Vec3f p = Vec3f();
 	float *y;
@@ -317,20 +316,20 @@ void CRPuppet::LocusGenerator::CalFutureLocus(Vec3f* past, int n, int m, Vec3f* 
 	free(y);
 }
 
-Vec3f CRPuppet::LocusGenerator::CalcFuturePosition(Vec3f* a, int t){
+Vec3f CRBallPuppet::LocusGenerator::CalcFuturePosition(Vec3f* a, int t){
 	Vec3f pos = Vec3f();
 	for(int i = 0; i <= Deg; ++i) pos += a[i] * pow(-t, Deg-i);
 	return pos;
 }
 
-Vec3f CRPuppet::LocusGenerator::CalcFutureVelocity(Vec3f*a, int t, float dt){
+Vec3f CRBallPuppet::LocusGenerator::CalcFutureVelocity(Vec3f*a, int t, float dt){
 	// 軌跡をｍ次近似し、ステップ t での速度計算
 	Vec3f vel = Vec3f();
 	for(int i = 0; i <= Deg; ++i) vel += a[i] * (pow(-(t+0.5), Deg-i) - pow(-(t-0.5), Deg-i));
 	return vel / dt;
 }
 
-void CRPuppet::LocusGenerator::DrawFutureLocus(Vec3f*a, int t, int k, GRRender* render, Vec4f color){
+void CRBallPuppet::LocusGenerator::DrawFutureLocus(Vec3f*a, int t, int k, GRRender* render, Vec4f color){
 	// 軌跡をｍ次近似し、t * k スッテプ後の位置を表示
 	render->SetModelMatrix(Affinef());
 	render->SetLineWidth(5);
@@ -347,7 +346,7 @@ void CRPuppet::LocusGenerator::DrawFutureLocus(Vec3f*a, int t, int k, GRRender* 
 	}
 }
 
-void CRPuppet::LocusGenerator::SetLocusCoefficient(CRPuppet* puppet, SGScene* scene){
+void CRBallPuppet::LocusGenerator::SetLocusCoefficient(CRBallPuppet* puppet, SGScene* scene){
 	//GRRender* render;
 	//scene->GetRenderers().Find(render);
 
@@ -357,7 +356,7 @@ void CRPuppet::LocusGenerator::SetLocusCoefficient(CRPuppet* puppet, SGScene* sc
 	}
 }
 
-void CRPuppet::LocusGenerator::PrintLocusCoefficient(CRPuppet* puppet){
+void CRBallPuppet::LocusGenerator::PrintLocusCoefficient(CRBallPuppet* puppet){
 	for(int i = 0; i <= Deg ; ++i){
 		//DSTR << "a[" << i << "]:"<< ak[0][i] << std::endl;
 		DSTR << "a[" << i << "]:"<< std::endl;
@@ -365,7 +364,7 @@ void CRPuppet::LocusGenerator::PrintLocusCoefficient(CRPuppet* puppet){
 	}
 }
 
-void CRPuppet::LocusGenerator::PrintLogPos(CRPuppet* puppet){
+void CRBallPuppet::LocusGenerator::PrintLogPos(CRBallPuppet* puppet){
 	//for(int i = 0; i <= Deg ; ++i){
 		//DSTR << "pos:" << logPos[0][0] << std::endl;
 		DSTR << logPos[0][0].X() << "\t" << logPos[0][0].Y() << "\t" << logPos[0][0].Z() << "\t" << std::endl;
@@ -374,11 +373,11 @@ void CRPuppet::LocusGenerator::PrintLogPos(CRPuppet* puppet){
 
 
 //////////////////// HumanContactInfoクラス ////////////////////
-CRPuppet::HumanContactInfo::HumanContactInfo(){
+CRBallPuppet::HumanContactInfo::HumanContactInfo(){
 
 }
 
-Vec3f CRPuppet::HumanContactInfo::ContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
+Vec3f CRBallPuppet::HumanContactInfo::ContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
 	CDCollisionEngine* ce = NULL;
 	CDFramePair* fp = NULL;
 	scene->GetBehaviors().Find(ce);
@@ -389,7 +388,7 @@ Vec3f CRPuppet::HumanContactInfo::ContactPointOfSolidPair(PHSolid* so1, PHSolid*
 	return Vec3f();
 }
 
-bool CRPuppet::HumanContactInfo::ContactCheckOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
+bool CRBallPuppet::HumanContactInfo::ContactCheckOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
 	if(so2 == NULL) return false;
 	CDCollisionEngine* ce = NULL;
 	CDFramePair* fp = NULL;
@@ -402,7 +401,7 @@ bool CRPuppet::HumanContactInfo::ContactCheckOfSolidPair(PHSolid* so1, PHSolid* 
 	return (fp->lastContactCount == scene->GetCount() - 1);
 }
 
-bool CRPuppet::HumanContactInfo::ContactCheckOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene){
+bool CRBallPuppet::HumanContactInfo::ContactCheckOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene){
 	if(so == NULL) return false;
 	Vec3f rforce = Vec3f(0,0,0);
 	for(int i = 0; i < human->solids.size(); ++i){
@@ -411,7 +410,7 @@ bool CRPuppet::HumanContactInfo::ContactCheckOfSolid(PHSolid* so, CRBallHuman* h
 	return false;
 }
 
-Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
+Vec3f CRBallPuppet::HumanContactInfo::GetContactForceOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene){
 	PHContactEngine* pce = NULL;
 	PHContactEngine::FramePairRecord* fpr = NULL;
 	Vec3f rforce = Vec3f(0,0,0);
@@ -433,7 +432,7 @@ Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolidPair(PHSolid* so1, PHSol
 	return sign * rforce;
 }
 
-Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene){
+Vec3f CRBallPuppet::HumanContactInfo::GetContactForceOfSolid(PHSolid* so, CRBallHuman* human, SGScene* scene){
 	Vec3f rforce = Vec3f(0,0,0);
 	if(so == NULL) return rforce;
 	for(int i = 0; i < human->solids.size(); ++i){
@@ -442,7 +441,7 @@ Vec3f CRPuppet::HumanContactInfo::GetContactForceOfSolid(PHSolid* so, CRBallHuma
 	return rforce;
 }
 
-void CRPuppet::HumanContactInfo::SetContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene, Vec3f* pos){
+void CRBallPuppet::HumanContactInfo::SetContactPointOfSolidPair(PHSolid* so1, PHSolid* so2, SGScene* scene, Vec3f* pos){
 	CDCollisionEngine* ce = NULL;
 	CDFramePair* fp = NULL;
 	scene->GetBehaviors().Find(ce);
@@ -454,14 +453,16 @@ void CRPuppet::HumanContactInfo::SetContactPointOfSolidPair(PHSolid* so1, PHSoli
 	}
 }
 
-//////////////////// CRPuppetクラス ////////////////////
-CRPuppet::CRPuppet(){
+//////////////////// CRBallPuppetクラス ////////////////////
+CRBallPuppet::CRBallPuppet(){
+inbetweenNotHits=0;
+inbetweenHits=0;
 
 }
 
-void CRPuppet::LoadDerivedModel(SGScene* scene){
+void CRBallPuppet::LoadDerivedModel(SGScene* scene){
 	if(IsLoaded()){
-		ChangeJointRange();
+		//ChangeJointRange();
 		SetJointBasicPos();
 		SetSprings();
 		for(int i = 0; i < 3; ++i) reaching[0][i].Init();
@@ -473,7 +474,7 @@ void CRPuppet::LoadDerivedModel(SGScene* scene){
 	}
 }
 
-bool CRPuppet::Connect(UTRef<SGScene> scene){
+bool CRBallPuppet::Connect(UTRef<SGScene> scene){
 	solids.clear();
 	joints.clear();
 	jointPids.clear();
@@ -512,7 +513,7 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 //	ConnectSolid("soLToe", scene);
 	solids.push_back(NULL);
 */
-	//Joint Connect
+	//Joint Connect	
 	ConnectJoint("joWaist", scene);
 	ConnectJoint("joChest", scene);
 	ConnectJoint("joNeck", scene);
@@ -524,41 +525,6 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 	ConnectJoint("joLShoulder", scene);
 	ConnectJoint("joLElbow", scene);
 	ConnectJoint("joLWrist", scene);
-/*
-	ConnectJoint("joWaist1", scene);
-	ConnectJoint("joWaist2", scene);
-//	ConnectJoint("joWaist3", scene);
-	joints.push_back(NULL);
-//	ConnectJoint("joChest1", scene);
-	joints.push_back(NULL);
-//	ConnectJoint("joChest2", scene);
-	joints.push_back(NULL);
-	ConnectJoint("joChest3", scene);
-	ConnectJoint("joNeck1", scene);
-	ConnectJoint("joNeck2", scene);
-//	ConnectJoint("joNeck3", scene);
-	joints.push_back(NULL);
-	
-	ConnectJoint("joRShoulder1", scene);
-	ConnectJoint("joRShoulder2", scene);
-	ConnectJoint("joRShoulder3", scene);
-	ConnectJoint("joRElbow1", scene);
-//	ConnectJoint("joRElbow2", scene);
-	joints.push_back(NULL);
-	ConnectJoint("joRWrist1", scene);
-//	ConnectJoint("joRWrist2", scene);
-	joints.push_back(NULL);
-
-	ConnectJoint("joLShoulder1", scene);
-	ConnectJoint("joLShoulder2", scene);
-	ConnectJoint("joLShoulder3", scene);
-	ConnectJoint("joLElbow1", scene);
-//	ConnectJoint("joLElbow2", scene);
-	joints.push_back(NULL);
-	ConnectJoint("joLWrist1", scene);
-//	ConnectJoint("joLWrist2", scene);
-	joints.push_back(NULL);
-*/
 /*
 //	ConnectJoint("joRHip1", scene);
 	joints.push_back(NULL);
@@ -607,7 +573,7 @@ bool CRPuppet::Connect(UTRef<SGScene> scene){
 	return IsLoaded();
 }
 
-void CRPuppet::SetSolidInfo(){
+void CRBallPuppet::SetSolidInfo(){
 	// その内ファイルからロードするようにしよう
 	// soWaist(腰)
 	sinfo[0].scaleRatio = Vec3f(0.190, 0.0768, 0.137) / 2;
@@ -700,13 +666,12 @@ inline float GetChildMass(PHJointBase* j){
 	}
 }
 
-void CRPuppet::SetJointSpring(float dt){
+void CRBallPuppet::SetJointSpring(float dt){
 /*	//const float SAFETYRATE = 0.002f;
 	const float SAFETYRATE = 0.002f;
 	float k = 0.1f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;*/
-	//const float SAFETYRATE = 0.01f;	//Hinge Rate
-	const float SAFETYRATE = 0.009f;
+	const float SAFETYRATE = 0.007f;
 	float k = 0.6f * SAFETYRATE;
 	float b = 0.8f * SAFETYRATE;
 	dt = 0.006f;
@@ -721,7 +686,7 @@ void CRPuppet::SetJointSpring(float dt){
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
 			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
-			jointBallPids[i]->differential = b * mass / dt;
+			jointBallPids[i]->differential = b * mass * 2 / dt;
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 		}
 	}
@@ -734,12 +699,12 @@ void CRPuppet::SetJointSpring(float dt){
 		}
 	}
 	*/
-	/*if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.1f, 1.0f);
+	if(jointBallPids[0] != NULL){
+		JointBallPIDMul(jointBallPids[0], 0.5f, 1.0f);
 	}
 	if(jointPids[1] != NULL){
 		JointPIDMul(jointPids[1], 0.04f, 0.2f);
-	}*/
+	}
 	// 関節を柔らかめに設定(首)
 	/*
 	for(int i = 6; i < 9; ++i){
@@ -784,39 +749,37 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 }
 
-void CRPuppet::ChangeJointRange(){
+void CRBallPuppet::ChangeJointRange(){
 	SetOneJointRange((PHJoint1D*)joints[5], -90, 90);
 }
 
-void CRPuppet::SetJointBasicPos(){
+void CRBallPuppet::SetJointBasicPos(){
 	Quaternionf qt;
-	/*
-	if(jointPids[0])  jointPids[0]->goal  = jinfo[0].initPos  = 0.2f;
+	//if(jointBallPids[0])  jointBallPids[0]->goal = jinfo[0].initQt = qt.from_matrix(Matrix3f::Rot(0.2f, 'x'));
+	//if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].iniQt = Quaternionf(0.9950f, 0.0998f, 0.0f, 0.0f);
 //	if(jointPids[5])  jointPids[5]->goal  = jinfo[5].initPos  = -0.2f;
-	jinfo[5].rangeMin	= -49.00f;
-	jinfo[5].rangeMax	= 49.00f;
-	if(jointPids[9])  jointPids[9]->goal  = jinfo[9].initPos  = 0.8f;	//X
-	if(jointPids[10]) jointPids[10]->goal = jinfo[10].initPos = 0.0f;	//Z
-	if(jointPids[11]) jointPids[11]->goal = jinfo[11].initPos = 0.5f;	//Y
-	if(jointPids[12]) jointPids[12]->goal = jinfo[12].initPos = 2.5f;
+	//jinfo[1].rangeMin	= -49.00f;
+	//jinfo[1].rangeMax	= 49.00f;
+	/*
+	if(jointPids[9])  jointPids[9]->goal  = jinfo[9].initPos  = 0.8f;	//右肩
+	if(jointPids[10]) jointPids[10]->goal = jinfo[10].initPos = 0.0f;
+	if(jointPids[11]) jointPids[11]->goal = jinfo[11].initPos = 0.5f;
+	if(jointPids[12]) jointPids[12]->goal = jinfo[12].initPos = 2.5f;	//右肘
 
-	if(jointPids[16]) jointPids[16]->goal = jinfo[16].initPos = 1.2f;	//X
-	if(jointPids[17]) jointPids[17]->goal = jinfo[17].initPos = 0.0f;	//Z
-	if(jointPids[18]) jointPids[18]->goal = jinfo[18].initPos = 0.5f;	//Y
-	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;
+	if(jointPids[16]) jointPids[16]->goal = jinfo[16].initPos = 1.2f;	//左肩
+	if(jointPids[17]) jointPids[17]->goal = jinfo[17].initPos = 0.0f;
+	if(jointPids[18]) jointPids[18]->goal = jinfo[18].initPos = 0.5f;
+	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;	//左肘
 	*/
-	if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].initQt = Quaternionf(cosf(-0.1f), sinf(-0.1f), 0.0f, 0.0f);
-	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
-	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.6f), sinf(0.6f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
 	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.5f;
 	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
 }
 
-void CRPuppet::Draw(GRRender* render){
+void CRBallPuppet::Draw(GRRender* render){
 	positionSprings.Draw(render);
 }
 
-void CRPuppet::SetSprings(){
+void CRBallPuppet::SetSprings(){
 	if(!IsLoaded()) return;
 	positionSprings.clear();
 
@@ -827,7 +790,7 @@ void CRPuppet::SetSprings(){
 	positionSprings.push_back(positionSpr);
 }
 
-void CRPuppet::SetFixedPos(){
+void CRBallPuppet::SetFixedPos(){
 	if(!IsLoaded()) return;
 
 	postureSpring.SetTarget(Quaterniond(0,0,1,0), Vec3f(), true);
@@ -835,12 +798,12 @@ void CRPuppet::SetFixedPos(){
 	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-0.95f), Vec3f(), true);	// 少し近づけた
 }
 
-void CRPuppet::SetExpectedPos(float dt){
+void CRBallPuppet::SetExpectedPos(float dt){
 	for(int i = 0; i < positionSprings.size(); ++i) 
 		positionSprings[i].targetPos += positionSprings[i].targetVel * dt;
 }
 
-void CRPuppet::SetSpringForce(float dt){
+void CRBallPuppet::SetSpringForce(float dt){
 	SetFixedPos();
 	for(int i = 0; i < positionSprings.size(); ++i){
 		positionSprings[i].AddSpringForce(dt);
@@ -848,7 +811,7 @@ void CRPuppet::SetSpringForce(float dt){
 	postureSpring.AddSpringTorque(dt);
 }
 
-void CRPuppet::Step(SGScene* scene){
+void CRBallPuppet::Step(SGScene* scene){
 	locus.SaveLog(this);
 	SetSpringForce(scene->GetTimeStep());
 	for(int i = 0; i < 3; ++i) reaching[0][i].Step(scene);
@@ -865,7 +828,7 @@ inline float random1(){
 	return (float)rand()/RAND_MAX;
 }
 
-void CRPuppet::Attack(CRPuppet* puppet){
+void CRBallPuppet::Attack(CRBallPuppet* puppet){
 	if(bAttack){
 		int wait = 0;
 		//for(int i = 0; i < 3; ++i) wait += reaching[0][i].state;
@@ -895,7 +858,7 @@ void CRPuppet::Attack(CRPuppet* puppet){
 	}
 }
 
-void CRPuppet::AttackTest(CRPuppet* puppet){
+void CRBallPuppet::AttackTest(CRBallPuppet* puppet){
 	int hand[20]   = { 0,0,1, 1, 0,1,0, 1,0, 1,1, 0, 0,1, 1, 0, 1,1,0,1};
 	int body[20]   = { 1,0,1, 1, 0,0,1, 0,1, 1,0, 0, 1,1, 1, 0, 0,1,0,0};
 	int target[20] = {-1,1,1,-1,-1,1,1,-1,1,-1,1,-1,-1,1,-1,-1,-1,1,1,1};
@@ -923,7 +886,7 @@ inline bool CheckDirection(Vec3f a, Vec3f b, Vec3f v){
 	return bTarget;
 }
 
-bool CRPuppet::IsAimed(CRPuppet* puppet, SGScene* scene){
+bool CRBallPuppet::IsAimed(CRBallPuppet* puppet, SGScene* scene){
 	// 相手に狙われているかチェック
 	bool bStart = false;
 	for(int i = 0; i < 2; ++i){
@@ -939,7 +902,7 @@ bool CRPuppet::IsAimed(CRPuppet* puppet, SGScene* scene){
 	return bStart;
 }
 
-void CRPuppet::GuardTest(CRPuppet* puppet, SGScene* scene){
+void CRBallPuppet::GuardTest(CRBallPuppet* puppet, SGScene* scene){
 	if(bGuard){
 		puppet->locus.SetLocusCoefficient(puppet, scene);
 		if(IsAimed(puppet, scene)){
@@ -975,7 +938,7 @@ void CRPuppet::GuardTest(CRPuppet* puppet, SGScene* scene){
 	}
 }
 
-void CRPuppet::ReachingMovemantsSafetyCheck(CRPuppet* puppet, SGScene* scene){
+void CRBallPuppet::ReachingMovemantsSafetyCheck(CRBallPuppet* puppet, SGScene* scene){
 	for(int i = 0; i < 2; ++i){
 		if(reaching[0][i].state != 0){
 			Vec3f force;
@@ -985,9 +948,7 @@ void CRPuppet::ReachingMovemantsSafetyCheck(CRPuppet* puppet, SGScene* scene){
 	}
 }
 
-int inbetweenNotHits=0;
-int inbetweenHits=0;
-void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
+void CRBallPuppet::HittedCheck(CRBallPuppet* puppet, SGScene* scene){
 	bool now =false;
 	bool bLastTime = bHitted;
 	bHitted = false;
@@ -995,12 +956,13 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 		now |= humanContactInfo.ContactCheckOfSolid(solids[i+2], puppet, scene);
 		//if(humanContactInfo.GetContactForceOfSolid(solids[i+2], puppet, scene).norm() > 50) bHitted = true;
 	}
+
 	if (now && (inbetweenNotHits > 10)) {
 		hittingCount++;
 		bHitted = true;
 		bLastTime = bHitted;
-		PlayHitSound();
-	} 
+	}
+
 	if (now == true) {
 		inbetweenHits++;	
 		inbetweenNotHits = 0;
@@ -1008,36 +970,30 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 		inbetweenHits = 0;	
 		inbetweenNotHits++;
 	}
-
+	
 }
-
-
-void CRPuppet::PlayHitSound(){
-	GRSound::instance()->play( SAMPLE4 );
-}
-
 DEF_RECORD(XPuppet,{
 	GUID Guid(){ return WBGuid("1EA16CFD-B12D-479c-8F18-80AFB33012FE"); }
 });
-class CRPuppetLoader : public FIObjectLoader<CRPuppet>{
+class CRBallPuppetLoader : public FIObjectLoader<CRBallPuppet>{
 public:
-	CRPuppetLoader(){
+	CRBallPuppetLoader(){
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
 		db->REG_FIELD(FLOAT);
 		db->REG_RECORD_PROTO(XPuppet);
 	}
-	bool LoadData(FILoadScene* ctx, CRPuppet* h){
+	bool LoadData(FILoadScene* ctx, CRBallPuppet* h){
 		return true;
 	}
 };
-class CRPuppetSaver : public FIObjectSaver<CRPuppet>{
+class CRBallPuppetSaver : public FIObjectSaver<CRBallPuppet>{
 protected:
-	void SaveData(class FISaveScene* ctx, FIDocNodeBase* doc, CRPuppet* h){
+	void SaveData(class FISaveScene* ctx, FIDocNodeBase* doc, CRBallPuppet* h){
 	}
 };
 
-DEF_REGISTER_BOTH(CRPuppet);
+DEF_REGISTER_BOTH(CRBallPuppet);
 
 
 }

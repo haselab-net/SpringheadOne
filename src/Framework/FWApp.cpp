@@ -1,5 +1,5 @@
 #include "Framework.h"
-#include "GraphicsGL/GLRenderWgl.h"
+#include "GraphicsGL/GLRender.h"
 #include "ImpD3D/D3Render.h"
 #include <Device/DRUsb20Simple.h>
 #include <Device/DRUsb20Sh4.h>
@@ -403,7 +403,7 @@ void FWApp::CreateD3DRender(){
 }
 void FWApp::CreateGLRender(){
 	if (render) render->EndScene();
-	render = new GLRenderWgl;
+	render = new GLRender;
 	render->Create(hWnd);	
 	if (lastLoadFile.length()) Load(lastLoadFile.c_str());
 }

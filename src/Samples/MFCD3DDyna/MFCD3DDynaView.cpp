@@ -10,7 +10,7 @@
 #include <Physics/PHSolid.h>
 #include <Graphics/GRCamera.h>
 #include <ImpD3D/D3Render.h>
-#include <GraphicsGL/GLRenderWgl.h>
+#include <GraphicsGL/GLRender.h>
 #include <FrameWork/FWFileIOD3D.h>
 #include <FrameWork/FWPointer.h>
 #include <WinBasis/WBMMTimer.h>
@@ -416,7 +416,7 @@ void CMFCD3DDynaView::OnRenderGl()
 {
 	// TODO: この位置にコマンド ハンドラ用のコードを追加してください
 	if (render) render->EndScene();
-	render = new GLRenderWgl;
+	render = new GLRender;
 	render->Create(m_hWnd);	
 	render->BeginScene();
 	Load(loadFileName.c_str());

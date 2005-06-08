@@ -66,6 +66,22 @@ public:
 
 	virtual Vec3f getPointUnderPixel(int x, int y, bool& found, SGScene* scene);
 	
+protected:
+	///	window handle
+	HWND hWnd;
+	///	window's device context
+	HDC hdc;
+	///	gl context
+	HGLRC hgl;
+public:
+	///	Viewportの設定
+	bool SetViewport(void* arg);
+	///	コンテキストの作成
+	bool Create(void* hWnd);
+	///	コンテキストの開放
+	void Release();
+	///	バックバッファの表示
+	virtual void Present();
 
 protected:
 	void Loaded(SGScene* scene);

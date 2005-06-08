@@ -11,7 +11,7 @@
 #include <Physics/PHSolid.h>
 #include <ImpD3D/D3FileDoc.h>
 #include <ImpD3D/D3DocNode.h>
-#include <GraphicsGL/GLRenderWgl.h>
+#include <GraphicsGL/GLRender.h>
 #include <WinBasis/WBPath.h>
 //	for haptics
 #include <WinBasis/WBMMTimer.h>
