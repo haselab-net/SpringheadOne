@@ -7,6 +7,9 @@
 #include "CRPuppet.h"
 #include <time.h>
 
+//// サウンド再生用 (^jumius^)
+//#include <mmsystem.h>
+
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
 //////////////////////////////////////////////////////////////////////
@@ -991,7 +994,10 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 		bHitted |= humanContactInfo.ContactCheckOfSolid(solids[i+2], puppet, scene);
 		//if(humanContactInfo.GetContactForceOfSolid(solids[i+2], puppet, scene).norm() > 50) bHitted = true;
 	}
-	if(bHitted && !bLastTime) hittingCount++;
+	if(bHitted && !bLastTime){ 
+		hittingCount++;
+		//sndPlaySound("..\\SoundSet\\00.wav",SND_ASYNC);
+	}
 }
 
 DEF_RECORD(XPuppet,{
