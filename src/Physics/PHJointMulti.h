@@ -78,7 +78,11 @@ public:
 		a = a_p + c + S*accel;
 		if (velocity.norm() > PHJOINT_MAX_VELOCITY){
 			DSTR << "The velocity of " << GetName() << ":" << velocity << "was limited" << std::endl;
-			velocity = PHJOINT_MAX_VELOCITY * velocity.unit();
+			if (_finite(velocity[0]) ){
+				velocity = PHJOINT_MAX_VELOCITY * velocity.unit();
+			}else{
+				velocity.clear();
+			}
 		}
 	}
 	void CalcAccel(double dt){				///<	このジョイントの加速度計算．詳細は基本クラスのコメントを参照．

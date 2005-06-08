@@ -474,7 +474,6 @@ void CRBalanceQuadPR::AnkleBalance(CRHuman* crHuman){
 
 }
 
-
 Vec3d CRBalanceQuadPR::AdjustAnkleTorque(CRHuman* crHuman,Vec3d ankleForce,Vec3d ankleTorque,int ankle){
 
 	// ZMP‚ðŒvŽZ
