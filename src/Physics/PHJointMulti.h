@@ -76,9 +76,9 @@ public:
 		velocity *= scene->GetVelocityLossPerStep();
 		//重心周りの加速度(子ノードの積分で使用する)
 		a = a_p + c + S*accel;
-		if (velocity.norm() > 2*M_PI*30){
-			DSTR << "Joint " << GetName() << " has velocity of " << velocity << std::endl;
-//			DebugBreak();
+		if (velocity.norm() > PHJOINT_MAX_VELOCITY){
+			DSTR << "The velocity of " << GetName() << ":" << velocity << "was limited";
+			velocity = PHJOINT_MAX_VELOCITY * velocity;
 		}
 	}
 	void CalcAccel(double dt){				///<	このジョイントの加速度計算．詳細は基本クラスのコメントを参照．

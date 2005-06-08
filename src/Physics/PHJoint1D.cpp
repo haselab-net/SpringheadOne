@@ -110,6 +110,14 @@ void PHJoint1D::Integrate(SGScene* scene){
 	a = a_p + c + accel * s;
 
 	velocity *= scene->GetVelocityLossPerStep();
+	if (velocity > PHJOINT_MAX_VELOCITY){
+		velocity = PHJOINT_MAX_VELOCITY;
+		DSTR << "The velocity of " << GetName() << ":" << velocity << "was limited";
+	}
+	if (velocity < -PHJOINT_MAX_VELOCITY){
+		velocity = -PHJOINT_MAX_VELOCITY;
+		DSTR << "The velocity of " << GetName() << ":" << velocity << "was limited";
+	}
 
 /*	if (abs(velocity) > 2*M_PI*30){
 		DSTR << "Joint " << GetName() << " has velocity of " << velocity << std::endl;

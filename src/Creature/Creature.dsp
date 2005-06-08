@@ -168,35 +168,11 @@ SOURCE=.\CRBalanceQuadPR.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CRBallActionPlanner.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\CRBallActionPlanner.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CRBallHuman.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\CRBallHuman.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CRBallPuppet.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\CRBallPuppet.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\CRBallUser.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\CRBallUser.h
 # End Source File
 # Begin Source File
 

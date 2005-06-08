@@ -11,6 +11,9 @@
 #include <WinBasis/WBPreciseTimer.h>
 #include <float.h>
 
+//	角速度の最大値．関節が高速に回りすぎて発散するのを防ぐ
+#define PHJOINT_MAX_VELOCITY	(10*M_PI)
+
 /**	@file ３次元連結剛体系
 	解説：
 	Featherstoneのアルゴリズムを利用してツリー状に連結された剛体の
