@@ -78,7 +78,7 @@ public:
 	//////////////////// ReachingMovementクラス ////////////////////
 	class ReachingMovement : public PositionSpring{
 	public:
-		float time;					// 目標時間
+		float time, period;			// 目標時間
 		float offset;				// 達成後の待機時間
 
 		Vec3f firstPos, finalPos, finalVel;	// 最終目標位置・速度

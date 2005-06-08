@@ -184,7 +184,7 @@ void CRPuppet::ReachingMovement::SetSpring(PHSolid* s, Vec3f r){
 }
 
 void CRPuppet::ReachingMovement::SetTimer(float t, float o){
-	time     = t;
+	period = time     = t;
 	offset   = o;
 	bActive  = true;
 }
@@ -229,12 +229,27 @@ void CRPuppet::ReachingMovement::Step(SGScene* scene){
 		if(targetSolid) finalPos = targetSolid->GetFrame()->GetPosture() * localPos;	// 目標位置の更新
 		if(time > dt){
 			Vec3f pos, vel;
+#if 0
 			float s = dt / time;
 			pos = (finalPos - GetPos()) * 2.0f * s + GetPos();	// 仮目標の設定
 			vel = (finalPos - GetPos()) * 1.5f / time;
-			//pos = (finalPos - firstPos) * (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5)) + firstPos;	// 仮目標の設定(躍度最小)
-			//vel = (finalPos - firstPos) * (pow(s,2) - 2*pow(s,3) + pow(s,4)) * 30 / time;
+#else
+			//	正規化した時刻 (0..1)
+			float s = 1- time/period;
+			//	紐の長さと速度
+			double length = 1 - (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
+			double deltaLength = -30*(pow(s,2) - 2*pow(s,3) + pow(s,4));
+			if (length<0){
+				length = 0;
+				deltaLength = 0;
+				time = 0;
+			}
+			Vec3f dir = GetPos()-finalPos;
+			pos = finalPos + dir*length;
+			vel = dir*deltaLength;
+#endif
 			SetTarget(pos, vel, true);
+
 		}
 		else{
 			SetTarget(finalPos, Vec3f(), true);
