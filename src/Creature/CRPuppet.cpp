@@ -229,7 +229,7 @@ void CRPuppet::ReachingMovement::Step(SGScene* scene){
 		if(targetSolid) finalPos = targetSolid->GetFrame()->GetPosture() * localPos;	// 目標位置の更新
 		if(time > dt){
 			Vec3f pos, vel;
-#if 1
+#if 0
 			float s = dt / time;
 			pos = (finalPos - GetPos()) * 2.0f * s + GetPos();	// 仮目標の設定
 			vel = (finalPos - GetPos()) * 1.5f / time;
@@ -906,7 +906,7 @@ void CRPuppet::Attack(CRPuppet* puppet){
 							((1.5f*random1() - 0.5f*body) - 0.5f) * puppet->GetSolidInfo(body+2).scale.Y(),
 							0.1f);
 				reaching[0][hand].SetTargetPos(pos, Vec3f());
-				reaching[0][hand].SetTimer(0.3f, 0.05f);
+				reaching[0][hand].SetTimer(0.6f, 0.0f);
 				reaching[0][hand].SetType(1);
 			}
 		}
