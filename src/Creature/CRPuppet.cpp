@@ -781,7 +781,7 @@ void CRPuppet::SetJointSpring(float dt){
 		JointBallPIDMul(jointBallPids[3], 0.04f, 0.5f);
 	}
 	if(jointPids[4] != NULL){
-		JointPIDMul(jointPids[4], 0.04f, 0.5f);
+		JointPIDMul(jointPids[4], 0.02f, 0.25f);
 	}
 
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(ç∂òr)
@@ -797,7 +797,7 @@ void CRPuppet::SetJointSpring(float dt){
 		JointBallPIDMul(jointBallPids[6], 0.04f, 0.5f);
 	}
 	if(jointPids[7] != NULL){
-		JointPIDMul(jointPids[7], 0.04f, 0.5f);
+		JointPIDMul(jointPids[7], 0.02f, 0.25f);
 	}
 }
 
