@@ -25,8 +25,11 @@ void SGBehaviorEngines::ClearForce(SGScene* scene){
 }
 
 void SGBehaviorEngines::GenerateForce(SGScene* scene){
-	for(iterator it = forceGenerator; it != dynamicalSystem && it!=end2(); ++it)
+	for(iterator it = forceGenerator; it != dynamicalSystem && it!=end2(); ++it){
+//		UTRef<SGBehaviorEngine>(*it)->Print(DSTR);
+
 		UTRef<SGBehaviorEngine>(*it)->Step(scene);
+	}
 }
 
 void SGBehaviorEngines::Integrate(SGScene* scene){

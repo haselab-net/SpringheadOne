@@ -75,7 +75,7 @@ public:
 		if (tmp.W() < 0) tmp = -*this;
 		else tmp = *this;
 		TVec3<ET> r;
-		if (tmp.W() > 1) W() = 1;
+		if (tmp.W() > 1) tmp.W() = 1;
 		ET theta = (ET)( acos(tmp.W()) * 2 );
 		r = tmp.sub_vector(1, vector_type());
 		ET len = r.norm();

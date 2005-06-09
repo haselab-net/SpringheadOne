@@ -210,7 +210,7 @@ void CRUser::SetFixedPos(){
 void CRUser::SetSpidarPos(std::vector<HISpidar4*> spidars){
 	// Spidar のスケール調整込み 右手[1] 左手[2]
 	for(int i = 0; i < spidars.size(); ++i){
-		const float SCALE = 0.5f;
+		const float SCALE = 1.0f;
 		//const float SCALE = 1.25f;	// ミーティングルーム
 		Vec3f tPos, tVel;
 		tPos = spidars[i]->GetPos() * SCALE;
@@ -248,7 +248,7 @@ void CRUser::SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpid
 			for(int j = 0; j < 2; ++j){
 				force += 0.1f * humanContactInfo.GetContactForceOfSolid(solids[j+2], puppet, scene);
 			}
-			float maxForce = 2.5f;
+			float maxForce = 4.0f;
 			if(force.norm() > maxForce) force = force.unit() * maxForce;
 			spidars[i]->SetForce(-force);
 		}

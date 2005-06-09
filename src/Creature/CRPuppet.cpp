@@ -229,7 +229,7 @@ void CRPuppet::ReachingMovement::Step(SGScene* scene){
 		if(targetSolid) finalPos = targetSolid->GetFrame()->GetPosture() * localPos;	// 目標位置の更新
 		if(time > dt){
 			Vec3f pos, vel;
-#if 0
+#if 1
 			float s = dt / time;
 			pos = (finalPos - GetPos()) * 2.0f * s + GetPos();	// 仮目標の設定
 			vel = (finalPos - GetPos()) * 1.5f / time;

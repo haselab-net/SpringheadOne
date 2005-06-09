@@ -41,6 +41,8 @@ public:
 	///	
 	PHJointPid():type(0), proportional(0), differential(0), integral(0), goal(0), dGoal(FLT_MAX), lastGoal(0), integratedError(0), axis(0){}
 	///
+	void Print(std::ostream& os) const;
+	///
 	static PHJointPid* Find(PHJoint1D* j, SGScene* scene);
 	///	プライオリティ
 	virtual int GetPriority() const { return SGBP_FORCEGENERATOR; }
@@ -121,6 +123,9 @@ public:
 	SGObject* ReferenceObject(size_t i);
 	bool AddChildObject(SGObject* o, SGScene* s);
 	bool DelChildObject(SGObject* o, SGScene* s);	
+
+	virtual void Print(std::ostream& os) const;
+
 };
 
 

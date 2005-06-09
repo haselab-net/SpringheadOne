@@ -7,6 +7,15 @@ namespace Spr{;
 
 SGOBJECTIMP(PHJointPid, SGBehaviorEngine);
 
+void PHJointPid::Print(std::ostream& os) const {
+	int w = os.width();
+	os.width(0);
+	os << UTPadding(w);
+	os << "<" << GetTypeInfo()->ClassName() << " " << GetName();
+	if (joint) os << "j=" << joint->GetName();
+	os << ">" << std::endl;
+	os.width(w);
+}
 size_t PHJointPid::NReferenceObjects(){
 	return joint ? 1 : 0;
 }
@@ -153,6 +162,16 @@ PHJointPid* PHJointPid::Find(PHJoint1D* j, SGScene* scene){
 //-----------------------------------------------------------------------------
 
 SGOBJECTIMP(PHJointBallPid, SGBehaviorEngine);
+
+void PHJointBallPid::Print(std::ostream& os) const {
+	int w = os.width();
+	os.width(0);
+	os << UTPadding(w);
+	os << "<" << GetTypeInfo()->ClassName() << " " << GetName();
+	if (joint) os << "j=" << joint->GetName();
+	os << ">" << std::endl;
+	os.width(w);
+}
 
 size_t PHJointBallPid::NReferenceObjects(){
 	return joint ? 1 : 0;
