@@ -88,11 +88,12 @@ void D3Render::ClearBuffer(){
 	device.Clear(0,NULL,D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0),1.0f,0);
 }
 
-void D3Render::ClearColor(float r, float g, float b) {
+void D3Render::ClearColor(float r, float g, float b, float alpha) {
 	int rc = 255*r;
 	int gc = 255*g;
 	int bc = 255*b;
-	device.Clear(0,NULL,D3DCLEAR_TARGET, D3DCOLOR_XRGB(rc,gc,bc),1.0f,0);
+	int a = 255*alpha;
+	device.Clear(0,NULL,D3DCLEAR_TARGET, D3DCOLOR_ARGB(a,rc,gc,bc),1.0f,0);
 }
 
 

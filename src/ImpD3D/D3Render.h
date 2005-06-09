@@ -44,7 +44,7 @@ public:
 	///	バッファクリア
 	virtual void ClearBuffer();
 
-	virtual void ClearColor(float r, float g, float b);
+	virtual void ClearColor(float r, float g, float b, float alpha);
 
 	///	バッファの表示
 	void Present();

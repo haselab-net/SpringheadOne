@@ -166,8 +166,8 @@ void GLRender::ClearBuffer(){
 	
 }
 
-void GLRender::ClearColor(float r, float g, float b) {
-	glClearColor(r,g,b,1.0f);
+void GLRender::ClearColor(float r, float g, float b, float alpha) {
+	glClearColor(r,g,b,alpha);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
