@@ -182,6 +182,15 @@ SOURCE="$(SPRINGHEAD)\src\Device\DeviceD.lib"
 # Begin Source File
 
 SOURCE=..\..\HISD.lib
+
+!IF  "$(CFG)" == "SpidarG6 - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "SpidarG6 - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Source File
