@@ -5,6 +5,15 @@
 #include <WinBasis/WBUtility.h>
 #include <WinDx/D3D/WXD3D.h>
 
+
+struct TLVertex
+{
+    float    x, y, z, rhw;
+    D3DCOLOR diffuse;    
+};
+
+const DWORD VertexFVF = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+
 namespace Spr {;
 /**	テクスチャファイルの管理をするクラス．
 	2重ロードをしない仕組み．*/

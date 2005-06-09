@@ -80,11 +80,16 @@ void D3Render::RenderRecurse(SGFrame* n){
 }
 void D3Render::BeginScene(){
 	device.BeginScene();
+
+
 }
+
 void D3Render::EndScene(){
-	device.EndScene();
+
+device.EndScene();
 }
 void D3Render::ClearBuffer(){
+
 	device.Clear(0,NULL,D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0),1.0f,0);
 }
 
@@ -93,7 +98,63 @@ void D3Render::ClearColor(float r, float g, float b, float alpha) {
 	int gc = 255*g;
 	int bc = 255*b;
 	int a = 255*alpha;
-	device.Clear(0,NULL,D3DCLEAR_TARGET, D3DCOLOR_ARGB(a,rc,gc,bc),1.0f,0);
+
+	//device.Clear(0,NULL,D3DCLEAR_TARGET, D3DCOLOR_ARGB(a,rc,gc,bc),1.0f,0);
+
+	
+DWORD asave, srcsave, destsave;
+device->GetRenderState(D3DRS_ALPHABLENDENABLE,&asave);
+device->GetRenderState(D3DRS_SRCBLEND,&srcsave);
+device->GetRenderState(D3DRS_DESTBLEND,&destsave);
+
+//device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+// Set the source blend state.
+//device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCCOLOR);
+// Set the destination blend state.
+//device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+
+DSTR<<"TLVertex "<<a<<std::endl;
+TLVertex tlv[6];
+D3DVIEWPORT9 pViewport;
+device->GetViewport(&pViewport);
+tlv[0].x = 0; 
+tlv[0].y = 0;
+tlv[0].z = 0.5;
+tlv[0].rhw = 0.5;
+tlv[0].diffuse = D3DCOLOR_ARGB(a,rc,gc,bc);
+tlv[1].x = 0; 
+tlv[1].y =  pViewport.Height;
+tlv[1].z = 0.99f;
+tlv[1].rhw = 0.5;
+tlv[1].diffuse = D3DCOLOR_ARGB(a,rc,gc,bc);
+tlv[2].x = pViewport.Width; 
+tlv[2].y = 0;
+tlv[2].z = 0.99f;
+tlv[2].rhw = 0.5;
+tlv[2].diffuse = D3DCOLOR_ARGB(a,rc,gc,bc);
+tlv[3]=tlv[2];
+tlv[4] = tlv[1];
+
+
+tlv[5].x = pViewport.Width; 
+tlv[5].y = pViewport.Height;
+tlv[5].z = 0.99f;
+tlv[5].rhw = 0.5;
+tlv[5].diffuse = D3DCOLOR_ARGB(a,rc,gc,bc);
+
+device->SetFVF(VertexFVF);
+device->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6 , tlv, sizeof(TLVertex));	
+
+
+/*	IDirect3DSurface9* ppRenderTarget;
+	device->GetRenderTarget(0,&ppRenderTarget);
+	device->ColorFill(ppRenderTarget,NULL,D3DCOLOR_ARGB(a,rc,gc,bc));
+	*/
+//Restore previous state
+device->SetRenderState(D3DRS_ALPHABLENDENABLE, asave);
+device->SetRenderState(D3DRS_SRCBLEND, srcsave);
+device->SetRenderState(D3DRS_DESTBLEND, destsave);
+
 }
 
 
@@ -306,6 +367,8 @@ bool D3Render::CanDraw(){
 
 
 Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){
+
+
 	Vec3f res;
 	D3DXVECTOR3 vPickRayDir;
 	D3DXVECTOR3 vPickRayOrig;
