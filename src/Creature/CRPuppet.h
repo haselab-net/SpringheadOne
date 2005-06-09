@@ -161,7 +161,7 @@ public:
 	bool IsAimed(CRPuppet* puppet, SGScene* scene);
 	void GuardTest(CRPuppet* puppet, SGScene* scene);
 	void ReachingMovemantsSafetyCheck(CRPuppet* puppet, SGScene* scene);
-	void HittedCheck(CRPuppet* puppet, SGScene* scene);
+	void HittedCheck(CRPuppet* puppet, SGScene* scene, bool prediction);
 	void resetHits();
 	virtual void PlayHitSound();
 

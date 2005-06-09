@@ -846,7 +846,7 @@ void CRPuppet::SetFixedPos(){
 
 	postureSpring.SetTarget(Quaterniond(0,0,1,0), Vec3f(), true);
 	//positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-1.0f), Vec3f(), true);
-	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-0.95f), Vec3f(), true);	// è≠ÇµãﬂÇ√ÇØÇΩ
+	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-1.15f), Vec3f(), true);
 }
 
 void CRPuppet::SetExpectedPos(float dt){
@@ -1006,11 +1006,11 @@ void CRPuppet::resetHits() {
 }
 	
 
-void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
+void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene, bool prediction){
 	bool now =false;
-
 	for(int i = 0; i < 2; ++i){
 		now |= humanContactInfo.ContactCheckOfSolid(solids[i+2], puppet, scene);
+		now = now && prediction;
 		//if(humanContactInfo.GetContactForceOfSolid(solids[i+2], puppet, scene).norm() > 50) bHitted = true;
 	}
 	if (now && (inbetweenNotHits > 5)) {
