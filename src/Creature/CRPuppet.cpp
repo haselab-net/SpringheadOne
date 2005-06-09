@@ -485,6 +485,8 @@ void CRPuppet::LoadDerivedModel(SGScene* scene){
 		bGuard  = false;
 		hittingCount = 0;
 		atc = 0;
+		inbetweenNotHits=0;
+		inbetweenHits=0;	
 	}
 }
 
@@ -1000,9 +1002,14 @@ void CRPuppet::ReachingMovemantsSafetyCheck(CRPuppet* puppet, SGScene* scene){
 		}
 	}
 }
+void CRPuppet::resetHits() {
+	bHitted=false;
+	inbetweenHits = 0;
+	inbetweenNotHits = 0;
+	hittingCount = 0;
+}
+	
 
-int inbetweenNotHits=0;
-int inbetweenHits=0;
 void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene){
 	bool now =false;
 

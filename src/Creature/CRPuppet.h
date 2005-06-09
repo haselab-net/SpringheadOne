@@ -162,7 +162,9 @@ public:
 	void GuardTest(CRPuppet* puppet, SGScene* scene);
 	void ReachingMovemantsSafetyCheck(CRPuppet* puppet, SGScene* scene);
 	void HittedCheck(CRPuppet* puppet, SGScene* scene);
+	void resetHits();
 	virtual void PlayHitSound();
+
 
 	PositionSprings positionSprings;
 	PostureSpring postureSpring;
@@ -176,7 +178,12 @@ public:
 	bool bHitted;
 	int atc;
 	int hittingCount;
-	
+
+private:
+	int inbetweenNotHits;
+	int inbetweenHits;
+
+
 };
 
 }

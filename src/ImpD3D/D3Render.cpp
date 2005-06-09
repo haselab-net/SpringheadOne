@@ -92,7 +92,7 @@ void D3Render::ClearColor(float r, float g, float b) {
 	int rc = 255*r;
 	int gc = 255*g;
 	int bc = 255*b;
-	device.Clear(0,NULL,D3DCLEAR_TARGET, D3DCOLOR_XRGB(rc,gc,bc),0,0);
+	device.Clear(0,NULL,D3DCLEAR_TARGET, D3DCOLOR_XRGB(rc,gc,bc),1.0f,0);
 }
 
 

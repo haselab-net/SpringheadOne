@@ -76,6 +76,7 @@ protected:
 	HDC hdc;
 	///	gl context
 	HGLRC hgl;
+
 public:
 	///	Viewport‚Ìİ’è
 	bool SetViewport(void* arg);
