@@ -171,6 +171,7 @@ void CRPuppet::ReachingMovement::Init(){
 	state = 0;
 	time = 0.0f;
 	targetSolid = NULL;
+	SetTarget(Vec3f(), Vec3f(), false);
 }
 
 void CRPuppet::ReachingMovement::SetSpring(PHSolid* s, Vec3f r){
@@ -221,13 +222,13 @@ void CRPuppet::ReachingMovement::Draw(GRRender* render){
 void CRPuppet::ReachingMovement::Step(SGScene* scene){
 	float dt = scene->GetTimeStep();
 	if(bActive){
-		if(time <= -offset){
+		if(time-period*0.3 <= -offset){
 			Init();
 			return;
 		}
 
 		if(targetSolid) finalPos = targetSolid->GetFrame()->GetPosture() * localPos;	// 目標位置の更新
-		if(time > dt){
+		if(time > period*0.3){
 			Vec3f pos, vel;
 #if 0
 			float s = dt / time;
@@ -250,8 +251,7 @@ void CRPuppet::ReachingMovement::Step(SGScene* scene){
 #endif
 			SetTarget(pos, vel, true);
 
-		}
-		else{
+		}else{
 			SetTarget(finalPos, Vec3f(), true);
 		}
 		time -= dt;
@@ -476,7 +476,6 @@ CRPuppet::CRPuppet(){
 
 void CRPuppet::LoadDerivedModel(SGScene* scene){
 	if(IsLoaded()){
-		ChangeJointRange();
 		SetJointBasicPos();
 		SetSprings();
 		for(int i = 0; i < 3; ++i) reaching[0][i].Init();
@@ -778,7 +777,7 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 	*/
 	if(jointBallPids[3] != NULL){
-		JointBallPIDMul(jointBallPids[3], 0.04f, 0.5f);
+		JointBallPIDMul(jointBallPids[3], 0.08f, 1.0f);
 	}
 	if(jointPids[4] != NULL){
 		JointPIDMul(jointPids[4], 0.02f, 0.25f);
@@ -794,15 +793,11 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 	*/
 	if(jointBallPids[6] != NULL){
-		JointBallPIDMul(jointBallPids[6], 0.04f, 0.5f);
+		JointBallPIDMul(jointBallPids[6], 0.08f, 1.0f);
 	}
 	if(jointPids[7] != NULL){
 		JointPIDMul(jointPids[7], 0.02f, 0.25f);
 	}
-}
-
-void CRPuppet::ChangeJointRange(){
-	SetOneJointRange((PHJoint1D*)joints[1], -90, 90);
 }
 
 void CRPuppet::SetJointBasicPos(){
@@ -822,8 +817,9 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;
 	*/
 	if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].initQt = Quaternionf(cosf(-0.1f), sinf(-0.1f), 0.0f, 0.0f);
-	//if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
+	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
 	//if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.6f), sinf(0.6f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
+	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
 	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.3f;
 	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
 }
@@ -838,7 +834,7 @@ void CRPuppet::SetSprings(){
 
 	// [0] 腰(基本立ち位置に固定)
 	//postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
-	postureSpring.SetSolid(solids[0], 0.4f, 1.0f);
+	postureSpring.SetSolid(solids[0], 0.2f, 0.8f);
 	PositionSpring positionSpr;
 	//positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
 	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
