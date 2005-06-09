@@ -777,7 +777,7 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 	*/
 	if(jointBallPids[3] != NULL){
-		JointBallPIDMul(jointBallPids[3], 0.08f, 1.0f);
+		JointBallPIDMul(jointBallPids[3], 0.2f, 0.8f);
 	}
 	if(jointPids[4] != NULL){
 		JointPIDMul(jointPids[4], 0.02f, 0.25f);
@@ -793,7 +793,7 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 	*/
 	if(jointBallPids[6] != NULL){
-		JointBallPIDMul(jointBallPids[6], 0.08f, 1.0f);
+		JointBallPIDMul(jointBallPids[6], 0.2f, 0.8f);
 	}
 	if(jointPids[7] != NULL){
 		JointPIDMul(jointPids[7], 0.02f, 0.25f);
@@ -834,7 +834,7 @@ void CRPuppet::SetSprings(){
 
 	// [0] çò(äÓñ{óßÇøà íuÇ…å≈íË)
 	//postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
-	postureSpring.SetSolid(solids[0], 0.2f, 0.8f);
+	postureSpring.SetSolid(solids[0], 0.08f, 0.6f);
 	PositionSpring positionSpr;
 	//positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
 	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
