@@ -164,7 +164,9 @@ void PHWater::Loaded(SGScene* scene){
 	//quat.from_matrix(frame->GetRotation());
 }
 
-void PHWater::Render(SGFrame* n, GRRender* render);
+void PHWater::Render(SGFrame* n, GRRender* render){
+
+}
 
 void PHWater::Allocate(){
 	//その内bad_allocのcatch実装
@@ -289,6 +291,13 @@ void PHWater::Integrate(Treald *height,Treald *wh1,Treald *u,Treald *u1,Treald *
         v1[i][j] = v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) * hinv + (p[i][j+1] - p[i][j]) / (rho_w * dh);
     }
 	
+	/*
+		x = [i-1, i], y = [j-1, j]の四角領域の高さをh[i][j]とすると
+		辺x = i-1からの流入量は
+			流速u[i-1][j] * 辺dh * 推進depth * 時間dt
+		同様にx = i, y = j - 1, y = jの流入出量を総和したものが四角領域の水量の変化量。
+		これに四角領域の面積dh * dhを割れば高さの変化量が得られる
+	 */
     for(i = 1; i <= MX - 2; i++)for(j = 1; j <= MY - 2; j++)
         wh1[i][j] = height[i][j] * hinv -
 			depth * dt * ((u1[i][j] - u1[i-1][j]) * dh + (v1[i][j] - v1[i][j-1]) * dh) / (dh * dh);
