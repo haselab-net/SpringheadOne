@@ -143,7 +143,7 @@ public:
 	void LoadDerivedModel(SGScene* scene);	// îhê∂ÉÇÉfÉã(User,VH)ÇÃê›íË
 	bool Connect(UTRef<SGScene> scene);
 	void SetSolidInfo();
-	void SetJointSpring(float dt);
+	virtual void SetJointSpring(float dt);
 	void SetJointBasicPos();
 	void ChangeJointRange();
 
