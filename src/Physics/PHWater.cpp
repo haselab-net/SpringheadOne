@@ -1,88 +1,7 @@
 #include "PHWater.h"
+#pragma hdrstop
 
-/*
-	・設計によってはWaterContainerという命名が適当かも
-	・PHWaterClearForceの対象はSolidに限らず力が加わるもの全般なので、
-		PHClearForceとすべき
-*/
-
-class PHWaterEngine : public /*SGBehaviorEngine*/PHSolverBase{
-public:
-	SGOBJECTDEF(PHWaterEngine);
-	
-	bool AddChildObject(SGObject* o, SGScene* s);
-	bool DelChildObject(SGObject* o, SGScene* s);
-	int GetPriority() const {return SGBP_WATERENGINE;}
-	virtual void Step(SGScene* s);
-	virtual void ClearForce();
-	virtual void Loaded(SGScene* scene);
-	virtual void Clear(SGScene* s){ waters.clear(); }
-	virtual size_t NChildObjects(){ return waters.size(); }
-	virtual SGObject* ChildObject(size_t i){ return waters[i]; }
-
-	///	状態の読み出し
-	virtual void LoadState(const SGBehaviorStates& states);
-	///	状態の保存
-	virtual void SaveState(SGBehaviorStates& states) const;
-
-};
-
-class PHWater : public GRVisual{
-public:
-	SGOBJECTDEF(PHWater);
-
-	bool		AddChildObject(SGObject* o, SGScene* s);///< ロード時に使用．
-	size_t		NReferenceObjects();					///< 1
-	SGObject*	ReferenceObject(size_t i);				///< フレームを返す．
-	void		Loaded(SGScene* scene);					///< ロード終了時の初期化
-	void		Step(SGScene* s);						///< 時刻を進める．
-
-	///	GRMesh で初期化
-	//void Set(GRMesh* gm, SGScene* s);
-	///	レンダリング
-	virtual void Render(SGFrame* n, GRRender* render);
-
-protected:
-	typedef VMatrixCol<double> matrix_type;
-	typedef VMatrixCol<Vec3d>	v3matrix_type;
-	typedef VVector<double> vector_type;
-
-	UTRef<SGFrame> frame;
-	UTRef<PHWater> solid;
-
-	//パラメータ
-	size_t	my, mx;
-	double	dh;
-	double	depth;
-	double	gravity;
-	double	hscale;
-	Vec4d	specular;
-	Vec4d	diffuse;
-	double	shininess;
-	
-	//自分を保持するSGFrameへの参照
-	UTRef<SGFrame> frame;
-
-	matrix_type		p;				//圧力
-	matrix_type		u, utmp;		//x方向流速
-	matrix_type		v, vtmp;		//y方向流速
-	matrix_type		height, htmp;	//高さ
-	v3matrix_type	normal;			//法線
-	matrix_type		tvec;			//
-	Vec3d			vlight;			//光の向き
-
-	double
-		*p_array,
-		*u_array, *utmp_array,
-		*v_array, *vtmp_array,
-		*height_array, *htmp_array,
-		*normal_array,
-		*tvec_array;
-	
-	//境界条件を設定する
-	void Bound();
-
-};
+namespace Spr{;
 
 ////////////////////////////////////////////////////////////////
 // PHWaterEngine
@@ -128,10 +47,7 @@ void PHWaterEngine::Loaded(SGScene* scene){
 SGOBJECTIMP(PHWater, SGObject);
 
 PHWater::PHWater(){
-	/*mass = 1.0;
-	inertia = Matrix3d::Unit();
-	integrationMode = PHINT_ANALYTIC;
-	integrationMode = PHINT_SIMPLETIC;*/
+	
 }
 
 bool PHWater::AddChildObject(SGObject* o, SGScene* s){
@@ -161,53 +77,162 @@ SGObject* PHWater::ReferenceObject(size_t i){
 }
 
 void PHWater::Loaded(SGScene* scene){
-	//quat.from_matrix(frame->GetRotation());
+	Init(scene);
 }
 
-void PHWater::Render(SGFrame* n, GRRender* render){
+void PHWater::Init(SGScene* scene){
+    //xo = -(MX - 1) / 2. * dh;	//x原点	
+    //yo = -(MY - 1) / 2. * dh;	//y原点
+	//int i, j;
 
-}
+	int mx = info.mx, my = info.my;
+    mxy = info.mx * info.my;
+	dx = mx * info.dh / 2.0;
+	dy = my * info.dh / 2.0;
 
-void PHWater::Allocate(){
 	//その内bad_allocのcatch実装
-
-    height.resize(mx, my);
+	height.resize(mx, my);
+    htmp.resize(mx, my);
     u.resize(mx, my);
     v.resize(mx, my);
     utmp.resize(mx, my);
     vtmp.resize(mx, my);
     p.resize(mx, my);
-    htmp.resize(mx, my);
     normal.resize(mx, my);
     tvec.resize(mx, my);
-    color.resize(mx, my);
-}
+    //color.resize(mx, my);
 
-void PHWater::Init(){
-    specular = Vec4d(0.5, 0.5, 0.5, 0.5);
-    diffuse  = Vec4d(1.0, 1.0, 1.0, 1.0);
-    shininess = 0.0;
-
-    xo = -(MX - 1) / 2. * dh;	//x原点	
-    yo = -(MY - 1) / 2. * dh;	//y原点
-
-	int i, j;
 	height.clear();
 	htmp.clear();
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
         normal[i][j].clear();
 
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
-        tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
+        tvec[i][j] = calRefracVec(normal[i][j], info.vlight, 1.3333);
         
 	u.clear();
 	utmp.clear();
 	v.clear();
 	vtmp.clear();
 	p.clear();
-	
+
+	//マテリアルの指定がなかった場合、デフォルトを作成
+	if(!material){
+		material = new GRMaterial;
+		material->specular = Vec4d(0.5, 0.5, 0.5, 0.5);
+		material->diffuse  = Vec4d(1.0, 1.0, 1.0, 1.0);
+		material->emissive = 0.0;
+		//vlight = Vec3d(0.0, 0.0, -1.0);
+	}
+
+	//Direct3D用のメッシュを作成
+	D3Render* render = NULL;
+	scene->GetRenderers().Find(render);
+	if(render){
+		meshD3 = new D3Mesh;
+		DWORD fvf;
+		//if (gm->texCoords.size()) fvf = D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1;
+		//else
+		fvf = D3DFVF_XYZ | D3DFVF_NORMAL;
+		//3角形の数＝マスの数 * 2
+		int nTriangles = (mx - 1) * (my - 1) * 2;
+		D3DXCreateMeshFVF(nTriangles, mxy, D3DXMESH_MANAGED, fvf, render->device, &(meshD3->intf.Intf()));
+
+		//インデックスバッファ
+		WORD* indexBuf = NULL;
+		meshD3->LockIndexBuffer(0, (void**)&indexBuf);
+		int x, y, i = 0;
+		for(x = 0; x < mx - 1; x++)for(y = 0; y < my - 1; y++){
+			indexBuf[i++] = (x + 0) + mx * (y + 0);
+			indexBuf[i++] = (x + 0) + mx * (y + 1);
+			indexBuf[i++] = (x + 1) + mx * (y + 0);
+			indexBuf[i++] = (x + 1) + mx * (y + 1);
+			indexBuf[i++] = (x + 1) + mx * (y + 0);
+			indexBuf[i++] = (x + 0) + mx * (y + 1);
+		}
+		meshD3->intf->UnlockIndexBuffer();
+
+		//マテリアル
+		materialD3 = new D3Material;
+		memcpy(&materialD3->material, (GRMaterialData*)&material, sizeof(GRMaterialData));
+		materials[i]->bOpaque = material->IsOpaque();
+		//materials[i]->textureFilename = material->textureFilename;
+		//materials[i]->texture = render->textureManager.Get(materials[i]->textureFilename);
+	}
 }
 
+void PHWater::Render(SGFrame* n, GRRender* render){
+	//renderの種類を判定
+	if(DCAST(D3Render, render))
+		return RenderD3(n, DCAST(D3Render, render));
+	if(DCAST(GLRender, render))
+		return RenderGL(n, DCAST(GLRender, render));
+}
+
+void PHWater::RenderD3(SGFrame* n, D3Render* render){
+	if(!meshD3) return;
+
+	/*if (gm->texCoords.size()){
+		struct VtxFVF{
+			Vec3f pos;
+			Vec3f normal;
+			Vec2f tex;
+		};
+		VtxFVF* vtxs;
+		LockVertexBuffer(0, (void**)&vtxs);
+		for(unsigned int i=0; i<gm->vertices.size(); ++i){
+			vtxs[i].pos = gm->vertices[i];
+			vtxs[i].normal = gm->normals[i];
+			vtxs[i].tex = gm->texCoords[i];
+		}
+		intf->UnlockVertexBuffer();
+	}else{*/
+	double* pheight = &height[0][0];
+	Vec3d*  pnormal = &normal[0][0];
+	
+	//頂点バッファに書き込む
+	struct VtxFVF{
+		Vec3f pos;
+		Vec3f normal;
+	};
+	VtxFVF* vtxs;
+	meshD3->LockVertexBuffer(0, (void**)&vtxs);
+	float x = -dx, y = -dy;
+
+	for(int i = 0; i < mxy; i++){
+		vtxs[i].pos = Vec3f(x, y, pheight[i]);
+		vtxs[i].normal = pnormal[i];
+		if(i % mx == 0){
+			y += info.dh;
+			x = -dx;
+		}
+	}
+	meshD3->intf->UnlockVertexBuffer();
+	
+	/*DWORD* attrs=NULL;
+	intf->LockAttributeBuffer(0, &attrs);
+	for(unsigned i=0; i<gm->attributes.size(); ++i) attrs[i] = gm->attributes[i];
+	intf->UnlockAttributeBuffer();
+	intf->OptimizeInplace(D3DXMESHOPT_COMPACT|D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
+	*/
+
+	D3Render* render = (D3Render*)renderBase;
+	if (materialD3->bOpaque && render->drawState&GRRender::DRAW_OPAQUE){
+		materialD3->Render(f, render);
+		WXCHECK(meshD3->intf->DrawSubset(0));
+	}
+	//if (!materials[i]->bOpaque && render->drawState&GRRender::DRAW_TRANSPARENT){
+	//	materials[i]->Render(f, renderBase);
+	//	WXCHECK(intf->DrawSubset(i));
+	//}
+	//	テクスチャを戻す．
+	render->device->SetTexture(0,NULL);
+
+}
+
+void PHWater::RenderGL(SGFrame* n, GRRender* render){
+
+}
 
 void PHWater::Bound(){
 	u.col(0).clear();
@@ -254,7 +279,7 @@ void PHWater::Step(SGScene* s){
     Bound();
     
 	//solve equation
-    Integrate();
+	Integrate(s->GetTimeStep());
     
 	//boundary condition
     Bound();
@@ -269,7 +294,8 @@ void PHWater::Step(SGScene* s){
         shiftWater(pw, yflow);
     }*/
 
-	int mx = h.width(), my = h.height();
+	//法線と屈折ベクトルを計算
+	int mx = info.mx, my = info.my;
     for(j = 1; j < my - 1; j++)for(i = 1; i < mx - 1; i++){
 		vv1 = Vec3d(-dh, 0.0, h[i][j] - h[i + 1][j    ]);
 		vv2 = Vec3d(0.0, -dh, h[i][j] - h[i    ][j + 1]);
@@ -279,7 +305,7 @@ void PHWater::Step(SGScene* s){
     }
 }
 
-void PHWater::Integrate(Treald *height,Treald *wh1,Treald *u,Treald *u1,Treald *v,Treald *v1, Treald *p){
+void PHWater::Integrate(double dt){
     int i, j;
 	const double hmul = 10.0;	//	高さを強調して描画
 	const double hinv = 1.0 / hmul;
@@ -294,7 +320,7 @@ void PHWater::Integrate(Treald *height,Treald *wh1,Treald *u,Treald *u1,Treald *
 	/*
 		x = [i-1, i], y = [j-1, j]の四角領域の高さをh[i][j]とすると
 		辺x = i-1からの流入量は
-			流速u[i-1][j] * 辺dh * 推進depth * 時間dt
+			流速u[i-1][j] * 辺dh * 水深depth * 時間dt
 		同様にx = i, y = j - 1, y = jの流入出量を総和したものが四角領域の水量の変化量。
 		これに四角領域の面積dh * dhを割れば高さの変化量が得られる
 	 */
@@ -402,11 +428,7 @@ class PHWaterLoader:public FIObjectLoader<PHWater>{
 	virtual bool LoadData(FILoadScene* ctx, PHWater* water){
 		WaterInfo info;
 		ctx->docs.Top()->GetWholeData(info);
-		//s->SetMass				(info.mass);
-		//s->SetInertia			(info.inertia);
-		//s->SetCenter			(info.center);
-		//s->SetVelocity			(info.velocity);
-		//s->SetAngularVelocity	(info.angularVelocity);
+		water->SetInfo(info);
 		return true;
 	}
 };
@@ -417,13 +439,8 @@ class PHWaterSaver:public FIBaseSaver{
 		PHWater* water = (PHWater*)arg;
 		FIDocNodeBase* doc = ctx->CreateDocNode("Water", water);
 		ctx->docs.back()->AddChild(doc);
-		WaterInfo info;
-		/*info.mass				= (float)s->GetMass();
-		info.inertia			= s->GetInertia();
-		info.velocity			= s->GetVelocity();
-		info.angularVelocity	= s->GetAngularVelocity();
-		info.center				= s->GetCenter();*/
-		doc->SetWholeData(info);
+		
+		doc->SetWholeData(water->GetInfo(info));
 		if(water->GetFrame()){
 			doc->AddChild(ctx->CreateDocNode("REF", s->GetFrame()));
 		}
@@ -434,4 +451,4 @@ class PHWaterSaver:public FIBaseSaver{
 };
 DEF_REGISTER_BOTH(PHWater);
 
-
+}
