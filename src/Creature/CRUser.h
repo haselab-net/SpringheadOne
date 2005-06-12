@@ -27,6 +27,7 @@ public:
 	void Load(SGScene* scene);						// Šî–{İ’èBFrameWork‚ÌLoad‚ÅŒÄ‚Î‚ê‚éB
 	bool Connect(UTRef<SGScene> scene);
 
+	virtual void SetJointSpring(float dt);
 	void SetSprings();
 	void SetFixedPos();
 	void SetSpidarPos(std::vector<HISpidar4*> spidars);

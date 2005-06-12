@@ -28,6 +28,79 @@ inline bool IsValid(const Vec3f& v){
 //////////////////// CRUserÉNÉâÉX ////////////////////
 CRUser::CRUser(){
 }
+inline float GetChildMass(PHJointBase* j){
+	if (strlen(j->solid->GetName()) != 0){
+		return j->solid->GetMass();
+	}
+	else{
+		float rv = 0;
+		for(unsigned i = 0; i < j->Children().size(); ++i){
+			rv += GetChildMass(j->Children()[i]);
+		}
+		return rv;
+	}
+}
+
+void CRUser::SetJointSpring(float dt){
+/*	//const float SAFETYRATE = 0.002f;
+	const float SAFETYRATE = 0.002f;
+	float k = 0.1f * SAFETYRATE;
+	float b = 0.8f * SAFETYRATE;*/
+	//const float SAFETYRATE = 0.01f;	//Hinge Rate
+	const float SAFETYRATE = 0.015f;
+	float k = 0.6f * SAFETYRATE;
+	float b = 0.8f * SAFETYRATE;
+	dt = 0.006f;
+
+	for(int i=0; i<joints.size(); ++i){
+		if(jointPids[i] != NULL){
+			float mass = GetChildMass(joints[i]);
+			jointPids[i]->proportional = k * 2 * mass / (dt*dt);
+			jointPids[i]->differential = b * mass / dt;
+			jointPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+		}
+		else if(jointBallPids[i] != NULL){
+			float mass = GetChildMass(joints[i]);
+			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
+			jointBallPids[i]->differential = b * mass / dt;
+			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
+		}
+	}
+	/*
+	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(è„îºêg)
+	for(int i = 0; i < 6; ++i){
+		if(jointPids[i] != NULL){
+			if(i % 3 == 2) JointPIDMul(jointPids[i], 0.04f, 0.2f);
+			else           JointPIDMul(jointPids[i], 0.3f, 0.8f);
+		}
+	}
+*/
+	if(jointBallPids[0] != NULL){
+		JointBallPIDMul(jointBallPids[0], 0.4f, 1.0f);
+	}
+	if(jointPids[1] != NULL){
+		JointPIDMul(jointPids[1], 0.4f, 0.8f);
+	}
+	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(éÒ)
+	if(jointBallPids[2] != NULL){
+		JointBallPIDMul(jointBallPids[2], 0.3f, 0.8f);
+	}
+	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(âEòr)
+	if(jointBallPids[3] != NULL){
+		JointBallPIDMul(jointBallPids[3], 0.04f, 0.5f);
+	}
+	if(jointPids[4] != NULL){
+		JointPIDMul(jointPids[4], 0.01f, 0.25f);
+	}
+
+	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(ç∂òr)
+	if(jointBallPids[6] != NULL){
+		JointBallPIDMul(jointBallPids[6], 0.04f, 0.5f);
+	}
+	if(jointPids[7] != NULL){
+		JointPIDMul(jointPids[7], 0.01f, 0.25f);
+	}
+}
 
 void CRUser::Load(SGScene* scene){
 	scene->FindObject(jointEngine, "jeUser");
@@ -215,8 +288,8 @@ void CRUser::SetSpidarPos(std::vector<HISpidar4*> spidars){
 		Vec3f tPos, tVel;
 		tPos = spidars[i]->GetPos() * SCALE;
 		tVel = spidars[i]->GetVel() * SCALE;
-		tPos.y += 1.2f;
-		tPos.z -= 0.6f;
+		tPos.y += 1.4f;
+		tPos.z -= 0.3f;
 
 		positionSprings[i+1].SetTarget(tPos, tVel, true);
 	}
