@@ -1,4 +1,12 @@
 #include "PHWater.h"
+#include <Graphics/GRMaterial.h>
+#include <ImpD3D/D3Render.h>
+#include <ImpD3D/D3Mesh.h>
+#include <ImpD3D/D3Material.h>
+#include <GraphicsGL/GLRender.h>
+#include <GraphicsGL/GLMesh.h>
+#include <Physics/PHSolid.h>
+
 #pragma hdrstop
 
 namespace Spr{;
@@ -44,10 +52,13 @@ void PHWaterEngine::Loaded(SGScene* scene){
 /////////////////////////////////////////////////////////////////////////////////
 // PHWater
 
-SGOBJECTIMP(PHWater, SGObject);
+SGOBJECTIMP(PHWater, GRVisual);
 
 PHWater::PHWater(){
-	
+	mx = my = 0;
+	dh = 0.0;
+	depth = 0.0;
+	hscale = 1.0;
 }
 
 bool PHWater::AddChildObject(SGObject* o, SGScene* s){
@@ -83,12 +94,11 @@ void PHWater::Loaded(SGScene* scene){
 void PHWater::Init(SGScene* scene){
     //xo = -(MX - 1) / 2. * dh;	//x原点	
     //yo = -(MY - 1) / 2. * dh;	//y原点
-	//int i, j;
+	int i, j;
 
-	int mx = info.mx, my = info.my;
-    mxy = info.mx * info.my;
-	dx = mx * info.dh / 2.0;
-	dy = my * info.dh / 2.0;
+	mxy = mx * my;
+	dx = mx * dh / 2.0;
+	dy = my * dh / 2.0;
 
 	//その内bad_allocのcatch実装
 	height.resize(mx, my);
@@ -108,7 +118,7 @@ void PHWater::Init(SGScene* scene){
         normal[i][j].clear();
 
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
-        tvec[i][j] = calRefracVec(normal[i][j], info.vlight, 1.3333);
+        tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
         
 	u.clear();
 	utmp.clear();
@@ -121,7 +131,8 @@ void PHWater::Init(SGScene* scene){
 		material = new GRMaterial;
 		material->specular = Vec4d(0.5, 0.5, 0.5, 0.5);
 		material->diffuse  = Vec4d(1.0, 1.0, 1.0, 1.0);
-		material->emissive = 0.0;
+		material->emissive = Vec4d(0.0, 0.0, 0.0, 0.0);
+
 		//vlight = Vec3d(0.0, 0.0, -1.0);
 	}
 
@@ -155,7 +166,7 @@ void PHWater::Init(SGScene* scene){
 		//マテリアル
 		materialD3 = new D3Material;
 		memcpy(&materialD3->material, (GRMaterialData*)&material, sizeof(GRMaterialData));
-		materials[i]->bOpaque = material->IsOpaque();
+		materialD3->bOpaque = material->IsOpaque();
 		//materials[i]->textureFilename = material->textureFilename;
 		//materials[i]->texture = render->textureManager.Get(materials[i]->textureFilename);
 	}
@@ -197,14 +208,14 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	};
 	VtxFVF* vtxs;
 	meshD3->LockVertexBuffer(0, (void**)&vtxs);
-	float x = -dx, y = -dy;
+	float x = (float)-dx, y = (float)-dy;
 
 	for(int i = 0; i < mxy; i++){
 		vtxs[i].pos = Vec3f(x, y, pheight[i]);
 		vtxs[i].normal = pnormal[i];
 		if(i % mx == 0){
-			y += info.dh;
-			x = -dx;
+			y += (float)dh;
+			x = (float)-dx;
 		}
 	}
 	meshD3->intf->UnlockVertexBuffer();
@@ -216,9 +227,8 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	intf->OptimizeInplace(D3DXMESHOPT_COMPACT|D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
 	*/
 
-	D3Render* render = (D3Render*)renderBase;
 	if (materialD3->bOpaque && render->drawState&GRRender::DRAW_OPAQUE){
-		materialD3->Render(f, render);
+		materialD3->Render(n, render);
 		WXCHECK(meshD3->intf->DrawSubset(0));
 	}
 	//if (!materials[i]->bOpaque && render->drawState&GRRender::DRAW_TRANSPARENT){
@@ -230,25 +240,26 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 
 }
 
-void PHWater::RenderGL(SGFrame* n, GRRender* render){
+void PHWater::RenderGL(SGFrame* n, GLRender* render){
 
 }
 
 void PHWater::Bound(){
-	u.col(0).clear();
-	u.col(mx - 2).clear();
-    u[i][0] = f[i][1];
-	u[i][my - 1] = u[i][my - 2];
+	//行方向がx方向、列方向がy方向なことに注意
+	u.row(0).clear();
+	u.row(mx - 2).clear();
+    u.col(0) = u.col(1);
+	u.col(my - 1) = u.col(my - 2);
 
-	v.col(0) = v.col(1);
-	v.col(mx - 1) = v.col(mx - 2);
-    v.row(0).clear();
-	v.row(my - 2).clear();
+	v.row(0) = v.row(1);
+	v.row(mx - 1) = v.row(mx - 2);
+    v.col(0).clear();
+	v.col(my - 2).clear();
 	
-	height.col(0) = height.col(1);
-	height.col(mx - 1) = height.col(mx - 2);
 	height.row(0) = height.row(1);
-	height.row(my - 1) = height.row(my - 2);
+	height.row(mx - 1) = height.row(mx - 2);
+	height.col(0) = height.col(1);
+	height.col(my - 1) = height.col(my - 2);
 }
 
 Vec3d PHWater::calRefracVec(Vec3d n, Vec3d v, double ra) {
@@ -295,10 +306,9 @@ void PHWater::Step(SGScene* s){
     }*/
 
 	//法線と屈折ベクトルを計算
-	int mx = info.mx, my = info.my;
-    for(j = 1; j < my - 1; j++)for(i = 1; i < mx - 1; i++){
-		vv1 = Vec3d(-dh, 0.0, h[i][j] - h[i + 1][j    ]);
-		vv2 = Vec3d(0.0, -dh, h[i][j] - h[i    ][j + 1]);
+	for(j = 1; j < my - 1; j++)for(i = 1; i < mx - 1; i++){
+		vv1 = Vec3d(-dh, 0.0, height[i][j] - height[i + 1][j    ]);
+		vv2 = Vec3d(0.0, -dh, height[i][j] - height[i    ][j + 1]);
 		normal[i][j] = Vec3d(-vv1.Z() * vv2.Y(), -vv1.X() * vv2.Z(), vv1.X() * vv2.Y());
 		normal[i][j].unitize();
 		tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
@@ -312,9 +322,9 @@ void PHWater::Integrate(double dt){
 	const double pass = 300;
 	static double h;			
 
-    for(i = 1; i <= MX - 2; i++)for(j = 1; j <= MY - 2; j++){
-        u1[i][j] = u[i][j] - gravity * (dt / dh) * (height[i+1][j] - height[i][j]) * hinv + (p[i+1][j] - p[i][j]) / (rho_w * dh);
-        v1[i][j] = v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) * hinv + (p[i][j+1] - p[i][j]) / (rho_w * dh);
+    for(i = 1; i <= mx - 2; i++)for(j = 1; j <= my - 2; j++){
+        utmp[i][j] = u[i][j] - gravity * (dt / dh) * (height[i+1][j] - height[i][j]) * hinv + (p[i+1][j] - p[i][j]) / (density * dh);
+        vtmp[i][j] = v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) * hinv + (p[i][j+1] - p[i][j]) / (density * dh);
     }
 	
 	/*
@@ -324,21 +334,19 @@ void PHWater::Integrate(double dt){
 		同様にx = i, y = j - 1, y = jの流入出量を総和したものが四角領域の水量の変化量。
 		これに四角領域の面積dh * dhを割れば高さの変化量が得られる
 	 */
-    for(i = 1; i <= MX - 2; i++)for(j = 1; j <= MY - 2; j++)
-        wh1[i][j] = height[i][j] * hinv -
-			depth * dt * ((u1[i][j] - u1[i-1][j]) * dh + (v1[i][j] - v1[i][j-1]) * dh) / (dh * dh);
+    for(i = 1; i <= mx - 2; i++)for(j = 1; j <= my - 2; j++)
+        htmp[i][j] = height[i][j] * hinv -
+			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh);
     
 	//	ローパスフィルタ
-    for(i = 1; i < MX - 1; i++){
-        for(j = 1; j < MY - 1; j++){
-			h = wh1[i][j] * (4 + pass) + 
-				2.0 * (wh1[i-1][j  ] + wh1[i+1][j  ] + wh1[i  ][j-1] + wh1[i  ][j+1]) + 
-					   wh1[i-1][j-1] + wh1[i+1][j-1] + wh1[i-1][j+1] + wh1[i+1][j+1];
-			h /= (pass + 16);
-			height[i][j] = h * loss * hmul;
-            u[i][j] = u1[i][j] * loss;
-            v[i][j] = v1[i][j] * loss;
-        }
+    for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
+		h = htmp[i][j] * (4 + pass) + 
+			2.0 * (htmp[i-1][j  ] + htmp[i+1][j  ] + htmp[i  ][j-1] + htmp[i  ][j+1]) + 
+				   htmp[i-1][j-1] + htmp[i+1][j-1] + htmp[i-1][j+1] + htmp[i+1][j+1];
+		h /= (pass + 16);
+		height[i][j] = h * loss * hmul;
+        u[i][j] = utmp[i][j] * loss;
+        v[i][j] = vtmp[i][j] * loss;
     }
 }
 
@@ -393,13 +401,23 @@ void PHWaterEngine::SaveState(SGBehaviorStates& states) const{
 ///////////////////////////////////////////////////////////////////////////
 // Loader / Saver
 
+DEF_RECORD(XWater, {
+    GUID Guid(){ return WBGuid("ebb9188d-6c15-42aa-b15d-e1c89943ec0c"); } 
+	WORD mx;
+	WORD my;
+	FLOAT dh;
+	FLOAT depth;
+	FLOAT gravity;
+	FLOAT hscale;
+ });
+
 class PHWaterEngineLoader:public FIObjectLoader<PHWaterEngine>{
 	virtual bool LoadData(FILoadScene* ctx, PHWaterEngine* engine){
 		//ClearForceを探す→まだ無かったら生成、追加→自身をClearForceに登録
-		UTRef<PHWaterClearForce> clearForce;
+		UTRef<PHSolidClearForce> clearForce;
 		ctx->scene->GetBehaviors().Find(clearForce);
 		if(!clearForce){
-			clearForce= new PHWaterClearForce;
+			clearForce= new PHSolidClearForce;
 			ctx->scene->GetBehaviors().Add(clearForce);
 		}
 		clearForce->solvers.push_back(engine);
@@ -426,9 +444,14 @@ DEF_REGISTER_BOTH(PHWaterEngine);
 
 class PHWaterLoader:public FIObjectLoader<PHWater>{
 	virtual bool LoadData(FILoadScene* ctx, PHWater* water){
-		WaterInfo info;
-		ctx->docs.Top()->GetWholeData(info);
-		water->SetInfo(info);
+		XWater data;
+		ctx->docs.Top()->GetWholeData(data);
+		water->mx = data.mx;
+		water->my = data.my;
+		water->dh = data.dh;
+		water->depth = data.depth;
+		water->gravity = data.gravity;
+		water->hscale = data.hscale;
 		return true;
 	}
 };
@@ -439,13 +462,19 @@ class PHWaterSaver:public FIBaseSaver{
 		PHWater* water = (PHWater*)arg;
 		FIDocNodeBase* doc = ctx->CreateDocNode("Water", water);
 		ctx->docs.back()->AddChild(doc);
-		
-		doc->SetWholeData(water->GetInfo(info));
+		XWater data;
+		data.mx = water->mx;
+		data.my = water->my;
+		data.dh = (FLOAT)water->dh;
+		data.depth = (FLOAT)water->depth;
+		data.gravity = (FLOAT)water->gravity;
+		data.hscale = (FLOAT)water->hscale;
+		doc->SetWholeData(data);
 		if(water->GetFrame()){
-			doc->AddChild(ctx->CreateDocNode("REF", s->GetFrame()));
+			doc->AddChild(ctx->CreateDocNode("REF", water->GetFrame()));
 		}
 		else if(water->GetSolid()){
-			doc->AddChild(ctx->CreateDocNode("REF", s->GetSolid()));
+			doc->AddChild(ctx->CreateDocNode("REF", water->GetSolid()));
 		}
 	}
 };
