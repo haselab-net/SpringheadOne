@@ -130,6 +130,28 @@ public:
 	bool operator <(const UTRef& r) const { return Obj() < r.Obj(); }
 };
 
+/// UTRefの配列
+template<class T, class ARRAY = std::vector< UTRef<T> > >
+class UTRefArray : public ARRAY{
+public:
+	UTRef<T> Erase(const UTRef<T>& ref){
+		iterator it = std::find(begin(), end(), ref);
+		if (it == end()) return NULL;
+		UTRef<T> rv = *it;
+		erase(it);
+		return rv;
+	}
+	UTRef<T>* Find(const UTRef<T>& ref){
+		iterator it = std::find(begin(), end(), s);
+		if (it == end()) return NULL;
+		else return &*it;
+	}
+	UTRef<T>* Find(const UTRef<T>& ref) const {
+		return ((UTRefArray<T, ARRAY>*)this)->Find(ref);
+	}
+};
+
+
 ///	シングルトンクラス
 template <class T>
 T& Singleton(){
@@ -260,49 +282,6 @@ inline T assert_cast(U u){
 	return static_cast<T>(u);
 #endif
 }
-
-/* 以下は名前参照⇔アドレス参照間の自動変換のための実験ソースです。
-　今のとこ気にしないで(tazz) */
-
-///識別子
-template <typename IDT>
-class UTIdentifier
-{
-	IDT _id;
-public:
-	IDT& id(){return _id;}
-	IDT id()const{return _id;}
-};
-typedef UTIdentifier<UTString> UTName;
-
-///IDポインタ
-///＊IDによる参照とアドレスによる参照のペア。
-template<typename IDT, typename Ptr>
-class basic_idptr : public std::pair<IDT, Ptr>
-{
-public:
-	IDT& id(){return first;}
-	IDT id()const{return first;}
-	Ptr& ptr(){return second;}
-	Ptr ptr()const{return second;}
-
-	template<typename InIt>
-	void link(InIt first, InIt last)
-	{
-		while(first != last){
-			if((*first)->id() == id())ptr() = *first;
-			first++;
-		}
-	}
-};
-template<typename T>
-class idptr : public basic_idptr<UTString, T*>
-{
-public:
-	idptr(){ptr() = 0;}
-};
-template<typename T>
-class idref : public basic_idptr<UTString, UTRef<T> >{};
 
 
 }	//	namespace Spr
