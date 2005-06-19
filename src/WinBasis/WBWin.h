@@ -31,6 +31,7 @@
     #include <winsock2.h>
    #endif
  #endif
+ #include <unknwn.h>  //‚±‚ê‚ğinclude‚µ‚È‚¢‚Æ”ñMFCƒAƒvƒŠ‚Å‚ÍIUnknown‚ªéŒ¾‚³‚ê‚È‚¢
  #include <windows.h>
 #endif
 
