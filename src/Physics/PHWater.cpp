@@ -64,10 +64,13 @@ PHWater::PHWater(){
 bool PHWater::AddChildObject(SGObject* o, SGScene* s){
 	if(DCAST(SGFrame, o)){
 		frame = (SGFrame*)o;
+		frame->contents.push_back(this);
 		return true;
 	}
 	if(DCAST(PHSolid, o)){
 		solid = (PHSolid*)o;
+		if(solid->GetFrame())
+			solid->GetFrame()->contents.push_back(this);
 		return true;
 	}
 	return false;
@@ -113,6 +116,7 @@ void PHWater::Init(SGScene* scene){
     //color.resize(mx, my);
 
 	height.clear();
+	height[5][5] = 0.3;
 	htmp.clear();
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
         normal[i][j].clear();
@@ -129,10 +133,11 @@ void PHWater::Init(SGScene* scene){
 	//マテリアルの指定がなかった場合、デフォルトを作成
 	if(!material){
 		material = new GRMaterial;
-		material->specular = Vec4d(0.5, 0.5, 0.5, 0.5);
+		material->ambient  = Vec4d(0.5, 0.5, 0.5, 1.0);
+		material->specular = Vec4d(0.5, 0.5, 0.5, 1.0);
 		material->diffuse  = Vec4d(1.0, 1.0, 1.0, 1.0);
-		material->emissive = Vec4d(0.0, 0.0, 0.0, 0.0);
-
+		material->emissive = Vec4d(0.5, 0.5, 0.5, 1.0);
+		material->power = 0.5;
 		//vlight = Vec3d(0.0, 0.0, -1.0);
 	}
 
@@ -165,7 +170,7 @@ void PHWater::Init(SGScene* scene){
 
 		//マテリアル
 		materialD3 = new D3Material;
-		memcpy(&materialD3->material, (GRMaterialData*)&material, sizeof(GRMaterialData));
+		memcpy(&(materialD3->material), (GRMaterialData*)&*material, sizeof(GRMaterialData));
 		materialD3->bOpaque = material->IsOpaque();
 		//materials[i]->textureFilename = material->textureFilename;
 		//materials[i]->texture = render->textureManager.Get(materials[i]->textureFilename);
@@ -213,6 +218,7 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	for(int i = 0; i < mxy; i++){
 		vtxs[i].pos = Vec3f(x, y, pheight[i]);
 		vtxs[i].normal = pnormal[i];
+		x += dh;
 		if(i % mx == 0){
 			y += (float)dh;
 			x = (float)-dx;
@@ -227,14 +233,14 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	intf->OptimizeInplace(D3DXMESHOPT_COMPACT|D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
 	*/
 
-	if (materialD3->bOpaque && render->drawState&GRRender::DRAW_OPAQUE){
+	if (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE){
 		materialD3->Render(n, render);
 		WXCHECK(meshD3->intf->DrawSubset(0));
 	}
-	//if (!materials[i]->bOpaque && render->drawState&GRRender::DRAW_TRANSPARENT){
-	//	materials[i]->Render(f, renderBase);
-	//	WXCHECK(intf->DrawSubset(i));
-	//}
+	if (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT){
+		materialD3->Render(n, render);
+		WXCHECK(meshD3->intf->DrawSubset(0));
+	}
 	//	テクスチャを戻す．
 	render->device->SetTexture(0,NULL);
 
@@ -286,14 +292,16 @@ void PHWater::Step(SGScene* s){
     static double dis;
     int i,j;
 
+	return;
+
     //boundary condition
-    Bound();
+    //Bound();
     
 	//solve equation
-	Integrate(s->GetTimeStep());
+	//Integrate(s->GetTimeStep());
     
 	//boundary condition
-    Bound();
+    //Bound();
     
     /*if(yflow != 0.0) {
         shiftWater(height, yflow);
@@ -347,6 +355,9 @@ void PHWater::Integrate(double dt){
 		height[i][j] = h * loss * hmul;
         u[i][j] = utmp[i][j] * loss;
         v[i][j] = vtmp[i][j] * loss;
+		//height[i][j] = htmp[i][j] * hmul;
+		//u[i][j] = utmp[i][j];
+		//v[i][j] = vtmp[i][j];
     }
 }
 
@@ -401,6 +412,10 @@ void PHWaterEngine::SaveState(SGBehaviorStates& states) const{
 ///////////////////////////////////////////////////////////////////////////
 // Loader / Saver
 
+DEF_RECORD(XWaterEngine, {
+	GUID Guid(){ return WBGuid("a09e46e6-ed5b-4965-9ce6-34aa47f71265"); } 
+});
+	
 DEF_RECORD(XWater, {
     GUID Guid(){ return WBGuid("ebb9188d-6c15-42aa-b15d-e1c89943ec0c"); } 
 	WORD mx;
@@ -412,6 +427,7 @@ DEF_RECORD(XWater, {
  });
 
 class PHWaterEngineLoader:public FIObjectLoader<PHWaterEngine>{
+public:
 	virtual bool LoadData(FILoadScene* ctx, PHWaterEngine* engine){
 		//ClearForceを探す→まだ無かったら生成、追加→自身をClearForceに登録
 		UTRef<PHSolidClearForce> clearForce;
@@ -422,6 +438,11 @@ class PHWaterEngineLoader:public FIObjectLoader<PHWaterEngine>{
 		}
 		clearForce->solvers.push_back(engine);
 		return true;
+	}
+	PHWaterEngineLoader(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_RECORD_PROTO(XWaterEngine);
 	}
 };
 
@@ -443,6 +464,7 @@ public:
 DEF_REGISTER_BOTH(PHWaterEngine);
 
 class PHWaterLoader:public FIObjectLoader<PHWater>{
+public:
 	virtual bool LoadData(FILoadScene* ctx, PHWater* water){
 		XWater data;
 		ctx->docs.Top()->GetWholeData(data);
@@ -453,6 +475,13 @@ class PHWaterLoader:public FIObjectLoader<PHWater>{
 		water->gravity = data.gravity;
 		water->hscale = data.hscale;
 		return true;
+	}
+	PHWaterLoader(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_FIELD(WORD);
+		db->REG_FIELD(FLOAT);
+		db->REG_RECORD_PROTO(XWater);
 	}
 };
 

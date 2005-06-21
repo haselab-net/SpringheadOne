@@ -37,7 +37,7 @@ public:
 	virtual void Render(SGFrame* n, GRRender* render);
 
 	///力をクリアする
-	void ClearForce();
+	void ClearForce(){}
 
 	///フレームを取得
 	SGFrame* GetFrame(){return frame;}
