@@ -120,7 +120,7 @@ public:
 	
 	bool AddChildObject(SGObject* o, SGScene* s);
 	bool DelChildObject(SGObject* o, SGScene* s);
-	int GetPriority() const {return SGBP_WATERENGINE;}
+	int GetPriority() const {return SGBP_DYNAMICALSYSTEM;}
 	virtual void Step(SGScene* s);
 	virtual void ClearForce();
 	virtual void Loaded(SGScene* scene);

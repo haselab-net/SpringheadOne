@@ -260,6 +260,14 @@ SOURCE=.\PHWarp.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PHWater.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PHWater.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\physics.h
 # End Source File
 # End Target

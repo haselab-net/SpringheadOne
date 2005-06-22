@@ -180,9 +180,9 @@ void PHWater::Init(SGScene* scene){
 void PHWater::Render(SGFrame* n, GRRender* render){
 	//render‚ÌŽí—Þ‚ð”»’è
 	if(DCAST(D3Render, render))
-		return RenderD3(n, DCAST(D3Render, render));
+		RenderD3(n, DCAST(D3Render, render));
 	if(DCAST(GLRender, render))
-		return RenderGL(n, DCAST(GLRender, render));
+		RenderGL(n, DCAST(GLRender, render));
 }
 
 void PHWater::RenderD3(SGFrame* n, D3Render* render){

@@ -22,14 +22,14 @@ void SGScene::ClearForce(){
 }
 #define FP_ERROR_MASK	(_EM_INEXACT|_EM_UNDERFLOW)
 void SGScene::GenerateForce(){
-	_controlfp(FP_ERROR_MASK, _MCW_EM);
+//	_controlfp(FP_ERROR_MASK, _MCW_EM);	//	コメントをはずすと例外が起きる．要調査
 	behaviors.GenerateForce(this);
-	_controlfp(_MCW_EM, _MCW_EM);
+//	_controlfp(_MCW_EM, _MCW_EM);
 }
 void SGScene::Integrate(){
-	_controlfp(FP_ERROR_MASK, _MCW_EM);
+//	_controlfp(FP_ERROR_MASK, _MCW_EM);
 	behaviors.Integrate(this);
-	_controlfp(_MCW_EM, _MCW_EM);
+//	_controlfp(_MCW_EM, _MCW_EM);
 //	time += timeStep;
 	count++;
 }
