@@ -319,9 +319,10 @@ void CRBallVirtualHuman::OffSpring(){
 
 void CRBallVirtualHuman::SetJointSpring(float dt){
 	//const float SAFETYRATE = 0.001f;	// Hinge Human —p
-	const float SAFETYRATE = 0.0001f;
+	const float SAFETYRATE = 0.0007f;
 	float k = 0.2f * SAFETYRATE;
 	float b = 0.6f*10 * SAFETYRATE;
+
 	for(int i=0; i<joints.size(); ++i){
 		if(jointPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
@@ -332,8 +333,8 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 		}
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
-			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
-			jointBallPids[i]->differential = b * mass / dt;
+			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt) * 1.5f;
+			jointBallPids[i]->differential = b * mass / dt * 1.0f;
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 			//DSTR << i << " " << jointBallPids[i]->proportional << ", " << jointBallPids[i]->differential << ", " << jointBallPids[i]->integral << std::endl;
 		}
@@ -351,10 +352,18 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 	//@•G‚ð_‚ç‚©‚­‚·‚é
 	//JointPIDMul(jointPids[10], 0.1f, 0.8f);
 	//JointPIDMul(jointPids[14], 0.1f, 0.8f);
-
+	// ˜‚ðd‚­‚·‚é
+//	if(jointBallPids[0] != NULL){
+//		JointBallPIDMul(jointBallPids[0], 1.0f, 2.0f);
+//	}
+/*	// Žñ‚ðd‚­‚·‚é
+	if(jointBallPids[2] != NULL){
+		JointBallPIDMul(jointBallPids[2], 1.0f, 2.0f);
+	}*/
+/*
 	// ‹¹‚ð_‚ç‚©‚­‚·‚é
-	if(jointBallPids[1] != NULL){
-		JointBallPIDMul(jointBallPids[1], 0.9f, 1.0f);
+	if(jointPids[1] != NULL){
+		JointPIDMul(jointPids[1], 0.1f, 1.0f);
 	}
 
 	//@Œ¨‚ð_‚ç‚©‚­‚·‚é(‰E)
@@ -384,7 +393,7 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 	// ’Üæ‚ðd‚­‚·‚é(¶‘«)
 	if(jointPids[16] != NULL)
 			JointPIDMul(jointPids[16], 10.0f, 10.0f);
-
+*/
 }
 
 void CRBallVirtualHuman::SetJointInitAngle(){
@@ -409,6 +418,13 @@ void CRBallVirtualHuman::SetJointInitAngle(){
 	((PHJoint1D*)joints[34])->position = jointPids[34]->goal = 2*angle;
 	((PHJoint1D*)joints[35])->position = jointPids[35]->goal = angle;
 	*/
+	((PHJointBall*)joints[9])->position = jointBallPids[9]->goal = Quaternionf(cosf(angle/2), sinf(angle/2), 0.0f, 0.0f);
+	((PHJoint1D*)joints[10])->position = jointPids[10]->goal = -2*angle;
+	((PHJointBall*)joints[11])->position = jointBallPids[11]->goal = Quaternionf(cosf(angle/2), sinf(angle /2), 0.0f, 0.0f);
+
+	((PHJointBall*)joints[13])->position = jointBallPids[13]->goal = Quaternionf(cosf(angle/2), sinf(angle/2), 0.0f, 0.0f);
+	((PHJoint1D*)joints[14])->position = jointPids[14]->goal = -2*angle;
+	((PHJointBall*)joints[15])->position = jointBallPids[15]->goal = Quaternionf(cosf(angle/2), sinf(angle/2), 0.0f, 0.0f);
 }
 
 

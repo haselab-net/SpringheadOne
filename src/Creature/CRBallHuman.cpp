@@ -50,7 +50,7 @@ void CRBallHuman::SetModel(SGScene* scene){
 		SetInertia();
 		SetJointSpring((float)scene->GetTimeStep());
 		//SetJointRange();
-		//SetJointInitAngle();
+		SetJointInitAngle();
 		
 		totalMass = 0.0;
 		for(int i = 0; i < solids.size(); i++){

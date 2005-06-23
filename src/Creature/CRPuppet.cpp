@@ -794,9 +794,9 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;
 	*/
 	if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].initQt = Quaternionf(cosf(-0.1f), sinf(-0.1f), 0.0f, 0.0f);
-	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
+	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
 	//if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.6f), sinf(0.6f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
-	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
+	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
 	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.3f;
 	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
 }
