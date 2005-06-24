@@ -116,7 +116,7 @@ void PHWater::Init(SGScene* scene){
     //color.resize(mx, my);
 
 	height.clear();
-	height[5][5] = 0.3;
+	height[5][5] = 0.1;
 	htmp.clear();
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
         normal[i][j].clear();
@@ -292,16 +292,16 @@ void PHWater::Step(SGScene* s){
     static double dis;
     int i,j;
 
-	return;
+	//return;
 
     //boundary condition
-    //Bound();
+    Bound();
     
 	//solve equation
-	//Integrate(s->GetTimeStep());
+	Integrate(s->GetTimeStep());
     
 	//boundary condition
-    //Bound();
+    Bound();
     
     /*if(yflow != 0.0) {
         shiftWater(height, yflow);
@@ -341,6 +341,10 @@ void PHWater::Integrate(double dt){
 			流速u[i-1][j] * 辺dh * 水深depth * 時間dt
 		同様にx = i, y = j - 1, y = jの流入出量を総和したものが四角領域の水量の変化量。
 		これに四角領域の面積dh * dhを割れば高さの変化量が得られる
+
+		水深を一定値(depth)としているがこれをdepth + height[i][j]としてみたらどうか。
+
+		z方向流速を無視しているのはなぜ？
 	 */
     for(i = 1; i <= mx - 2; i++)for(j = 1; j <= my - 2; j++)
         htmp[i][j] = height[i][j] * hinv -
@@ -348,16 +352,16 @@ void PHWater::Integrate(double dt){
     
 	//	ローパスフィルタ
     for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
-		h = htmp[i][j] * (4 + pass) + 
+		/*h = htmp[i][j] * (4 + pass) + 
 			2.0 * (htmp[i-1][j  ] + htmp[i+1][j  ] + htmp[i  ][j-1] + htmp[i  ][j+1]) + 
 				   htmp[i-1][j-1] + htmp[i+1][j-1] + htmp[i-1][j+1] + htmp[i+1][j+1];
 		h /= (pass + 16);
 		height[i][j] = h * loss * hmul;
         u[i][j] = utmp[i][j] * loss;
-        v[i][j] = vtmp[i][j] * loss;
-		//height[i][j] = htmp[i][j] * hmul;
-		//u[i][j] = utmp[i][j];
-		//v[i][j] = vtmp[i][j];
+        v[i][j] = vtmp[i][j] * loss;*/
+		height[i][j] = htmp[i][j] * hmul;
+		u[i][j] = utmp[i][j];
+		v[i][j] = vtmp[i][j];
     }
 }
 
