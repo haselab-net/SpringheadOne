@@ -5,8 +5,8 @@ Scene {
 	}
 	WaterEngine{
 		Water{
-			100;
-			100;
+			10;
+			10;
 			0.1;	//dh
 			0.1;	//depth
 			9.8;	//gravity
