@@ -59,6 +59,8 @@ PHWater::PHWater(){
 	dh = 0.0;
 	depth = 0.0;
 	hscale = 1.0;
+	density = 1.0;
+	loss = 0.99;
 }
 
 bool PHWater::AddChildObject(SGObject* o, SGScene* s){
@@ -428,6 +430,8 @@ DEF_RECORD(XWater, {
 	FLOAT depth;
 	FLOAT gravity;
 	FLOAT hscale;
+	FLOAT density;
+	FLOAT loss;
  });
 
 class PHWaterEngineLoader:public FIObjectLoader<PHWaterEngine>{
@@ -478,6 +482,8 @@ public:
 		water->depth = data.depth;
 		water->gravity = data.gravity;
 		water->hscale = data.hscale;
+		water->density = data.density;
+		water->loss = data.loss;
 		return true;
 	}
 	PHWaterLoader(){
@@ -502,6 +508,8 @@ class PHWaterSaver:public FIBaseSaver{
 		data.depth = (FLOAT)water->depth;
 		data.gravity = (FLOAT)water->gravity;
 		data.hscale = (FLOAT)water->hscale;
+		data.density = (FLOAT)water->density;
+		data.loss = (FLOAT)water->loss;
 		doc->SetWholeData(data);
 		if(water->GetFrame()){
 			doc->AddChild(ctx->CreateDocNode("REF", water->GetFrame()));
