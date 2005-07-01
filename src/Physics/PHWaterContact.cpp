@@ -4,6 +4,35 @@
 namespace Spr{;
 
 //----------------------------------------------------------------------------
+//PHWSolid
+PHWSolid::Init(){
+	frame = solid->GetFrame();
+	//SGFrame::contentsからCDGeometryの派生クラスオブジェクトを探す
+	EnumGeometries(frame);
+}
+
+PHWSolid::EnumGeometries(SGFrame* f){
+	CDMesh* g;
+	for(SGObjects::iterator ic = f->contents.begin(); ic != f->contents.end(); ic++){
+		g = DCAST(CDMesh, *ic);
+		if(g){
+			geometries.push_back(new PHWGeometry);
+			geometries.back()->Set(f, g);
+		}
+	}
+	for(SGFrames::iterator i = f->Children().begin(); i != f->Children().end(); i++)
+		EnumGeometries(*i);
+}
+
+//----------------------------------------------------------------------------
+//PHWGeometry
+void PHWGeometry::Set(SGFrame* f, CDMesh* g){
+	frame = f;
+	conveces = g->conveces;
+}
+
+
+//----------------------------------------------------------------------------
 //	PHWaterContactEngine
 //
 SGOBJECTIMP(PHWaterContactEngine, SGBehaviorEngine);
@@ -14,18 +43,10 @@ PHWaterContactEngine::PHWaterContactEngine(){
 
 bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 	if(DCAST(PHSolid, o)){
-		solids.push_back((PHSolid*)o);
+		solids.push_back(new PHWSolidInfo);
+		solids.back()->solid = DCAST(PHSolid, o);
 		return true;
 	}
-	//SGFrameは目下未対応
-	/*if (DCAST(SGFrame, o)){
-		solids.push_back(new PHSolid);
-		solids.back()->SetMass(FLT_MAX);
-        Matrix3d in = Matrix3d::Unit();
-		solids.back()->SetInertia(in * 1e200);
-		solids.back()->SetFrame((SGFrame*)o);
-		return true;
-	}*/
 	if(DCAST(PHWater, o)){
 		water = DCAST(PHWater, o);
 		return true;
@@ -42,6 +63,14 @@ void PHWaterContactEngine::Loaded(SGScene* scene){
 }
 
 void PHWaterContactEngine::Init(SGScene* scene){
+	//Solidの形状データを吸い出す
+	PHWSolid* s;
+	CDGeometry* g;
+	for(PHWSolids::iterator is = solids.begin(); is != solids.end(); is++)
+		(*is)->Init();
+}
+
+void PHWaterContactEngine::Step(SGScene* s){
 	
 }
 
