@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="Physics"
+	ProjectGUID="{FA052413-2417-49EE-9387-5BB7B17CF9F4}"
 	SccProjectName=""
 	SccAuxPath=""
 	SccLocalPath=""
@@ -18,7 +19,7 @@
 			OutputDirectory="."
 			IntermediateDirectory=".\MFCRelease7"
 			ConfigurationType="4"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
@@ -644,6 +645,12 @@
 		</File>
 		<File
 			RelativePath="PHWarp.h">
+		</File>
+		<File
+			RelativePath=".\PHWater.cpp">
+		</File>
+		<File
+			RelativePath=".\PHWater.h">
 		</File>
 		<File
 			RelativePath="physics.h">
