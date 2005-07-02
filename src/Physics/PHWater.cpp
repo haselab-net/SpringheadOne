@@ -43,6 +43,10 @@ void PHWaterEngine::ClearForce(){
 	}
 }
 
+void PHWaterEngine::Clear(SGScene* s){
+	waters.clear();
+}
+
 void PHWaterEngine::Loaded(SGScene* scene){
 	for(PHWaters::iterator it = waters.begin(); it != waters.end(); ++it){
 		(*it)->Loaded(scene);

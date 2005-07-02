@@ -16,8 +16,9 @@ typedef std::vector<UTRef<CDConvex> > CDConveces;
 //ジオメトリが持つ凸多面体をリストアップしたもの
 class PHWGeometry : public UTRefCount{
 public:
-	UTRef<SGFrame> frame;			//このジオメトリが属する子フレーム
-	CDConveces conveces;			//このジオメトリを構成する凸多面体
+	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
+	Vec3f			bbmin, bbmax;	//このジオメトリのBBOX
+	CDConveces		conveces;		//このジオメトリを構成する凸多面体
 };
 typedef std::vector<UTRef<PHWGeometry> >	PHWGeometries;
 
