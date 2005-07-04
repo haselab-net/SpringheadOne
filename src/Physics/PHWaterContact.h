@@ -2,7 +2,7 @@
 #ifndef PHWATERCONTACT_H
 #define PHWATERCONTACT_H
 
-#include "PHSolid.h"
+#include <Base/BaseUtility.h>
 #include <SceneGraph/SGScene.h>
 #include <vector>
 
@@ -11,24 +11,30 @@ namespace Spr{;
 //この辺の機能は出来る限りCollisionとマージしたいところ...
 //PHWサフィックスはPHWater内部クラスの意
 
-typedef std::vector<UTRef<CDConvex> > CDConveces;
+class CDConvex;
+class CDMesh;
+//typedef std::vector<UTRef<CDConvex> > CDConveces;
 
 //ジオメトリが持つ凸多面体をリストアップしたもの
 class PHWGeometry : public UTRefCount{
 public:
 	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
 	Vec3f			bbmin, bbmax;	//このジオメトリのBBOX
-	CDConveces		conveces;		//このジオメトリを構成する凸多面体
+	CDGeometries	conveces;		//このジオメトリを構成する凸多面体
+	void Set(SGFrame* f, CDMesh* g);
 };
 typedef std::vector<UTRef<PHWGeometry> >	PHWGeometries;
 
 //剛体が持つ形状データをリストアップしたもの
+class PHSolid;
 class PHWSolid : public UTRefCount{
 public:
 	UTRef<PHSolid>		solid;		//剛体
 	UTRef<SGFrame>		frame;		//剛体フレーム
 	Affinef				posture;	//剛体フレームのワールドフレームに対するposture
 	PHWGeometries		geometries;	//剛体のフレームの形状データ
+	void Init();
+	void EnumGeometries(SGFrame*);
 };
 typedef std::vector<UTRef<PHWSolid> >		PHWSolids;
 
@@ -36,6 +42,7 @@ typedef std::vector<UTRef<PHWSolid> >		PHWSolids;
 	現状ではPHWater 1 対 PHSolid 多
 	もちろんPHSolid同士の接触は別途PHContactEngineでやってください．
  */
+class PHWater;
 class PHWaterContactEngine : public SGBehaviorEngine{
 public:
 	SGOBJECTDEF(PHWaterContactEngine);
@@ -57,7 +64,7 @@ public:
 	///
 	int GetPriority() const { return SGBP_WATERCONTACTENGINE; }
 	///	時間を dt 進める．
-	virtual void Step(SGScene* s){}
+	virtual void Step(SGScene* s);
 	///	
 	virtual void Clear(SGScene* s);
 	///	状態の読み出し

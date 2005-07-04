@@ -1,17 +1,20 @@
 #include "Physics.h"
+#include <Physics/PHWater.h>
+#include <Physics/PHWaterContact.h>
+#include <Collision/CDMesh.h>
 #pragma hdrstop
 
 namespace Spr{;
 
 //----------------------------------------------------------------------------
 //PHWSolid
-PHWSolid::Init(){
+void PHWSolid::Init(){
 	frame = solid->GetFrame();
 	//SGFrame::contentsからCDGeometryの派生クラスオブジェクトを探す
 	EnumGeometries(frame);
 }
 
-PHWSolid::EnumGeometries(SGFrame* f){
+void PHWSolid::EnumGeometries(SGFrame* f){
 	CDMesh* g;
 	for(SGObjects::iterator ic = f->contents.begin(); ic != f->contents.end(); ic++){
 		g = DCAST(CDMesh, *ic);
@@ -28,7 +31,7 @@ PHWSolid::EnumGeometries(SGFrame* f){
 //PHWGeometry
 void PHWGeometry::Set(SGFrame* f, CDMesh* g){
 	frame = f;
-	conveces = g->conveces;
+	copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
 }
 
 
@@ -43,7 +46,7 @@ PHWaterContactEngine::PHWaterContactEngine(){
 
 bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 	if(DCAST(PHSolid, o)){
-		solids.push_back(new PHWSolidInfo);
+		solids.push_back(new PHWSolid);
 		solids.back()->solid = DCAST(PHSolid, o);
 		return true;
 	}
@@ -74,21 +77,25 @@ void PHWaterContactEngine::Step(SGScene* s){
 	CDPolyhedron* poly;
 	PHWSolids::iterator is;
 	PHWGeometries::iterator ig;
-	CDConveces::iterator ic;
+	CDGeometries::iterator ic;
 	CDFaces::iterator iface;
-	Vec3d buo, tbuo;	//浮力と浮力によるモーメント
+	Vec3d b, buo, tbuo;	//浮力と浮力によるモーメント
+	Vec3d pos;
+	double wz;
+
+	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(is = solids.begin(); is != solids.end(); is++){
 		solid = *is;
 		//全ジオメトリについて･･･
 		for(ig = solid->geometries.begin(); ig != solid->geometries.end(); ig++){
-			g = *ig;
+			geo = *ig;
 			//BBoxレベルでの接触チェック
 			//...
 
+			//凸多面体の各面に加わる浮力をジオメトリの中心を基準として積算
 			buo.clear();
 			tbuo.clear();
-			//全凸多面体について･･･
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
 				if(!poly)continue;
@@ -99,12 +106,12 @@ void PHWaterContactEngine::Step(SGScene* s){
 				for(iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
 					//この面が水面下にあるかどうか調べる
 					iface->center;
-					p;
-					wz = water->LerpHeight(p.X(), p.Y());
+					pos;
+					wz = water->LerpHeight(pos.X(), pos.Y());
 					//水面下ならば浮力を計算
-					if(wz > p.Z()){
+					if(wz > pos.Z()){
 						//このサンプル点が受ける浮力
-						b = -iface->normal * (wz - sp->p.Z()) * iface->area;
+						b = -iface->normal * (wz - pos.Z()) * iface->area;
 						buo += b;
 
 						//モーメント
@@ -112,6 +119,8 @@ void PHWaterContactEngine::Step(SGScene* s){
 					}
 				}
 			}
+			//ジオメトリフレームから剛体フレームへ変換してAddForce
+
 		}
 	}
 }
@@ -155,7 +164,7 @@ void getBuoyancy(ThapticObj *ho, Tpoint3f *buo, Tpoint3f *tbuo) {
     //    if(ho->hsrc[i].n_sp > 0) ho->hsrc[i].a /= (Trealf)ho->hsrc[i].n_sp;
     //}
 }
-
+*/
 
 //----------------------------------------------------------------------------
 //	PHWaterContactEngineLoader
@@ -177,10 +186,10 @@ public:
 		PHWaterContactEngine* pc = (PHWaterContactEngine*)arg;
 		FIDocNodeBase* doc = ctx->CreateDocNode("WaterContactEngine", pc);
 		ctx->docs.back()->AddChild(doc);
-		for(PHSolids::iterator it = pc->solids.begin(); it != pc->solids.end(); ++it){
-			doc->AddChild(ctx->CreateDocNode("REF", *it));
+		for(PHWSolids::iterator it = pc->solids.begin(); it != pc->solids.end(); ++it){
+			doc->AddChild(ctx->CreateDocNode("REF", (*it)->solid));
 		}
-		doc->AddChild(ctx->CreateDocNode("REF", water));
+		doc->AddChild(ctx->CreateDocNode("REF", pc->water));
 	}
 };
 DEF_REGISTER_BOTH(PHWaterContactEngine);

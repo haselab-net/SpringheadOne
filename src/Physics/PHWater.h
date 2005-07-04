@@ -49,6 +49,9 @@ public:
 	SGFrame* GetFrame(){return frame;}
 	PHSolid* GetSolid(){return solid;}
 
+	///格子中間の値を線形補完して返す
+	double LerpHeight(double x, double y);
+
 	//パラメータ
 	int		my, mx;		//分割数
 	double	dh;			//格子の幅
@@ -102,9 +105,6 @@ protected:
 
 	///初期化処理
 	void Init(SGScene* scene);
-
-	///格子中間の値を線形補完して返す
-	double LerpHeight(double x, double y);
 
 	///
 	void Shift();
