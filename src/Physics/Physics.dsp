@@ -268,6 +268,14 @@ SOURCE=.\PHWater.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PHWaterContact.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PHWaterContact.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\physics.h
 # End Source File
 # End Target

@@ -1,8 +1,8 @@
 #include "Physics.h"
+#pragma hdrstop
 #include <Physics/PHWater.h>
 #include <Physics/PHWaterContact.h>
 #include <Collision/CDMesh.h>
-#pragma hdrstop
 
 namespace Spr{;
 
@@ -31,7 +31,7 @@ void PHWSolid::EnumGeometries(SGFrame* f){
 //PHWGeometry
 void PHWGeometry::Set(SGFrame* f, CDMesh* g){
 	frame = f;
-	copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
+	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
 }
 
 
