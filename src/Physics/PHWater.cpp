@@ -183,6 +183,32 @@ void PHWater::Init(SGScene* scene){
 	}
 }
 
+double PHWater::LerpHeight(double x, double y){
+	static double nx, ny, h0, h1;
+
+    if(x < -dx || x > dx || y < -dy || y > dy)
+		return 0.0;
+
+	//座標から格子インデックスを算出
+	nx = (x + dx) / dh;
+	ny = (y + dy) / dh;
+	int ix = floor(nx), iy = floor(ny);
+    
+    h0 = height[ix    ][iy] * (1.0 - ny) + height[ix    ][iy + 1] * ny;
+    h1 = height[ix + 1][iy] * (1.0 - ny) + height[ix + 1][iy + 1] * ny;
+
+    return h0 * (1.0 - nx) + h1 * nx;
+}
+
+void PHWater::Shift(){
+    /*int i,j;
+    for(j=0; j<MY; j++)for(i=0; i<MX; i++)
+		tmp[IX(i,j)] = x[IX(i,j)];
+
+    for(j=1; j<MY-1; j++)for(i=1; i<MX-1; i++)
+		x[IX(i,j)] = (1.0-shift)*tmp[IX(i,j)]+shift*tmp[IX(i,j+1)];*/
+}
+
 void PHWater::Render(SGFrame* n, GRRender* render){
 	//renderの種類を判定
 	if(DCAST(D3Render, render))

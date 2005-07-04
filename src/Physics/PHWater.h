@@ -14,6 +14,12 @@ namespace Spr{;
 	・設計によってはWaterContainerという命名が適当かも
 	・PHWaterClearForceの対象はSolidに限らず力が加わるもの全般なので、
 		PHClearForceとすべき
+
+	PHWaterの座標の取り方：
+	・Z軸は静水面に直交し、上向き．
+	・格子はx軸方向に格子数mx + 1，幅mx * dh，y軸方向に格子数my + 1，幅my + dh．
+	・座標原点は格子の中央．
+	・今のところ水深depthはスカラ定数だがheightと同じく格子ごとに異なる値をとるように拡張したい
 */
 
 class D3Mesh;
@@ -97,6 +103,12 @@ protected:
 	///初期化処理
 	void Init(SGScene* scene);
 
+	///格子中間の値を線形補完して返す
+	double LerpHeight(double x, double y);
+
+	///
+	void Shift();
+
 	///境界条件を設定する
 	void Bound();
 
@@ -124,7 +136,7 @@ public:
 	virtual void Step(SGScene* s);
 	virtual void ClearForce();
 	virtual void Loaded(SGScene* scene);
-	virtual void Clear(SGScene* s){ waters.clear(); }
+	virtual void Clear(SGScene* s);
 	virtual size_t NChildObjects(){ return waters.size(); }
 	virtual SGObject* ChildObject(size_t i){ return (SGObject*)&*(waters[i]); }
 
