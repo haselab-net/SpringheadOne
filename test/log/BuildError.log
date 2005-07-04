@@ -1,21 +1,20 @@
-日付 : 2005.07.04 
+日付 : 2005.07.05 
  
 --- ビルドエラーのログ --- 
  
 *** Springhead *** 
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
+LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
  
  
 *** DynaHaptic *** 
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
  
  
 *** MFCD3DDyna *** 
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
  
  
 *** SDKD3DDyna *** 
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
+PhysicsD.lib(PHWater.obj) : error LNK2001: 外部ｼﾝﾎﾞﾙ ""public: static class Spr::UTTypeInfoImp<class Spr::GLRender>  Spr::GLRender::typeInfo" (?typeInfo@GLRender@Spr@@2V?$UTTypeInfoImp@VGLRender@Spr@@@2@A)" は未解決です
+Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
  
  
 *** TreeTestView *** 

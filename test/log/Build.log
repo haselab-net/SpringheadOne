@@ -20,6 +20,7 @@ CDGJK.cpp
 CDMesh.cpp
 CDPhysicalMaterial.cpp
 CDPolyhedron.cpp
+C:\SVNWork\Springhead\src\Collision\CDPolyhedron.cpp(41) : warning C4305: 'argument' : 'const double' から 'float' へ切り詰めます。
 CDRegisterLoader.cpp
 CDSphere.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
@@ -113,23 +114,52 @@ PHWarp.cpp
 PHWater.cpp
 C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(25) : warning C4786: 'std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
         C:\SVNWork\Springhead\src\FileIO/FITypeDesc.h(187) : ｺﾝﾊﾟｲﾙされたｸﾗｽのﾃﾝﾌﾟﾚｰﾄのｲﾝｽﾀﾝｽ化 'std::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>' の参照を確認してください
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
-cl.exe の実行ｴﾗｰ
-
-SpringheadMD.lib - ｴﾗｰ 1、警告 1
- 
- 
-*** DynaHaptic *** 
---------------------構成: Physics - Win32 MFC Debug--------------------
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::i' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
+        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>::std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>(const class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
+        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>::std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>(const std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
+PHWaterContact.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: SceneGraph - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
-PHWater.cpp
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
-cl.exe の実行ｴﾗｰ
-
-DynaHaptic.exe - ｴﾗｰ 1、警告 0
- 
- 
-*** MFCD3DDyna *** 
+SGBehaviorEngine.cpp
+SGEngine.cpp
+SGFrame.cpp
+SGObject.cpp
+SGRegisterLoader.cpp
+SGRenderEngine.cpp
+SGScene.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: WinBasis - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WBComStream.cpp
+WBDllLoader.cpp
+WBMMTimer.cpp
+WBPath.cpp
+WBPortIO.cpp
+WBPreciseTimer.cpp
+WBSocket.cpp
+WBSockStr.cpp
+WBUtility.cpp
+WBWindowMan.cpp
+WBWinDriver.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+glu32.lib(GLU32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: Framework - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+FWApp.cpp
+FWAppD3D.cpp
+FWFileIO.cpp
+FWFileIOD3D.cpp
+FWPointer.cpp
+ｺｰﾄﾞを生成中...
+ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: Graphics - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
 GRCamera.cpp
@@ -143,13 +173,85 @@ GRSound.cpp
 GRSphere.cpp
 GRVisual.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
---------------------構成: Physics - Win32 MFC Debug--------------------
+--------------------構成: GraphicsGL - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
-PHWater.cpp
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
-cl.exe の実行ｴﾗｰ
+GLMesh.cpp
+GLRegisterLoader.cpp
+GLRender.cpp
+GLSphere.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: Springhead - Win32 MFC Debug--------------------
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
+c:\winnt\system32\cmd.exe の実行ｴﾗｰ
 
-MFCD3DDyna.exe - ｴﾗｰ 1、警告 0
+SpringheadMD.lib - ｴﾗｰ 1、警告 7
+ 
+ 
+*** DynaHaptic *** 
+--------------------構成: WinDX - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WXComBase.cpp
+WXError.cpp
+WXD3D.cpp
+WXDInput.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+d3d9.lib(d3d9.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+dsound.lib(DSOUND.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+Quartz.lib(QUARTZ.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+d3dxof.lib(d3dxof.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: Creature - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+CRActionPlanner.cpp
+CRBalance.cpp
+CRBalanceMultiLeg.cpp
+CRBalanceQuadPR.cpp
+CRBallHuman.cpp
+CRBallVirtualHuman.cpp
+CRBeetle.cpp
+CRHuman.cpp
+CRPuppet.cpp
+CRReachingMovment.cpp
+CRReachingMovmentPD.cpp
+CRRegisterLoader.cpp
+CRSupportArea.cpp
+CRUser.cpp
+CRVH.cpp
+CRVirtualHuman.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: DynaHaptic - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+DynaHaptic.cpp
+DynaHapticDoc.cpp
+DynaHapticView.cpp
+HisConfig.cpp
+MainFrm.cpp
+ﾘﾝｸ中...
+
+DynaHaptic.exe - ｴﾗｰ 0、警告 5
+ 
+ 
+*** MFCD3DDyna *** 
+--------------------構成: MFCD3DDyna - Win32 MFC Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+MainFrm.cpp
+MFCD3DDyna.cpp
+MFCD3DDynaDoc.cpp
+MFCD3DDynaView.cpp
+ﾘﾝｸ中...
+
+MFCD3DDyna.exe - ｴﾗｰ 0、警告 0
  
  
 *** SDKD3DDyna *** 
@@ -173,6 +275,7 @@ CDGJK.cpp
 CDMesh.cpp
 CDPhysicalMaterial.cpp
 CDPolyhedron.cpp
+C:\SVNWork\Springhead\src\Collision\CDPolyhedron.cpp(41) : warning C4305: 'argument' : 'const double' から 'float' へ切り詰めます。
 CDRegisterLoader.cpp
 CDSphere.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
@@ -231,11 +334,74 @@ PHWarp.cpp
 PHWater.cpp
 C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(25) : warning C4786: 'std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
         C:\SVNWork\Springhead\src\FileIO/FITypeDesc.h(187) : ｺﾝﾊﾟｲﾙされたｸﾗｽのﾃﾝﾌﾟﾚｰﾄのｲﾝｽﾀﾝｽ化 'std::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>' の参照を確認してください
-C:\SVNWork\Springhead\src\Physics\PHWater.cpp(46) : error C2084: 関数 'void __thiscall Spr::PHWaterEngine::Clear(class Spr::SGScene *)' はすでに実体を持っています。
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::i' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
+        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>::std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>(const class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
+        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>::std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>(const std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
+PHWaterContact.cpp
 ｺｰﾄﾞを生成中...
-cl.exe の実行ｴﾗｰ
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>' : ﾃﾞﾊﾞｯｸﾞ情報で識別子が 255 文字に切り捨てられました。
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseSaver *,Spr::FIBaseSaver *,std::set<Spr::FIBaseSaver *,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::iterator,bool>::pair<std::_Tree<Spr::FIBaseSaver *,Spr::FIBaseSaver *,std::set<Spr::FIBaseSaver *,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::iterator,bool>' : ﾃﾞﾊﾞｯｸﾞ情報で識別子が 255 文字に切り捨てられました。
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>' : ﾃﾞﾊﾞｯｸﾞ情報で識別子が 255 文字に切り捨てられました。
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: SceneGraph - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+SGBehaviorEngine.cpp
+SGEngine.cpp
+SGFrame.cpp
+SGObject.cpp
+SGRegisterLoader.cpp
+SGRenderEngine.cpp
+SGScene.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+--------------------構成: WinBasis - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WBComStream.cpp
+WBDllLoader.cpp
+WBMMTimer.cpp
+WBPath.cpp
+WBPortIO.cpp
+WBPreciseTimer.cpp
+WBSocket.cpp
+WBSockStr.cpp
+WBUtility.cpp
+WBWindowMan.cpp
+WBWinDriver.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+ws2_32.lib(WS2_32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+glu32.lib(GLU32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は winmm.lib(WINMM.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: WinDX - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+WXComBase.cpp
+WXError.cpp
+WXD3D.cpp
+WXDInput.cpp
+ﾗｲﾌﾞﾗﾘを作成中...
+ライブラリのマージ
+ライブラリをマージします．VisualC++のライブラリ管理ツール LIB.EXE にパスを通しておいてください．
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+d3d9.lib(d3d9.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+dsound.lib(DSOUND.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+Quartz.lib(QUARTZ.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+d3dxof.lib(d3dxof.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.lib(DDRAW.dll) で定義されています; 2 つ目以降の定義は無視されます
+--------------------構成: SDKD3DDyna - Win32 Debug--------------------
+ｺﾝﾊﾟｲﾙ中...
+InitFuncs.cpp
+Main.cpp
+MesFuncs.cpp
+ﾘﾝｸ中...
+PhysicsD.lib(PHWater.obj) : error LNK2001: 外部ｼﾝﾎﾞﾙ ""public: static class Spr::UTTypeInfoImp<class Spr::GLRender>  Spr::GLRender::typeInfo" (?typeInfo@GLRender@Spr@@2V?$UTTypeInfoImp@VGLRender@Spr@@@2@A)" は未解決です
+Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
+link.exe の実行ｴﾗｰ
 
-SDKD3DDyna.exe - ｴﾗｰ 1、警告 1
+SDKD3DDyna.exe - ｴﾗｰ 2、警告 15
  
  
 *** TreeTestView *** 
@@ -403,7 +569,6 @@ SDKD3DDyna.exe - ｴﾗｰ 1、警告 1
     HIMouse.cpp(5): namespace Spr
     HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
 [C++] SGFrame.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGObject.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGScene.cpp(1): 
@@ -413,13 +578,11 @@ SDKD3DDyna.exe - ｴﾗｰ 1、警告 1
 [C++] SGEngine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGRegisterLoader.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGRenderEngine.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
 [C++] FITypeDesc.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocNode.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] FIFileDoc.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] FIDocScene.cpp(1): 
@@ -427,7 +590,6 @@ SDKD3DDyna.exe - ｴﾗｰ 1、警告 1
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] CDGJK.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] CDSphere.cpp(1): 
