@@ -14,9 +14,14 @@ public:
 	};
 	int vtxs[3];	///< 面の頂点
 
+	// 面の付加情報
 	//	交差部分の形状を求める計算のための作業領域
+	Vec3f center;	///<	3角形の中心
 	Vec3f normal;	///<	面の法線ベクトル
 	float dist;		///<	原点からの距離
+	float area;		///<	3角形の面積
+
+
 	///	QuickHullにとっての頂点．この面を双対変換してできる頂点
 	Vec3f GetPos() const { return normal / dist; }
 	///
