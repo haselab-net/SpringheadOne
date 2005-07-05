@@ -6,6 +6,8 @@
 #include <GraphicsGL/GLRender.h>
 #include <GraphicsGL/GLMesh.h>
 #include <Physics/PHSolid.h>
+#include <gl/gl.h>
+#include <gl/glu.h>
 
 #pragma hdrstop
 
@@ -15,6 +17,8 @@ namespace Spr{;
 // PHWaterEngine
 
 SGOBJECTIMP(PHWaterEngine, PHSolverBase);
+
+    // insert new phwater object to the end of the vector
 bool PHWaterEngine::AddChildObject(SGObject* o, SGScene* s){
 	if (DCAST(PHWater, o)){
 		waters.push_back((PHWater*)o);
@@ -22,6 +26,8 @@ bool PHWaterEngine::AddChildObject(SGObject* o, SGScene* s){
 	}
 	return false;
 }
+
+    // delete the specific phwater object
 bool PHWaterEngine::DelChildObject(SGObject* o, SGScene* s){
 	PHWater* w = DCAST(PHWater, o);
 	if(w){
@@ -31,12 +37,15 @@ bool PHWaterEngine::DelChildObject(SGObject* o, SGScene* s){
 	return false;
 }
 
+    // call the step function of all phwater objects
+    // this method updates information of all phwater objects in the waters vector
 void PHWaterEngine::Step(SGScene* s){
 	for(PHWaters::iterator it = waters.begin(); it != waters.end(); ++it){
 		(*it)->Step(s);
 	}
 }
 
+    // call clearforce method of all phwater objects in the waters vector
 void PHWaterEngine::ClearForce(){
 	for(PHWaters::iterator it = waters.begin(); it != waters.end(); ++it){
 		(*it)->ClearForce();
@@ -57,16 +66,17 @@ void PHWaterEngine::Loaded(SGScene* scene){
 // PHWater
 
 SGOBJECTIMP(PHWater, GRVisual);
-
+    // constructor
 PHWater::PHWater(){
 	mx = my = 0;
 	dh = 0.0;
 	depth = 0.0;
 	hscale = 1.0;
-	density = 1.0;
-	loss = 0.99;
 }
 
+    // this function adds new child data to the end of the vector
+    // object of SGFrame or PHSolid can be inserted
+    // this function returns the result of insertion as a boolean
 bool PHWater::AddChildObject(SGObject* o, SGScene* s){
 	if(DCAST(SGFrame, o)){
 		frame = (SGFrame*)o;
@@ -82,6 +92,9 @@ bool PHWater::AddChildObject(SGObject* o, SGScene* s){
 	return false;
 }
 
+    // refer the object
+    // if object exists
+    // this function returns 1, otherwise returns 0
 size_t PHWater::NReferenceObjects(){
 	//frameとsolidを同時に参照することはない
 	if(frame) return 1;
@@ -89,6 +102,10 @@ size_t PHWater::NReferenceObjects(){
 	return 0;
 }
 
+    // refer the object
+    // if i is not 0, return NULL
+    // if i is zero and object exists,
+    // return object
 SGObject* PHWater::ReferenceObject(size_t i){
 	if(i != 0) return NULL;
 	if(frame) return frame;
@@ -96,16 +113,22 @@ SGObject* PHWater::ReferenceObject(size_t i){
 	return NULL;
 }
 
+    // this method calls the init function with the given scene
 void PHWater::Loaded(SGScene* scene){
 	Init(scene);
 }
 
+    // this function initializes local variables
 void PHWater::Init(SGScene* scene){
     //xo = -(MX - 1) / 2. * dh;	//x原点	
     //yo = -(MY - 1) / 2. * dh;	//y原点
 	int i, j;
 
+    // total number of cells
 	mxy = mx * my;
+
+    // dh = width of grid
+    // mx, my = number of divisions
 	dx = mx * dh / 2.0;
 	dy = my * dh / 2.0;
 
@@ -121,15 +144,22 @@ void PHWater::Init(SGScene* scene){
     tvec.resize(mx, my);
     //color.resize(mx, my);
 
+    // initialize height matrix array
 	height.clear();
 	height[5][5] = 0.1;
+
+    // temporary height variable
 	htmp.clear();
+
+    // initialize normal matrix array
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
         normal[i][j].clear();
 
+    // calculate refracted vectors
 	for (j = 0; j < my; j++)for(i = 0; i < mx; i++)
         tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
-        
+
+    // clear velocity variables and pressure
 	u.clear();
 	utmp.clear();
 	v.clear();
@@ -147,9 +177,21 @@ void PHWater::Init(SGScene* scene){
 		//vlight = Vec3d(0.0, 0.0, -1.0);
 	}
 
+    // -------------- above codes are the common initializations
+    // for both OpenGL and direct3D
+    
 	//Direct3D用のメッシュを作成
-	D3Render* render = NULL;
+	 D3Render* render = NULL;
+
+    // for opengl: declaration of the render object
+    // GLRender* render = NULL;
+    
+    // search and overwrite render variable 
+    // which is already declared
 	scene->GetRenderers().Find(render);
+
+    // if render exists
+    // execute following statements as directX rendering
 	if(render){
 		meshD3 = new D3Mesh;
 		DWORD fvf;
@@ -161,6 +203,7 @@ void PHWater::Init(SGScene* scene){
 		D3DXCreateMeshFVF(nTriangles, mxy, D3DXMESH_MANAGED, fvf, render->device, &(meshD3->intf.Intf()));
 
 		//インデックスバッファ
+        // indexbuffer helps to assemble a complex object with a minimum number of vertex coordinates
 		WORD* indexBuf = NULL;
 		meshD3->LockIndexBuffer(0, (void**)&indexBuf);
 		int x, y, i = 0;
@@ -177,7 +220,10 @@ void PHWater::Init(SGScene* scene){
 		//マテリアル
 		materialD3 = new D3Material;
 		memcpy(&(materialD3->material), (GRMaterialData*)&*material, sizeof(GRMaterialData));
+
+        // copy boolean variable
 		materialD3->bOpaque = material->IsOpaque();
+        
 		//materials[i]->textureFilename = material->textureFilename;
 		//materials[i]->texture = render->textureManager.Get(materials[i]->textureFilename);
 	}
@@ -217,6 +263,9 @@ void PHWater::Render(SGFrame* n, GRRender* render){
 		RenderGL(n, DCAST(GLRender, render));
 }
 
+    // drawn by Direct3D
+    // if mesh is not created or initialized
+    // do nothing and exit the function
 void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	if(!meshD3) return;
 
@@ -235,18 +284,28 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 		}
 		intf->UnlockVertexBuffer();
 	}else{*/
+    // copy the head address of the varialbe height array to pheight
 	double* pheight = &height[0][0];
+    // copy the head address of the variable normal array to pnormal
 	Vec3d*  pnormal = &normal[0][0];
 	
 	//頂点バッファに書き込む
+    // struct for the vertex
 	struct VtxFVF{
+        // position of the vertex
 		Vec3f pos;
+        // normal vector 
 		Vec3f normal;
 	};
+    
+    // vertices object
 	VtxFVF* vtxs;
+
+    // set the buffer for the vertex registrations
 	meshD3->LockVertexBuffer(0, (void**)&vtxs);
 	float x = (float)-dx, y = (float)-dy;
 
+    // update all vertices on the surface of the water
 	for(int i = 0; i < mxy; i++){
 		vtxs[i].pos = Vec3f(x, y, pheight[i]);
 		vtxs[i].normal = pnormal[i];
@@ -266,7 +325,11 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	*/
 
 	if (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE){
+        // this function sets the texture
 		materialD3->Render(n, render);
+        
+        // check bugs around DirectX and output if it was found,
+        // and draw the mesh 
 		WXCHECK(meshD3->intf->DrawSubset(0));
 	}
 	if (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT){
@@ -275,13 +338,70 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	}
 	//	テクスチャを戻す．
 	render->device->SetTexture(0,NULL);
-
 }
 
+    // draw objects by OpenGL
 void PHWater::RenderGL(SGFrame* n, GLRender* render){
+    int i = 0, j = 0;
+    double xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
+    double x = xo, y = yo;
+   
+    // texture mapping
+    // if material is Opaque and drawState is true
+    // or material is not Opaque and drawState is true
+    // rendering is done twice
+    // first one is for opaque objects
+    // second one is for transparent objects
+    if (material->IsOpaque() && render->drawState & GRRender::DRAW_OPAQUE){
+        material->Render(n, render);
+        }
+    
+    //	if(!material->IsOpaque() && render->drawState & GRRender::DRAW_TRANSPARENT){
+        material->Render(n, render);
 
+        //        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP); 
+        //        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP); 
+        //        glEnable(GL_TEXTURE_GEN_S); 
+        //        glEnable(GL_TEXTURE_GEN_T); 
+
+		// create the mesh/triangles
+        for (j = 0; j < my-1; j++) {
+            glBegin(GL_TRIANGLES);
+			x = xo;
+			for (i = 0; i < mx-1; i++) {
+                glNormal3f(normal[i+1][j].x ,normal[i+1][j].y ,normal[i+1][j].z);
+				glVertex3f(x+dh, y, height[i+1][j]);
+                
+				glNormal3f(normal[i][j+1].x ,normal[i][j+1].y ,normal[i][j+1].z);
+				glVertex3f(x, y+dh, height[i][j+1]);
+
+                glNormal3f(normal[i][j].x ,normal[i][j].y ,normal[i][j].z);
+				glVertex3f(x, y, height[i][j]);
+
+				glNormal3f(normal[i][j+1].x ,normal[i][j+1].y ,normal[i][j+1].z);
+				glVertex3f(x, y+dh, height[i][j+1]);
+
+                glNormal3f(normal[i+1][j].x ,normal[i+1][j].y ,normal[i+1][j].z);
+				glVertex3f(x+dh, y, height[i+1][j]);
+
+                glNormal3f(normal[i+1][j+1].x ,normal[i+1][j+1].y ,normal[i+1][j+1].z);
+                glVertex3f(x+dh, y+dh, height[i+1][j+1]);
+
+                x+= dh;
+            }
+            y+=dh;
+            glEnd();
+        }
+        
+        //        glDisable(GL_TEXTURE_GEN_T); 
+        //        glDisable(GL_TEXTURE_GEN_S);
+        
+        // initialize the texture
+        render->SetTexture(NULL);
+        //   }
 }
 
+    // this function adjusts the boundary problem
 void PHWater::Bound(){
 	//行方向がx方向、列方向がy方向なことに注意
 	u.row(0).clear();
@@ -293,13 +413,15 @@ void PHWater::Bound(){
 	v.row(mx - 1) = v.row(mx - 2);
     v.col(0).clear();
 	v.col(my - 2).clear();
-	
+
+    // update the height of the wave
 	height.row(0) = height.row(1);
 	height.row(mx - 1) = height.row(mx - 2);
 	height.col(0) = height.col(1);
 	height.col(my - 1) = height.col(my - 2);
 }
 
+    // calculate refracted vectors
 Vec3d PHWater::calRefracVec(Vec3d n, Vec3d v, double ra) {
     static Vec3d vd, vd_n, tvec;
     static double kf, vn, d;
@@ -318,7 +440,11 @@ Vec3d PHWater::calRefracVec(Vec3d n, Vec3d v, double ra) {
     
     return(tvec);
 }
-
+ 
+    // this function calculates and updates the information
+    // such as boundary problem, normal vectors,
+    // refracted vectors, x-y velocities,
+    // and height array by using integrate function 
 void PHWater::Step(SGScene* s){
     static Vec3d vv1, vv2, vv;
     static double dis;
@@ -326,13 +452,13 @@ void PHWater::Step(SGScene* s){
 
 	//return;
 
-    //boundary condition
+    // set the boundary condition
     Bound();
     
-	//solve equation
+	// solve equation
 	Integrate(s->GetTimeStep());
     
-	//boundary condition
+	// boundary condition
     Bound();
     
     /*if(yflow != 0.0) {
@@ -351,10 +477,13 @@ void PHWater::Step(SGScene* s){
 		vv2 = Vec3d(0.0, -dh, height[i][j] - height[i    ][j + 1]);
 		normal[i][j] = Vec3d(-vv1.Z() * vv2.Y(), -vv1.X() * vv2.Z(), vv1.X() * vv2.Y());
 		normal[i][j].unitize();
+        
+        // calculate refracted vectors
 		tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
     }
 }
 
+    // this method calcualtes heights and x-y velocities
 void PHWater::Integrate(double dt){
     int i, j;
 	const double hmul = 10.0;	//	高さを強調して描画
@@ -362,6 +491,7 @@ void PHWater::Integrate(double dt){
 	const double pass = 300;
 	static double h;			
 
+    // calculate temporary velocities toward the z-axis for most of all cells
     for(i = 1; i <= mx - 2; i++)for(j = 1; j <= my - 2; j++){
         utmp[i][j] = u[i][j] - gravity * (dt / dh) * (height[i+1][j] - height[i][j]) * hinv + (p[i+1][j] - p[i][j]) / (density * dh);
         vtmp[i][j] = v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) * hinv + (p[i][j+1] - p[i][j]) / (density * dh);
@@ -378,6 +508,8 @@ void PHWater::Integrate(double dt){
 
 		z方向流速を無視しているのはなぜ？
 	 */
+
+    // update temporal heights of almost all cells
     for(i = 1; i <= mx - 2; i++)for(j = 1; j <= my - 2; j++)
         htmp[i][j] = height[i][j] * hinv -
 			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh);
@@ -391,6 +523,8 @@ void PHWater::Integrate(double dt){
 		height[i][j] = h * loss * hmul;
         u[i][j] = utmp[i][j] * loss;
         v[i][j] = vtmp[i][j] * loss;*/
+
+        // update variables
 		height[i][j] = htmp[i][j] * hmul;
 		u[i][j] = utmp[i][j];
 		v[i][j] = vtmp[i][j];
@@ -460,8 +594,6 @@ DEF_RECORD(XWater, {
 	FLOAT depth;
 	FLOAT gravity;
 	FLOAT hscale;
-	FLOAT density;
-	FLOAT loss;
  });
 
 class PHWaterEngineLoader:public FIObjectLoader<PHWaterEngine>{
@@ -474,9 +606,11 @@ public:
 			clearForce= new PHSolidClearForce;
 			ctx->scene->GetBehaviors().Add(clearForce);
 		}
+        // insert the engine to the clearForce variable
 		clearForce->solvers.push_back(engine);
 		return true;
 	}
+    // ?
 	PHWaterEngineLoader(){
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
@@ -491,11 +625,16 @@ public:
 		//保有するPHWaterをSave
 		PHWaterEngine* engine = (PHWaterEngine*)arg;
 		FIDocNodeBase* doc = ctx->CreateDocNode("PHWaterEngine", engine);
+
+        // save doc to the array in the ctx class object
 		ctx->docs.back()->AddChild(doc);
 		ctx->docs.push_back(doc);
+        
+        // refer all phwater objects
 		for(PHWaters::iterator it = engine->waters.begin(); it != engine->waters.end(); ++it){
 			ctx->SaveRecursive(*it);
 		}
+        // delete the last element
 		ctx->docs.pop_back();
 	}
 };
@@ -512,8 +651,6 @@ public:
 		water->depth = data.depth;
 		water->gravity = data.gravity;
 		water->hscale = data.hscale;
-		water->density = data.density;
-		water->loss = data.loss;
 		return true;
 	}
 	PHWaterLoader(){
@@ -538,8 +675,6 @@ class PHWaterSaver:public FIBaseSaver{
 		data.depth = (FLOAT)water->depth;
 		data.gravity = (FLOAT)water->gravity;
 		data.hscale = (FLOAT)water->hscale;
-		data.density = (FLOAT)water->density;
-		data.loss = (FLOAT)water->loss;
 		doc->SetWholeData(data);
 		if(water->GetFrame()){
 			doc->AddChild(ctx->CreateDocNode("REF", water->GetFrame()));
