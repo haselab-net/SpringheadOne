@@ -366,26 +366,15 @@ void PHWater::RenderGL(SGFrame* n, GLRender* render){
 
 		// create the mesh/triangles
         for (j = 0; j < my-1; j++) {
-            glBegin(GL_TRIANGLES);
+            glBegin(GL_QUAD_STRIP);
 			x = xo;
-			for (i = 0; i < mx-1; i++) {
-                glNormal3f(normal[i+1][j].x ,normal[i+1][j].y ,normal[i+1][j].z);
-				glVertex3f(x+dh, y, height[i+1][j]);
-                
+			for (i = 0; i < mx; i++) {
+
 				glNormal3f(normal[i][j+1].x ,normal[i][j+1].y ,normal[i][j+1].z);
 				glVertex3f(x, y+dh, height[i][j+1]);
 
                 glNormal3f(normal[i][j].x ,normal[i][j].y ,normal[i][j].z);
 				glVertex3f(x, y, height[i][j]);
-
-				glNormal3f(normal[i][j+1].x ,normal[i][j+1].y ,normal[i][j+1].z);
-				glVertex3f(x, y+dh, height[i][j+1]);
-
-                glNormal3f(normal[i+1][j].x ,normal[i+1][j].y ,normal[i+1][j].z);
-				glVertex3f(x+dh, y, height[i+1][j]);
-
-                glNormal3f(normal[i+1][j+1].x ,normal[i+1][j+1].y ,normal[i+1][j+1].z);
-                glVertex3f(x+dh, y+dh, height[i+1][j+1]);
 
                 x+= dh;
             }
