@@ -71,7 +71,10 @@ public:
 	enum TPrimitiveType {
 		POINTS,
 		LINES,
+		LINESTRIP,
 		TRIANGLES,
+		TRIANGLESTRIP,
+		TRIANGLEFAN
 	};
 	virtual void SetModelMatrix(const Affinef& afw){}
 	virtual void SetViewMatrix(const Affinef& afv){}

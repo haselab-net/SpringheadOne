@@ -1,3 +1,5 @@
+#include "Physics.h"
+#pragma hdrstop
 #include "PHWater.h"
 #include <Graphics/GRMaterial.h>
 #include <ImpD3D/D3Render.h>
@@ -178,57 +180,16 @@ void PHWater::Init(SGScene* scene){
 		material->power = 0.5;
 		//vlight = Vec3d(0.0, 0.0, -1.0);
 	}
-
-    // -------------- above codes are the common initializations
-    // for both OpenGL and direct3D
-    
-	//Direct3D用のメッシュを作成
-	 D3Render* render = NULL;
-
-    // for opengl: declaration of the render object
-    // GLRender* render = NULL;
-    
-    // search and overwrite render variable 
-    // which is already declared
-	scene->GetRenderers().Find(render);
-
-    // if render exists
-    // execute following statements as directX rendering
-	if(render){
-		meshD3 = new D3Mesh;
-		DWORD fvf;
-		//if (gm->texCoords.size()) fvf = D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1;
-		//else
-		fvf = D3DFVF_XYZ | D3DFVF_NORMAL;
-		//3角形の数＝マスの数 * 2
-		int nTriangles = (mx - 1) * (my - 1) * 2;
-		D3DXCreateMeshFVF(nTriangles, mxy, D3DXMESH_MANAGED, fvf, render->device, &(meshD3->intf.Intf()));
-
-		//インデックスバッファ
-        // indexbuffer helps to assemble a complex object with a minimum number of vertex coordinates
-		WORD* indexBuf = NULL;
-		meshD3->LockIndexBuffer(0, (void**)&indexBuf);
-		int x, y, i = 0;
-		for(x = 0; x < mx - 1; x++)for(y = 0; y < my - 1; y++){
-			indexBuf[i++] = (x + 0) + mx * (y + 0);
-			indexBuf[i++] = (x + 0) + mx * (y + 1);
-			indexBuf[i++] = (x + 1) + mx * (y + 0);
-			indexBuf[i++] = (x + 1) + mx * (y + 1);
-			indexBuf[i++] = (x + 1) + mx * (y + 0);
-			indexBuf[i++] = (x + 0) + mx * (y + 1);
-		}
-		meshD3->intf->UnlockIndexBuffer();
-
-		//マテリアル
-		materialD3 = new D3Material;
-		memcpy(&(materialD3->material), (GRMaterialData*)&*material, sizeof(GRMaterialData));
-
-        // copy boolean variable
-		materialD3->bOpaque = material->IsOpaque();
-        
-		//materials[i]->textureFilename = material->textureFilename;
-		//materials[i]->texture = render->textureManager.Get(materials[i]->textureFilename);
+	//	描画用の頂点
+/*	vtxs.resize(mxy);
+	for(int x = 0; x < mx - 1; x++)for(int y = 0; y < my - 1; y++){
+		vtxs[y*mx + x].pos = Vec3f(x*dh, y*dh, 0);
+		vtxs[y*mx + x].normal = Vec3f(0, 0, 0);
 	}
+*/	//マテリアル
+	materialD3 = new D3Material;
+	memcpy(&(materialD3->material), (GRMaterialData*)&*material, sizeof(GRMaterialData));
+	materialD3->bOpaque = material->IsOpaque();
 }
 
 double PHWater::LerpHeight(double x, double y){
@@ -259,6 +220,7 @@ void PHWater::Shift(){
 
 void PHWater::Render(SGFrame* n, GRRender* render){
 	//renderの種類を判定
+	if (render->drawState&GRRender::DRAW_OPAQUE == 0) return;
 	if(DCAST(D3Render, render))
 		RenderD3(n, DCAST(D3Render, render));
 	if(DCAST(GLRender, render))
@@ -269,74 +231,32 @@ void PHWater::Render(SGFrame* n, GRRender* render){
     // if mesh is not created or initialized
     // do nothing and exit the function
 void PHWater::RenderD3(SGFrame* n, D3Render* render){
-	if(!meshD3) return;
-
-	/*if (gm->texCoords.size()){
-		struct VtxFVF{
-			Vec3f pos;
-			Vec3f normal;
-			Vec2f tex;
-		};
-		VtxFVF* vtxs;
-		LockVertexBuffer(0, (void**)&vtxs);
-		for(unsigned int i=0; i<gm->vertices.size(); ++i){
-			vtxs[i].pos = gm->vertices[i];
-			vtxs[i].normal = gm->normals[i];
-			vtxs[i].tex = gm->texCoords[i];
-		}
-		intf->UnlockVertexBuffer();
-	}else{*/
     // copy the head address of the varialbe height array to pheight
 	double* pheight = &height[0][0];
     // copy the head address of the variable normal array to pnormal
 	Vec3d*  pnormal = &normal[0][0];
 	
-	//頂点バッファに書き込む
-    // struct for the vertex
-	struct VtxFVF{
-        // position of the vertex
-		Vec3f pos;
-        // normal vector 
-		Vec3f normal;
-	};
-    
-    // vertices object
-	VtxFVF* vtxs;
-
-    // set the buffer for the vertex registrations
-	meshD3->LockVertexBuffer(0, (void**)&vtxs);
-	float x = (float)-dx, y = (float)-dy;
-
-    // update all vertices on the surface of the water
-	for(int i = 0; i < mxy; i++){
-		vtxs[i].pos = Vec3f(x, y, pheight[i]);
-		vtxs[i].normal = pnormal[i];
-		x += dh;
-		if(i % mx == 0){
-			y += (float)dh;
-			x = (float)-dx;
-		}
-	}
-	meshD3->intf->UnlockVertexBuffer();
-	
-	/*DWORD* attrs=NULL;
-	intf->LockAttributeBuffer(0, &attrs);
-	for(unsigned i=0; i<gm->attributes.size(); ++i) attrs[i] = gm->attributes[i];
-	intf->UnlockAttributeBuffer();
-	intf->OptimizeInplace(D3DXMESHOPT_COMPACT|D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
-	*/
-
-	if (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE){
+	if ( (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE)
+		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
         // this function sets the texture
 		materialD3->Render(n, render);
-        
-        // check bugs around DirectX and output if it was found,
-        // and draw the mesh 
-		WXCHECK(meshD3->intf->DrawSubset(0));
-	}
-	if (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT){
-		materialD3->Render(n, render);
-		WXCHECK(meshD3->intf->DrawSubset(0));
+		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL);
+		struct VtxFVF{
+			Vec3f pos;
+			Vec3f normal;
+		};
+		VtxFVF* buf= new VtxFVF[mx*2];
+	    float xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
+		for(int y=0; y<my-1; ++y){
+			for(int x=0; x<mx; ++x){
+				buf[x*2+1].pos = Vec3f(xo+x*dh, yo+y*dh, pheight[y*mx + x]);
+				buf[x*2+1].normal = pnormal[y*mx + x];
+				buf[x*2].pos = Vec3f(xo+x*dh, yo+(y+1)*dh, pheight[(y+1)*mx + x]);
+				buf[x*2].normal = pnormal[(y+1)*mx + x];
+			}
+			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+		}	
+		delete buf;
 	}
 	//	テクスチャを戻す．
 	render->device->SetTexture(0,NULL);

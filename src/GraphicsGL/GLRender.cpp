@@ -137,13 +137,14 @@ void GLRender::Render(SGScene* s){
 	//glDepthMask(GL_TRUE);
 	glBlendFunc(GL_ONE, GL_ZERO);
 	RenderRecurse(s->GetWorld());
-	//	Engine‚Ì•`‰æ
 	s->GetBehaviors().Render(this, s);
+
 	//	”¼“§–¾•”‚Ì•`‰æ
 	drawState = DRAW_TRANSPARENT;
 	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	RenderRecurse(s->GetWorld());
+	s->GetBehaviors().Render(this, s);
 	
 	glDepthMask(GL_TRUE);
 	drawState = DRAW_BOTH;

@@ -58,14 +58,15 @@ void D3Render::Render(SGScene* s){
 	//	•s“§–¾•”‚Ì•`‰æ
 	drawState = DRAW_OPAQUE;
 	RenderRecurse(s->GetWorld());
-	//	Engine‚Ì•`‰æ
 	s->GetBehaviors().Render(this, s);
+
 	//	”¼“§–¾•”‚Ì•`‰æ
 	drawState = DRAW_TRANSPARENT;
 	WXCHECK(device->SetRenderState(D3DRS_ZWRITEENABLE, false));
 	WXCHECK(device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA));
 	WXCHECK(device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA));
 	RenderRecurse(s->GetWorld());
+	s->GetBehaviors().Render(this, s);
 	device->SetRenderState(D3DRS_ZWRITEENABLE, true);
 	drawState = DRAW_BOTH;
 }

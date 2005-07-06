@@ -78,10 +78,7 @@ protected:
 	UTRef<SGFrame>	frame;
 	UTRef<PHSolid>	solid;
 	UTRef<GRMaterial> material;
-
-	UTRef<D3Mesh>	meshD3;	//D3用メッシュとマテリアル
 	UTRef<D3Material> materialD3;
-	UTRef<GLMesh>	meshGL;	//GL用メッシュ
 
 	int				mxy;	//mx * my
 	double			dx;		//mx * dh / 2.0
