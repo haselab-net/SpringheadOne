@@ -251,11 +251,16 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 		VtxFVF* buf= new VtxFVF[mx*2];
 	    float xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
 		for(int y=0; y<my-1; ++y){
+			int start = y*mx;
+			double left = xo;
+			double px = xo;
+			double py = yo+y*dh;
 			for(int x=0; x<mx; ++x){
-				buf[x*2+1].pos = Vec3f(xo+x*dh, yo+y*dh, pheight[y*mx + x]);
-				buf[x*2+1].normal = pnormal[y*mx + x];
-				buf[x*2].pos = Vec3f(xo+x*dh, yo+(y+1)*dh, pheight[(y+1)*mx + x]);
-				buf[x*2].normal = pnormal[(y+1)*mx + x];
+				buf[x*2+1].pos = Vec3f(px, py, pheight[start+x]);
+				buf[x*2+1].normal = pnormal[start+x];
+				buf[x*2].pos = Vec3f(px, py+dh, pheight[start+mx+x]);
+				buf[x*2].normal = pnormal[start+x+mx];
+				px += dh;
 			}
 			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 		}	
