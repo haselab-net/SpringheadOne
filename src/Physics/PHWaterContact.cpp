@@ -43,6 +43,10 @@ SGOBJECTIMP(PHWaterContactEngine, SGBehaviorEngine);
 PHWaterContactEngine::PHWaterContactEngine(){
 
 }
+void PHWaterContactEngine::LoadState(const SGBehaviorStates& states){
+}
+void PHWaterContactEngine::SaveState(SGBehaviorStates& states) const{
+}
 
 bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 	if(DCAST(PHSolid, o)){

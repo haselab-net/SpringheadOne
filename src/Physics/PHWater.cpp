@@ -461,6 +461,7 @@ bool PHWaterTrackTarget::AddChildObject(SGObject* o, SGScene* s){
 			targets.push_back(solid->GetFrame());
 		return true;
 	}
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -633,7 +634,7 @@ public:
 	virtual bool LoadData(FILoadScene* ctx, PHWaterTrackTarget* wtt){
 		return true;
 	}
-	PHWaterTrackTarget(){
+	PHWaterTrackTargetLoader(){
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
 		db->REG_RECORD_PROTO(XWaterTrackTarget);
