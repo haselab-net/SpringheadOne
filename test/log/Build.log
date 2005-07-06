@@ -112,12 +112,6 @@ PHSpring.cpp
 PHStickEngine.cpp
 PHWarp.cpp
 PHWater.cpp
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(25) : warning C4786: 'std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
-        C:\SVNWork\Springhead\src\FileIO/FITypeDesc.h(187) : ｺﾝﾊﾟｲﾙされたｸﾗｽのﾃﾝﾌﾟﾚｰﾄのｲﾝｽﾀﾝｽ化 'std::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>' の参照を確認してください
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::i' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
-        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>::std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>(const class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
-        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>::std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>(const std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
 PHWaterContact.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: SceneGraph - Win32 MFC Debug--------------------
@@ -187,7 +181,7 @@ Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
 LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
 c:\winnt\system32\cmd.exe の実行ｴﾗｰ
 
-SpringheadMD.lib - ｴﾗｰ 1、警告 7
+SpringheadMD.lib - ｴﾗｰ 1、警告 4
  
  
 *** DynaHaptic *** 
@@ -332,17 +326,8 @@ PHSpring.cpp
 PHStickEngine.cpp
 PHWarp.cpp
 PHWater.cpp
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(25) : warning C4786: 'std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
-        C:\SVNWork\Springhead\src\FileIO/FITypeDesc.h(187) : ｺﾝﾊﾟｲﾙされたｸﾗｽのﾃﾝﾌﾟﾚｰﾄのｲﾝｽﾀﾝｽ化 'std::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>' の参照を確認してください
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::i' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
-        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>::std::pair<class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator,bool>(const class std::_Tree<class Spr::FIBaseLoader *,class Spr::FIBaseLoader *,struct std::multiset<class Spr::FIBaseLoader *,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::_Kfn,struct Spr::UTContentsLess<class Spr::FIBaseLoader *>,class std::allocator<class Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>' : 識別子が '255' 文字に切り捨てられました (debug 情報内)。
-        C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21): ｸﾗｽ ﾃﾝﾌﾟﾚｰﾄのﾒﾝﾊﾞ関数 '__thiscall std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>::std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>(const std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator &,const bool &)' のｺﾝﾊﾟｲﾙ中
 PHWaterContact.cpp
 ｺｰﾄﾞを生成中...
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>::pair<std::_Tree<Spr::UTRef<Spr::FITypeDesc>,Spr::UTRef<Spr::FITypeDesc>,std::set<Spr::UTRef<Spr::FITypeDesc>,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::_Kfn,Spr::UTContentsLess<Spr::UTRef<Spr::FITypeDesc> >,std::allocator<Spr::UTRef<Spr::FITypeDesc> > >::iterator,bool>' : ﾃﾞﾊﾞｯｸﾞ情報で識別子が 255 文字に切り捨てられました。
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseSaver *,Spr::FIBaseSaver *,std::set<Spr::FIBaseSaver *,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::iterator,bool>::pair<std::_Tree<Spr::FIBaseSaver *,Spr::FIBaseSaver *,std::set<Spr::FIBaseSaver *,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseSaver *>,std::allocator<Spr::FIBaseSaver *> >::iterator,bool>' : ﾃﾞﾊﾞｯｸﾞ情報で識別子が 255 文字に切り捨てられました。
-C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\utility(21) : warning C4786: 'std::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>::pair<std::_Tree<Spr::FIBaseLoader *,Spr::FIBaseLoader *,std::multiset<Spr::FIBaseLoader *,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::_Kfn,Spr::UTContentsLess<Spr::FIBaseLoader *>,std::allocator<Spr::FIBaseLoader *> >::iterator,bool>' : ﾃﾞﾊﾞｯｸﾞ情報で識別子が 255 文字に切り捨てられました。
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: SceneGraph - Win32 Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
@@ -401,7 +386,7 @@ PhysicsD.lib(PHWater.obj) : error LNK2001: 外部ｼﾝﾎﾞﾙ ""public: static class Spr:
 Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
 link.exe の実行ｴﾗｰ
 
-SDKD3DDyna.exe - ｴﾗｰ 2、警告 15
+SDKD3DDyna.exe - ｴﾗｰ 2、警告 9
  
  
 *** TreeTestView *** 
@@ -593,7 +578,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 15
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] CDGJK.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] CDSphere.cpp(1): 
