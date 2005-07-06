@@ -29,6 +29,17 @@ class D3Material;
 class D3Render;
 class GLRender;
 
+class PHWaterTrackTarget : public SGObject{
+public:
+	SGOBJECTDEF(PHWaterTrackTarget);
+
+	bool		AddChildObject(SGObject* o, SGScene* s);
+	size_t		NReferenceObjects(){return targets.size();}
+	SGObject*	ReferenceObject(size_t i){return targets[i];}
+
+	SGFrames targets;
+};
+
 class PHWater : public GRVisual{
 public:
 	SGOBJECTDEF(PHWater);
@@ -75,8 +86,13 @@ protected:
 	typedef VMatrixCol<Vec3d>	v3matrix_type;
 	typedef VVector<double> vector_type;
 
+	//自身が属するフレームと剛体（剛体は目下未使用）
 	UTRef<SGFrame>	frame;
 	UTRef<PHSolid>	solid;
+
+	//追従対象
+	PHWaterTrackTarget* targets;
+
 	UTRef<GRMaterial> material;
 	UTRef<D3Material> materialD3;
 

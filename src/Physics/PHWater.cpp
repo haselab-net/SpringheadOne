@@ -19,7 +19,6 @@ namespace Spr{;
 // PHWaterEngine
 
 SGOBJECTIMP(PHWaterEngine, PHSolverBase);
-
     // insert new phwater object to the end of the vector
 bool PHWaterEngine::AddChildObject(SGObject* o, SGScene* s){
 	if (DCAST(PHWater, o)){
@@ -91,6 +90,10 @@ bool PHWater::AddChildObject(SGObject* o, SGScene* s){
 		solid = (PHSolid*)o;
 		if(solid->GetFrame())
 			solid->GetFrame()->contents.push_back(this);
+		return true;
+	}
+	if(DCAST(PHWaterTrackTarget, o)){
+		targets = (PHWaterTrackTarget*)o;
 		return true;
 	}
 	return false;
@@ -443,6 +446,24 @@ void PHWater::Integrate(double dt){
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// PHWaterTrackTarget
+
+SGOBJECTIMP(PHWaterTrackTarget, SGObject);
+
+bool PHWaterTrackTarget::AddChildObject(SGObject* o, SGScene* s){
+	if(DCAST(SGFrame, o)){
+		targets.push_back((SGFrame*)o);
+		return true;
+	}
+	if(DCAST(PHSolid, o)){
+		PHSolid* solid = (PHSolid*)o;
+		if(solid->GetFrame())
+			targets.push_back(solid->GetFrame());
+		return true;
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 // LoadState / SaveState
 
 class PHWaterState{
@@ -508,6 +529,10 @@ DEF_RECORD(XWater, {
 	FLOAT density;
 	FLOAT loss;
  });
+
+DEF_RECORD(XWaterTrackTarget, {
+	GUID Guid(){ return WBGuid("d1343031-d541-44f0-8ac7-d678837b65a6"); }
+});
 
 class PHWaterEngineLoader:public FIObjectLoader<PHWaterEngine>{
 public:
@@ -602,5 +627,33 @@ class PHWaterSaver:public FIBaseSaver{
 	}
 };
 DEF_REGISTER_BOTH(PHWater);
+
+class PHWaterTrackTargetLoader:public FIObjectLoader<PHWaterTrackTarget>{
+public:
+	virtual bool LoadData(FILoadScene* ctx, PHWaterTrackTarget* wtt){
+		return true;
+	}
+	PHWaterTrackTarget(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_RECORD_PROTO(XWaterTrackTarget);
+	}
+};
+class PHWaterTrackTargetSaver:public FIBaseSaver{
+public:
+	virtual UTString GetType() const{ return "PHWaterTrackTarget"; }
+	virtual void Save(FISaveScene* ctx, SGObject* arg){
+		//•Û—L‚·‚éPHWater‚ðSave
+		PHWaterTrackTarget* wtt = (PHWaterTrackTarget*)arg;
+		FIDocNodeBase* doc = ctx->CreateDocNode("PHWaterTrackTarget", wtt);
+		ctx->docs.back()->AddChild(doc);
+		ctx->docs.push_back(doc);
+		for(SGFrames::iterator it = wtt->targets.begin(); it != wtt->targets.end(); ++it){
+			ctx->SaveRecursive(*it);
+		}
+		ctx->docs.pop_back();
+	}
+};
+DEF_REGISTER_BOTH(PHWaterTrackTarget);
 
 }
