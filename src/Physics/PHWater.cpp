@@ -163,7 +163,7 @@ void PHWater::Init(SGScene* scene){
 
     // initialize height matrix array
 	height.clear();
-	height[8][8] = 0.1;
+	//height[8][8] = 0.1;
 
     // temporary height variable
 	htmp.clear();
@@ -214,6 +214,8 @@ double PHWater::LerpHeight(double x, double y){
 	nx = (x + dx) / dh;
 	ny = (y + dy) / dh;
 	int ix = floor(nx), iy = floor(ny);
+	nx -= (double)ix;
+	ny -= (double)iy;
     
     h0 = height[ix    ][iy] * (1.0 - ny) + height[ix    ][iy + 1] * ny;
     h1 = height[ix + 1][iy] * (1.0 - ny) + height[ix + 1][iy + 1] * ny;

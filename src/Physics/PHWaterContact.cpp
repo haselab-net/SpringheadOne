@@ -110,6 +110,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 		solid = *is;
 		As = solid->solid->GetFrame()->GetWorldPosture();
 		Asinv = As.inv();
+		int nface = 0;
 		//全ジオメトリについて･･･
 		for(ig = solid->geometries.begin(); ig != solid->geometries.end(); ig++){
 			geo = *ig;
@@ -137,6 +138,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 					wz = water->LerpHeight(center_w.X(), center_w.Y());
 					//水面下ならば浮力を計算
 					if(wz > center_w.Z()){
+						nface++;
 						//この段階ではジオメトリフレームで計算していることに注意
 						b = -iface->normal * ((wz - center_w.Z()) * iface->area);
 						buo += b;
@@ -146,6 +148,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 					}
 				}
 			}
+			DSTR << nface;
 			//ジオメトリフレームから剛体フレームへ変換してAddForce
 			solid->solid->AddForce(Ag.Rot() * buo, Ag.Pos());
 			solid->solid->AddTorque(Ag.Rot() * tbuo);
