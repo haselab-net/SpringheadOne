@@ -31,6 +31,7 @@ void PHWSolid::EnumGeometries(SGFrame* f){
 //PHWGeometry
 void PHWGeometry::Set(SGFrame* f, CDMesh* g){
 	frame = f;
+	conveces.resize(g->conveces.size());
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
 }
 
@@ -187,13 +188,23 @@ void getBuoyancy(ThapticObj *ho, Tpoint3f *buo, Tpoint3f *tbuo) {
 //----------------------------------------------------------------------------
 //	PHWaterContactEngineLoader
 //
+DEF_RECORD(XWaterContactEngine, {
+	GUID Guid(){ return WBGuid("3cec723b-36dc-433e-8ade-06a3e3fd5ee3"); } 
+});
+
 class PHWaterContactEngineLoader:public FIObjectLoader<PHWaterContactEngine>{
+public:
 	virtual bool LoadData(FILoadScene* ctx, PHWaterContactEngine* pc){
 		ctx->objects.Push(pc);
 		return true;
 	}
 	virtual void Loaded(FILoadScene* ctx){
 		ctx->objects.Pop();
+	}
+	PHWaterContactEngineLoader(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_RECORD_PROTO(XWaterContactEngine);
 	}
 };
 
