@@ -5,8 +5,8 @@ Scene {
 	}
 	WaterEngine{
 		Water{
-			10;
-			10;
+			20;
+			20;
 			0.1;	//dh
 			0.1;	//depth
 			9.8;	//gravity
@@ -14,6 +14,9 @@ Scene {
 			1000.0;	//density
 			0.99;	//loss
 			{frWater}
+			WaterTrackTarget{
+				{frBlock5}
+			}
 		}
 	}
 	Frame frWater {

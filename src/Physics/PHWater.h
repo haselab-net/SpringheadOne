@@ -64,14 +64,17 @@ public:
 	double LerpHeight(double x, double y);
 
 	//パラメータ
-	int		my, mx;		//分割数
-	double	dh;			//格子の幅
-	double	depth;		//水深
-	double	gravity;	//重力
-	double	hscale;		//高さのスケール
-	double	density;	//密度
-	double	loss;		//損失係数
-	//Vec4d	specular;	//描画特性
+	Affinef posture;		//	水の姿勢行列
+	int		my, mx;			//分割数
+	TVec2<int> bound;		//境界 このセルと次のセルが境界のセルになる．
+	Vec2d	velocity;		//定常流速．定常的にこの速度で水が流れる．
+	double	dh;				//格子の幅
+	double	depth;			//水深
+	double	gravity;		//重力
+	double	hscale;			//高さのスケール
+	double	density;		//密度
+	double	loss;			//損失係数
+	//Vec4d	specular;		//描画特性
 	//Vec4d	diffuse;
 	//double	shininess;
 	//Vec3d	vlight;		//平行光
@@ -91,7 +94,7 @@ protected:
 	UTRef<PHSolid>	solid;
 
 	//追従対象
-	PHWaterTrackTarget* targets;
+	UTRef<PHWaterTrackTarget> targets;
 
 	UTRef<GRMaterial> material;
 	UTRef<D3Material> materialD3;
@@ -108,19 +111,8 @@ protected:
 	v3matrix_type	tvec;			//
 	Vec3d			vlight;			//光の向き
 
-	double
-		*p_array,
-		*u_array, *utmp_array,
-		*v_array, *vtmp_array,
-		*height_array, *htmp_array,
-		*normal_array,
-		*tvec_array;
-
 	///初期化処理
 	void Init(SGScene* scene);
-
-	///
-	void Shift();
 
 	///境界条件を設定する
 	void Bound();
