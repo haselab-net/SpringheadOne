@@ -2,6 +2,7 @@
 #define D3MATERIAL_H
 
 #include "Graphics/GRVisual.h"
+#include "Graphics/GRMaterial.h"
 #include <WinDX/D3D/WXD3D.h>
 
 namespace Spr {;
@@ -21,6 +22,8 @@ public:
 		ColorRGB emissive;
 	};
 	SGOBJECTDEF(D3Material);
+	D3Material();
+	D3Material(GRMaterial& gm);
 	///	マテリアル
 	D3DMATERIAL_SPR material;
 	///	テクスチャ

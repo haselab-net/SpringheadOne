@@ -6,11 +6,22 @@ namespace Spr {;
 //	D3Material
 SGOBJECTIMP(D3Material, GRVisual);
 
+D3Material::D3Material(){
+}
+D3Material::D3Material(GRMaterial& gm){
+	material = (D3DMATERIAL_SPR&)(GRMaterialData&)gm;
+	textureFilename = gm.textureFilename;
+	bOpaque = gm.IsOpaque();
+}
+
 void D3Material::Render(SGFrame* f, GRRender* renderBase){
 	D3Render* render = (D3Render*)renderBase;
 	//	マテリアルの設定
 	WXCHECK(render->device->SetMaterial(&material));
 	//	テクスチャを貼る
+	if (!texture && textureFilename.length()){
+		texture = render->textureManager.Get(textureFilename);
+	}
 	if (texture){
 		WXCHECK(render->device->SetTexture(0, texture));
 	}

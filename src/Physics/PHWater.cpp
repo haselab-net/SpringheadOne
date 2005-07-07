@@ -100,6 +100,10 @@ bool PHWater::AddChildObject(SGObject* o, SGScene* s){
 		targets = (PHWaterTrackTarget*)o;
 		return true;
 	}
+	if(DCAST(GRMaterial, o)){
+		material = (GRMaterial*)o;
+		return true;
+	}
 	return false;
 }
 
@@ -157,7 +161,7 @@ void PHWater::Init(SGScene* scene){
 
     // initialize height matrix array
 	height.clear();
-	height[5][5] = 0.1;
+	height[8][8] = 0.1;
 
     // temporary height variable
 	htmp.clear();
@@ -195,8 +199,7 @@ void PHWater::Init(SGScene* scene){
 	}
 */	//マテリアル
 	materialD3 = new D3Material;
-	memcpy(&(materialD3->material), (GRMaterialData*)&*material, sizeof(GRMaterialData));
-	materialD3->bOpaque = material->IsOpaque();
+	*materialD3 = *material;
 }
 
 double PHWater::LerpHeight(double x, double y){
@@ -238,10 +241,11 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
         // this function sets the texture
 		materialD3->Render(n, render);
-		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL);
+		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2);
 		struct VtxFVF{
 			Vec3f pos;
 			Vec3f normal;
+			Vec2f tex;
 		};
 		VtxFVF* buf= new VtxFVF[mx*2];
 	    float xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
@@ -250,8 +254,8 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 			int start2 = ((y+1)%my) * mx;
 			double left = xo;
 			double py;
-			if (y < bound.y) py = yo + (y-bound.y+my)*dh; 
-			else py = yo + (y-bound.y)*dh;
+			if (y < bound.y-1) py = yo + (y-bound.y-1+my)*dh; 
+			else py = yo + (y-bound.y-1)*dh;
 			double px = xo;
 			for(int x=bound.x; x<mx; ++x){
 				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]);
@@ -267,6 +271,10 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 				buf[(x+offset)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]);
 				buf[(x+offset)*2].normal	= pnormal[start2+x];
 				px += dh;
+			}
+			for(int i=0; i<2*mx; ++i){
+				buf[i].tex.x = buf[i].pos.x/dx/4 +  buf[i].normal.x*0.5f + 0.5f;
+				buf[i].tex.y = buf[i].pos.y/dy/4 +  buf[i].normal.y*0.5f + 0.5f;
 			}
 			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 		}	
@@ -328,15 +336,17 @@ void PHWater::RenderGL(SGFrame* n, GLRender* render){
 
     // this function adjusts the boundary problem
 void PHWater::Bound(){
-	int bx1 = bound.X();
-	int bx1_ = (bound.X()+1)%mx;
-	int bx2 = (bound.X()-1+mx) % mx;
-	int bx2_ = (bound.X()-2+mx) % mx;
+	//	どうして bx1 が +1なのかなぞ． bx1 がbound.xで良い気がするのだけど．
+	//	多分レンダリングが変なのでしょうけど，原因不明．
+	int bx1 = (bound.X()+1) % mx;
+	int bx1_ = (bound.X()+2) % mx;
+	int bx2 = bound.X();
+	int bx2_ = (bound.X()-1+mx) % mx;
 
-	int by1 = bound.Y();
-	int by1_ = (bound.Y()+1) % my;
-	int by2 = (bound.Y()-1+my) % my;
-	int by2_ = (bound.Y()-2+my) % my;
+	int by1 = (bound.Y()+1) % my;
+	int by1_ = (bound.Y()+2) % my;
+	int by2 = bound.Y() %my;
+	int by2_ = (bound.Y()+my-1) % my;
 	
 	//行方向がx方向、列方向がy方向なことに注意
 	u.row(bx1).clear();

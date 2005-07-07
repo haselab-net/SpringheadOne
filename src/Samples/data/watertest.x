@@ -5,8 +5,8 @@ Scene {
 	}
 	WaterEngine{
 		Water{
-			20;
-			20;
+			40;
+			40;
 			0.1;	//dh
 			0.1;	//depth
 			9.8;	//gravity
@@ -16,6 +16,13 @@ Scene {
 			{frWater}
 			WaterTrackTarget{
 				{frBlock5}
+			}
+			Material { 
+				0.4; 1.0; 1.0; 1.0;;
+				5.000000;
+				0.000000;0.000000;0.000000;;
+				0.30;0.30;0.30;;
+				TextureFilename { "skydome1.jpg"; }
 			}
 		}
 	}
