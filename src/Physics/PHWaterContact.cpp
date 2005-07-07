@@ -33,6 +33,13 @@ void PHWGeometry::Set(SGFrame* f, CDMesh* g){
 	frame = f;
 	conveces.resize(g->conveces.size());
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
+	//CDFace::CalcDualVtxを呼ぶ。暫定。
+	for(CDGeometries::iterator ic = conveces.begin(); ic != conveces.end(); ic++){
+		CDPolyhedron* poly = DCAST(CDPolyhedron, *ic);
+		if(!poly)continue;
+		for(CDFaces::iterator iface = poly->faces.begin(); iface != poly->faces.end(); iface++)
+			iface->CalcDualVtx(poly->tvtxs);
+	}
 }
 
 
@@ -93,7 +100,8 @@ void PHWaterContactEngine::Step(SGScene* s){
                     As, Asinv,	//solid-coord to world-coord
 					Asg;		//solid-coord to geometry-coord
 	
-	Aw = water->GetFrame()->GetWorldPosture();
+	//Aw = water->GetFrame()->GetWorldPosture();
+	Aw = water->posture;
 	Awinv = Aw.inv();
 
 	//剛体に加わる浮力を計算する
@@ -122,6 +130,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 
 				//全面について･･･
 				for(iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
+					iface->CalcDualVtx(poly->base);
 					//この面が水面下にあるかどうか調べる
 					center_w = Awg * iface->center;
 					//normal_w = Awg * iface->normal;
@@ -138,7 +147,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 				}
 			}
 			//ジオメトリフレームから剛体フレームへ変換してAddForce
-			solid->solid->AddForce(Ag.Pos(), Ag.Rot() * buo);
+			solid->solid->AddForce(Ag.Rot() * buo, Ag.Pos());
 			solid->solid->AddTorque(Ag.Rot() * tbuo);
 		}
 	}

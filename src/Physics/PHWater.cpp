@@ -77,8 +77,10 @@ PHWater::PHWater(){
 	loss = 0.99;
 	bound.x = 3;
 	bound.y = 3;
-	velocity.X() = 1.2;
-	velocity.Y() = 1.2;
+	//velocity.X() = 0.2;
+	//velocity.Y() = 0.2;
+	//velocity.X() = 1.2;
+	//velocity.Y() = 1.2;
 }
 
     // this function adds new child data to the end of the vector
