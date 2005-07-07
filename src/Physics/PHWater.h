@@ -67,6 +67,7 @@ public:
 	Affinef posture;		//	水の姿勢行列
 	int		my, mx;			//分割数
 	TVec2<int> bound;		//境界 このセルと次のセルが境界のセルになる．
+	TVec2<int> texOffset;	//bound と同じだが，%mx しない．
 	Vec2d	velocity;		//定常流速．定常的にこの速度で水が流れる．
 	double	dh;				//格子の幅
 	double	depth;			//水深

@@ -77,8 +77,8 @@ PHWater::PHWater(){
 	loss = 0.99;
 	bound.x = 3;
 	bound.y = 3;
-	velocity.X() = 0.2;
-	velocity.Y() = 0.2;
+	velocity.X() = 1.2;
+	velocity.Y() = 1.2;
 }
 
     // this function adds new child data to the end of the vector
@@ -249,6 +249,8 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 		};
 		VtxFVF* buf= new VtxFVF[mx*2];
 	    float xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
+		float dxinv = 1/dx;
+		float dyinv = 1/dy;
 		for(int y=0; y<my; ++y){
 			int start1 = y*mx;
 			int start2 = ((y+1)%my) * mx;
@@ -272,9 +274,12 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 				buf[(x+offset)*2].normal	= pnormal[start2+x];
 				px += dh;
 			}
+			const float nmul = 4.0;
 			for(int i=0; i<2*mx; ++i){
-				buf[i].tex.x = buf[i].pos.x/dx/4 +  buf[i].normal.x*0.5f + 0.5f;
-				buf[i].tex.y = buf[i].pos.y/dy/4 +  buf[i].normal.y*0.5f + 0.5f;
+				buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*dxinv/4
+					+  buf[i].normal.x*nmul + 0.5f;
+				buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*dyinv/4
+					+  buf[i].normal.y*nmul + 0.5f;
 			}
 			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 		}	
@@ -406,18 +411,22 @@ void PHWater::Step(SGScene* s){
 		if (diff.X() > dh){
 			posture.Pos().X() += dh;
 			bound.x = (bound.x+1) % mx;
+			texOffset.x ++;
 		}
 		if (diff.X() < -dh){
 			posture.Pos().X() -= dh;
 			bound.x = (bound.x-1+mx) % mx;
+			texOffset.x --;
 		}
 		if (diff.Y() > dh){
 			posture.Pos().Y() += dh;
 			bound.y = (bound.y+1) % my;
+			texOffset.y ++;
 		}
 		if (diff.Y() < -dh){
 			posture.Pos().Y() -= dh;
 			bound.y = (bound.y-1+my) % my;
+			texOffset.y --;
 		}
 	}
 

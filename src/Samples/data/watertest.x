@@ -22,7 +22,7 @@ Scene {
 				5.000000;
 				0.000000;0.000000;0.000000;;
 				0.30;0.30;0.30;;
-				TextureFilename { "skydome1.jpg"; }
+				TextureFilename { "sky.jpg"; }
 			}
 		}
 	}
