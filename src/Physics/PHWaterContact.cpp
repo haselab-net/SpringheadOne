@@ -83,17 +83,30 @@ void PHWaterContactEngine::Step(SGScene* s){
 	PHWGeometries::iterator ig;
 	CDGeometries::iterator ic;
 	CDFaces::iterator iface;
-	Vec3d b, buo, tbuo;	//浮力と浮力によるモーメント
-	Vec3d pos;
-	double wz;
+	static Vec3d b, buo, tbuo;	//浮力と浮力によるモーメント
+	static Vec3d center_w;
+	static double wz;
+	static Affinef	Aw, Awinv,	//water-coord to world-coord transformation
+					Ag,			//geomerty-coord to world-coord
+					Awg,		//water-coord to geometry-coord
+                    As, Asinv,	//solid-coord to world-coord
+					Asg;		//solid-coord to geometry-coord
+	
+	Aw = water->GetFrame()->GetWorldPosture();
+	Awinv = Aw.inv();
 
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(is = solids.begin(); is != solids.end(); is++){
 		solid = *is;
+		As = solid->solid->GetFrame()->GetWorldPosture();
+		Asinv = As.inv();
 		//全ジオメトリについて･･･
 		for(ig = solid->geometries.begin(); ig != solid->geometries.end(); ig++){
 			geo = *ig;
+			Ag = geo->frame->GetWorldPosture();
+			Asg = Asinv * Ag;
+			Awg = Awinv * Ag;
 			//BBoxレベルでの接触チェック
 			//...
 
@@ -109,13 +122,13 @@ void PHWaterContactEngine::Step(SGScene* s){
 				//全面について･･･
 				for(iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
 					//この面が水面下にあるかどうか調べる
-					iface->center;
-					pos;
-					wz = water->LerpHeight(pos.X(), pos.Y());
+					center_w = Awg * iface->center;
+					//normal_w = Awg * iface->normal;
+					wz = water->LerpHeight(center_w.X(), center_w.Y());
 					//水面下ならば浮力を計算
-					if(wz > pos.Z()){
-						//このサンプル点が受ける浮力
-						b = -iface->normal * (wz - pos.Z()) * iface->area;
+					if(wz > center_w.Z()){
+						//この段階ではジオメトリフレームで計算していることに注意
+						b = -iface->normal * ((wz - center_w.Z()) * iface->area);
 						buo += b;
 
 						//モーメント
@@ -124,7 +137,8 @@ void PHWaterContactEngine::Step(SGScene* s){
 				}
 			}
 			//ジオメトリフレームから剛体フレームへ変換してAddForce
-
+			solid->solid->AddForce(Ag.Pos(), Ag.Rot() * buo);
+			solid->solid->AddTorque(Ag.Rot() * tbuo);
 		}
 	}
 }

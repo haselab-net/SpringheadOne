@@ -48,8 +48,6 @@ public:
 	SGOBJECTDEF(PHWaterContactEngine);
 
 	UTRef<PHWater>	water;			///水
-	///水フレームのワールドフレームに対するposture
-	Affinef			water_posture, water_posture_inv;
 	PHWSolids		solids;			///水に接触する剛体
 
 	///
