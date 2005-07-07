@@ -39,6 +39,7 @@ public:
 	bool LoadData(FILoadScene* ctx, PHGravityEngine* gravity){		
 		//d—Í‰Á‘¬“x‚ðŽæ“¾
 		ctx->docs.Top()->GetWholeData(gravity->accel);
+		gravity->accel.z *= -1;
 		return true;
 	}
 };
@@ -50,7 +51,9 @@ public:
 		PHGravityEngine* gravity= (PHGravityEngine*)arg;
 		FIDocNodeBase* doc = ctx->CreateDocNode("GravityEngine", gravity);
 		ctx->docs.back()->AddChild(doc);
+		gravity->accel.z *= -1;
 		doc->SetWholeData(gravity->accel);
+		gravity->accel.z *= -1;
 		for(PHSolids::iterator it = gravity->solids.begin(); it != gravity->solids.end(); it++)
 			doc->AddChild(ctx->CreateDocNode("REF", *it));
 	}
