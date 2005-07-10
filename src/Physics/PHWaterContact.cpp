@@ -88,6 +88,9 @@ void PHWaterContactEngine::Step(SGScene* s){
 	PHWGeometries::iterator ig;
 	CDGeometries::iterator ic;
 	CDFaces::iterator iface;
+
+	std::vector<int> vtxsUnder;
+	std::vector<Vec3f> vtxsOn;
 	Vec3f buo, tbuo;	//浮力と浮力によるモーメント
 	Affinef	Aw, Awinv,	//water-coord to world-coord transformation
 					Ag,			//geomerty-coord to world-coord
@@ -130,6 +133,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 				vtxs[i] = Awg * geo->mesh->vertices[i];	//	水座標系での頂点
 				height[i] = water->LerpHeight(vtxs[i].x, vtxs[i].y);
 				depth[i] = height[i] - vtxs[i].z;
+				if (depth[i] > 0) vtxsUnder.push_back(i);
 			}
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
@@ -166,8 +170,9 @@ void PHWaterContactEngine::Step(SGScene* s){
 						faceHeight[0] = height[iUnder];
 						faceHeight[1] = a1*height[iUnder] + (1-a1)*height[i1];
 						faceHeight[2] = a2*height[iUnder] + (1-a2)*height[i2];
-
 						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight,iface);
+						vtxsOn.push_back(faceVtxs[1]);
+						vtxsOn.push_back(faceVtxs[2]);
 					}else if (nUnder == 2){
 						int iOver = iface->vtxs[over];
 						int i1 = iface->vtxs[(over+1)%3];
@@ -184,6 +189,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 						faceHeight[1] = height[i2];
 						faceHeight[2] = a2*height[iOver] + (1-a2)*height[i2];
 						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+						vtxsOn.push_back(faceVtxs[2]);
 						
 						faceVtxs[1] = faceVtxs[2];
 						faceVtxs[2] = a1*vtxs[iOver] + (1-a1)*vtxs[i1];
@@ -192,6 +198,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 						faceHeight[1] = faceHeight[2];
 						faceHeight[2] = a1*height[iOver] + (1-a1)*height[i1];
 						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+						vtxsOn.push_back(faceVtxs[2]);
 					}else if (nUnder == 3){
 						for(int i=0; i<3; ++i){
 							faceVtxs[i] = vtxs[iface->vtxs[i]];
