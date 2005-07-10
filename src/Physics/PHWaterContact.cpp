@@ -3,6 +3,8 @@
 #include <Physics/PHWater.h>
 #include <Physics/PHWaterContact.h>
 #include <Collision/CDMesh.h>
+#include <Collision/CDQuickHull2D.h>
+#include <Collision/CDQuickHull2DImp.h>
 
 namespace Spr{;
 
@@ -77,6 +79,11 @@ void PHWaterContactEngine::Init(SGScene* scene){
 		(*is)->Init();
 }
 
+struct QH2DVertex: public Vec3f{
+	QH2DVertex(const Vec3f& v):Vec3f(v){}
+	Vec2f GetPos(){ return Vec2f(x,y); }
+};
+
 SGScene* scene;
 void PHWaterContactEngine::Step(SGScene* s){
 	tris.clear();
@@ -143,6 +150,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 				//...
 				//全面について･･･
 				for(iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
+					//	3角形の頂点がいくつ水に漬かっているか数える
 					int nUnder=0, over, under;
 					for(int i=0; i<3; ++i){
 						if (depth[iface->vtxs[i]] > 0){
@@ -208,23 +216,48 @@ void PHWaterContactEngine::Step(SGScene* s){
 						}
 						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
 					}
-#if 0
-					//この面が水面下にあるかどうか調べる
-					center_w = Awg * iface->center;
-					//normal_w = Awg * iface->normal;
-					wz = water->LerpHeight(center_w.X(), center_w.Y());
-					//水面下ならば浮力を計算
-					if(wz > center_w.Z()){
-						nface++;
-						//この段階ではジオメトリフレームで計算していることに注意
-						b = -iface->normal * ((wz - center_w.Z()) * iface->area);
-						buo += b;
-
-						//モーメント
-						tbuo += iface->center % b;
-					}
-#endif
 				}
+/*
+				//	水に境界条件を設定(凸形状ごとに処理する)
+				//	境界を作る頂点を水面に投影し，凸包を作る．
+				CDQHLines<QH2DVertex> lines(100);
+				std::vector<QH2DVertex*> qhvtxs;
+				qhvtxs.resize(vtxsOn.size());
+				for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
+				lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
+				std::vector<Vec2f> border;
+				for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
+					if (cur->deleted) continue;
+					border.push_back(cur->vtx[0]->GetPos());
+				}
+				//	境界条件
+				//	できた凸包の内側のセルの速度を設定．ブレゼンハムで塗りつぶし
+				float yMin = 1e10;
+				int iLeft, iRight;
+				for(int i=0; i<border.size(); ++i){
+					if (border[i].y < yMin){
+						yMin = border[i].y;
+						iLeft = i;
+					}
+				}
+				iRight = (iLeft+1) % border.size();
+
+				float y;
+				int line;
+				if (border[iLeft].y > -dy){
+					y = border[iLeft].y;
+					FindNext(line, y, left, right, border, iLeft, iRight);
+				}else{
+					y = -dy;
+					line = border.y;
+				}
+				while(iLeft != iRight){
+					x = left / dh;
+					
+				}
+
+*/
+
 			}
 			//	水から剛体フレームへ変換してAddForce
 			solid->solid->AddForce(Aw.Rot() * buo, Aw.Pos());

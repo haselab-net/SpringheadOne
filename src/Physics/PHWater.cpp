@@ -125,8 +125,8 @@ void PHWater::Init(SGScene* scene){
 
     // dh = width of grid
     // mx, my = number of divisions
-	dx = mx * dh / 2.0;
-	dy = my * dh / 2.0;
+	dx = (mx-1) * dh / 2.0;
+	dy = (my-1) * dh / 2.0;
 
 	//その内bad_allocのcatch実装
 	height.resize(mx, my);
@@ -230,16 +230,16 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			Vec2f tex;
 		};
 		VtxFVF* buf= new VtxFVF[mx*2];
-	    float xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
+	    float xo = -dx, yo = -dy;
 		float dxinv = 1/dx;
 		float dyinv = 1/dy;
-		for(int y=0; y<my; ++y){
+		for(int y=0; y<my-1; ++y){
 			int start1 = y*mx;
 			int start2 = ((y+1)%my) * mx;
 			double left = xo;
 			double py;
-			if (y < bound.y-1) py = yo + (y-bound.y-1+my)*dh; 
-			else py = yo + (y-bound.y-1)*dh;
+			if (y < bound.y) py = yo + (y-bound.y+(my-1))*dh; 
+			else py = yo + (y-bound.y)*dh;
 			double px = xo;
 			for(int x=bound.x; x<mx; ++x){
 				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]);
@@ -267,6 +267,20 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		}	
 		delete buf;
 	}
+	render->SetDepthTest(false);
+	GRMaterialData mate(Vec4f(1,0,0,1), 4);
+	render->SetMaterial(mate);
+	std::vector<Vec3f> lines;
+	lines.push_back(Vec3f(-dx, -dy, 0));
+	lines.push_back(Vec3f(dx, -dy, 0));
+	lines.push_back(Vec3f(dx, -dy, 0));
+	lines.push_back(Vec3f(dx, dy, 0));
+	lines.push_back(Vec3f(dx, dy, 0));
+	lines.push_back(Vec3f(-dx, dy, 0));
+	lines.push_back(Vec3f(-dx, dy, 0));
+	lines.push_back(Vec3f(-dx, -dy, 0));
+	render->DrawDirect(GRRender::LINES, lines.begin(), lines.end());
+	render->SetDepthTest(true);
 	//	テクスチャを戻す．
 	render->device->SetTexture(0,NULL);
 }
