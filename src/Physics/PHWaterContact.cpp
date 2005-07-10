@@ -85,6 +85,236 @@ struct QH2DVertex: public Vec3f{
 };
 
 SGScene* scene;
+struct PHWConvexCalc{
+	PHWaterContactEngine* engine;
+	PHWater* water;
+	Affinef	Aw, Awinv;	//water-coord to world-coord transformation
+
+	//	Solid単位のデータ
+	Vec3f buo, tbuo;	//浮力と浮力によるモーメント	
+	Affinef As, Asinv;	//solid-coord to world-coord
+	Affinef Asg;		//solid-coord to geometry-coord
+	
+	//	Mesh単位のデータ
+	Affinef	Ag;			//geomerty-coord to world-coord
+	Affinef Awg;		//water-coord to geometry-coord
+	std::vector<float> depth;		//	頂点の水深
+	std::vector<float> height;		//	頂点での波高
+	std::vector<Vec3f> vtxs;		//	水座標系での頂点の座標
+	
+	//	凸形状単位のデータ
+	CDPolyhedron* poly;				//	対象の凸形状
+	std::vector<Vec3f> vtxsOn;		//	線分が水面を横切る点(水座標系)
+
+	//	塗りつぶし作業用	水cell座標系 (0..mx,0..my)
+	std::vector<Vec2f> border;		//	凸形状を水で輪切りにしたときの輪
+	int iLeft, iRight;				//	ボーダの左端の頂点と右端の頂点
+	float left, right;				//	左端，右端
+	int curY;						//	現在の行
+	float dLeft, dRight;			//	1行での左端の変化量, 右端の変化量
+
+	void Init(PHWaterContactEngine* e){
+		engine = e;
+		water = e->water;
+	}
+	void Calc(CDPolyhedron* p){
+		poly = p;
+		CalcPressure();
+		CalcBorder();
+	}
+	void CalcPressure(){
+		vtxsOn.clear();
+		for(CDFaces::iterator iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
+			//	3角形の頂点がいくつ水に漬かっているか数える
+			int nUnder=0, over, under;
+			for(int i=0; i<3; ++i){
+				if (depth[iface->vtxs[i]] > 0){
+					nUnder++;
+					under = i;
+				}else{
+					over = i;
+				}
+			}
+			if (nUnder == 0) continue;	//	水に漬かっていない
+			Vec3f faceVtxs[3];
+			float faceDepth[3];
+			float faceHeight[3];
+			if (nUnder == 1){
+				int iUnder = iface->vtxs[under];
+				int i1 = iface->vtxs[(under+1)%3];
+				int i2 = iface->vtxs[(under+2)%3];
+				faceVtxs[0] = vtxs[iUnder];
+				float a1 = -depth[i1]/(depth[iUnder]-depth[i1]);
+				faceVtxs[1] = a1 * vtxs[iUnder] + (1-a1) * vtxs[i1];
+				float a2 = -depth[i2]/(depth[iUnder]-depth[i2]);
+				faceVtxs[2] = a2 * vtxs[iUnder] + (1-a2) * vtxs[i2];
+				faceDepth[0] = depth[iUnder];
+				faceDepth[1] = 0;
+				faceDepth[2] = 0;
+				faceHeight[0] = height[iUnder];
+				faceHeight[1] = a1*height[iUnder] + (1-a1)*height[i1];
+				faceHeight[2] = a2*height[iUnder] + (1-a2)*height[i2];
+				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				vtxsOn.push_back(faceVtxs[1]);
+				vtxsOn.push_back(faceVtxs[2]);
+			}else if (nUnder == 2){
+				int iOver = iface->vtxs[over];
+				int i1 = iface->vtxs[(over+1)%3];
+				int i2 = iface->vtxs[(over+2)%3];
+				faceVtxs[0] = vtxs[i1];
+				faceVtxs[1] = vtxs[i2];
+				float a1 = depth[i1]/(depth[i1]-depth[iOver]);
+				float a2 = depth[i2]/(depth[i2]-depth[iOver]);
+				faceVtxs[2] = a2*vtxs[iOver] + (1-a2)*vtxs[i2];
+				faceDepth[0] = depth[i1];
+				faceDepth[1] = depth[i2];
+				faceDepth[2] = 0;
+				faceHeight[0] = height[i1];
+				faceHeight[1] = height[i2];
+				faceHeight[2] = a2*height[iOver] + (1-a2)*height[i2];
+				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				vtxsOn.push_back(faceVtxs[2]);
+				
+				faceVtxs[1] = faceVtxs[2];
+				faceVtxs[2] = a1*vtxs[iOver] + (1-a1)*vtxs[i1];
+				faceDepth[1] = 0;
+				faceDepth[2] = 0;
+				faceHeight[1] = faceHeight[2];
+				faceHeight[2] = a1*height[iOver] + (1-a1)*height[i1];
+				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				vtxsOn.push_back(faceVtxs[2]);
+			}else if (nUnder == 3){
+				for(int i=0; i<3; ++i){
+					faceVtxs[i] = vtxs[iface->vtxs[i]];
+					faceDepth[i] = depth[iface->vtxs[i]];
+					faceHeight[i] = height[iface->vtxs[i]];
+				}
+				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+			}
+		}
+	}
+	bool NextLine(){
+		curY++;
+		left += dLeft;
+		right += dRight;
+		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		while (border[iLeft].y < curY && iLeft!= iRight){
+			Vec2f last = border[iLeft];
+			iLeft = (iLeft-1+border.size()) % border.size();
+			Vec2f delta = border[iLeft] - last;
+			dLeft = delta.x / delta.y;
+			left = last.x + dLeft * (curY-last.y);
+		}
+		while (border[iRight].y < curY && iLeft!= iRight){
+			Vec2f last = border[iRight];
+			iRight = (iRight+1) % border.size();
+			Vec2f delta = border[iRight] - last;
+			dRight = delta.x / delta.y;
+			right = last.x + dRight * (curY-last.y);
+		}
+		if (_finite(dLeft) && _finite(dRight)) return true;
+		return false;
+	}
+	void CalcBorder(){
+		//	水に境界条件を設定(凸形状ごとに処理する)
+		//	境界を作る頂点を水面に投影し，凸包を作る．
+		border.clear();
+		CDQHLines<QH2DVertex> lines(100);
+		std::vector<QH2DVertex*> qhvtxs;
+		qhvtxs.resize(vtxsOn.size());
+		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
+		lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
+		float dhInv = 1/engine->water->dh;
+		CDQHLine<QH2DVertex>* start=NULL;
+		for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
+			if (!cur->deleted){
+				start = cur;
+				break;
+			}
+		}
+		if (!start) return;
+		border.push_back((start->vtx[0]->GetPos()+Vec2f(water->dx, water->dy)) * dhInv);
+		for(CDQHLine<QH2DVertex>*cur=start->neighbor[0]; cur!= start; cur=cur->neighbor[0]){
+			border.push_back((cur->vtx[0]->GetPos()+Vec2f(water->dx, water->dy)) * dhInv);
+		}
+		if (border.size() < 3) return;
+		
+		//	境界条件
+		//	できた凸包の内側のセルの速度を設定．ブレゼンハムで塗りつぶし
+		float top = 1e10f;
+		for(int i=0; i<border.size(); ++i){
+			if (border[i].y < top){
+				top = ceil(border[i].y-1);
+				iLeft = i;
+			}
+		}
+		if (top < -1) top = -1;
+		curY = top;
+		border.insert(border.begin()+iLeft, border[iLeft]);
+		iRight = iLeft+1;
+		while(NextLine()){
+			int xStart, xEnd;
+			xStart = ceil(left);
+			xEnd = right;
+			if (xStart < 0) xStart = 0;
+			if (xEnd > water->mx) xEnd = water->mx;
+			for(int x = xStart; x<xEnd; ++x){
+				int cx = (x + engine->water->bound.x) % engine->water->mx;
+				int cy = (curY + engine->water->bound.y) % engine->water->my;
+//				engine->water->u[cx][cy] = 
+//				engine->water->v[cx][cy] = 
+				//	とりあえずテスト．
+				engine->water->height[cx][cy] = -0.1;
+			}
+		}
+	}
+	void CalcTriangle(Vec3f* p, float* depth, float* height){
+		assert(depth[0] >=0);
+		assert(depth[1] >=0);
+		assert(depth[2] >=0);
+		
+		Vec3f a = p[1] - p[0];
+		Vec3f b = p[2] - p[0];
+		Vec3f normal = -a^b;
+		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normal;
+		Vec3f volumeMom = (
+					((1.0f/12.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[0]
+				+	((1.0f/24.0f)*depth[0] + (1.0f/12.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[1]
+				+	((1.0f/24.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/12.0f)*depth[2]) * p[2]
+			  ) ^ normal;
+		//	波高の補正
+		buo += volume * engine->water->density;
+		tbuo += volumeMom * engine->water->density;
+
+		engine->tris.push_back(p[0]);
+		engine->tris.push_back(p[1]);
+		engine->tris.push_back(p[2]);
+	}
+};
+
+PHWConvexCalc convCalc;
+void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
+	//	描画
+	if (!render || !render->CanDraw()) return;
+	render->SetModelMatrix(water->GetPosture());
+	render->SetDepthTest(false);
+	GRMaterialData mat(Vec4f(0, 0, 1, 1), 2);
+	render->SetMaterial(mat);
+	render->DrawDirect(GRRender::TRIANGLES, &*(tris.begin()), &*(tris.end()));
+
+	GRMaterialData mat2(Vec4f(1, 1, 0, 1), 2);
+	render->SetMaterial(mat2);
+	std::vector<Vec3f> vtxs;
+	float dh = water->dh;
+	float dx = water->dx;
+	float dy = water->dy;
+	for(int i=0; i<convCalc.border.size(); ++i){
+		vtxs.push_back(Vec3f(convCalc.border[i].x*dh-dx, convCalc.border[i].y*dh-dy, 0));
+		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-dx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-dy, 0));
+	}
+	render->DrawDirect(GRRender::LINES, vtxs.begin(), vtxs.end());
+	render->SetDepthTest(true);
+}
 void PHWaterContactEngine::Step(SGScene* s){
 	tris.clear();
 	scene = s;
@@ -94,54 +324,38 @@ void PHWaterContactEngine::Step(SGScene* s){
 	PHWSolids::iterator is;
 	PHWGeometries::iterator ig;
 	CDGeometries::iterator ic;
-	CDFaces::iterator iface;
 
-	Vec3f buo, tbuo;	//浮力と浮力によるモーメント
-	Affinef	Aw, Awinv,	//water-coord to world-coord transformation
-					Ag,			//geomerty-coord to world-coord
-					Awg,		//water-coord to geometry-coord
-                    As, Asinv,	//solid-coord to world-coord
-					Asg;		//solid-coord to geometry-coord
-	
-	//Aw = water->GetFrame()->GetWorldPosture();
-	Aw = water->GetPosture();
-	Awinv = Aw.inv();
+	convCalc.Init(this);
+	convCalc.Aw = water->GetPosture();
+	convCalc.Awinv = convCalc.Aw.inv();
 
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(is = solids.begin(); is != solids.end(); is++){
 		solid = *is;
-		As = solid->solid->GetFrame()->GetWorldPosture();
-		Asinv = As.inv();
+		convCalc.As = solid->solid->GetFrame()->GetWorldPosture();
+		convCalc.Asinv = convCalc.As.inv();
 
 		//全ジオメトリについて･･･
 		for(ig = solid->geometries.begin(); ig != solid->geometries.end(); ig++){
 			geo = *ig;
-			Ag = geo->frame->GetWorldPosture();
-			Asg = Asinv * Ag;
-			Awg = Awinv * Ag;
+			convCalc.Ag = geo->frame->GetWorldPosture();
+			convCalc.Asg = convCalc.Asinv * convCalc.Ag;
+			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			//BBoxレベルでの接触チェック
 			//...
 
 			//凸多面体の各面に加わる浮力をジオメトリの中心を基準として積算
-			buo.clear();
-			tbuo.clear();
+			convCalc.buo.clear();
+			convCalc.tbuo.clear();
 
-			//	頂点の記録
-			std::vector<int> idsUnder;		//	水に漬かっている頂点
-			std::vector<Vec3f> vtxsOn;		//	線分が水面を横切る点
-			//	頂点の水深を計算
-			std::vector<float> depth;
-			std::vector<float> height;
-			std::vector<Vec3f> vtxs;
-			depth.resize(geo->mesh->vertices.size());
-			height.resize(geo->mesh->vertices.size());
-			vtxs.resize(geo->mesh->vertices.size());
+			convCalc.depth.resize(geo->mesh->vertices.size());
+			convCalc.height.resize(geo->mesh->vertices.size());
+			convCalc.vtxs.resize(geo->mesh->vertices.size());
 			for(int i=0; i<geo->mesh->tvtxs.size(); ++i){
-				vtxs[i] = Awg * geo->mesh->vertices[i];	//	水座標系での頂点
-				height[i] = water->LerpHeight(vtxs[i].x, vtxs[i].y);
-				depth[i] = height[i] - vtxs[i].z;
-				if (depth[i] > 0) idsUnder.push_back(i);
+				convCalc.vtxs[i] = convCalc.Awg * geo->mesh->vertices[i];	//	水座標系での頂点
+				convCalc.height[i] = water->LerpHeight(convCalc.vtxs[i].x, convCalc.vtxs[i].y);
+				convCalc.depth[i] = convCalc.height[i] - convCalc.vtxs[i].z;
 			}
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
@@ -149,158 +363,13 @@ void PHWaterContactEngine::Step(SGScene* s){
 				//ここで凸多面体レベルでのBBox判定した方が速くなる気がする
 				//...
 				//全面について･･･
-				for(iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
-					//	3角形の頂点がいくつ水に漬かっているか数える
-					int nUnder=0, over, under;
-					for(int i=0; i<3; ++i){
-						if (depth[iface->vtxs[i]] > 0){
-							nUnder++;
-							under = i;
-						}else{
-							over = i;
-						}
-					}
-					if (nUnder == 0) continue;	//	水に漬かっていない
-					Vec3f faceVtxs[3];
-					float faceDepth[3];
-					float faceHeight[3];
-					if (nUnder == 1){
-						int iUnder = iface->vtxs[under];
-						int i1 = iface->vtxs[(under+1)%3];
-						int i2 = iface->vtxs[(under+2)%3];
-						faceVtxs[0] = vtxs[iUnder];
-						float a1 = -depth[i1]/(depth[iUnder]-depth[i1]);
-						faceVtxs[1] = a1 * vtxs[iUnder] + (1-a1) * vtxs[i1];
-						float a2 = -depth[i2]/(depth[iUnder]-depth[i2]);
-						faceVtxs[2] = a2 * vtxs[iUnder] + (1-a2) * vtxs[i2];
-						faceDepth[0] = depth[iUnder];
-						faceDepth[1] = 0;
-						faceDepth[2] = 0;
-						faceHeight[0] = height[iUnder];
-						faceHeight[1] = a1*height[iUnder] + (1-a1)*height[i1];
-						faceHeight[2] = a2*height[iUnder] + (1-a2)*height[i2];
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
-						vtxsOn.push_back(faceVtxs[1]);
-						vtxsOn.push_back(faceVtxs[2]);
-					}else if (nUnder == 2){
-						int iOver = iface->vtxs[over];
-						int i1 = iface->vtxs[(over+1)%3];
-						int i2 = iface->vtxs[(over+2)%3];
-						faceVtxs[0] = vtxs[i1];
-						faceVtxs[1] = vtxs[i2];
-						float a1 = depth[i1]/(depth[i1]-depth[iOver]);
-						float a2 = depth[i2]/(depth[i2]-depth[iOver]);
-						faceVtxs[2] = a2*vtxs[iOver] + (1-a2)*vtxs[i2];
-						faceDepth[0] = depth[i1];
-						faceDepth[1] = depth[i2];
-						faceDepth[2] = 0;
-						faceHeight[0] = height[i1];
-						faceHeight[1] = height[i2];
-						faceHeight[2] = a2*height[iOver] + (1-a2)*height[i2];
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
-						vtxsOn.push_back(faceVtxs[2]);
-						
-						faceVtxs[1] = faceVtxs[2];
-						faceVtxs[2] = a1*vtxs[iOver] + (1-a1)*vtxs[i1];
-						faceDepth[1] = 0;
-						faceDepth[2] = 0;
-						faceHeight[1] = faceHeight[2];
-						faceHeight[2] = a1*height[iOver] + (1-a1)*height[i1];
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
-						vtxsOn.push_back(faceVtxs[2]);
-					}else if (nUnder == 3){
-						for(int i=0; i<3; ++i){
-							faceVtxs[i] = vtxs[iface->vtxs[i]];
-							faceDepth[i] = depth[iface->vtxs[i]];
-							faceHeight[i] = height[iface->vtxs[i]];
-						}
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
-					}
-				}
-/*
-				//	水に境界条件を設定(凸形状ごとに処理する)
-				//	境界を作る頂点を水面に投影し，凸包を作る．
-				CDQHLines<QH2DVertex> lines(100);
-				std::vector<QH2DVertex*> qhvtxs;
-				qhvtxs.resize(vtxsOn.size());
-				for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
-				lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
-				std::vector<Vec2f> border;
-				for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
-					if (cur->deleted) continue;
-					border.push_back(cur->vtx[0]->GetPos());
-				}
-				//	境界条件
-				//	できた凸包の内側のセルの速度を設定．ブレゼンハムで塗りつぶし
-				float yMin = 1e10;
-				int iLeft, iRight;
-				for(int i=0; i<border.size(); ++i){
-					if (border[i].y < yMin){
-						yMin = border[i].y;
-						iLeft = i;
-					}
-				}
-				iRight = (iLeft+1) % border.size();
-
-				float y;
-				int line;
-				if (border[iLeft].y > -dy){
-					y = border[iLeft].y;
-					FindNext(line, y, left, right, border, iLeft, iRight);
-				}else{
-					y = -dy;
-					line = border.y;
-				}
-				while(iLeft != iRight){
-					x = left / dh;
-					
-				}
-
-*/
-
+				convCalc.Calc(poly);
 			}
 			//	水から剛体フレームへ変換してAddForce
-			solid->solid->AddForce(Aw.Rot() * buo, Aw.Pos());
-			solid->solid->AddTorque(Aw.Rot() * tbuo);
+			solid->solid->AddForce(convCalc.Aw.Rot() * convCalc.buo, convCalc.Aw.Pos());
+			solid->solid->AddTorque(convCalc.Aw.Rot() * convCalc.tbuo);
 		}
 	}
-}
-void PHWaterContactEngine::CalcTriangle(Vec3f& buo, Vec3f& tbuo, Vec3f* p, float* depth, float* height, CDFace* face){
-	assert(depth[0] >=0);
-	assert(depth[1] >=0);
-	assert(depth[2] >=0);
-	
-	Vec3f a = p[1] - p[0];
-	Vec3f b = p[2] - p[0];
-	Vec3f normal = -a^b;
-	Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normal;
-	Vec3f volumeMom = (
-				((1.0f/12.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[0]
-			+	((1.0f/24.0f)*depth[0] + (1.0f/12.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[1]
-			+	((1.0f/24.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/12.0f)*depth[2]) * p[2]
-		  ) ^ normal;
-	//	波高の補正
-	buo += volume * water->density;
-	tbuo += volumeMom * water->density;
-
-	tris.push_back(p[0]);
-	tris.push_back(p[1]);
-	tris.push_back(p[2]);
-}
-void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
-	//	描画
-	if (!render || !render->CanDraw()) return;
-	render->SetModelMatrix(water->GetPosture());
-	GRMaterialData mat(
-		Vec4f(0, 0, 1, 1),
-		Vec4f(0, 0, 1, 1),
-		Vec4f(0, 0, 1, 1),
-		Vec4f(0, 0, 1, 1),
-		0.0f);
-	render->SetMaterial(mat);
-	render->SetDepthTest(false);
-	render->DrawDirect(GRRender::TRIANGLES, &*(tris.begin()), &*(tris.end()));
-	render->SetDepthTest(true);
 }
 /*
 //ダイナミクスは考慮せずに単純に水面下に沈み込んでいる体積に比例する浮力

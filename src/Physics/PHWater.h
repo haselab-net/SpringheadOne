@@ -48,7 +48,7 @@ public:
 	SGObject*	ReferenceObject(size_t i);				///< フレームを返す．
 	void		Loaded(SGScene* scene);					///< ロード終了時の初期化
 	void		Step(SGScene* s);						///< 時刻を進める．
-	Affinef		GetPosture(){ return frame->GetPosture(); }
+	Affinef		GetPosture(){ return frame->GetWorldPosture(); }
 
 	///	レンダリング
 	virtual void Render(SGFrame* fr, GRRender* render);
@@ -80,6 +80,8 @@ public:
 	//void SetInfo(const WaterInfo& _info){info = _info;}
 
 	PHWater();
+	friend class PHWaterContactEngine;
+	friend struct PHWConvexCalc;
 
 protected:
 	typedef VMatrixCol<double> matrix_type;
