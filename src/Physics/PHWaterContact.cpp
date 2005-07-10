@@ -89,8 +89,6 @@ void PHWaterContactEngine::Step(SGScene* s){
 	CDGeometries::iterator ic;
 	CDFaces::iterator iface;
 
-	std::vector<int> vtxsUnder;
-	std::vector<Vec3f> vtxsOn;
 	Vec3f buo, tbuo;	//浮力と浮力によるモーメント
 	Affinef	Aw, Awinv,	//water-coord to world-coord transformation
 					Ag,			//geomerty-coord to world-coord
@@ -99,7 +97,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 					Asg;		//solid-coord to geometry-coord
 	
 	//Aw = water->GetFrame()->GetWorldPosture();
-	Aw = water->posture;
+	Aw = water->GetPosture();
 	Awinv = Aw.inv();
 
 	//剛体に加わる浮力を計算する
@@ -122,6 +120,9 @@ void PHWaterContactEngine::Step(SGScene* s){
 			buo.clear();
 			tbuo.clear();
 
+			//	頂点の記録
+			std::vector<int> idsUnder;		//	水に漬かっている頂点
+			std::vector<Vec3f> vtxsOn;		//	線分が水面を横切る点
 			//	頂点の水深を計算
 			std::vector<float> depth;
 			std::vector<float> height;
@@ -133,7 +134,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 				vtxs[i] = Awg * geo->mesh->vertices[i];	//	水座標系での頂点
 				height[i] = water->LerpHeight(vtxs[i].x, vtxs[i].y);
 				depth[i] = height[i] - vtxs[i].z;
-				if (depth[i] > 0) vtxsUnder.push_back(i);
+				if (depth[i] > 0) idsUnder.push_back(i);
 			}
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
@@ -225,7 +226,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 #endif
 				}
 			}
-			//ジオメトリフレームから剛体フレームへ変換してAddForce
+			//	水から剛体フレームへ変換してAddForce
 			solid->solid->AddForce(Aw.Rot() * buo, Aw.Pos());
 			solid->solid->AddTorque(Aw.Rot() * tbuo);
 		}
@@ -256,7 +257,7 @@ void PHWaterContactEngine::CalcTriangle(Vec3f& buo, Vec3f& tbuo, Vec3f* p, float
 void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
 	//	描画
 	if (!render || !render->CanDraw()) return;
-	render->SetModelMatrix(water->posture);
+	render->SetModelMatrix(water->GetPosture());
 	GRMaterialData mat(
 		Vec4f(0, 0, 1, 1),
 		Vec4f(0, 0, 1, 1),

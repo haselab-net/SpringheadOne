@@ -204,8 +204,6 @@ double PHWater::LerpHeight(double x, double y){
 }
 
 void PHWater::Render(SGFrame* fr, GRRender* render){
-	//	Žp¨s—ñ‚ðÝ’è
-	render->SetModelMatrix(posture);
 	//render‚ÌŽí—Þ‚ð”»’è	
 	if (render->drawState&GRRender::DRAW_OPAQUE == 0) return;
 	if(DCAST(D3Render, render))
@@ -385,30 +383,30 @@ void PHWater::Step(SGScene* s){
     int i,j;
 	
 	double dt = s->GetTimeStep();
-	Vec3f velW = posture.Rot() * Vec3f(velocity.x, velocity.y, 0);
-	posture.Pos() += velW * dt;
+	Vec3f velW = GetPosture().Rot() * Vec3f(velocity.x, velocity.y, 0);
+	GetPosture().Pos() += velW * dt;
 	
 	if (targets && targets->targets.size()){
 		SGFrame* target = targets->targets[0];
-		Affinef af = posture.inv() * target->GetWorldPosture();
+		Affinef af = GetPosture().inv() * target->GetWorldPosture();
 		Vec2f diff = af.Pos().sub_vector(0, Vec2f());
 		if (diff.X() > dh){
-			posture.Pos() += posture.Rot() * Vec3f(dh, 0, 0);
+			GetPosture().Pos() += GetPosture().Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x+1) % mx;
 			texOffset.x ++;
 		}
 		if (diff.X() < -dh){
-			posture.Pos() -= posture.Rot() * Vec3f(dh, 0, 0);
+			GetPosture().Pos() -= GetPosture().Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x-1+mx) % mx;
 			texOffset.x --;
 		}
 		if (diff.Y() > dh){
-			posture.Pos() += posture.Rot() * Vec3f(0, dh, 0);
+			GetPosture().Pos() += GetPosture().Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y+1) % my;
 			texOffset.y ++;
 		}
 		if (diff.Y() < -dh){
-			posture.Pos() -= posture.Rot() * Vec3f(0, dh, 0);
+			GetPosture().Pos() -= GetPosture().Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y-1+my) % my;
 			texOffset.y --;
 		}
@@ -613,10 +611,8 @@ DEF_RECORD(XWaterEngine, {
 	GUID Guid(){ return WBGuid("a09e46e6-ed5b-4965-9ce6-34aa47f71265"); } 
 });
 
-typedef Affinef Matrix4x4;
 DEF_RECORD(XWater, {
     GUID Guid(){ return WBGuid("ebb9188d-6c15-42aa-b15d-e1c89943ec0c"); } 
-	Matrix4x4 posture;
 	DWORD mx;
 	DWORD my;
 	FLOAT dh;
@@ -690,9 +686,9 @@ public:
 		water->hscale = data.hscale;
 		water->density = data.density;
 		water->loss = data.loss;
-		water->posture = data.posture;
 		water->velocity.x = data.vx;
 		water->velocity.y = data.vy;
+		water->frame = DCAST(SGFrame, ctx->objects.Top());
 		return true;
 	}
 	PHWaterLoader(){
@@ -700,7 +696,6 @@ public:
 		db->SetPrefix("X");
 		db->REG_FIELD(DWORD);
 		db->REG_FIELD(FLOAT);
-		db->REG_FIELD(Matrix4x4);
 		db->REG_RECORD_PROTO(XWater);
 	}
 };
@@ -720,7 +715,6 @@ class PHWaterSaver:public FIBaseSaver{
 		data.hscale = (FLOAT)water->hscale;
 		data.density = (FLOAT)water->density;
 		data.loss = (FLOAT)water->loss;
-		data.posture = water->posture;
 		data.vx = water->velocity.x;
 		data.vy = water->velocity.y;
 		doc->SetWholeData(data);

@@ -48,6 +48,7 @@ public:
 	SGObject*	ReferenceObject(size_t i);				///< フレームを返す．
 	void		Loaded(SGScene* scene);					///< ロード終了時の初期化
 	void		Step(SGScene* s);						///< 時刻を進める．
+	Affinef		GetPosture(){ return frame->GetPosture(); }
 
 	///	レンダリング
 	virtual void Render(SGFrame* fr, GRRender* render);
@@ -59,7 +60,7 @@ public:
 	double LerpHeight(double x, double y);
 
 	//パラメータ
-	Affinef posture;		//	水の姿勢行列
+	UTRef<SGFrame> frame;	//	親フレーム
 	int		my, mx;			//分割数
 	TVec2<int> bound;		//境界 このセルと次のセルが境界のセルになる．
 	TVec2<int> texOffset;	//bound と同じだが，%mx しない．
