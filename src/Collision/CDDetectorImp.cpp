@@ -26,7 +26,7 @@ CDFace** CDContactAnalysis::FindIntersection(CDConvexPair& cp, Affinef* af){
 				for(CDVertexIDs::iterator it = poly[i]->vtxIDs.begin(); it != poly[i]->vtxIDs.end(); ++it){
 					poly[i]->tvtxs[*it] = afw * poly[i]->base[*it];
 				}
-				for(CDFaces::iterator it = poly[i]->faces.begin(); it != poly[i]->faces.end(); ++it){
+				for(CDFaces::iterator it = poly[i]->faces.begin(); it != poly[i]->faces.begin()+poly[i]->nPlanes; ++it){
 					if (!it->CalcDualVtx(poly[i]->tvtxs)){
 						DSTR << "Common Local: " << af[i].inv() * cp.commonPoint << std::endl;
 						for(unsigned int v=0; v<poly[i]->vtxIDs.size(); ++v){

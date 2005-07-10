@@ -14,14 +14,9 @@ public:
 	};
 	int vtxs[3];	///< 面の頂点
 
-	// 面の付加情報
 	//	交差部分の形状を求める計算のための作業領域
-	Vec3f center;	///<	3角形の中心
 	Vec3f normal;	///<	面の法線ベクトル
 	float dist;		///<	原点からの距離
-	float area;		///<	3角形の面積
-
-
 	///	QuickHullにとっての頂点．この面を双対変換してできる頂点
 	Vec3f GetPos() const { return normal / dist; }
 	///
@@ -74,8 +69,10 @@ public:
 	CDVertexIDs vtxIDs;
 	///	頂点の隣の頂点の位置が入った配列
 	std::vector< std::vector<int> > neighbor;
-	///	面(3角形)
+	///	面(3角形 0..nPlanes-1 が独立な面，それ以降はMargeFaceで削除される同一平面上の面)
 	CDFaces faces;
+	///	面(3角形のうち，MergeFace()で残った数)
+	int nPlanes;
 
 	///	頂点の座標を返す．
 	Vec3f Vertex(int pos) const { return base[vtxIDs[pos]]; }

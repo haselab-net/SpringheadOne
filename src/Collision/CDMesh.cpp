@@ -146,6 +146,7 @@ bool CDPolyhedron::VertexNear(int v1, int v2) const{
 }
 void CDPolyhedron::MergeFace(){
 	//int nf = faces.size();
+	CDFaces erased;
 	for(unsigned int i=0; i<faces.size(); ++i){
 		for(unsigned int j=i+1; j<faces.size(); ++j){
 			CDFace& a = faces[i];
@@ -157,12 +158,15 @@ void CDPolyhedron::MergeFace(){
 			float len;
 			len = pa*na - pb*na;
 			if (na*nb > 0.998f && (len>0?len:-len) < 1e-5f){
+				erased.push_back(faces[i]);
 				faces.erase(faces.begin() + i);
 				i--;
 				break;
 			}
 		}
 	}
+	nPlanes = faces.size();
+	faces.insert(faces.end(), erased.begin(), erased.end());
 	//	DSTR << "Poly faces:" << nf << "->" << faces.size() << std::endl;
 }
 
