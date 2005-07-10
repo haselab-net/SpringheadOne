@@ -77,27 +77,12 @@ PHWater::PHWater(){
 	loss = 0.99;
 	bound.x = 3;
 	bound.y = 3;
-	//velocity.X() = 0.2;
-	//velocity.Y() = 0.2;
-	//velocity.X() = 1.2;
-	//velocity.Y() = 1.2;
 }
 
     // this function adds new child data to the end of the vector
     // object of SGFrame or PHSolid can be inserted
     // this function returns the result of insertion as a boolean
 bool PHWater::AddChildObject(SGObject* o, SGScene* s){
-	if(DCAST(SGFrame, o)){
-		frame = (SGFrame*)o;
-		frame->contents.push_back(this);
-		return true;
-	}
-	if(DCAST(PHSolid, o)){
-		solid = (PHSolid*)o;
-		if(solid->GetFrame())
-			solid->GetFrame()->contents.push_back(this);
-		return true;
-	}
 	if(DCAST(PHWaterTrackTarget, o)){
 		targets = (PHWaterTrackTarget*)o;
 		return true;
@@ -113,9 +98,6 @@ bool PHWater::AddChildObject(SGObject* o, SGScene* s){
     // if object exists
     // this function returns 1, otherwise returns 0
 size_t PHWater::NReferenceObjects(){
-	//frame‚Æsolid‚ð“¯Žž‚ÉŽQÆ‚·‚é‚±‚Æ‚Í‚È‚¢
-	if(frame) return 1;
-	if(solid) return 1;
 	return 0;
 }
 
@@ -124,9 +106,6 @@ size_t PHWater::NReferenceObjects(){
     // if i is zero and object exists,
     // return object
 SGObject* PHWater::ReferenceObject(size_t i){
-	if(i != 0) return NULL;
-	if(frame) return frame;
-	if(solid) return solid;
 	return NULL;
 }
 
@@ -216,26 +195,27 @@ double PHWater::LerpHeight(double x, double y){
 	int ix = floor(nx), iy = floor(ny);
 	nx -= (double)ix;
 	ny -= (double)iy;
+	ix = (ix+bound.x)%mx, iy = (iy+bound.y)%my;
     
-    h0 = height[ix    ][iy] * (1.0 - ny) + height[ix    ][iy + 1] * ny;
-    h1 = height[ix + 1][iy] * (1.0 - ny) + height[ix + 1][iy + 1] * ny;
+    h0 = height[ix       ][iy] * (1.0 - ny) + height[ix       ][(iy+1)%my] * ny;
+    h1 = height[(ix+1)%mx][iy] * (1.0 - ny) + height[(ix+1)%mx][(iy+1)%my] * ny;
 
     return h0 * (1.0 - nx) + h1 * nx;
 }
 
-void PHWater::Render(SGFrame* n, GRRender* render){
+void PHWater::Render(SGFrame* fr, GRRender* render){
 	//	Žp¨s—ñ‚ðÝ’è
 	render->SetModelMatrix(posture);
 	//render‚ÌŽí—Þ‚ð”»’è	
 	if (render->drawState&GRRender::DRAW_OPAQUE == 0) return;
 	if(DCAST(D3Render, render))
-		RenderD3(n, DCAST(D3Render, render));
+		RenderD3(fr, DCAST(D3Render, render));
 	if(DCAST(GLRender, render))
-		RenderGL(n, DCAST(GLRender, render));
+		RenderGL(fr, DCAST(GLRender, render));
 }
 
 // draw by Direct3D
-void PHWater::RenderD3(SGFrame* n, D3Render* render){
+void PHWater::RenderD3(SGFrame* fr, D3Render* render){
     // copy the head address of the varialbe height array to pheight
 	double* pheight = &height[0][0];
     // copy the head address of the variable normal array to pnormal
@@ -244,7 +224,7 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 	if ( (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE)
 		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
         // this function sets the texture
-		materialD3->Render(n, render);
+		materialD3->Render(fr, render);
 		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2);
 		struct VtxFVF{
 			Vec3f pos;
@@ -294,7 +274,7 @@ void PHWater::RenderD3(SGFrame* n, D3Render* render){
 }
 
 // draw objects by OpenGL
-void PHWater::RenderGL(SGFrame* n, GLRender* render){
+void PHWater::RenderGL(SGFrame* fr, GLRender* render){
     int i = 0, j = 0;
     double xo = -(mx-1)/2.0 * dh, yo = -(my-1)/2.0 * dh;
     double x = xo, y = yo;
@@ -306,11 +286,11 @@ void PHWater::RenderGL(SGFrame* n, GLRender* render){
     // first one is for opaque objects
     // second one is for transparent objects
     if (material->IsOpaque() && render->drawState & GRRender::DRAW_OPAQUE){
-        material->Render(n, render);
+        material->Render(fr, render);
         }
     
     //	if(!material->IsOpaque() && render->drawState & GRRender::DRAW_TRANSPARENT){
-        material->Render(n, render);
+        material->Render(fr, render);
 
         //        glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP); 
         //        glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP); 
@@ -405,30 +385,30 @@ void PHWater::Step(SGScene* s){
     int i,j;
 	
 	double dt = s->GetTimeStep();
-	posture.Pos().X() += velocity.X() * dt;
-	posture.Pos().Y() += velocity.Y() * dt;
+	Vec3f velW = posture.Rot() * Vec3f(velocity.x, velocity.y, 0);
+	posture.Pos() += velW * dt;
 	
 	if (targets && targets->targets.size()){
 		SGFrame* target = targets->targets[0];
-		Affinef af = target->GetWorldPosture();
-		Vec2f diff = (af.Pos() - posture.Pos()).sub_vector(0, Vec2f());
+		Affinef af = posture.inv() * target->GetWorldPosture();
+		Vec2f diff = af.Pos().sub_vector(0, Vec2f());
 		if (diff.X() > dh){
-			posture.Pos().X() += dh;
+			posture.Pos() += posture.Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x+1) % mx;
 			texOffset.x ++;
 		}
 		if (diff.X() < -dh){
-			posture.Pos().X() -= dh;
+			posture.Pos() -= posture.Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x-1+mx) % mx;
 			texOffset.x --;
 		}
 		if (diff.Y() > dh){
-			posture.Pos().Y() += dh;
+			posture.Pos() += posture.Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y+1) % my;
 			texOffset.y ++;
 		}
 		if (diff.Y() < -dh){
-			posture.Pos().Y() -= dh;
+			posture.Pos() -= posture.Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y-1+my) % my;
 			texOffset.y --;
 		}
@@ -632,17 +612,21 @@ void PHWaterEngine::SaveState(SGBehaviorStates& states) const{
 DEF_RECORD(XWaterEngine, {
 	GUID Guid(){ return WBGuid("a09e46e6-ed5b-4965-9ce6-34aa47f71265"); } 
 });
-	
+
+typedef Affinef Matrix4x4;
 DEF_RECORD(XWater, {
     GUID Guid(){ return WBGuid("ebb9188d-6c15-42aa-b15d-e1c89943ec0c"); } 
-	WORD mx;
-	WORD my;
+	Matrix4x4 posture;
+	DWORD mx;
+	DWORD my;
 	FLOAT dh;
 	FLOAT depth;
 	FLOAT gravity;
 	FLOAT hscale;
 	FLOAT density;
 	FLOAT loss;
+	FLOAT vx;
+	FLOAT vy;
  });
 
 DEF_RECORD(XWaterTrackTarget, {
@@ -706,13 +690,17 @@ public:
 		water->hscale = data.hscale;
 		water->density = data.density;
 		water->loss = data.loss;
+		water->posture = data.posture;
+		water->velocity.x = data.vx;
+		water->velocity.y = data.vy;
 		return true;
 	}
 	PHWaterLoader(){
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
-		db->REG_FIELD(WORD);
+		db->REG_FIELD(DWORD);
 		db->REG_FIELD(FLOAT);
+		db->REG_FIELD(Matrix4x4);
 		db->REG_RECORD_PROTO(XWater);
 	}
 };
@@ -732,13 +720,10 @@ class PHWaterSaver:public FIBaseSaver{
 		data.hscale = (FLOAT)water->hscale;
 		data.density = (FLOAT)water->density;
 		data.loss = (FLOAT)water->loss;
+		data.posture = water->posture;
+		data.vx = water->velocity.x;
+		data.vy = water->velocity.y;
 		doc->SetWholeData(data);
-		if(water->GetFrame()){
-			doc->AddChild(ctx->CreateDocNode("REF", water->GetFrame()));
-		}
-		else if(water->GetSolid()){
-			doc->AddChild(ctx->CreateDocNode("REF", water->GetSolid()));
-		}
 	}
 };
 DEF_REGISTER_BOTH(PHWater);

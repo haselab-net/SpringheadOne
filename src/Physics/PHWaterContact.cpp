@@ -31,15 +31,9 @@ void PHWSolid::EnumGeometries(SGFrame* f){
 //PHWGeometry
 void PHWGeometry::Set(SGFrame* f, CDMesh* g){
 	frame = f;
+	mesh = g;
 	conveces.resize(g->conveces.size());
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
-	//CDFace::CalcDualVtxを呼ぶ。暫定。
-	for(CDGeometries::iterator ic = conveces.begin(); ic != conveces.end(); ic++){
-		CDPolyhedron* poly = DCAST(CDPolyhedron, *ic);
-		if(!poly)continue;
-		for(CDFaces::iterator iface = poly->faces.begin(); iface != poly->faces.end(); iface++)
-			iface->CalcDualVtx(poly->tvtxs);
-	}
 }
 
 
@@ -83,7 +77,10 @@ void PHWaterContactEngine::Init(SGScene* scene){
 		(*is)->Init();
 }
 
+SGScene* scene;
 void PHWaterContactEngine::Step(SGScene* s){
+	tris.clear();
+	scene = s;
 	PHWSolid* solid;
 	PHWGeometry* geo;
 	CDPolyhedron* poly;
@@ -91,10 +88,8 @@ void PHWaterContactEngine::Step(SGScene* s){
 	PHWGeometries::iterator ig;
 	CDGeometries::iterator ic;
 	CDFaces::iterator iface;
-	static Vec3d b, buo, tbuo;	//浮力と浮力によるモーメント
-	static Vec3d center_w;
-	static double wz;
-	static Affinef	Aw, Awinv,	//water-coord to world-coord transformation
+	Vec3f buo, tbuo;	//浮力と浮力によるモーメント
+	Affinef	Aw, Awinv,	//water-coord to world-coord transformation
 					Ag,			//geomerty-coord to world-coord
 					Awg,		//water-coord to geometry-coord
                     As, Asinv,	//solid-coord to world-coord
@@ -110,7 +105,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 		solid = *is;
 		As = solid->solid->GetFrame()->GetWorldPosture();
 		Asinv = As.inv();
-		int nface = 0;
+
 		//全ジオメトリについて･･･
 		for(ig = solid->geometries.begin(); ig != solid->geometries.end(); ig++){
 			geo = *ig;
@@ -123,15 +118,89 @@ void PHWaterContactEngine::Step(SGScene* s){
 			//凸多面体の各面に加わる浮力をジオメトリの中心を基準として積算
 			buo.clear();
 			tbuo.clear();
+
+			//	頂点の水深を計算
+			std::vector<float> depth;
+			std::vector<float> height;
+			std::vector<Vec3f> vtxs;
+			depth.resize(geo->mesh->vertices.size());
+			height.resize(geo->mesh->vertices.size());
+			vtxs.resize(geo->mesh->vertices.size());
+			for(int i=0; i<geo->mesh->tvtxs.size(); ++i){
+				vtxs[i] = Awg * geo->mesh->vertices[i];	//	水座標系での頂点
+				height[i] = water->LerpHeight(vtxs[i].x, vtxs[i].y);
+				depth[i] = height[i] - vtxs[i].z;
+			}
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
 				if(!poly)continue;
 				//ここで凸多面体レベルでのBBox判定した方が速くなる気がする
 				//...
-
 				//全面について･･･
 				for(iface = poly->faces.begin(); iface != poly->faces.end(); iface++){
-					iface->CalcDualVtx(poly->base);
+					int nUnder=0, over, under;
+					for(int i=0; i<3; ++i){
+						if (depth[iface->vtxs[i]] > 0){
+							nUnder++;
+							under = i;
+						}else{
+							over = i;
+						}
+					}
+					if (nUnder == 0) continue;	//	水に漬かっていない
+					Vec3f faceVtxs[3];
+					float faceDepth[3];
+					float faceHeight[3];
+					if (nUnder == 1){
+						int iUnder = iface->vtxs[under];
+						int i1 = iface->vtxs[(under+1)%3];
+						int i2 = iface->vtxs[(under+2)%3];
+						faceVtxs[0] = vtxs[iUnder];
+						float a1 = -depth[i1]/(depth[iUnder]-depth[i1]);
+						faceVtxs[1] = a1 * vtxs[iUnder] + (1-a1) * vtxs[i1];
+						float a2 = -depth[i2]/(depth[iUnder]-depth[i2]);
+						faceVtxs[2] = a2 * vtxs[iUnder] + (1-a2) * vtxs[i2];
+						faceDepth[0] = depth[iUnder];
+						faceDepth[1] = 0;
+						faceDepth[2] = 0;
+						faceHeight[0] = height[iUnder];
+						faceHeight[1] = a1*height[iUnder] + (1-a1)*height[i1];
+						faceHeight[2] = a2*height[iUnder] + (1-a2)*height[i2];
+
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight,iface);
+					}else if (nUnder == 2){
+						int iOver = iface->vtxs[over];
+						int i1 = iface->vtxs[(over+1)%3];
+						int i2 = iface->vtxs[(over+2)%3];
+						faceVtxs[0] = vtxs[i1];
+						faceVtxs[1] = vtxs[i2];
+						float a1 = depth[i1]/(depth[i1]-depth[iOver]);
+						float a2 = depth[i2]/(depth[i2]-depth[iOver]);
+						faceVtxs[2] = a2*vtxs[iOver] + (1-a2)*vtxs[i2];
+						faceDepth[0] = depth[i1];
+						faceDepth[1] = depth[i2];
+						faceDepth[2] = 0;
+						faceHeight[0] = height[i1];
+						faceHeight[1] = height[i2];
+						faceHeight[2] = a2*height[iOver] + (1-a2)*height[i2];
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+						
+						faceVtxs[1] = faceVtxs[2];
+						faceVtxs[2] = a1*vtxs[iOver] + (1-a1)*vtxs[i1];
+						faceDepth[1] = 0;
+						faceDepth[2] = 0;
+						faceHeight[1] = faceHeight[2];
+						faceHeight[2] = a1*height[iOver] + (1-a1)*height[i1];
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+					}else if (nUnder == 3){
+						for(int i=0; i<3; ++i){
+							faceVtxs[i] = vtxs[iface->vtxs[i]];
+							faceDepth[i] = depth[iface->vtxs[i]];
+							faceHeight[i] = height[iface->vtxs[i]];
+						}
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+					}
+#if 0
 					//この面が水面下にあるかどうか調べる
 					center_w = Awg * iface->center;
 					//normal_w = Awg * iface->normal;
@@ -146,14 +215,55 @@ void PHWaterContactEngine::Step(SGScene* s){
 						//モーメント
 						tbuo += iface->center % b;
 					}
+#endif
 				}
 			}
-			DSTR << nface;
 			//ジオメトリフレームから剛体フレームへ変換してAddForce
-			solid->solid->AddForce(Ag.Rot() * buo, Ag.Pos());
-			solid->solid->AddTorque(Ag.Rot() * tbuo);
+			solid->solid->AddForce(Aw.Rot() * buo, Aw.Pos());
+			solid->solid->AddTorque(Aw.Rot() * tbuo);
 		}
 	}
+}
+void PHWaterContactEngine::CalcTriangle(Vec3f& buo, Vec3f& tbuo, Vec3f* p, float* depth, float* height, CDFace* face){
+	assert(depth[0] >=0);
+	assert(depth[1] >=0);
+	assert(depth[2] >=0);
+	
+	Vec3f a = p[1] - p[0];
+	Vec3f b = p[2] - p[0];
+	Vec3f normal = -a^b;
+	Vec3f press = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normal;
+	Vec3f pressMom = (
+				((1.0f/12.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[0]
+			+	((1.0f/24.0f)*depth[0] + (1.0f/12.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[1]
+			+	((1.0f/24.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/12.0f)*depth[2]) * p[2]
+		  ) ^ normal;
+	//	波高の補正
+	buo += press;
+	tbuo += pressMom;
+
+	tris.push_back(p[0]);
+	tris.push_back(p[1]);
+	tris.push_back(p[2]);
+	tris.push_back(p[2]);
+	tris.push_back(p[1]);
+	tris.push_back(p[0]);
+
+}
+void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
+	//	描画
+	if (!render || !render->CanDraw()) return;
+	render->SetModelMatrix(water->posture);
+	GRMaterialData mat(
+		Vec4f(0, 0, 1, 1),
+		Vec4f(0, 0, 1, 1),
+		Vec4f(0, 0, 1, 1),
+		Vec4f(0, 0, 1, 1),
+		0.0f);
+	render->SetMaterial(mat);
+	render->SetDepthTest(false);
+	render->DrawDirect(GRRender::TRIANGLES, tris.begin(), tris.end());
+	render->SetDepthTest(true);
 }
 /*
 //ダイナミクスは考慮せずに単純に水面下に沈み込んでいる体積に比例する浮力

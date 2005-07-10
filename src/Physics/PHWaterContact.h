@@ -20,6 +20,7 @@ class PHWGeometry : public UTRefCount{
 public:
 	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
 	Vec3f			bbmin, bbmax;	//このジオメトリのBBOX
+	CDMesh*			mesh;
 	CDGeometries	conveces;		//このジオメトリを構成する凸多面体
 	void Set(SGFrame* f, CDMesh* g);
 };
@@ -50,6 +51,8 @@ public:
 	UTRef<PHWater>	water;			///水
 	PHWSolids		solids;			///水に接触する剛体
 
+	std::vector<Vec3f> tris;		///<	デバッグ用:水面下の3角形
+
 	///
 	PHWaterContactEngine();
 
@@ -63,12 +66,15 @@ public:
 	int GetPriority() const { return SGBP_WATERCONTACTENGINE; }
 	///	時間を dt 進める．
 	virtual void Step(SGScene* s);
+	void CalcTriangle(Vec3f& buo, Vec3f& tbuo, Vec3f* p, float* depth, float* height, CDFace* face);
 	///	
 	virtual void Clear(SGScene* s);
 	///	状態の読み出し
 	virtual void LoadState(const SGBehaviorStates& states);
 	///	状態の保存
 	virtual void SaveState(SGBehaviorStates& states) const;
+	///
+	virtual void Render(GRRender* r, SGScene* s);
 };
 
 

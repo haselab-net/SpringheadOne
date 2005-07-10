@@ -43,7 +43,6 @@ public:
 class PHWater : public GRVisual{
 public:
 	SGOBJECTDEF(PHWater);
-
 	bool		AddChildObject(SGObject* o, SGScene* s);///< ロード時に使用．
 	size_t		NReferenceObjects();					///< 
 	SGObject*	ReferenceObject(size_t i);				///< フレームを返す．
@@ -51,14 +50,10 @@ public:
 	void		Step(SGScene* s);						///< 時刻を進める．
 
 	///	レンダリング
-	virtual void Render(SGFrame* n, GRRender* render);
+	virtual void Render(SGFrame* fr, GRRender* render);
 
 	///力をクリアする
 	void ClearForce(){}
-
-	///フレームを取得
-	SGFrame* GetFrame(){return frame;}
-	PHSolid* GetSolid(){return solid;}
 
 	///格子中間の値を線形補完して返す
 	double LerpHeight(double x, double y);
@@ -90,10 +85,6 @@ protected:
 	typedef VMatrixCol<Vec3d>	v3matrix_type;
 	typedef VVector<double> vector_type;
 
-	//自身が属するフレームと剛体（剛体は目下未使用）
-	UTRef<SGFrame>	frame;
-	UTRef<PHSolid>	solid;
-
 	//追従対象
 	UTRef<PHWaterTrackTarget> targets;
 
@@ -124,8 +115,8 @@ protected:
 	///屈折ベクトルの計算
 	Vec3d calRefracVec(Vec3d n, Vec3d v, double ra);
 
-	void RenderD3(SGFrame* n, D3Render* render);
-	void RenderGL(SGFrame* n, GLRender* render);
+	void RenderD3(SGFrame* fr, D3Render* render);
+	void RenderGL(SGFrame* fr, GLRender* render);
 };
 
 typedef UTRefArray<PHWater> PHWaters;
