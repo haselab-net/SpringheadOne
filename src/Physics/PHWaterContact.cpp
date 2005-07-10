@@ -170,7 +170,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 						faceHeight[0] = height[iUnder];
 						faceHeight[1] = a1*height[iUnder] + (1-a1)*height[i1];
 						faceHeight[2] = a2*height[iUnder] + (1-a2)*height[i2];
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight,iface);
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
 						vtxsOn.push_back(faceVtxs[1]);
 						vtxsOn.push_back(faceVtxs[2]);
 					}else if (nUnder == 2){
@@ -188,7 +188,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 						faceHeight[0] = height[i1];
 						faceHeight[1] = height[i2];
 						faceHeight[2] = a2*height[iOver] + (1-a2)*height[i2];
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
 						vtxsOn.push_back(faceVtxs[2]);
 						
 						faceVtxs[1] = faceVtxs[2];
@@ -197,7 +197,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 						faceDepth[2] = 0;
 						faceHeight[1] = faceHeight[2];
 						faceHeight[2] = a1*height[iOver] + (1-a1)*height[i1];
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
 						vtxsOn.push_back(faceVtxs[2]);
 					}else if (nUnder == 3){
 						for(int i=0; i<3; ++i){
@@ -205,7 +205,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 							faceDepth[i] = depth[iface->vtxs[i]];
 							faceHeight[i] = height[iface->vtxs[i]];
 						}
-						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, iface);
+						CalcTriangle(buo, tbuo, faceVtxs, faceDepth, faceHeight, &*iface);
 					}
 #if 0
 					//‚±‚Ì–Ê‚ª…–Ê‰º‚É‚ ‚é‚©‚Ç‚¤‚©’²‚×‚é
@@ -265,7 +265,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		0.0f);
 	render->SetMaterial(mat);
 	render->SetDepthTest(false);
-	render->DrawDirect(GRRender::TRIANGLES, tris.begin(), tris.end());
+	render->DrawDirect(GRRender::TRIANGLES, &*(tris.begin()), &*(tris.end()));
 	render->SetDepthTest(true);
 }
 /*
