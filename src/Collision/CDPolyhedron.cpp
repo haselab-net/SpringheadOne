@@ -35,22 +35,9 @@ Vec3f CDFace::CommonVtx(int i){
 }
 
 bool CDFace::CalcDualVtx(Vec3f* base){
-	static Vec3f a, b;
-	static float aa, bb, ab;
-	//íÜêS
-	center = (base[vtxs[0]] + base[vtxs[1]] + base[vtxs[2]]) * 0.3333;
-	//ñ@ê¸
-	//normal = (base[vtxs[1]] - base[vtxs[0]]) ^ (base[vtxs[2]] - base[vtxs[0]]);
-	a = base[vtxs[1]] - base[vtxs[0]];
-	b = base[vtxs[2]] - base[vtxs[0]];
-	normal = a ^ b;
+	normal = (base[vtxs[1]] - base[vtxs[0]]) ^ (base[vtxs[2]] - base[vtxs[0]]);
 	DEBUG_EVAL( if ( normal.norm() < CD_EPSILON || !_finite(normal.norm()) ){ DSTR << "normal is too small." << std::endl; } )
 	normal.unitize();
-	//ñ êœ
-	aa = a.square(); bb = b.square(); ab = a * b;
-	area = 0.5 * sqrt(aa * bb - ab * ab);
-	//íÜêSÇ©ÇÁÇÃãóó£
-	//center.normÇ≈Ç‡Ç¢Ç¢Ç©Ç‡
 	dist = normal * base[vtxs[0]];
 #if 1	//	debug	hase
 	if (dist < -1e-3){
@@ -63,7 +50,7 @@ bool CDFace::CalcDualVtx(Vec3f* base){
 	return true;
 }
 
-
+	
 //------------------------------------------------------------------------
 SGOBJECTIMP(CDPolyhedron, CDConvex);
 Vec3f CDPolyhedron::Support(const Vec3f& v) const {
