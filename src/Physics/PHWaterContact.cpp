@@ -232,23 +232,19 @@ void PHWaterContactEngine::CalcTriangle(Vec3f& buo, Vec3f& tbuo, Vec3f* p, float
 	Vec3f a = p[1] - p[0];
 	Vec3f b = p[2] - p[0];
 	Vec3f normal = -a^b;
-	Vec3f press = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normal;
-	Vec3f pressMom = (
+	Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normal;
+	Vec3f volumeMom = (
 				((1.0f/12.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[0]
 			+	((1.0f/24.0f)*depth[0] + (1.0f/12.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[1]
 			+	((1.0f/24.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/12.0f)*depth[2]) * p[2]
 		  ) ^ normal;
 	//	”g‚‚Ì•â³
-	buo += press;
-	tbuo += pressMom;
+	buo += volume * water->density;
+	tbuo += volumeMom * water->density;
 
 	tris.push_back(p[0]);
 	tris.push_back(p[1]);
 	tris.push_back(p[2]);
-	tris.push_back(p[2]);
-	tris.push_back(p[1]);
-	tris.push_back(p[0]);
-
 }
 void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
 	//	•`‰æ
