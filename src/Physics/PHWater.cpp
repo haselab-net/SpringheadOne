@@ -125,6 +125,7 @@ void PHWater::Init(SGScene* scene){
 
     // dh = width of grid
     // mx, my = number of divisions
+	dhinv = 1/dh;
 	dx = (mx-1) * dh / 2.0;
 	dy = (my-1) * dh / 2.0;
 
@@ -397,35 +398,37 @@ void PHWater::Step(SGScene* s){
     int i,j;
 	
 	double dt = s->GetTimeStep();
-	Vec3f velW = GetPosture().Rot() * Vec3f(velocity.x, velocity.y, 0);
-	GetPosture().Pos() += velW * dt;
+	Affinef posture = GetPosture();
+
+	Vec3f velW = posture.Rot() * Vec3f(velocity.x, velocity.y, 0);
+	posture.Pos() += velW * dt;
 	
 	if (targets && targets->targets.size()){
 		SGFrame* target = targets->targets[0];
-		Affinef af = GetPosture().inv() * target->GetWorldPosture();
+		Affinef af = posture.inv() * target->GetWorldPosture();
 		Vec2f diff = af.Pos().sub_vector(0, Vec2f());
 		if (diff.X() > dh){
-			GetPosture().Pos() += GetPosture().Rot() * Vec3f(dh, 0, 0);
+			posture.Pos() += posture.Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x+1) % mx;
 			texOffset.x ++;
 		}
 		if (diff.X() < -dh){
-			GetPosture().Pos() -= GetPosture().Rot() * Vec3f(dh, 0, 0);
+			posture.Pos() -= posture.Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x-1+mx) % mx;
 			texOffset.x --;
 		}
 		if (diff.Y() > dh){
-			GetPosture().Pos() += GetPosture().Rot() * Vec3f(0, dh, 0);
+			posture.Pos() += posture.Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y+1) % my;
 			texOffset.y ++;
 		}
 		if (diff.Y() < -dh){
-			GetPosture().Pos() -= GetPosture().Rot() * Vec3f(0, dh, 0);
+			posture.Pos() -= posture.Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y-1+my) % my;
 			texOffset.y --;
 		}
 	}
-
+	frame->SetWorldPosture(posture);
 
     // set the boundary condition
     Bound();

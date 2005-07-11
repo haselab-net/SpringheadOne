@@ -65,7 +65,7 @@ public:
 	TVec2<int> bound;		//境界 このセルと次のセルが境界のセルになる．
 	TVec2<int> texOffset;	//bound と同じだが，%mx しない．
 	Vec2d	velocity;		//定常流速．定常的にこの速度で水が流れる．
-	double	dh;				//格子の幅
+	double	dh, dhinv;		//格子の幅
 	double	depth;			//水深
 	double	gravity;		//重力
 	double	hscale;			//高さのスケール

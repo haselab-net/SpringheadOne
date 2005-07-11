@@ -52,6 +52,7 @@ public:
 	PHWSolids		solids;			///水に接触する剛体
 
 	std::vector<Vec3f> tris;		///<	デバッグ用:水面下の3角形
+	std::vector<Vec3f> points;		///<	デバッグ用:物体と重なっている水
 
 	///
 	PHWaterContactEngine();

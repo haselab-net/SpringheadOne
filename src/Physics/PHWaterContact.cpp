@@ -91,8 +91,10 @@ struct PHWConvexCalc{
 	Affinef	Aw, Awinv;	//water-coord to world-coord transformation
 
 	//	Solid単位のデータ
+	PHWSolid* solid;
 	Vec3f buo, tbuo;	//浮力と浮力によるモーメント	
 	Affinef As, Asinv;	//solid-coord to world-coord
+	Affinef Aws;
 	Affinef Asg;		//solid-coord to geometry-coord
 	
 	//	Mesh単位のデータ
@@ -212,10 +214,13 @@ struct PHWConvexCalc{
 			dRight = delta.x / delta.y;
 			right = last.x + dRight * (curY-last.y);
 		}
-		if (_finite(dLeft) && _finite(dRight)) return true;
-		return false;
+		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		return true;
 	}
 	void CalcBorder(){
+		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->dx,-water->dy,0)) * water->dhinv;
+		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
+		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
 		//	水に境界条件を設定(凸形状ごとに処理する)
 		//	境界を作る頂点を水面に投影し，凸包を作る．
 		border.clear();
@@ -252,6 +257,7 @@ struct PHWConvexCalc{
 		curY = top;
 		border.insert(border.begin()+iLeft, border[iLeft]);
 		iRight = iLeft+1;
+		engine->points.clear();
 		while(NextLine()){
 			int xStart, xEnd;
 			xStart = ceil(left);
@@ -261,10 +267,13 @@ struct PHWConvexCalc{
 			for(int x = xStart; x<xEnd; ++x){
 				int cx = (x + engine->water->bound.x) % engine->water->mx;
 				int cy = (curY + engine->water->bound.y) % engine->water->my;
-//				engine->water->u[cx][cy] = 
-//				engine->water->v[cx][cy] = 
-				//	とりあえずテスト．
-				engine->water->height[cx][cy] = -0.1;
+
+				Vec3f p = Vec3f(x, curY, engine->water->height[cx][cy]*water->dhinv) - center;
+				Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
+				engine->water->u[cx][cy] = v.x * 0.1;
+				engine->water->v[cx][cy] = v.y * 0.1;
+				engine->points.push_back(Vec3f(x*water->dh-water->dx, curY*water->dh-water->dy, 0));
+				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0));
 			}
 		}
 	}
@@ -313,12 +322,15 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-dx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-dy, 0));
 	}
 	render->DrawDirect(GRRender::LINES, vtxs.begin(), vtxs.end());
+
+	GRMaterialData mat3(Vec4f(1, 0, 1, 1), 2);
+	render->SetMaterial(mat3);
+	render->DrawDirect(GRRender::LINES, points.begin(), points.end());
 	render->SetDepthTest(true);
 }
 void PHWaterContactEngine::Step(SGScene* s){
 	tris.clear();
 	scene = s;
-	PHWSolid* solid;
 	PHWGeometry* geo;
 	CDPolyhedron* poly;
 	PHWSolids::iterator is;
@@ -332,12 +344,13 @@ void PHWaterContactEngine::Step(SGScene* s){
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(is = solids.begin(); is != solids.end(); is++){
-		solid = *is;
-		convCalc.As = solid->solid->GetFrame()->GetWorldPosture();
+		convCalc.solid = *is;
+		convCalc.As = convCalc.solid->solid->GetFrame()->GetWorldPosture();
 		convCalc.Asinv = convCalc.As.inv();
+		convCalc.Aws = convCalc.Awinv * convCalc.As;
 
 		//全ジオメトリについて･･･
-		for(ig = solid->geometries.begin(); ig != solid->geometries.end(); ig++){
+		for(ig = convCalc.solid->geometries.begin(); ig != convCalc.solid->geometries.end(); ig++){
 			geo = *ig;
 			convCalc.Ag = geo->frame->GetWorldPosture();
 			convCalc.Asg = convCalc.Asinv * convCalc.Ag;
@@ -366,8 +379,8 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.Calc(poly);
 			}
 			//	水から剛体フレームへ変換してAddForce
-			solid->solid->AddForce(convCalc.Aw.Rot() * convCalc.buo, convCalc.Aw.Pos());
-			solid->solid->AddTorque(convCalc.Aw.Rot() * convCalc.tbuo);
+			convCalc.solid->solid->AddForce(convCalc.Aw.Rot() * convCalc.buo, convCalc.Aw.Pos());
+			convCalc.solid->solid->AddTorque(convCalc.Aw.Rot() * convCalc.tbuo);
 		}
 	}
 }
