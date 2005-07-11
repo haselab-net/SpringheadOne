@@ -67,7 +67,6 @@ public:
 	int GetPriority() const { return SGBP_WATERCONTACTENGINE; }
 	///	ŠÔ‚ğ dt i‚ß‚éD
 	virtual void Step(SGScene* s);
-	void CalcTriangle(Vec3f& buo, Vec3f& tbuo, Vec3f* p, float* depth, float* height, CDFace* face);
 	///	
 	virtual void Clear(SGScene* s);
 	///	ó‘Ô‚Ì“Ç‚İo‚µ

@@ -1,5 +1,6 @@
 xof 0303txt 0032
 Scene {
+	Simulator{0.01; 0.99;}
 	SolidContainer{
 		Solid soBlock1{
 			10.0;
@@ -57,13 +58,13 @@ Scene {
 		Water water1{
 			60;
 			60;
-			0.1;	//dh
+			0.05;	//dh
 			0.05;	//depth
 			9.8;	//gravity
 			1.0;	//hscale
 			1000.0;	//density
-			0.99;	//loss
-			1.0; 0.0;	//	vx, vy
+			0.97;	//loss
+			0.8; 0.0;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}

@@ -126,8 +126,8 @@ void PHWater::Init(SGScene* scene){
     // dh = width of grid
     // mx, my = number of divisions
 	dhinv = 1/dh;
-	dx = (mx-1) * dh / 2.0;
-	dy = (my-1) * dh / 2.0;
+	rx = (mx-1) * dh / 2.0;
+	ry = (my-1) * dh / 2.0;
 
 	//その内bad_allocのcatch実装
 	height.resize(mx, my);
@@ -187,12 +187,12 @@ void PHWater::Init(SGScene* scene){
 double PHWater::LerpHeight(double x, double y){
 	static double nx, ny, h0, h1;
 
-    if(x < -dx || x > dx || y < -dy || y > dy)
+    if(x < -rx || x > rx || y < -ry || y > ry)
 		return 0.0;
 
 	//座標から格子インデックスを算出
-	nx = (x + dx) / dh;
-	ny = (y + dy) / dh;
+	nx = (x + rx) / dh;
+	ny = (y + ry) / dh;
 	int ix = floor(nx), iy = floor(ny);
 	nx -= (double)ix;
 	ny -= (double)iy;
@@ -230,10 +230,11 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			Vec3f normal;
 			Vec2f tex;
 		};
+		const float hmul = 10.0f;
 		VtxFVF* buf= new VtxFVF[mx*2];
-	    float xo = -dx, yo = -dy;
-		float dxinv = 1/dx;
-		float dyinv = 1/dy;
+	    float xo = -rx, yo = -ry;
+		float dxinv = 1/rx;
+		float dyinv = 1/ry;
 		for(int y=0; y<my-1; ++y){
 			int start1 = y*mx;
 			int start2 = ((y+1)%my) * mx;
@@ -243,21 +244,21 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			else py = yo + (y-bound.y)*dh;
 			double px = xo;
 			for(int x=bound.x; x<mx; ++x){
-				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]);
+				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]*hmul);
 				buf[(x-bound.x)*2+1].normal	= pnormal[start1+x];
-				buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]);
+				buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]*hmul);
 				buf[(x-bound.x)*2].normal	= pnormal[start2+x];
 				px += dh;
 			}
 			int offset = mx - bound.x;
 			for(int x=0; x<bound.x; ++x){
-				buf[(x+offset)*2+1].pos		= Vec3f(px, py, pheight[start1+x]);
+				buf[(x+offset)*2+1].pos		= Vec3f(px, py, pheight[start1+x]*hmul);
 				buf[(x+offset)*2+1].normal	= pnormal[start1+x];
-				buf[(x+offset)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]);
+				buf[(x+offset)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]*hmul);
 				buf[(x+offset)*2].normal	= pnormal[start2+x];
 				px += dh;
 			}
-			const float nmul = 4.0;
+			const float nmul = 1.0;
 			for(int i=0; i<2*mx; ++i){
 				buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*dxinv/4
 					+  buf[i].normal.x*nmul + 0.5f;
@@ -272,14 +273,14 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 	GRMaterialData mate(Vec4f(1,0,0,1), 4);
 	render->SetMaterial(mate);
 	std::vector<Vec3f> lines;
-	lines.push_back(Vec3f(-dx, -dy, 0));
-	lines.push_back(Vec3f(dx, -dy, 0));
-	lines.push_back(Vec3f(dx, -dy, 0));
-	lines.push_back(Vec3f(dx, dy, 0));
-	lines.push_back(Vec3f(dx, dy, 0));
-	lines.push_back(Vec3f(-dx, dy, 0));
-	lines.push_back(Vec3f(-dx, dy, 0));
-	lines.push_back(Vec3f(-dx, -dy, 0));
+	lines.push_back(Vec3f(-rx, -ry, 0));
+	lines.push_back(Vec3f(rx, -ry, 0));
+	lines.push_back(Vec3f(rx, -ry, 0));
+	lines.push_back(Vec3f(rx, ry, 0));
+	lines.push_back(Vec3f(rx, ry, 0));
+	lines.push_back(Vec3f(-rx, ry, 0));
+	lines.push_back(Vec3f(-rx, ry, 0));
+	lines.push_back(Vec3f(-rx, -ry, 0));
 	render->DrawDirect(GRRender::LINES, lines.begin(), lines.end());
 	render->SetDepthTest(true);
 	//	テクスチャを戻す．
@@ -481,29 +482,25 @@ void PHWater::Step(SGScene* s){
     // this method calcualtes heights and x-y velocities
 void PHWater::Integrate(double dt){
     int i, j;
-	const double hmul = 10.0;	//	高さを強調して描画
-	const double hinv = 1.0 / hmul;
-
 	//	セルはトーラス状につながっていると考える(上と下，右と左はつながっている)
     // calculate temporary velocities toward the z-axis
-	double loss = 0.998;
 	for(i = 0; i < mx-1; i++)for(j = 0; j < my-1; j++){
-        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i+1][j] - height[i][j]) * hinv + (p[i+1][j] - p[i][j]) / (density * dh));
-        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) * hinv + (p[i][j+1] - p[i][j]) / (density * dh));
+        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i+1][j] - height[i][j]) + (p[i+1][j] - p[i][j]) / (density * dh));
+        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) + (p[i][j+1] - p[i][j]) / (density * dh));
     }
 	//	last row refers first row
     for(i = 0; i < mx-1; i++){
-        utmp[i][my-1] = loss*(u[i][my-1] - gravity * (dt / dh) * (height[i+1][my-1] - height[i][my-1]) * hinv + (p[i+1][my-1] - p[i][my-1]) / (density * dh));
-        vtmp[i][my-1] = loss*(v[i][my-1] - gravity * (dt / dh) * (height[i][0] - height[i][my-1]) * hinv + (p[i][0] - p[i][my-1]) / (density * dh));
+        utmp[i][my-1] = loss*(u[i][my-1] - gravity * (dt / dh) * (height[i+1][my-1] - height[i][my-1]) + (p[i+1][my-1] - p[i][my-1]) / (density * dh));
+        vtmp[i][my-1] = loss*(v[i][my-1] - gravity * (dt / dh) * (height[i][0] - height[i][my-1]) + (p[i][0] - p[i][my-1]) / (density * dh));
     }
 	//	last column refers first column
 	for(j = 0; j < my-1; j++){
-        utmp[mx-1][j] = loss*(u[mx-1][j] - gravity * (dt / dh) * (height[0][j] - height[mx-1][j]) * hinv + (p[0][j] - p[mx-1][j]) / (density * dh));
-        vtmp[mx-1][j] = loss*(v[mx-1][j] - gravity * (dt / dh) * (height[mx-1][j+1] - height[mx-1][j]) * hinv + (p[mx-1][j+1] - p[mx-1][j]) / (density * dh));
+        utmp[mx-1][j] = loss*(u[mx-1][j] - gravity * (dt / dh) * (height[0][j] - height[mx-1][j]) + (p[0][j] - p[mx-1][j]) / (density * dh));
+        vtmp[mx-1][j] = loss*(v[mx-1][j] - gravity * (dt / dh) * (height[mx-1][j+1] - height[mx-1][j]) + (p[mx-1][j+1] - p[mx-1][j]) / (density * dh));
     }
 	//	right bottom cell
-    utmp[mx-1][my-1] = loss*(u[mx-1][my-1] - gravity * (dt / dh) * (height[0][my-1] - height[mx-1][my-1]) * hinv + (p[0][my-1] - p[mx-1][my-1]) / (density * dh));
-    vtmp[mx-1][my-1] = loss*(v[mx-1][my-1] - gravity * (dt / dh) * (height[mx-1][0] - height[mx-1][my-1]) * hinv + (p[mx-1][0] - p[mx-1][my-1]) / (density * dh));
+    utmp[mx-1][my-1] = loss*(u[mx-1][my-1] - gravity * (dt / dh) * (height[0][my-1] - height[mx-1][my-1]) + (p[0][my-1] - p[mx-1][my-1]) / (density * dh));
+    vtmp[mx-1][my-1] = loss*(v[mx-1][my-1] - gravity * (dt / dh) * (height[mx-1][0] - height[mx-1][my-1]) + (p[mx-1][0] - p[mx-1][my-1]) / (density * dh));
 	
 	/*
 		x = [i-1, i], y = [j-1, j]の四角領域の高さをh[i][j]とすると
@@ -519,19 +516,19 @@ void PHWater::Integrate(double dt){
 
     // update temporal heights of all cells
     for(i = 1; i <mx; i++)for(j = 1; j<my; j++){
-        htmp[i][j] = (height[i][j] * hinv -
-			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) )* hmul;
+        htmp[i][j] = (height[i][j] -
+			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) );
 	}
     for(i = 1; i <mx; i++){
-        htmp[i][0] = (height[i][0] * hinv -
-			depth * dt * ((utmp[i][0] - utmp[i-1][0]) * dh + (vtmp[i][0] - vtmp[i][my-1]) * dh) / (dh * dh) )* hmul;
+        htmp[i][0] = (height[i][0] -
+			depth * dt * ((utmp[i][0] - utmp[i-1][0]) * dh + (vtmp[i][0] - vtmp[i][my-1]) * dh) / (dh * dh) );
 	}
     for(j = 1; j<my; j++){
-        htmp[0][j] = (height[0][j] * hinv -
-			depth * dt * ((utmp[0][j] - utmp[mx-1][j]) * dh + (vtmp[0][j] - vtmp[0][j-1]) * dh) / (dh * dh) )* hmul;
+        htmp[0][j] = (height[0][j] -
+			depth * dt * ((utmp[0][j] - utmp[mx-1][j]) * dh + (vtmp[0][j] - vtmp[0][j-1]) * dh) / (dh * dh) );
 	}
-    htmp[0][0] = (height[0][0] * hinv -
-		depth * dt * ((utmp[0][0] - utmp[mx-1][0]) * dh + (vtmp[0][0] - vtmp[0][my-1]) * dh) / (dh * dh) )* hmul;
+    htmp[0][0] = (height[0][0] -
+		depth * dt * ((utmp[0][0] - utmp[mx-1][0]) * dh + (vtmp[0][0] - vtmp[0][my-1]) * dh) / (dh * dh) );
     
 	/*
 	const double pass = 300;

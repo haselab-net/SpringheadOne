@@ -95,8 +95,8 @@ protected:
 	UTRef<D3Material> materialD3;
 
 	int				mxy;	//mx * my
-	double			dx;		//mx * dh / 2.0
-	double			dy;		//my * dh / 2.0
+	double			rx;		//mx * dh / 2.0
+	double			ry;		//my * dh / 2.0
 	
 	matrix_type		p;				//ˆ³—Í
 	matrix_type		u, utmp;		//x•ûŒü—¬‘¬

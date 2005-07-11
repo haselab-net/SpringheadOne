@@ -92,6 +92,9 @@ struct PHWConvexCalc{
 
 	//	Solid単位のデータ
 	PHWSolid* solid;
+	Vec3f solidCenter;	//	剛体の重心		(水座標系)
+	Vec3f solidVel;		//	剛体の速度		(水座標系)
+	Vec3f solidAngVel;	//	剛体の角速度	(水座標系)
 	Vec3f buo, tbuo;	//浮力と浮力によるモーメント	
 	Affinef As, Asinv;	//solid-coord to world-coord
 	Affinef Aws;
@@ -118,6 +121,15 @@ struct PHWConvexCalc{
 	void Init(PHWaterContactEngine* e){
 		engine = e;
 		water = e->water;
+	}
+	void SetSolid(PHWSolid* s){
+		solid = s;
+		As = solid->solid->GetFrame()->GetWorldPosture();
+		Asinv = As.inv();
+		Aws = Awinv * As;
+		solidCenter = Aws * solid->solid->GetCenter();
+		solidVel = Aws.Rot() * solid->solid->GetVelocity();
+		solidAngVel = Aws.Rot() * solid->solid->GetAngularVelocity();
 	}
 	void Calc(CDPolyhedron* p){
 		poly = p;
@@ -217,8 +229,95 @@ struct PHWConvexCalc{
 		if (iLeft == iRight && curY > border[iLeft].y) return false;
 		return true;
 	}
+	//	エッジをアンチエイリアスつきで描画
+	void CalcBorder2(){
+		engine->points.clear();
+		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->rx,-water->ry,0)) * water->dhinv;
+		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
+		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
+		border.clear();
+		CDQHLines<QH2DVertex> lines(100);
+		std::vector<QH2DVertex*> qhvtxs;
+		qhvtxs.resize(vtxsOn.size());
+		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
+		lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
+		float dhInv = 1/engine->water->dh;
+		CDQHLine<QH2DVertex>* start=NULL;
+		for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
+			if (!cur->deleted){
+				border.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
+				border.push_back((cur->vtx[1]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
+			}
+		}
+		float width = 6;	//	線の幅
+		for(int i=0; i<border.size(); i+=2){
+			Vec2f delta = border[i+1] - border[i];
+			if (abs(delta.x) > abs(delta.y)){
+				if (delta.x < 0){
+					delta*= -1;
+					std::swap(border[i], border[i+1]);
+				}
+				float k = delta.y / delta.x;
+				//	線の幅/2
+				float alphaLen = width*delta.norm()/(delta.x*2);
+				border[i].x;
+				int ix = border[i].x-alphaLen;
+				float y = border[i].y + k*(ix-border[i].x);
+				for(; ix < border[i].x; ++ix){
+					float xAlpha = 1 - (border[i].x-ix)/alphaLen;
+					for(int iy = y-alphaLen; iy<y+alphaLen; ++iy){
+						float alpha = (1 - abs(y-iy) / alphaLen)*xAlpha;
+						int cx = (ix + engine->water->bound.x) % engine->water->mx;
+						int cy = (iy + engine->water->bound.y) % engine->water->my;
+
+						Vec3f p = Vec3f(ix, iy, engine->water->height[cx][cy]*water->dhinv) - center;
+						Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
+						engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
+						engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
+						engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+						engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
+					}
+					y += k;
+				}
+				for(; ix < border[i+1].x; ++ix){
+					for(int iy = y-alphaLen; iy<y+alphaLen; ++iy){
+						float alpha = 1 - abs(y-iy) / alphaLen;
+						int cx = (ix + engine->water->bound.x) % engine->water->mx;
+						int cy = (iy + engine->water->bound.y) % engine->water->my;
+
+						Vec3f p = Vec3f(ix, iy, engine->water->height[cx][cy]*water->dhinv) - center;
+						Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
+						engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
+						engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
+						engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+						engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
+					}					
+					y += k;
+				}
+				for(; ix < border[i+1].x+alphaLen; ++ix){
+					float xAlpha = 1 - (ix-border[i+1].x)/alphaLen;
+					for(int iy = y-alphaLen; iy<y+alphaLen; ++iy){
+						float alpha = (1 - abs(y-iy) / alphaLen)*xAlpha;
+						int cx = (ix + engine->water->bound.x) % engine->water->mx;
+						int cy = (iy + engine->water->bound.y) % engine->water->my;
+
+						Vec3f p = Vec3f(ix, iy, engine->water->height[cx][cy]*water->dhinv) - center;
+						Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
+						engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
+						engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
+						engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+						engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
+					}
+					y += k;
+				}
+			}else{
+				
+			}
+		}
+	}
+	//	内部を塗りつぶし，アンチエイリアスなし．
 	void CalcBorder(){
-		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->dx,-water->dy,0)) * water->dhinv;
+		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->rx,-water->ry,0)) * water->dhinv;
 		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
 		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
 		//	水に境界条件を設定(凸形状ごとに処理する)
@@ -238,9 +337,9 @@ struct PHWConvexCalc{
 			}
 		}
 		if (!start) return;
-		border.push_back((start->vtx[0]->GetPos()+Vec2f(water->dx, water->dy)) * dhInv);
+		border.push_back((start->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
 		for(CDQHLine<QH2DVertex>*cur=start->neighbor[0]; cur!= start; cur=cur->neighbor[0]){
-			border.push_back((cur->vtx[0]->GetPos()+Vec2f(water->dx, water->dy)) * dhInv);
+			border.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
 		}
 		if (border.size() < 3) return;
 		
@@ -270,10 +369,10 @@ struct PHWConvexCalc{
 
 				Vec3f p = Vec3f(x, curY, engine->water->height[cx][cy]*water->dhinv) - center;
 				Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
-				engine->water->u[cx][cy] = v.x * 0.1;
-				engine->water->v[cx][cy] = v.y * 0.1;
-				engine->points.push_back(Vec3f(x*water->dh-water->dx, curY*water->dh-water->dy, 0));
-				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0));
+				engine->water->u[cx][cy] = v.x;
+				engine->water->v[cx][cy] = v.y;
+				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
+				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
 			}
 		}
 	}
@@ -284,16 +383,29 @@ struct PHWConvexCalc{
 		
 		Vec3f a = p[1] - p[0];
 		Vec3f b = p[2] - p[0];
-		Vec3f normal = -a^b;
-		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normal;
+		Vec3f normalS = -a^b;
+		Vec3f normal = normalS.unit();
+
+		float vel[3];
+		for(int i=0; i<3; ++i){
+			vel[i] = -(solidVel + (solidAngVel^(p[i]-solidCenter))) * normal;
+		}
+		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normalS;
+		Vec3f velInt = (1.0f/6.0f) * (vel[0] + vel[1] + vel[2]) * normalS;
 		Vec3f volumeMom = (
 					((1.0f/12.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[0]
 				+	((1.0f/24.0f)*depth[0] + (1.0f/12.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[1]
 				+	((1.0f/24.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/12.0f)*depth[2]) * p[2]
-			  ) ^ normal;
+			  ) ^ normalS;
+		Vec3f velIntMom = (
+					((1.0f/12.0f)*vel[0] + (1.0f/24.0f)*vel[1] + (1.0f/24.0f)*vel[2]) * p[0]
+				+	((1.0f/24.0f)*vel[0] + (1.0f/12.0f)*vel[1] + (1.0f/24.0f)*vel[2]) * p[1]
+				+	((1.0f/24.0f)*vel[0] + (1.0f/24.0f)*vel[1] + (1.0f/12.0f)*vel[2]) * p[2]
+			  ) ^ normalS;
 		//	波高の補正
-		buo += volume * engine->water->density;
-		tbuo += volumeMom * engine->water->density;
+		float B=0.1f;
+		buo += (volume + B*velInt) * engine->water->density;
+		tbuo += (volumeMom + B*velIntMom) * engine->water->density;
 
 		engine->tris.push_back(p[0]);
 		engine->tris.push_back(p[1]);
@@ -315,11 +427,11 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	render->SetMaterial(mat2);
 	std::vector<Vec3f> vtxs;
 	float dh = water->dh;
-	float dx = water->dx;
-	float dy = water->dy;
+	float rx = water->rx;
+	float ry = water->ry;
 	for(int i=0; i<convCalc.border.size(); ++i){
-		vtxs.push_back(Vec3f(convCalc.border[i].x*dh-dx, convCalc.border[i].y*dh-dy, 0));
-		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-dx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-dy, 0));
+		vtxs.push_back(Vec3f(convCalc.border[i].x*dh-rx, convCalc.border[i].y*dh-ry, 0));
+		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-rx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-ry, 0));
 	}
 	render->DrawDirect(GRRender::LINES, vtxs.begin(), vtxs.end());
 
@@ -344,10 +456,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(is = solids.begin(); is != solids.end(); is++){
-		convCalc.solid = *is;
-		convCalc.As = convCalc.solid->solid->GetFrame()->GetWorldPosture();
-		convCalc.Asinv = convCalc.As.inv();
-		convCalc.Aws = convCalc.Awinv * convCalc.As;
+		convCalc.SetSolid(*is);
 
 		//全ジオメトリについて･･･
 		for(ig = convCalc.solid->geometries.begin(); ig != convCalc.solid->geometries.end(); ig++){
@@ -384,48 +493,6 @@ void PHWaterContactEngine::Step(SGScene* s){
 		}
 	}
 }
-/*
-//ダイナミクスは考慮せずに単純に水面下に沈み込んでいる体積に比例する浮力
-void getBuoyancy(ThapticObj *ho, Tpoint3f *buo, Tpoint3f *tbuo) {
-    Tpoint3f b, n, r;
-    Tpoint3f wve;
-    Trealf wz, dz;
-    TsamplePoint *sp;
-    int i;
-    
-	//なんか後で必要になりそうなのでコメントアウトで保留
-    //for(i=0; i<ho->nhsrc; i++) ho->hsrc[i].a = 0.0;
-
-    sp = ho->sp;
-    for(i=0; i<ho->n_sp; i++) {
-        wz = lerpWaterHeight(sp->p.X(), sp->p.Y());
-		r = sp->p - ho->pos;	//オブジェクト中心からサンプル点へのベクトル
-		n = sp->n;			//サンプル点の法線
-
-    	//水面がサンプル点よりも高いならば
-        if(wz > sp->p.Z()) {
-			//このサンプル点が受ける浮力
-			b = -n * (wz - sp->p.Z()) * sp->s;
-			buo += b;
-
-			//モーメント
-			tbuo += r % b;
-            
-            //if(ho->nhsrc > 0 && sp->i_hsrc >= 0) ho->hsrc[sp->i_hsrc].a = 1.0;
-        }
-        sp++;
-    }
-    
-	//スケーリングかな？
-	buo *= buo_scl;
-    tbuo *= buo_scll;
-	
-    //for(i=0; i<ho->nhsrc; i++) {
-    //    if(ho->hsrc[i].n_sp > 0) ho->hsrc[i].a /= (Trealf)ho->hsrc[i].n_sp;
-    //}
-}
-*/
-
 //----------------------------------------------------------------------------
 //	PHWaterContactEngineLoader
 //
