@@ -143,7 +143,7 @@ void PHWater::Init(SGScene* scene){
 
     // initialize height matrix array
 	height.clear();
-	//height[8][8] = 0.1;
+	height[8][8] = 1.0;
 
     // temporary height variable
 	htmp.clear();
@@ -281,7 +281,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 	lines.push_back(Vec3f(-rx, ry, 0));
 	lines.push_back(Vec3f(-rx, ry, 0));
 	lines.push_back(Vec3f(-rx, -ry, 0));
-	render->DrawDirect(GRRender::LINES, lines.begin(), lines.end());
+	render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
 	render->SetDepthTest(true);
 	//	テクスチャを戻す．
 	render->device->SetTexture(0,NULL);

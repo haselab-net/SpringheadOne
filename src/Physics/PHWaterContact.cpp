@@ -240,7 +240,7 @@ struct PHWConvexCalc{
 		std::vector<QH2DVertex*> qhvtxs;
 		qhvtxs.resize(vtxsOn.size());
 		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
-		lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
+		lines.CreateConvexHull(&*(qhvtxs.begin()), &*(qhvtxs.end()));
 		float dhInv = 1/engine->water->dh;
 		CDQHLine<QH2DVertex>* start=NULL;
 		for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
@@ -327,7 +327,7 @@ struct PHWConvexCalc{
 		std::vector<QH2DVertex*> qhvtxs;
 		qhvtxs.resize(vtxsOn.size());
 		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
-		lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
+		lines.CreateConvexHull(&*(qhvtxs.begin()), &*(qhvtxs.end()));
 		float dhInv = 1/engine->water->dh;
 		CDQHLine<QH2DVertex>* start=NULL;
 		for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
@@ -433,11 +433,11 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		vtxs.push_back(Vec3f(convCalc.border[i].x*dh-rx, convCalc.border[i].y*dh-ry, 0));
 		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-rx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-ry, 0));
 	}
-	render->DrawDirect(GRRender::LINES, vtxs.begin(), vtxs.end());
+	render->DrawDirect(GRRender::LINES, &*(vtxs.begin()), &*(vtxs.end()));
 
 	GRMaterialData mat3(Vec4f(1, 0, 1, 1), 2);
 	render->SetMaterial(mat3);
-	render->DrawDirect(GRRender::LINES, points.begin(), points.end());
+	render->DrawDirect(GRRender::LINES, &*(points.begin()), &*(points.end()));
 	render->SetDepthTest(true);
 }
 void PHWaterContactEngine::Step(SGScene* s){
