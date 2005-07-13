@@ -129,7 +129,7 @@ struct PHWConvexCalc{
 		Aws = Awinv * As;
 		solidCenter = Aws * solid->solid->GetCenter();
 		solidVel = Aws.Rot() * solid->solid->GetVelocity();
-		solidAngVel = Aws.Rot() * solid->solid->GetAngularVelocity();
+		solidAngVel = Aws.Rot() * solid->solid->GetAngularVelocity();	
 	}
 	void Calc(CDPolyhedron* p){
 		poly = p;
@@ -214,14 +214,14 @@ struct PHWConvexCalc{
 		if (iLeft == iRight && curY > border[iLeft].y) return false;
 		while (border[iLeft].y < curY && iLeft!= iRight){
 			Vec2f last = border[iLeft];
-			iLeft = (iLeft-1+border.size()) % border.size();
+			-- iLeft;
 			Vec2f delta = border[iLeft] - last;
 			dLeft = delta.x / delta.y;
 			left = last.x + dLeft * (curY-last.y);
 		}
 		while (border[iRight].y < curY && iLeft!= iRight){
 			Vec2f last = border[iRight];
-			iRight = (iRight+1) % border.size();
+			++iRight;
 			Vec2f delta = border[iRight] - last;
 			dRight = delta.x / delta.y;
 			right = last.x + dRight * (curY-last.y);
@@ -229,141 +229,57 @@ struct PHWConvexCalc{
 		if (iLeft == iRight && curY > border[iLeft].y) return false;
 		return true;
 	}
-	//	エッジをアンチエイリアスつきで描画
-	void CalcBorder2(){
-		engine->points.clear();
-		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->rx,-water->ry,0)) * water->dhinv;
-		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
-		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
-		border.clear();
-		CDQHLines<QH2DVertex> lines(100);
-		std::vector<QH2DVertex*> qhvtxs;
-		qhvtxs.resize(vtxsOn.size());
-		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
-		lines.CreateConvexHull(&*(qhvtxs.begin()), &*(qhvtxs.end()));
-		float dhInv = 1/engine->water->dh;
-		CDQHLine<QH2DVertex>* start=NULL;
-		for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
-			if (!cur->deleted){
-				border.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
-				border.push_back((cur->vtx[1]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
-			}
-		}
-		float width = 6;	//	線の幅
-		for(int i=0; i<border.size(); i+=2){
-			Vec2f delta = border[i+1] - border[i];
-			if (abs(delta.x) > abs(delta.y)){
-				if (delta.x < 0){
-					delta*= -1;
-					std::swap(border[i], border[i+1]);
-				}
-				float k = delta.y / delta.x;
-				//	線の幅/2
-				float alphaLen = width*delta.norm()/(delta.x*2);
-				border[i].x;
-				int ix = border[i].x-alphaLen;
-				float y = border[i].y + k*(ix-border[i].x);
-				for(; ix < border[i].x; ++ix){
-					float xAlpha = 1 - (border[i].x-ix)/alphaLen;
-					for(int iy = y-alphaLen; iy<y+alphaLen; ++iy){
-						float alpha = (1 - abs(y-iy) / alphaLen)*xAlpha;
-						int cx = (ix + engine->water->bound.x) % engine->water->mx;
-						int cy = (iy + engine->water->bound.y) % engine->water->my;
-
-						Vec3f p = Vec3f(ix, iy, engine->water->height[cx][cy]*water->dhinv) - center;
-						Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
-						engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
-						engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
-						engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-						engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
-					}
-					y += k;
-				}
-				for(; ix < border[i+1].x; ++ix){
-					for(int iy = y-alphaLen; iy<y+alphaLen; ++iy){
-						float alpha = 1 - abs(y-iy) / alphaLen;
-						int cx = (ix + engine->water->bound.x) % engine->water->mx;
-						int cy = (iy + engine->water->bound.y) % engine->water->my;
-
-						Vec3f p = Vec3f(ix, iy, engine->water->height[cx][cy]*water->dhinv) - center;
-						Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
-						engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
-						engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
-						engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-						engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
-					}					
-					y += k;
-				}
-				for(; ix < border[i+1].x+alphaLen; ++ix){
-					float xAlpha = 1 - (ix-border[i+1].x)/alphaLen;
-					for(int iy = y-alphaLen; iy<y+alphaLen; ++iy){
-						float alpha = (1 - abs(y-iy) / alphaLen)*xAlpha;
-						int cx = (ix + engine->water->bound.x) % engine->water->mx;
-						int cy = (iy + engine->water->bound.y) % engine->water->my;
-
-						Vec3f p = Vec3f(ix, iy, engine->water->height[cx][cy]*water->dhinv) - center;
-						Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
-						engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
-						engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
-						engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-						engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
-					}
-					y += k;
-				}
-			}else{
-				
-			}
-		}
-	}
-	//	内部を塗りつぶし，アンチエイリアスなし．
+	//	内部を塗りつぶし，アンチエイリアスのふち付
 	void CalcBorder(){
 		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->rx,-water->ry,0)) * water->dhinv;
 		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
 		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
 		//	水に境界条件を設定(凸形状ごとに処理する)
 		//	境界を作る頂点を水面に投影し，凸包を作る．
-		border.clear();
 		CDQHLines<QH2DVertex> lines(100);
 		std::vector<QH2DVertex*> qhvtxs;
 		qhvtxs.resize(vtxsOn.size());
 		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
-		lines.CreateConvexHull(&*(qhvtxs.begin()), &*(qhvtxs.end()));
+		lines.CreateConvexHull(qhvtxs.begin(), qhvtxs.end());
 		float dhInv = 1/engine->water->dh;
-		CDQHLine<QH2DVertex>* start=NULL;
-		for(CDQHLine<QH2DVertex>* cur = lines.begin; cur != lines.end; ++cur){
-			if (!cur->deleted){
-				start = cur;
-				break;
-			}
+		for(; lines.begin!=lines.end && lines.begin->deleted; ++lines.begin);
+		if (lines.begin == lines.end) return;
+		std::vector<Vec2f> tmp;
+		tmp.push_back((lines.begin->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
+		for(CDQHLine<QH2DVertex>*cur=lines.begin->neighbor[0]; cur!= lines.begin; cur=cur->neighbor[0]){
+			tmp.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
 		}
-		if (!start) return;
-		border.push_back((start->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
-		for(CDQHLine<QH2DVertex>*cur=start->neighbor[0]; cur!= start; cur=cur->neighbor[0]){
-			border.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
-		}
-		if (border.size() < 3) return;
-		
-		//	境界条件
-		//	できた凸包の内側のセルの速度を設定．ブレゼンハムで塗りつぶし
+		if (tmp.size() < 3) return;
+		//	凸包の上端の頂点を見つける．
 		float top = 1e10f;
-		for(int i=0; i<border.size(); ++i){
-			if (border[i].y < top){
-				top = ceil(border[i].y-1);
-				iLeft = i;
+		int idTop;
+		for(int i=0; i<tmp.size(); ++i){
+			if (tmp[i].y < top){
+				top = tmp[i].y;
+				idTop = i;
 			}
 		}
-		if (top < -1) top = -1;
-		curY = top;
-		border.insert(border.begin()+iLeft, border[iLeft]);
-		iRight = iLeft+1;
+		//	border は先頭と最後に(yが最小の)同じ頂点が入る．
+		border.clear();
+		border.insert(border.begin(), tmp.begin()+idTop, tmp.end());
+		border.insert(border.end(), tmp.begin(), tmp.begin()+idTop);
+		border.push_back(border[0]);
+		//----------------------------------------------------------------
+		//	境界条件の設定
+		//	できた凸包の内側のセルの速度を設定．凸包の中を塗りつぶし処理
+		curY = border[0].y;
+		if (curY < -1) curY = -1;
+		iLeft = border.size()-1;
+		iRight = 0;
 		engine->points.clear();
+
 		while(NextLine()){
 			int xStart, xEnd;
 			xStart = ceil(left);
 			xEnd = right;
 			if (xStart < 0) xStart = 0;
-			if (xEnd > water->mx) xEnd = water->mx;
-			for(int x = xStart; x<xEnd; ++x){
+			if (xEnd > water->mx-1) xEnd = water->mx-1;
+			for(int x = xStart; x<=xEnd; ++x){
 				int cx = (x + engine->water->bound.x) % engine->water->mx;
 				int cy = (curY + engine->water->bound.y) % engine->water->my;
 
@@ -371,12 +287,144 @@ struct PHWConvexCalc{
 				Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->u[cx][cy] = v.x;
 				engine->water->v[cx][cy] = v.y;
-				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
-				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
+//				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
+//				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
+			}
+		}
+
+		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
+		const float lineWidth = 1.5;	//	線の幅
+		const float lineWidthInv = 1/lineWidth;
+		TVec2<int> water_m(water->mx, water->my);
+		for(int i=0; i<border.size()-1; ++i){
+			Vec2f delta = border[i+1] - border[i];
+			Vec2f dir = delta.unit();
+			Vec2f dAlpha;	
+			dAlpha.x = -dir.y*lineWidthInv;	//	dir.x に1進むと dAlpha濃くなる
+			dAlpha.y = dir.x*lineWidthInv;	//	dir.y に1進むと dAlpha濃くなる
+			Vec2f alphaLen;					//	alphaLen進むと線から抜ける
+			alphaLen.x = -1/dAlpha.x;
+			alphaLen.y = -1/dAlpha.y;
+
+			int X=0, Y=1;
+			if (abs(delta.x) < abs(delta.y)){
+				X=1; Y=0;
+			}
+			Vec2f vtx[2];
+			if (delta[X] < 0){
+				delta *= -1;
+				vtx[0] = border[i+1];
+				vtx[1] = border[i];
+			}else{
+				vtx[0] = border[i];
+				vtx[1] = border[i+1];
+			}
+			float k = delta[Y] / delta[X];
+
+			//	最初の四角
+			int ix = ceil(vtx[0][X]-lineWidth);
+			float alphaX = 1 - (vtx[0][X]-ix)*lineWidthInv;
+			int xEnd = vtx[0][X];
+			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
+			float yStart = vtx[0][Y] + alphaLen[Y];
+			float yEnd = vtx[0][Y];
+			float yLine = yEnd;
+			if (yStart > yEnd){
+				std::swap(yStart, yEnd);
+			}
+			for(; ix<=xEnd; ++ix){
+				int iy=ceil(yStart);
+				if (iy<0) iy = 0;
+				int iyEnd = yEnd;
+				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
+				float alphaY = 1 + (iy-vtx[0][Y])*dAlpha[Y];
+				for(; iy<=iyEnd; ++iy){
+					if (Y) SetWaterVelocity(ix, iy, alphaX*alphaY);
+					else SetWaterVelocity(iy, ix, alphaX*alphaY);
+					alphaY += dAlpha[Y];
+				}
+				alphaX += lineWidthInv;
+			}
+			//	直線部分
+			xEnd = vtx[1][X];
+			for(; ix<=xEnd; ++ix){
+				int iy=ceil(yStart);
+				if (iy<0) iy = 0;
+				int iyEnd = yEnd;
+				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
+				float alpha = 1 + (iy-yLine)*dAlpha[Y];
+				for(; iy<=iyEnd; ++iy){
+					if (Y){
+						SetWaterVelocity(ix, iy, alpha);
+					}else{
+						SetWaterVelocity(iy, ix, alpha);
+					}
+					alpha += dAlpha[Y];
+				}
+				yLine += k;
+				yStart += k;
+				yEnd += k;
+			}
+			//	最後の四角
+			alphaX = 1 - (ix-vtx[1][X])*lineWidthInv;
+			xEnd = vtx[1][X] + lineWidth;
+			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
+			for(; ix<=xEnd; ++ix){
+				int iy=ceil(yStart);
+				if (iy<0) iy = 0;
+				int iyEnd = yEnd;
+				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
+				float alphaY = 1 + (iy-vtx[1][Y])*dAlpha[Y];
+				for(; iy<=iyEnd; ++iy){
+					if (Y) SetWaterVelocity(ix, iy, alphaX*alphaY);
+					else SetWaterVelocity(iy, ix, alphaX*alphaY);
+					alphaY += dAlpha[Y];
+				}
+				alphaX -= lineWidthInv;
+			}
+
+			//	波高の境界条件
+			int from = alphaLen[Y] < 0 ? -2 : 2;
+			float y = vtx[0][Y];
+			if (from < 0) y += 1;
+			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
+				int iy = y;
+				y += k;
+				int iy2 = iy + from;
+				if (Y){
+					int cx = (ix + water->bound.x)%water->mx;
+					int cy = (iy + water->bound.y)%water->my;
+					int cy2 = (iy2 + water->bound.y)%water->my;
+					water->height[cx][cy] = water->height[cx][cy2];
+					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy2*water->dh-water->ry, 0));
+				}else{
+					int cy = (ix + water->bound.y)%water->my;
+					int cx = (iy + water->bound.x)%water->mx;
+					int cx2 = (iy2 + water->bound.x)%water->mx;
+					water->height[cx][cy] = water->height[cx2][cy];
+					engine->points.push_back(Vec3f(iy*water->dh-water->ry, ix*water->dh-water->rx, 0));
+					engine->points.push_back(Vec3f(iy2*water->dh-water->ry, ix*water->dh-water->rx, 0));
+				}
 			}
 		}
 	}
+	void SetWaterVelocity(int ix, int iy, float alpha){
+		assert(0<=alpha && alpha<=1);
+
+		int cx = (ix + engine->water->bound.x) % engine->water->mx;
+		int cy = (iy + engine->water->bound.y) % engine->water->my;
+
+		Vec3f p = Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
+		engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
+		engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
+//		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+//		engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
+	}
 	void CalcTriangle(Vec3f* p, float* depth, float* height){
+		const float B=0.1f;
+
 		assert(depth[0] >=0);
 		assert(depth[1] >=0);
 		assert(depth[2] >=0);
@@ -386,9 +434,11 @@ struct PHWConvexCalc{
 		Vec3f normalS = -a^b;
 		Vec3f normal = normalS.unit();
 
+		Vec3f vtxVel[3];
 		float vel[3];
 		for(int i=0; i<3; ++i){
-			vel[i] = -(solidVel + (solidAngVel^(p[i]-solidCenter))) * normal;
+			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter));
+			vel[i] = -vtxVel[i] * normal;
 		}
 		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normalS;
 		Vec3f velInt = (1.0f/6.0f) * (vel[0] + vel[1] + vel[2]) * normalS;
@@ -402,8 +452,61 @@ struct PHWConvexCalc{
 				+	((1.0f/24.0f)*vel[0] + (1.0f/12.0f)*vel[1] + (1.0f/24.0f)*vel[2]) * p[1]
 				+	((1.0f/24.0f)*vel[0] + (1.0f/24.0f)*vel[1] + (1.0f/12.0f)*vel[2]) * p[2]
 			  ) ^ normalS;
-		//	波高の補正
-		float B=0.1f;
+
+		//	波高の補正	三角形内の水について，波高に衝突による圧力の影響を加える．
+		float velH = - (vtxVel[0].z+vtxVel[1].z+vtxVel[2].z)/3 * B * water->dh*water->dh;
+		Vec2f vtx[3];
+		for(int i=0; i<3; ++i){
+			vtx[i].x = (p[i].x+water->rx)*water->dhinv;
+			vtx[i].y = (p[i].y+water->ry)*water->dhinv;
+		}
+		if (vtx[1].y > vtx[2].y) std::swap(vtx[1], vtx[2]);
+		if (vtx[0].y > vtx[1].y) std::swap(vtx[0], vtx[1]);
+		if (vtx[1].y > vtx[2].y) std::swap(vtx[1], vtx[2]);
+		int iy = ceil(vtx[0].y);
+		if (iy<0) iy = 0;
+		float dLeft = (vtx[1].x-vtx[0].x)/(vtx[1].y-vtx[0].y);
+		float left = vtx[0].x + (iy-vtx[0].y)*dLeft;
+		float dRight = (vtx[2].x-vtx[0].x)/(vtx[2].y-vtx[0].y);
+		float right = vtx[0].x + (iy-vtx[0].y)*dRight;
+		for(; iy < vtx[1].y; ++iy){
+			int xStart, xEnd;
+			if (left < right){
+				xStart = left; xEnd = right;
+			}else{
+				xStart = right; xEnd = left;
+			}
+			if (xStart < 0) xStart = 0;
+			if (xEnd > water->mx) xEnd = water->mx;
+			int cy = (iy+water->bound.y)%water->my;
+			for(int ix = xStart; ix<xEnd; ++ix){
+				int cx = (ix+water->bound.x)%water->mx;
+				water->height[cx][cy] += velH;
+			}
+			left += dLeft;
+			right += dRight;
+		}
+		dLeft = (vtx[2].x-vtx[1].x)/(vtx[2].y-vtx[1].y);
+		left = vtx[1].x + (iy-vtx[1].y)*dLeft;
+		for(; iy < vtx[2].y; ++iy){
+			int xStart, xEnd;
+			if (left < right){
+				xStart = left; xEnd = right;
+			}else{
+				xStart = right; xEnd = left;
+			}
+			if (xStart < 0) xStart = 0;
+			if (xEnd > water->mx) xEnd = water->mx;
+			int cy = (iy+water->bound.y)%water->my;
+			for(int ix = xStart; ix<xEnd; ++ix){
+				int cx = (ix+water->bound.x)%water->mx;
+				water->height[cx][cy] += velH;
+			}
+			left += dLeft;
+			right += dRight;
+		}
+		
+		//	圧力による力を計算．安定させるため，粘性も入れる．
 		buo += (volume + B*velInt) * engine->water->density;
 		tbuo += (volumeMom + B*velIntMom) * engine->water->density;
 
@@ -433,11 +536,11 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		vtxs.push_back(Vec3f(convCalc.border[i].x*dh-rx, convCalc.border[i].y*dh-ry, 0));
 		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-rx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-ry, 0));
 	}
-	render->DrawDirect(GRRender::LINES, &*(vtxs.begin()), &*(vtxs.end()));
+	render->DrawDirect(GRRender::LINES, vtxs.begin(), vtxs.end());
 
 	GRMaterialData mat3(Vec4f(1, 0, 1, 1), 2);
 	render->SetMaterial(mat3);
-	render->DrawDirect(GRRender::LINES, &*(points.begin()), &*(points.end()));
+	render->DrawDirect(GRRender::LINES, points.begin(), points.end());
 	render->SetDepthTest(true);
 }
 void PHWaterContactEngine::Step(SGScene* s){
@@ -532,3 +635,4 @@ public:
 DEF_REGISTER_BOTH(PHWaterContactEngine);
 
 }
+

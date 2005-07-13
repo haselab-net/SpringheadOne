@@ -235,13 +235,15 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 	    float xo = -rx, yo = -ry;
 		float dxinv = 1/rx;
 		float dyinv = 1/ry;
-		for(int y=0; y<my-1; ++y){
+		int boundY_1 = (bound.y-1+my)%my;
+		for(int y=0; y<my; ++y){
+			double py;
+			if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
+			else if (y>boundY_1) py = yo + (y-bound.y+my)%my*dh;
+			else continue;
 			int start1 = y*mx;
 			int start2 = ((y+1)%my) * mx;
 			double left = xo;
-			double py;
-			if (y < bound.y) py = yo + (y-bound.y+(my-1))*dh; 
-			else py = yo + (y-bound.y)*dh;
 			double px = xo;
 			for(int x=bound.x; x<mx; ++x){
 				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]*hmul);

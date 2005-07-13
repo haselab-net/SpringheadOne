@@ -58,13 +58,13 @@ Scene {
 		Water water1{
 			60;
 			60;
-			0.05;	//dh
+			0.1;	//dh
 			0.05;	//depth
 			9.8;	//gravity
 			1.0;	//hscale
 			1000.0;	//density
-			0.97;	//loss
-			0.8; 0.0;	//	vx, vy
+			0.98;	//loss
+			1.3; -1.3;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}
