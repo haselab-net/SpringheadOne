@@ -266,6 +266,12 @@
 			RelativePath=".\CRBalanceQuadPR.h">
 		</File>
 		<File
+			RelativePath=".\CRBallHuman.cpp">
+		</File>
+		<File
+			RelativePath=".\CRBallHuman.h">
+		</File>
+		<File
 			RelativePath=".\CRBeetle.cpp">
 		</File>
 		<File

@@ -653,6 +653,12 @@
 			RelativePath=".\PHWater.h">
 		</File>
 		<File
+			RelativePath=".\PHWaterContact.cpp">
+		</File>
+		<File
+			RelativePath=".\PHWaterContact.h">
+		</File>
+		<File
 			RelativePath="physics.h">
 		</File>
 	</Files>

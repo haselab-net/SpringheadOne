@@ -350,45 +350,6 @@
 			RelativePath="GLRender.h">
 		</File>
 		<File
-			RelativePath="GLRenderWgl.cpp">
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="MFC Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="3"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="MFC Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="GLRenderWgl.h">
-		</File>
-		<File
 			RelativePath="GLSphere.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">

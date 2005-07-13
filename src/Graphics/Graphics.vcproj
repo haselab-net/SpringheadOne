@@ -376,6 +376,12 @@
 			RelativePath="GRRender.h">
 		</File>
 		<File
+			RelativePath=".\GRSound.cpp">
+		</File>
+		<File
+			RelativePath=".\GRSound.h">
+		</File>
+		<File
 			RelativePath=".\GRSphere.cpp">
 		</File>
 		<File
