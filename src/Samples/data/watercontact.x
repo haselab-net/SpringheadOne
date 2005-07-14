@@ -64,7 +64,7 @@ Scene {
 			1.0;	//hscale
 			1000.0;	//density
 			1.0;	//loss
-			2.0; 0.0;	//	vx, vy
+			-2.0; 0.0;	//	vx, vy
 #			0.0;0.0;
 			WaterTrackTarget{
 				{frBlock1}

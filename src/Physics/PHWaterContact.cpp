@@ -211,22 +211,22 @@ struct PHWConvexCalc{
 		curY++;
 		left += dLeft;
 		right += dRight;
-		if (iLeft == iRight && curY > border[iLeft].y) return false;
-		while (border[iLeft].y < curY && iLeft!= iRight){
-			Vec2f last = border[iLeft];
+		if (iLeft == iRight && curY > border[iLeft].y-0.5f) return false;
+		while (border[iLeft].y-0.5f < curY && iLeft!= iRight){
+			Vec2f last = border[iLeft]-Vec2f(0.5f,0.5f);
 			-- iLeft;
-			Vec2f delta = border[iLeft] - last;
+			Vec2f delta = border[iLeft]-Vec2f(0.5f,0.5f) - last;
 			dLeft = delta.x / delta.y;
 			left = last.x + dLeft * (curY-last.y);
 		}
-		while (border[iRight].y < curY && iLeft!= iRight){
-			Vec2f last = border[iRight];
+		while (border[iRight].y-0.5f < curY && iLeft!= iRight){
+			Vec2f last = border[iRight]-Vec2f(0.5f,0.5f);
 			++iRight;
-			Vec2f delta = border[iRight] - last;
+			Vec2f delta = border[iRight]-Vec2f(0.5f,0.5f) - last;
 			dRight = delta.x / delta.y;
 			right = last.x + dRight * (curY-last.y);
 		}
-		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		if (iLeft == iRight && curY > border[iLeft].y-0.5f) return false;
 		return true;
 	}
 	//	内部を塗りつぶし，アンチエイリアスのふち付
@@ -267,7 +267,7 @@ struct PHWConvexCalc{
 		//----------------------------------------------------------------
 		//	境界条件の設定
 		//	できた凸包の内側のセルの速度を設定．凸包の中を塗りつぶし処理
-		curY = border[0].y;
+		curY = border[0].y - 0.5;
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
 		iRight = 0;

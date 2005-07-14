@@ -345,16 +345,27 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		bool bDrawVelocity = true;
 		lines.resize(2);
 		if (bDrawVelocity){
-			render->SetMaterial(GRMaterialData(Vec4f(1,1,1,1), 4));
+			render->device->SetRenderState(D3DRS_LIGHTING, false);
+			render->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+			struct VtxFVF{
+				Vec3f pos;
+				DWORD color;
+			} vtx[2];
+			vtx[0].color = D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff);
+			vtx[1].color = D3DCOLOR_ARGB(0x10, 0xff, 0xff, 0xff);
 			for(int iy=0; iy<my; ++iy){
 				for(int ix=0; ix<mx; ++ix){
-					lines[0] = Vec3f(ix*dh-rx, iy*dh-ry, 0);
+					vtx[0].pos = Vec3f(ix*dh-rx, iy*dh-ry, 0);
 					int cx = (ix+bound.x)%mx;
 					int cy = (iy+bound.y)%my;
-					lines[1] = Vec3f(ix*dh-rx + u[cx][cy]*dh, iy*dh-ry + v[cx][cy]*dh, 0);
-					render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
+					Vec2f vel(u[cx][cy], v[cx][cy]);
+					vel += velocity;
+					vel *= dh;
+					vtx[1].pos = Vec3f(ix*dh-rx + vel.x, iy*dh-ry + vel.y, 0);
+					render->device->DrawPrimitiveUP(D3DPT_LINELIST, 2, vtx, sizeof(vtx[0]));
 				}
 			}
+			render->device->SetRenderState(D3DRS_LIGHTING, true);
 		}
 		
 		render->SetDepthTest(true);
@@ -561,10 +572,10 @@ void PHWater::Integrate(double dt){
 	//	セルはトーラス状につながっていると考える(上と下，右と左はつながっている)
     // calculate temporary velocities toward the z-axis
 	for(i = 0; i < mx; i++)for(j = 0; j < my; j++){
-        //utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[(i+1)%mx][j] - height[i][j]) + (p[(i+1)%mx][j] - p[i][j]) / (density * dh));
-        //vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][(j+1)%my] - height[i][j]) + (p[i][(j+1)%my] - p[i][j]) / (density * dh));
-		utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i][j] - height[i == 0 ? mx-1 : i-1/*(i-1)%mx*/][j]) + (p[i][j] - p[i==0 ? mx-1 : i-1][j]) / (density * dh));
-		vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j] - height[i][j==0 ? my-1:j-1]) + (p[i][j] - p[i][j==0?my-1:j-1]) / (density * dh));
+        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[(i+1)%mx][j] - height[i][j]) + (p[(i+1)%mx][j] - p[i][j]) / (density * dh));
+        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][(j+1)%my] - height[i][j]) + (p[i][(j+1)%my] - p[i][j]) / (density * dh));
+		//utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i][j] - height[i == 0 ? mx-1 : i-1/*(i-1)%mx*/][j]) + (p[i][j] - p[i==0 ? mx-1 : i-1][j]) / (density * dh));
+		//vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j] - height[i][j==0 ? my-1:j-1]) + (p[i][j] - p[i][j==0?my-1:j-1]) / (density * dh));
     }
 	int hoge = -2 % 6;
 	//	last row refers first row
@@ -595,10 +606,10 @@ void PHWater::Integrate(double dt){
 
     // update temporal heights of all cells
     for(i = 0; i <mx; i++)for(j = 0; j<my; j++){
-        //htmp[i][j] = (height[i][j] -
-		//	depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) );
-		htmp[i][j] = (height[i][j] -
-			depth * dt * ((utmp[(i+1)%mx][j] - utmp[i][j]) * dh + (vtmp[i][(j+1)%my] - vtmp[i][j]) * dh) / (dh * dh) );
+        htmp[i][j] = (height[i][j] -
+			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) );
+		//htmp[i][j] = (height[i][j] -
+		//	depth * dt * ((utmp[(i+1)%mx][j] - utmp[i][j]) * dh + (vtmp[i][(j+1)%my] - vtmp[i][j]) * dh) / (dh * dh) );
 	}
     /*for(i = 1; i <mx; i++){
         htmp[i][0] = (height[i][0] -
