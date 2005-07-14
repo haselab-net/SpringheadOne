@@ -569,31 +569,29 @@ void PHWater::Step(SGScene* s){
     // this method calcualtes heights and x-y velocities
 void PHWater::Integrate(double dt){
     int i, j;
+	double dt_dh = dt / dh;
+	double C = gravity * (dt_dh) * 0.5;
+#define UPDATE_UV(x0, x1, y0, y1)	\
+    utmp[i][j] = loss * (u[x0][y0] - C * (height[x1][y0] - height[x0][y0] + height[x1][y1] - height[x0][y1]));	\
+    vtmp[i][j] = loss * (v[x0][y0] - C * (height[x0][y1] - height[x0][y0] + height[x1][y1] - height[x1][y0]));
+
 	//	セルはトーラス状につながっていると考える(上と下，右と左はつながっている)
     // calculate temporary velocities toward the z-axis
-	for(i = 0; i < mx; i++)for(j = 0; j < my; j++){
-        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * 
-			0.5*(height[(i+1)%mx][j] - height[i][j] + height[(i+1)%mx][(j+1)%my] - height[i][(j+1)%my]));
-        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * 
-			0.5*(height[i][(j+1)%my] - height[i][j] + height[(i+1)%mx][(j+1)%my] - height[(i+1)%mx][j]));
-		//utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i][j] - height[i == 0 ? mx-1 : i-1/*(i-1)%mx*/][j]) + (p[i][j] - p[i==0 ? mx-1 : i-1][j]) / (density * dh));
-		//vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j] - height[i][j==0 ? my-1:j-1]) + (p[i][j] - p[i][j==0?my-1:j-1]) / (density * dh));
+	//([0, mx-2][0, my-2])
+	for(i = 0; i < mx-1; i++)for(j = 0; j < my-1; j++){
+		UPDATE_UV(i, i+1, j, j+1);
     }
-	int hoge = -2 % 6;
-	//	last row refers first row
-    /*for(i = 0; i < mx-1; i++){
-        utmp[i][my-1] = loss*(u[i][my-1] - gravity * (dt / dh) * (height[i+1][my-1] - height[i][my-1]) + (p[i+1][my-1] - p[i][my-1]) / (density * dh));
-        vtmp[i][my-1] = loss*(v[i][my-1] - gravity * (dt / dh) * (height[i][0] - height[i][my-1]) + (p[i][0] - p[i][my-1]) / (density * dh));
+	//([0, mx-2][my-1]	last row refers first row
+    for(i = 0; i < mx-1; i++){
+		UPDATE_UV(i, i+1, my-1, 0);
     }
 	//	last column refers first column
 	for(j = 0; j < my-1; j++){
-        utmp[mx-1][j] = loss*(u[mx-1][j] - gravity * (dt / dh) * (height[0][j] - height[mx-1][j]) + (p[0][j] - p[mx-1][j]) / (density * dh));
-        vtmp[mx-1][j] = loss*(v[mx-1][j] - gravity * (dt / dh) * (height[mx-1][j+1] - height[mx-1][j]) + (p[mx-1][j+1] - p[mx-1][j]) / (density * dh));
+		UPDATE_UV(mx-1, 0, j, j+1);
     }
 	//	right bottom cell
-    utmp[mx-1][my-1] = loss*(u[mx-1][my-1] - gravity * (dt / dh) * (height[0][my-1] - height[mx-1][my-1]) + (p[0][my-1] - p[mx-1][my-1]) / (density * dh));
-    vtmp[mx-1][my-1] = loss*(v[mx-1][my-1] - gravity * (dt / dh) * (height[mx-1][0] - height[mx-1][my-1]) + (p[mx-1][0] - p[mx-1][my-1]) / (density * dh));
-	*/
+	UPDATE_UV(mx-1, 0, my-1, 0);
+
 	/*
 		x = [i-1, i], y = [j-1, j]の四角領域の高さをh[i][j]とすると
 		辺x = i-1からの流入量は
@@ -602,44 +600,63 @@ void PHWater::Integrate(double dt){
 		これに四角領域の面積dh * dhを割れば高さの変化量が得られる
 
 		水深を一定値(depth)としているがこれをdepth + height[i][j]としてみたらどうか。
-
-		z方向流速を無視しているのはなぜ？
 	 */
 
+	C = depth * dt_dh * 0.5;
+#define UPDATE_H(x0, x1, y0, y1)	\
+	htmp[x0][y0] = height[x0][y0] - C * (	\
+		(utmp[x0][y0] - utmp[x1][y0] + utmp[x0][y1] - utmp[x1][y1]) +	\
+		(vtmp[x0][y0] - vtmp[x0][y1] + vtmp[x1][y0] - vtmp[x1][y1]));
+
     // update temporal heights of all cells
-    for(i = 0; i <mx; i++)for(j = 0; j<my; j++){
-        htmp[i][j] = (height[i][j] -
-			depth * dt * (0.5*(utmp[i][j] - utmp[i-1][j] + utmp[i][j-1] - utmp[i-1][j-1]) * dh 
-			+ 0.5*(vtmp[i][j] - vtmp[i][j-1] + vtmp[i-1][j] - vtmp[i-1][j-1]) * dh) / (dh * dh) );
-		//htmp[i][j] = (height[i][j] -
-		//	depth * dt * ((utmp[(i+1)%mx][j] - utmp[i][j]) * dh + (vtmp[i][(j+1)%my] - vtmp[i][j]) * dh) / (dh * dh) );
+    for(i = 1; i < mx; i++)for(j = 1; j < my; j++){
+		UPDATE_H(i, i-1, j, j-1);
 	}
-    /*for(i = 1; i <mx; i++){
-        htmp[i][0] = (height[i][0] -
-			depth * dt * ((utmp[i][0] - utmp[i-1][0]) * dh + (vtmp[i][0] - vtmp[i][my-1]) * dh) / (dh * dh) );
+    for(i = 1; i < mx; i++){
+		UPDATE_H(i, i-1, 0, my-1);
 	}
-    for(j = 1; j<my; j++){
-        htmp[0][j] = (height[0][j] -
-			depth * dt * ((utmp[0][j] - utmp[mx-1][j]) * dh + (vtmp[0][j] - vtmp[0][j-1]) * dh) / (dh * dh) );
+    for(j = 1; j< my; j++){
+        UPDATE_H(0, mx-1, j, j-1);
 	}
-    htmp[0][0] = (height[0][0] -
-		depth * dt * ((utmp[0][0] - utmp[mx-1][0]) * dh + (vtmp[0][0] - vtmp[0][my-1]) * dh) / (dh * dh) );
-    */
-	const double pass = 300;
-	static double h;			
+    UPDATE_H(0, mx-1, 0, my-1);
+
+	const double pass = 300.0;
+	C = loss / hscale / (pass + 16);
+
+#define LOWPASS(x0, x1, x2, y0, y1, y2)	\
+	height[x0][y0] = C * (	\
+		htmp[x0][y0] * (4 + pass) +					\
+		2.0 * (htmp[x2][y0] + htmp[x1][y0] + htmp[x0][y2] + htmp[x0][y1]) +		\
+			   htmp[x2][y2] + htmp[x1][y2] + htmp[x2][y1] + htmp[x1][y1]);
+
 	//	ローパスフィルタ
     for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
-		h = htmp[i][j] * (4 + pass) + 
-			2.0 * (htmp[i-1][j  ] + htmp[i+1][j  ] + htmp[i  ][j-1] + htmp[i  ][j+1]) + 
-				   htmp[i-1][j-1] + htmp[i+1][j-1] + htmp[i-1][j+1] + htmp[i+1][j+1];
-		h /= (pass + 16);
-		height[i][j] = h;
+		LOWPASS(i, i+1, i-1, j, j+1, j-1);
     }
+	for(i = 1; i < mx - 1; i++){
+		LOWPASS(i, i+1, i-1, 0, 1, my-1);
+		LOWPASS(i, i+1, i-1, my-1, 0, my-2);
+	}
+	for(j = 1; j < my - 1; j++){
+		LOWPASS(0, 1, mx-1, j, j+1, j-1);
+		LOWPASS(mx-1, 0, mx-2, j, j+1, j-1);
+	}
+	LOWPASS(0, 1, mx-1, 0, 1, my-1);
+	LOWPASS(mx-1, 0, mx-2, 0, 1, my-1);
+	LOWPASS(0, 1, mx-1, my-1, 0, my-2);
+	LOWPASS(mx-1, 0, mx-2, my-1, 0, my-2);
 
+    //u[i][j] = utmp[i][j] * loss;
+    //v[i][j] = vtmp[i][j] * loss;
+	
 	// update variables
-//	memcpy(&height[0][0], &htmp[0][0], sizeof(height[0][0])*mxy);
+	//memcpy(&height[0][0], &htmp[0][0], sizeof(height[0][0])*mxy);
 	memcpy(&u[0][0], &utmp[0][0], sizeof(u[0][0])*mxy);
 	memcpy(&v[0][0], &vtmp[0][0], sizeof(v[0][0])*mxy);
+
+#undef UPDATE_UV
+#undef UPDATE_H
+#undef LOWPASS
 }
 
 ///////////////////////////////////////////////////////////////////////////
