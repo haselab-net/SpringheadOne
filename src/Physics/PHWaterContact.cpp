@@ -231,6 +231,7 @@ struct PHWConvexCalc{
 	}
 	//	内部を塗りつぶし，アンチエイリアスのふち付
 	void CalcBorder(){
+		border.clear();
 		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->rx,-water->ry,0)) * water->dhinv;
 		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
 		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
@@ -260,7 +261,6 @@ struct PHWConvexCalc{
 			}
 		}
 		//	border は先頭と最後に(yが最小の)同じ頂点が入る．
-		border.clear();
 		border.insert(border.begin(), tmp.begin()+idTop, tmp.end());
 		border.insert(border.end(), tmp.begin(), tmp.begin()+idTop);
 		border.push_back(border[0]);
@@ -287,11 +287,13 @@ struct PHWConvexCalc{
 				Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->u[cx][cy] = v.x;
 				engine->water->v[cx][cy] = v.y;
+//				engine->water->height[cx][cy] = 0;
+
 //				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
 //				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
 			}
 		}
-
+/*
 		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
 		const float lineWidth = 2.0;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
@@ -408,6 +410,7 @@ struct PHWConvexCalc{
 				}
 			}
 		}
+*/
 	}
 	void SetWaterVelocity(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
@@ -454,21 +457,39 @@ struct PHWConvexCalc{
 			  ) ^ normalS;
 
 		//	波高の補正	三角形内の水について，波高に衝突による圧力の影響を加える．
+/*		ついでに圧力の波高による補正をやっているがバグがあって，発散する．
 		float velH = - (vtxVel[0].z+vtxVel[1].z+vtxVel[2].z)/3 * B * water->dh*water->dh;
 		Vec2f vtx[3];
 		for(int i=0; i<3; ++i){
 			vtx[i].x = (p[i].x+water->rx)*water->dhinv;
 			vtx[i].y = (p[i].y+water->ry)*water->dhinv;
 		}
-		if (vtx[1].y > vtx[2].y) std::swap(vtx[1], vtx[2]);
-		if (vtx[0].y > vtx[1].y) std::swap(vtx[0], vtx[1]);
-		if (vtx[1].y > vtx[2].y) std::swap(vtx[1], vtx[2]);
+		if (vtx[1].y > vtx[2].y){
+			std::swap(vtx[1], vtx[2]);
+			std::swap(height[1], height[2]);
+		}
+		if (vtx[0].y > vtx[1].y){
+			std::swap(vtx[0], vtx[1]);
+			std::swap(height[0], height[1]);
+		}
+		if (vtx[1].y > vtx[2].y){
+			std::swap(vtx[1], vtx[2]);
+			std::swap(height[1], height[2]);
+		}
 		int iy = ceil(vtx[0].y);
 		if (iy<0) iy = 0;
 		float dLeft = (vtx[1].x-vtx[0].x)/(vtx[1].y-vtx[0].y);
 		float left = vtx[0].x + (iy-vtx[0].y)*dLeft;
 		float dRight = (vtx[2].x-vtx[0].x)/(vtx[2].y-vtx[0].y);
 		float right = vtx[0].x + (iy-vtx[0].y)*dRight;
+		
+		a.sub_vector(0, Vec2f()) = vtx[1]-vtx[0];
+		b.sub_vector(0, Vec2f()) = vtx[2]-vtx[0];
+		a.z = height[1]-height[0];
+		b.z = height[2]-height[0];
+		Vec3f triNormal = (a^b).unit();
+		if (triNormal.z <0) triNormal *= -1;
+		Vec2f deltaHeight(-triNormal.x/triNormal.z, -triNormal.y/triNormal.z);
 		for(; iy < vtx[1].y; ++iy){
 			int xStart, xEnd;
 			if (left < right){
@@ -479,9 +500,16 @@ struct PHWConvexCalc{
 			if (xStart < 0) xStart = 0;
 			if (xEnd > water->mx) xEnd = water->mx;
 			int cy = (iy+water->bound.y)%water->my;
+
+			float curHeight = height[0] + (xStart - vtx[0].x)*deltaHeight.x
+				+ (iy - vtx[0].y)*deltaHeight.x;
 			for(int ix = xStart; ix<=xEnd; ++ix){
-				int cx = (ix+water->bound.x)%water->mx;
+				int cx = (ix+water->bound.x)%water->mx;				
+				float heightError = water->height[cx][cy] - curHeight;
+				volume += heightError * water->dh * water->dh * normalS;
+				volumeMom += (heightError * water->dh * water->dh) * (Vec3f(ix*water->dh - water->rx, iy*water->dh - water->ry, curHeight) ^ normalS);
 				water->height[cx][cy] += velH;
+				curHeight += deltaHeight.x;
 			}
 			left += dLeft;
 			right += dRight;
@@ -498,14 +526,19 @@ struct PHWConvexCalc{
 			if (xStart < 0) xStart = 0;
 			if (xEnd > water->mx) xEnd = water->mx;
 			int cy = (iy+water->bound.y)%water->my;
+			float curHeight = height[0] + (xStart - vtx[0].x)*deltaHeight.x
+				+ (iy - vtx[0].y)*deltaHeight.x;
 			for(int ix = xStart; ix<xEnd; ++ix){
 				int cx = (ix+water->bound.x)%water->mx;
+				float heightError = water->height[cx][cy] - curHeight;
+				volume += heightError * water->dh * water->dh * normalS;
+				volumeMom += (heightError * water->dh * water->dh) * (Vec3f(ix*water->dh - water->rx, iy*water->dh - water->ry, curHeight) ^ normalS);
 				water->height[cx][cy] += velH;
 			}
 			left += dLeft;
 			right += dRight;
 		}
-	
+*/	
 		//	圧力による力を計算．安定させるため，粘性も入れる．
 		buo += (volume + B*velInt) * engine->water->density;
 		tbuo += (volumeMom + B*velIntMom) * engine->water->density;

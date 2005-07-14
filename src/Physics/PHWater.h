@@ -120,6 +120,7 @@ protected:
 
 	void RenderD3(SGFrame* fr, D3Render* render);
 	void RenderGL(SGFrame* fr, GLRender* render);
+	DWORD GetColor(float h);
 };
 
 typedef UTRefArray<PHWater> PHWaters;

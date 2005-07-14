@@ -213,6 +213,21 @@ void PHWater::Render(SGFrame* fr, GRRender* render){
 		RenderGL(fr, DCAST(GLRender, render));
 }
 
+DWORD PHWater::GetColor(float h){
+	float hMax = dh/4;
+	float hMin = -dh/4;
+	if (h>hMax) h = hMax;
+	if (h<hMin) h = hMin;
+	float n = h / ((hMax-hMin)/2);
+	bool bPlus = n>0;
+	if (!bPlus) n *= -1;
+	int a = n*255;
+	int b = (1-n)*255;
+	if (bPlus){
+		return D3DCOLOR_ARGB(0xFF,a,b,0);
+	}
+	return D3DCOLOR_ARGB(0xFF,0,b,a);
+}
 // draw by Direct3D
 void PHWater::RenderD3(SGFrame* fr, D3Render* render){
     // copy the head address of the varialbe height array to pheight
@@ -222,15 +237,17 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 	
 	if ( (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE)
 		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
+#if 0	//	通常の描画
         // this function sets the texture
 		materialD3->Render(fr, render);
+		
 		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2);
 		struct VtxFVF{
 			Vec3f pos;
 			Vec3f normal;
 			Vec2f tex;
 		};
-		const float hmul = 1.0f;
+		const float hmul = 10.0f;
 		VtxFVF* buf= new VtxFVF[mx*2];
 	    float xo = -rx, yo = -ry;
 		float dxinv = 1/rx;
@@ -270,23 +287,80 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 		}	
 		delete buf;
+#else //	色で圧力を表現
+		render->SetMaterial(GRMaterialData(Vec4f(0,0,0,1),0));
+		render->device->SetRenderState(D3DRS_LIGHTING, false);
+		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+		struct VtxFVF{
+			Vec3f pos;
+			DWORD color;
+		};
+		VtxFVF* buf= new VtxFVF[mx*2];
+	    float xo = -rx, yo = -ry;
+		float dxinv = 1/rx;
+		float dyinv = 1/ry;
+		int boundY_1 = (bound.y-1+my)%my;
+		for(int y=0; y<my; ++y){
+			double py;
+			if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
+			else if (y>boundY_1) py = yo + (y-bound.y+my)%my*dh;
+			else continue;
+			int start1 = y*mx;
+			int start2 = ((y+1)%my) * mx;
+			double left = xo;
+			double px = xo;
+			for(int x=bound.x; x<mx; ++x){
+				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, 0);
+				buf[(x-bound.x)*2+1].color	= GetColor(pheight[start1+x]);
+				buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, 0);
+				buf[(x-bound.x)*2].color	= GetColor(pheight[start2+x]);
+				px += dh;
+			}
+			int offset = mx - bound.x;
+			for(int x=0; x<bound.x; ++x){
+				buf[(x+offset)*2+1].pos		= Vec3f(px, py, 0);
+				buf[(x+offset)*2+1].color	= GetColor(pheight[start1+x]);
+				buf[(x+offset)*2].pos		= Vec3f(px, py+dh, 0);
+				buf[(x+offset)*2].color		= GetColor(pheight[start2+x]);
+				px += dh;
+			}
+			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+		}	
+		render->device->SetRenderState(D3DRS_LIGHTING, true);
+		delete buf;		
+#endif
+		render->SetDepthTest(false);
+		GRMaterialData mate(Vec4f(1,0,0,1), 4);
+		render->SetMaterial(mate);
+		std::vector<Vec3f> lines;
+		lines.push_back(Vec3f(-rx, -ry, 0));
+		lines.push_back(Vec3f(rx, -ry, 0));
+		lines.push_back(Vec3f(rx, -ry, 0));
+		lines.push_back(Vec3f(rx, ry, 0));
+		lines.push_back(Vec3f(rx, ry, 0));
+		lines.push_back(Vec3f(-rx, ry, 0));
+		lines.push_back(Vec3f(-rx, ry, 0));
+		lines.push_back(Vec3f(-rx, -ry, 0));
+		render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
+		bool bDrawVelocity = true;
+		lines.resize(2);
+		if (bDrawVelocity){
+			render->SetMaterial(GRMaterialData(Vec4f(1,1,1,1), 4));
+			for(int iy=0; iy<my; ++iy){
+				for(int ix=0; ix<mx; ++ix){
+					lines[0] = Vec3f(ix*dh-rx, iy*dh-ry, 0);
+					int cx = (ix+bound.x)%mx;
+					int cy = (iy+bound.y)%my;
+					lines[1] = Vec3f(ix*dh-rx + u[cx][cy]*dh, iy*dh-ry + v[cx][cy]*dh, 0);
+					render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
+				}
+			}
+		}
+		
+		render->SetDepthTest(true);
+		//	テクスチャを戻す．
+		render->device->SetTexture(0,NULL);
 	}
-	render->SetDepthTest(false);
-	GRMaterialData mate(Vec4f(1,0,0,1), 4);
-	render->SetMaterial(mate);
-	std::vector<Vec3f> lines;
-	lines.push_back(Vec3f(-rx, -ry, 0));
-	lines.push_back(Vec3f(rx, -ry, 0));
-	lines.push_back(Vec3f(rx, -ry, 0));
-	lines.push_back(Vec3f(rx, ry, 0));
-	lines.push_back(Vec3f(rx, ry, 0));
-	lines.push_back(Vec3f(-rx, ry, 0));
-	lines.push_back(Vec3f(-rx, ry, 0));
-	lines.push_back(Vec3f(-rx, -ry, 0));
-	render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
-	render->SetDepthTest(true);
-	//	テクスチャを戻す．
-	render->device->SetTexture(0,NULL);
 }
 
 // draw objects by OpenGL
