@@ -211,22 +211,22 @@ struct PHWConvexCalc{
 		curY++;
 		left += dLeft;
 		right += dRight;
-		if (iLeft == iRight && curY > border[iLeft].y-0.5f) return false;
-		while (border[iLeft].y-0.5f < curY && iLeft!= iRight){
-			Vec2f last = border[iLeft]-Vec2f(0.5f,0.5f);
+		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		while (border[iLeft].y < curY && iLeft!= iRight){
+			Vec2f last = border[iLeft];
 			-- iLeft;
-			Vec2f delta = border[iLeft]-Vec2f(0.5f,0.5f) - last;
+			Vec2f delta = border[iLeft] - last;
 			dLeft = delta.x / delta.y;
 			left = last.x + dLeft * (curY-last.y);
 		}
-		while (border[iRight].y-0.5f < curY && iLeft!= iRight){
-			Vec2f last = border[iRight]-Vec2f(0.5f,0.5f);
+		while (border[iRight].y < curY && iLeft!= iRight){
+			Vec2f last = border[iRight];
 			++iRight;
-			Vec2f delta = border[iRight]-Vec2f(0.5f,0.5f) - last;
+			Vec2f delta = border[iRight]- last;
 			dRight = delta.x / delta.y;
 			right = last.x + dRight * (curY-last.y);
 		}
-		if (iLeft == iRight && curY > border[iLeft].y-0.5f) return false;
+		if (iLeft == iRight && curY > border[iLeft].y) return false;
 		return true;
 	}
 	//	内部を塗りつぶし，アンチエイリアスのふち付
@@ -246,9 +246,9 @@ struct PHWConvexCalc{
 		for(; lines.begin!=lines.end && lines.begin->deleted; ++lines.begin);
 		if (lines.begin == lines.end) return;
 		std::vector<Vec2f> tmp;
-		tmp.push_back((lines.begin->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
+		tmp.push_back((lines.begin->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv - Vec2f(0.5f,0.5f));
 		for(CDQHLine<QH2DVertex>*cur=lines.begin->neighbor[0]; cur!= lines.begin; cur=cur->neighbor[0]){
-			tmp.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
+			tmp.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv - Vec2f(0.5f,0.5f));
 		}
 		if (tmp.size() < 3) return;
 		//	凸包の上端の頂点を見つける．
@@ -267,7 +267,7 @@ struct PHWConvexCalc{
 		//----------------------------------------------------------------
 		//	境界条件の設定
 		//	できた凸包の内側のセルの速度を設定．凸包の中を塗りつぶし処理
-		curY = border[0].y - 0.5;
+		curY = border[0].y;
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
 		iRight = 0;
@@ -293,7 +293,7 @@ struct PHWConvexCalc{
 //				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
 			}
 		}
-/*
+
 		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
 		const float lineWidth = 2.0;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
@@ -387,9 +387,9 @@ struct PHWConvexCalc{
 
 			//	波高の境界条件
 			int to= alphaLen[Y] < 0 ? 1 : -1;
-			float y = vtx[0][Y];
+			float y = vtx[0][Y] + 0.5f;
 			if (to > 0) y += 1;
-			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
+			for(int ix = ceil(vtx[0][X]+0.5f); ix < vtx[1][X]+0.5f; ++ix){
 				int iy = y;
 				y += k;
 				int iy2 = iy + to;
@@ -410,7 +410,6 @@ struct PHWConvexCalc{
 				}
 			}
 		}
-*/
 	}
 	void SetWaterVelocity(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
@@ -566,8 +565,8 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	float rx = water->rx;
 	float ry = water->ry;
 	for(int i=0; i<convCalc.border.size(); ++i){
-		vtxs.push_back(Vec3f(convCalc.border[i].x*dh-rx, convCalc.border[i].y*dh-ry, 0));
-		vtxs.push_back(Vec3f(convCalc.border[(i+1)%convCalc.border.size()].x*dh-rx, convCalc.border[(i+1)%convCalc.border.size()].y*dh-ry, 0));
+		vtxs.push_back(Vec3f((convCalc.border[i].x+0.5)*dh-rx, (convCalc.border[i].y+0.5)*dh-ry, 0));
+		vtxs.push_back(Vec3f((convCalc.border[(i+1)%convCalc.border.size()].x+0.5)*dh-rx, (convCalc.border[(i+1)%convCalc.border.size()].y+0.5)*dh-ry, 0));
 	}
 	render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 

@@ -625,7 +625,6 @@ void PHWater::Integrate(double dt){
     htmp[0][0] = (height[0][0] -
 		depth * dt * ((utmp[0][0] - utmp[mx-1][0]) * dh + (vtmp[0][0] - vtmp[0][my-1]) * dh) / (dh * dh) );
     */
-	/*
 	const double pass = 300;
 	static double h;			
 	//	ローパスフィルタ
@@ -634,14 +633,11 @@ void PHWater::Integrate(double dt){
 			2.0 * (htmp[i-1][j  ] + htmp[i+1][j  ] + htmp[i  ][j-1] + htmp[i  ][j+1]) + 
 				   htmp[i-1][j-1] + htmp[i+1][j-1] + htmp[i-1][j+1] + htmp[i+1][j+1];
 		h /= (pass + 16);
-		height[i][j] = h * loss * hmul;
-        u[i][j] = utmp[i][j] * loss;
-        v[i][j] = vtmp[i][j] * loss;
+		height[i][j] = h;
     }
-	*/
 
 	// update variables
-	memcpy(&height[0][0], &htmp[0][0], sizeof(height[0][0])*mxy);
+//	memcpy(&height[0][0], &htmp[0][0], sizeof(height[0][0])*mxy);
 	memcpy(&u[0][0], &utmp[0][0], sizeof(u[0][0])*mxy);
 	memcpy(&v[0][0], &vtmp[0][0], sizeof(v[0][0])*mxy);
 }
