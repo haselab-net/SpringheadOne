@@ -572,8 +572,10 @@ void PHWater::Integrate(double dt){
 	//	セルはトーラス状につながっていると考える(上と下，右と左はつながっている)
     // calculate temporary velocities toward the z-axis
 	for(i = 0; i < mx; i++)for(j = 0; j < my; j++){
-        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[(i+1)%mx][j] - height[i][j]) + (p[(i+1)%mx][j] - p[i][j]) / (density * dh));
-        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][(j+1)%my] - height[i][j]) + (p[i][(j+1)%my] - p[i][j]) / (density * dh));
+        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * 
+			0.5*(height[(i+1)%mx][j] - height[i][j] + height[(i+1)%mx][(j+1)%my] - height[i][(j+1)%my]));
+        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * 
+			0.5*(height[i][(j+1)%my] - height[i][j] + height[(i+1)%mx][(j+1)%my] - height[(i+1)%mx][j]));
 		//utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i][j] - height[i == 0 ? mx-1 : i-1/*(i-1)%mx*/][j]) + (p[i][j] - p[i==0 ? mx-1 : i-1][j]) / (density * dh));
 		//vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j] - height[i][j==0 ? my-1:j-1]) + (p[i][j] - p[i][j==0?my-1:j-1]) / (density * dh));
     }
@@ -607,7 +609,8 @@ void PHWater::Integrate(double dt){
     // update temporal heights of all cells
     for(i = 0; i <mx; i++)for(j = 0; j<my; j++){
         htmp[i][j] = (height[i][j] -
-			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) );
+			depth * dt * (0.5*(utmp[i][j] - utmp[i-1][j] + utmp[i][j-1] - utmp[i-1][j-1]) * dh 
+			+ 0.5*(vtmp[i][j] - vtmp[i][j-1] + vtmp[i-1][j] - vtmp[i-1][j-1]) * dh) / (dh * dh) );
 		//htmp[i][j] = (height[i][j] -
 		//	depth * dt * ((utmp[(i+1)%mx][j] - utmp[i][j]) * dh + (vtmp[i][(j+1)%my] - vtmp[i][j]) * dh) / (dh * dh) );
 	}
