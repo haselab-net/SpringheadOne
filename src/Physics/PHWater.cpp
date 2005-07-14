@@ -355,13 +355,13 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			vtx[1].color = D3DCOLOR_ARGB(0x10, 0xff, 0xff, 0xff);
 			for(int iy=0; iy<my; ++iy){
 				for(int ix=0; ix<mx; ++ix){
-					vtx[0].pos = Vec3f(ix*dh-rx, iy*dh-ry, 0);
+					vtx[0].pos = Vec3f((ix+0.5f)*dh-rx, (iy+0.5f)*dh-ry, 0);
 					int cx = (ix+bound.x)%mx;
 					int cy = (iy+bound.y)%my;
 					Vec2f vel(u[cx][cy], v[cx][cy]);
 					vel += velocity;
 					vel *= dh;
-					vtx[1].pos = Vec3f(ix*dh-rx + vel.x, iy*dh-ry + vel.y, 0);
+					vtx[1].pos = Vec3f((ix+0.5f)*dh-rx + vel.x, (iy+0.5f)*dh-ry + vel.y, 0);
 					render->device->DrawPrimitiveUP(D3DPT_LINELIST, 2, vtx, sizeof(vtx[0]));
 				}
 			}
