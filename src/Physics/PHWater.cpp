@@ -560,12 +560,15 @@ void PHWater::Integrate(double dt){
     int i, j;
 	//	セルはトーラス状につながっていると考える(上と下，右と左はつながっている)
     // calculate temporary velocities toward the z-axis
-	for(i = 0; i < mx-1; i++)for(j = 0; j < my-1; j++){
-        utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i+1][j] - height[i][j]) + (p[i+1][j] - p[i][j]) / (density * dh));
-        vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j+1] - height[i][j]) + (p[i][j+1] - p[i][j]) / (density * dh));
+	for(i = 0; i < mx; i++)for(j = 0; j < my; j++){
+        //utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[(i+1)%mx][j] - height[i][j]) + (p[(i+1)%mx][j] - p[i][j]) / (density * dh));
+        //vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][(j+1)%my] - height[i][j]) + (p[i][(j+1)%my] - p[i][j]) / (density * dh));
+		utmp[i][j] = loss*(u[i][j] - gravity * (dt / dh) * (height[i][j] - height[i == 0 ? mx-1 : i-1/*(i-1)%mx*/][j]) + (p[i][j] - p[i==0 ? mx-1 : i-1][j]) / (density * dh));
+		vtmp[i][j] = loss*(v[i][j] - gravity * (dt / dh) * (height[i][j] - height[i][j==0 ? my-1:j-1]) + (p[i][j] - p[i][j==0?my-1:j-1]) / (density * dh));
     }
+	int hoge = -2 % 6;
 	//	last row refers first row
-    for(i = 0; i < mx-1; i++){
+    /*for(i = 0; i < mx-1; i++){
         utmp[i][my-1] = loss*(u[i][my-1] - gravity * (dt / dh) * (height[i+1][my-1] - height[i][my-1]) + (p[i+1][my-1] - p[i][my-1]) / (density * dh));
         vtmp[i][my-1] = loss*(v[i][my-1] - gravity * (dt / dh) * (height[i][0] - height[i][my-1]) + (p[i][0] - p[i][my-1]) / (density * dh));
     }
@@ -577,7 +580,7 @@ void PHWater::Integrate(double dt){
 	//	right bottom cell
     utmp[mx-1][my-1] = loss*(u[mx-1][my-1] - gravity * (dt / dh) * (height[0][my-1] - height[mx-1][my-1]) + (p[0][my-1] - p[mx-1][my-1]) / (density * dh));
     vtmp[mx-1][my-1] = loss*(v[mx-1][my-1] - gravity * (dt / dh) * (height[mx-1][0] - height[mx-1][my-1]) + (p[mx-1][0] - p[mx-1][my-1]) / (density * dh));
-	
+	*/
 	/*
 		x = [i-1, i], y = [j-1, j]の四角領域の高さをh[i][j]とすると
 		辺x = i-1からの流入量は
@@ -591,11 +594,13 @@ void PHWater::Integrate(double dt){
 	 */
 
     // update temporal heights of all cells
-    for(i = 1; i <mx; i++)for(j = 1; j<my; j++){
-        htmp[i][j] = (height[i][j] -
-			depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) );
+    for(i = 0; i <mx; i++)for(j = 0; j<my; j++){
+        //htmp[i][j] = (height[i][j] -
+		//	depth * dt * ((utmp[i][j] - utmp[i-1][j]) * dh + (vtmp[i][j] - vtmp[i][j-1]) * dh) / (dh * dh) );
+		htmp[i][j] = (height[i][j] -
+			depth * dt * ((utmp[(i+1)%mx][j] - utmp[i][j]) * dh + (vtmp[i][(j+1)%my] - vtmp[i][j]) * dh) / (dh * dh) );
 	}
-    for(i = 1; i <mx; i++){
+    /*for(i = 1; i <mx; i++){
         htmp[i][0] = (height[i][0] -
 			depth * dt * ((utmp[i][0] - utmp[i-1][0]) * dh + (vtmp[i][0] - vtmp[i][my-1]) * dh) / (dh * dh) );
 	}
@@ -605,7 +610,7 @@ void PHWater::Integrate(double dt){
 	}
     htmp[0][0] = (height[0][0] -
 		depth * dt * ((utmp[0][0] - utmp[mx-1][0]) * dh + (vtmp[0][0] - vtmp[0][my-1]) * dh) / (dh * dh) );
-    
+    */
 	/*
 	const double pass = 300;
 	static double h;			
