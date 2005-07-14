@@ -293,7 +293,7 @@ struct PHWConvexCalc{
 		}
 
 		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
-		const float lineWidth = 1.5;	//	線の幅
+		const float lineWidth = 2.0;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
 		TVec2<int> water_m(water->mx, water->my);
 		for(int i=0; i<border.size()-1; ++i){
@@ -384,25 +384,25 @@ struct PHWConvexCalc{
 			}
 
 			//	波高の境界条件
-			int from = alphaLen[Y] < 0 ? -2 : 2;
+			int to= alphaLen[Y] < 0 ? 1 : -1;
 			float y = vtx[0][Y];
-			if (from < 0) y += 1;
+			if (to > 0) y += 1;
 			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
 				int iy = y;
 				y += k;
-				int iy2 = iy + from;
+				int iy2 = iy + to;
 				if (Y){
 					int cx = (ix + water->bound.x)%water->mx;
 					int cy = (iy + water->bound.y)%water->my;
 					int cy2 = (iy2 + water->bound.y)%water->my;
-					water->height[cx][cy] = water->height[cx][cy2];
+					water->height[cx][cy2] = water->height[cx][cy];
 					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
 					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy2*water->dh-water->ry, 0));
 				}else{
 					int cy = (ix + water->bound.y)%water->my;
 					int cx = (iy + water->bound.x)%water->mx;
 					int cx2 = (iy2 + water->bound.x)%water->mx;
-					water->height[cx][cy] = water->height[cx2][cy];
+					water->height[cx2][cy] = water->height[cx][cy];
 					engine->points.push_back(Vec3f(iy*water->dh-water->ry, ix*water->dh-water->rx, 0));
 					engine->points.push_back(Vec3f(iy2*water->dh-water->ry, ix*water->dh-water->rx, 0));
 				}
@@ -472,14 +472,14 @@ struct PHWConvexCalc{
 		for(; iy < vtx[1].y; ++iy){
 			int xStart, xEnd;
 			if (left < right){
-				xStart = left; xEnd = right;
+				xStart = ceil(left); xEnd = right;
 			}else{
-				xStart = right; xEnd = left;
+				xStart = ceil(right); xEnd = left;
 			}
 			if (xStart < 0) xStart = 0;
 			if (xEnd > water->mx) xEnd = water->mx;
 			int cy = (iy+water->bound.y)%water->my;
-			for(int ix = xStart; ix<xEnd; ++ix){
+			for(int ix = xStart; ix<=xEnd; ++ix){
 				int cx = (ix+water->bound.x)%water->mx;
 				water->height[cx][cy] += velH;
 			}
@@ -491,9 +491,9 @@ struct PHWConvexCalc{
 		for(; iy < vtx[2].y; ++iy){
 			int xStart, xEnd;
 			if (left < right){
-				xStart = left; xEnd = right;
+				xStart = ceil(left); xEnd = right;
 			}else{
-				xStart = right; xEnd = left;
+				xStart = ceil(right); xEnd = left;
 			}
 			if (xStart < 0) xStart = 0;
 			if (xEnd > water->mx) xEnd = water->mx;
@@ -505,7 +505,7 @@ struct PHWConvexCalc{
 			left += dLeft;
 			right += dRight;
 		}
-		
+	
 		//	圧力による力を計算．安定させるため，粘性も入れる．
 		buo += (volume + B*velInt) * engine->water->density;
 		tbuo += (volumeMom + B*velIntMom) * engine->water->density;
@@ -538,9 +538,12 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	}
 	render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 
-	GRMaterialData mat3(Vec4f(1, 0, 1, 1), 2);
-	render->SetMaterial(mat3);
+	render->SetMaterial(GRMaterialData(Vec4f(1, 0, 1, 1), 2));
 	render->DrawDirect(GRRender::LINES, &*points.begin(), &*points.end());
+	render->SetMaterial(GRMaterialData(Vec4f(1, 1, 1, 1), 2));
+	std::vector<Vec3f> starts;
+	for(int i=0; i<points.size(); i+=2) starts.push_back(points[i]);
+	render->DrawDirect(GRRender::POINTS, &*starts.begin(), &*starts.end());
 	render->SetDepthTest(true);
 }
 void PHWaterContactEngine::Step(SGScene* s){

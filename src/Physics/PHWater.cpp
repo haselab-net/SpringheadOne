@@ -230,7 +230,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			Vec3f normal;
 			Vec2f tex;
 		};
-		const float hmul = 10.0f;
+		const float hmul = 1.0f;
 		VtxFVF* buf= new VtxFVF[mx*2];
 	    float xo = -rx, yo = -ry;
 		float dxinv = 1/rx;
