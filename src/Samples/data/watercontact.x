@@ -3,10 +3,10 @@ Scene {
 	Simulator{0.01; 0.99;}
 	SolidContainer{
 		Solid soBlock1{
-			4.0;
-			1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
-			0.0, 0.0, 1.0;;
+			20.0;
+			10.0, 0.0, 0.0,
+			0.0, 10.0, 0.0,
+			0.0, 0.0, 10.0;;
 			0.0; 0.0; 0.0;;
 			0.0; 0.0; 0.0;;
 			0.0; 0.0; 0.0;;
@@ -59,12 +59,12 @@ Scene {
 			60;
 			60;
 			0.1;	//dh
-			0.05;	//depth
+			0.5;	//depth
 			9.8;	//gravity
 			1.0;	//hscale
 			1000.0;	//density
-			1.0;	//loss
-			0.0; -1.8;	//	vx, vy
+			0.999;	//loss
+			0.0; -2.0;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}
@@ -78,13 +78,24 @@ Scene {
 		}
 	}
 	Frame frBlock1 {
-		FrameTransformMatrix  {
-			1.0, 0.0, 0.0, 0.0,
-			0.0, 0.0, 1.0, 0.0,
-			0.0, -1.0, 0.0, 0.0,
-			0.0, 0.0, 0.0, 1.0;;
+		Frame{
+			FrameTransformMatrix  {
+				2.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 2.0, 0.0,
+				0.0, -2.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 1.0;;
+			}
+	#		Import{ "wheel.xi"; }
 		}
-		Import{ "wheel.xi"; }
+		Frame{
+			FrameTransformMatrix  {
+				1.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0,
+				0.0, -0.5, 0.0, 0.0,
+				0.0, 0.0, 0.0, 1.0;;
+			}
+			Import{ "mechanism/cube.xi"; }
+		}
 	}
 }
 

@@ -232,9 +232,6 @@ struct PHWConvexCalc{
 	//	内部を塗りつぶし，アンチエイリアスのふち付
 	void CalcBorder(){
 		border.clear();
-		Vec3f center = (Aws * solid->solid->GetCenter() - Vec3f(-water->rx,-water->ry,0)) * water->dhinv;
-		Vec3f vel = Aws.Rot() * solid->solid->GetVelocity() * water->dhinv;
-		Vec3f aVel = Aws.Rot() * solid->solid->GetAngularVelocity() * water->dhinv;
 		//	水に境界条件を設定(凸形状ごとに処理する)
 		//	境界を作る頂点を水面に投影し，凸包を作る．
 		CDQHLines<QH2DVertex> lines(100);
@@ -283,8 +280,8 @@ struct PHWConvexCalc{
 				int cx = (x + engine->water->bound.x) % engine->water->mx;
 				int cy = (curY + engine->water->bound.y) % engine->water->my;
 
-				Vec3f p = Vec3f(x, curY, engine->water->height[cx][cy]*water->dhinv) - center;
-				Vec3f v = (vel + (aVel%p)) * water->dh - Vec3f(water->velocity.x, water->velocity.y, 0);
+				Vec3f p = Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+				Vec3f v = solidVel + (solidAngVel%p) - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->u[cx][cy] = v.x;
 				engine->water->v[cx][cy] = v.y;
 //				engine->water->height[cx][cy] = 0;
@@ -295,7 +292,7 @@ struct PHWConvexCalc{
 		}
 
 		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
-		const float lineWidth = 2.0;	//	線の幅
+		const float lineWidth = 2.5f;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
 		TVec2<int> water_m(water->mx, water->my);
 		for(int i=0; i<border.size()-1; ++i){
@@ -386,6 +383,7 @@ struct PHWConvexCalc{
 			}
 
 			//	波高の境界条件
+#if 0
 			int to= alphaLen[Y] < 0 ? 1 : -1;
 			float y = vtx[0][Y] + 0.5f;
 			if (to > 0) y += 1;
@@ -409,6 +407,32 @@ struct PHWConvexCalc{
 					engine->points.push_back(Vec3f(iy2*water->dh-water->ry, ix*water->dh-water->rx, 0));
 				}
 			}
+#endif
+#if 0
+			int from= alphaLen[Y] < 0 ? -3 : 3;
+			float y = vtx[0][Y] + 0.5f;
+			if (from < 0) y += 1;
+			for(int ix = ceil(vtx[0][X]+0.5f); ix < vtx[1][X]+0.5f; ++ix){
+				int iy = y;
+				y += k;
+				int iy2 = iy + from;
+				if (Y){
+					int cx = (ix + water->bound.x)%water->mx;
+					int cy = (iy + water->bound.y)%water->my;
+					int cy2 = (iy2 + water->bound.y)%water->my;
+					water->height[cx][cy] = water->height[cx][cy2];
+					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy2*water->dh-water->ry, 0));
+				}else{
+					int cy = (ix + water->bound.y)%water->my;
+					int cx = (iy + water->bound.x)%water->mx;
+					int cx2 = (iy2 + water->bound.x)%water->mx;
+					water->height[cx][cy] = water->height[cx2][cy];
+					engine->points.push_back(Vec3f(iy*water->dh-water->ry, ix*water->dh-water->rx, 0));
+					engine->points.push_back(Vec3f(iy2*water->dh-water->ry, ix*water->dh-water->rx, 0));
+				}
+			}
+#endif
 		}
 	}
 	void SetWaterVelocity(int ix, int iy, float alpha){

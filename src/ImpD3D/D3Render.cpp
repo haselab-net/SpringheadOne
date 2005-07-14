@@ -322,9 +322,12 @@ void D3Render::SetMaterial(const GRMaterialData& m){
 	device->SetMaterial(&mat);
 }
 void D3Render::SetTexture(const char* fn){
-	WXINTFV(Direct3DTexture) texture = textureManager.Get(fn);
+	WXINTFV(Direct3DTexture) texture;
+	if(fn) texture = textureManager.Get(fn);
 	if (texture){
 		WXCHECK(device->SetTexture(0, texture));
+	}else{
+		device->SetTexture(0, NULL);
 	}
 }
 void D3Render::PushLight(const GRLightData& l){

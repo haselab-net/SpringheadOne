@@ -214,8 +214,8 @@ void PHWater::Render(SGFrame* fr, GRRender* render){
 }
 
 DWORD PHWater::GetColor(float h){
-	float hMax = dh/4;
-	float hMin = -dh/4;
+	float hMax = dh*2;
+	float hMin = -dh*2;
 	if (h>hMax) h = hMax;
 	if (h<hMin) h = hMin;
 	float n = h / ((hMax-hMin)/2);
@@ -247,7 +247,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			Vec3f normal;
 			Vec2f tex;
 		};
-		const float hmul = 10.0f;
+		const float hmul = 1.0f;
 		VtxFVF* buf= new VtxFVF[mx*2];
 	    float xo = -rx, yo = -ry;
 		float dxinv = 1/rx;
@@ -287,6 +287,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 		}	
 		delete buf;
+		render->SetTexture(NULL);
 #else //	色で圧力を表現
 		render->SetMaterial(GRMaterialData(Vec4f(0,0,0,1),0));
 		render->device->SetRenderState(D3DRS_LIGHTING, false);
@@ -428,26 +429,26 @@ void PHWater::RenderGL(SGFrame* fr, GLRender* render){
 void PHWater::Bound(){
 	//	どうして bx1 が +1なのかなぞ． bx1 がbound.xで良い気がするのだけど．
 	//	多分レンダリングが変なのでしょうけど，原因不明．
-	int bx1 = (bound.X()+1) % mx;
-	int bx1_ = (bound.X()+2) % mx;
-	int bx2 = bound.X();
-	int bx2_ = (bound.X()-1+mx) % mx;
+	int bx1 = (bound.X()) % mx;
+	int bx1_ = (bound.X()+1) % mx;
+	int bx2 = (bound.X()-1+mx) % mx;
+	int bx2_ = (bound.X()-2+mx) % mx;
 
-	int by1 = (bound.Y()+1) % my;
-	int by1_ = (bound.Y()+2) % my;
-	int by2 = bound.Y() %my;
-	int by2_ = (bound.Y()+my-1) % my;
+	int by1 = (bound.Y()) % my;
+	int by1_ = (bound.Y()+1) % my;
+	int by2 = (bound.Y()-1+my) %my;
+	int by2_ = (bound.Y()-2+my) % my;
 	
 	//行方向がx方向、列方向がy方向なことに注意
-	u.row(bx1).clear();
-	u.row(bx2).clear();
+	u.row(bx1) = u.row(bx1_);
+	u.row(bx2) = u.row(bx2_);
     u.col(by1) = u.col(by1_);
 	u.col(by2) = u.col(by2_);
 
 	v.row(bx1) = v.row(bx1_);
 	v.row(bx2) = v.row(bx2_);
-    v.col(by1).clear();
-	v.col(by2).clear();
+    v.col(by1) = v.col(by1_);
+	v.col(by2) = v.col(by2_);
 
     // update the height of the wave
 	height.row(bx1) = height.row(bx1_);
