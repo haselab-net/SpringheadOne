@@ -421,7 +421,7 @@ struct PHWConvexCalc{
 				if (iy<0) iy = 0;
 				int iyEnd = yEnd;
 				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-vtx[1][Y])*dAlpha[Y];
+				float alphaY = 1 + (iy-yLine)*dAlpha[Y];
 				for(; iy<=iyEnd; ++iy){
 					if (Y) SetWaterVelocityU(ix, iy, alphaX*alphaY);
 					else SetWaterVelocityV(iy, ix, alphaX*alphaY);
@@ -485,7 +485,7 @@ struct PHWConvexCalc{
 				if (iy<0) iy = 0;
 				int iyEnd = yEnd;
 				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-(vtx[1][Y]-0.5f))*dAlpha[Y];
+				float alphaY = 1 + (iy-yLine)*dAlpha[Y];
 				for(; iy<=iyEnd; ++iy){
 					if (Y) SetWaterVelocityV(ix, iy, alphaX*alphaY);
 					else SetWaterVelocityU(iy, ix, alphaX*alphaY);
