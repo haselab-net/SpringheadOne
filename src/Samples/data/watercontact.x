@@ -3,7 +3,7 @@ Scene {
 	Simulator{0.01; 0.99;}
 	SolidContainer{
 		Solid soBlock1{
-			20.0;
+			10.0;
 			10.0, 0.0, 0.0,
 			0.0, 10.0, 0.0,
 			0.0, 0.0, 10.0;;
@@ -64,7 +64,7 @@ Scene {
 			1.0;	//hscale
 			1000.0;	//density
 			0.999;	//loss
-			0.0; -3.0;	//	vx, vy
+			0.0; -2.0;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}
@@ -78,14 +78,21 @@ Scene {
 		}
 	}
 	Frame frBlock1 {
+			FrameTransformMatrix  {
+				1.0, 0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0,
+				0.0, 2.0, 0.0, 1.0;;
+			}
+		Import{ "kayak.x"; }
 		Frame{
 			FrameTransformMatrix  {
 				1.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 2.0, 0.0,
+				0.0, 0.0, 1.0, 0.0,
 				0.0, -1.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 1.0;;
 			}
-			Import{ "wheel.xi"; }
+#			Import{ "wheel.xi"; }
 		}
 		Frame{
 			FrameTransformMatrix  {
