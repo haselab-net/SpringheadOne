@@ -68,16 +68,8 @@ public:
 	double	dh, dhinv;		//格子の幅
 	double	depth;			//水深
 	double	gravity;		//重力
-	double	hscale;			//高さのスケール
 	double	density;		//密度
 	double	loss;			//損失係数
-	//Vec4d	specular;		//描画特性
-	//Vec4d	diffuse;
-	//double	shininess;
-	//Vec3d	vlight;		//平行光
-		/// パラメータの取得・設定
-	//const WaterInfo& GetInfo()const{return info;}
-	//void SetInfo(const WaterInfo& _info){info = _info;}
 
 	PHWater();
 	friend class PHWaterContactEngine;

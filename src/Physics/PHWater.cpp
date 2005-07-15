@@ -72,7 +72,6 @@ PHWater::PHWater(){
 	mx = my = 0;
 	dh = 0.0;
 	depth = 0.0;
-	hscale = 1.0;
 	density = 1.0;
 	loss = 0.99;
 	bound.x = 3;
@@ -612,7 +611,7 @@ void PHWater::Integrate(double dt){
     UPDATE_H(0, mx-1, 0, my-1);
 
 	const double pass = 300.0;
-	C = loss / hscale / (pass + 16);
+	C = loss / (pass + 16);
 
 #define LOWPASS(x0, x1, x2, y0, y1, y2)	\
 	height[x0][y0] = C * (	\
@@ -731,7 +730,6 @@ DEF_RECORD(XWater, {
 	FLOAT dh;
 	FLOAT depth;
 	FLOAT gravity;
-	FLOAT hscale;
 	FLOAT density;
 	FLOAT loss;
 	FLOAT vx;
@@ -796,7 +794,6 @@ public:
 		water->dh = data.dh;
 		water->depth = data.depth;
 		water->gravity = data.gravity;
-		water->hscale = data.hscale;
 		water->density = data.density;
 		water->loss = data.loss;
 		water->velocity.x = data.vx;
@@ -825,7 +822,6 @@ class PHWaterSaver:public FIBaseSaver{
 		data.dh = (FLOAT)water->dh;
 		data.depth = (FLOAT)water->depth;
 		data.gravity = (FLOAT)water->gravity;
-		data.hscale = (FLOAT)water->hscale;
 		data.density = (FLOAT)water->density;
 		data.loss = (FLOAT)water->loss;
 		data.vx = water->velocity.x;
