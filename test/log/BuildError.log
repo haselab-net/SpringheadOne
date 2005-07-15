@@ -1,4 +1,4 @@
-日付 : 2005.07.15 
+日付 : 2005.07.16 
  
 --- ビルドエラーのログ --- 
  
@@ -10,6 +10,10 @@ LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
  
  
 *** MFCD3DDyna *** 
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(122) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(135) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(198) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(198) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
  
  
 *** SDKD3DDyna *** 

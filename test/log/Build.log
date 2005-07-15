@@ -242,9 +242,17 @@ MainFrm.cpp
 MFCD3DDyna.cpp
 MFCD3DDynaDoc.cpp
 MFCD3DDynaView.cpp
-ﾘﾝｸ中...
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(122) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+        C:\SVNWork\Springhead\src\Physics/PHContactEngine.h(16) : 'PHContactEngine' の宣言を確認してください。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(135) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+        C:\SVNWork\Springhead\src\Physics/PHContactEngine.h(16) : 'PHContactEngine' の宣言を確認してください。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(198) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+        C:\SVNWork\Springhead\src\Physics/PHContactEngine.h(16) : 'PHContactEngine' の宣言を確認してください。
+C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(198) : error C2039: 'bDraw' : 'PHContactEngine' のﾒﾝﾊﾞではありません。
+        C:\SVNWork\Springhead\src\Physics/PHContactEngine.h(16) : 'PHContactEngine' の宣言を確認してください。
+cl.exe の実行ｴﾗｰ
 
-MFCD3DDyna.exe - ｴﾗｰ 0、警告 0
+MFCD3DDyna.exe - ｴﾗｰ 4、警告 0
  
  
 *** SDKD3DDyna *** 
@@ -552,7 +560,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
     HIMouse.cpp(5): namespace Spr
     HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
 [C++] SGFrame.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGObject.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGScene.cpp(1): 
@@ -562,13 +569,11 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] SGEngine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGRegisterLoader.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGRenderEngine.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
 [C++] FITypeDesc.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocNode.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] FIFileDoc.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] FIDocScene.cpp(1): 
@@ -576,7 +581,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] CDGJK.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] CDSphere.cpp(1): 
