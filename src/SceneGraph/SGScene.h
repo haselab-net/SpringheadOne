@@ -106,7 +106,6 @@ protected:
 	///	1ステップあたりの速度の減衰率．粘性のように働く．大きくすると粘性が増し安定になる．
 	double velocityLossPerStep;
 public:
-
 	///	コンストラクタ
 	SGScene();
 	///	デストラクタ

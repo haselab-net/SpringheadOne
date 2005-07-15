@@ -31,10 +31,6 @@ void PHContactEngine::FrameRecord::UpdateCache(int c){
 	cog = ori * solid->GetCenter() + pos;
 }
 PHContactEngine::PHContactEngine():firstLoadedCall(true), nSolidsInitilized(0){
-	bDraw = false;
-#ifdef _DEBUG
-	bDraw = true;
-#endif
 }
 
 bool PHContactEngine::AddChildObject(SGObject* o, SGScene* scene){
@@ -102,7 +98,9 @@ void PHContactEngine::Analyzed(SGScene* scene, CDFramePairWithRecord* fp, CDGeom
 	if (!fr[0] || !fr[1]) return;
 	Affinef afw;
 	//	Œð·•”‚ð•`‰æ
-	if (bDraw){
+	GRRender* render;
+	scene->GetRenderers().Find(render);
+	if (render->bDrawDebug){
 		if (fr[0]->solid->GetFrame()->GetParent()) afw = fr[0]->solid->GetFrame()->GetParent()->GetWorldPosture();
 		afw.Ex().unitize();
 		afw.Ey().unitize();
@@ -143,7 +141,7 @@ void PHContactEngine::Analyzed(SGScene* scene, CDFramePairWithRecord* fp, CDGeom
 	area += rec->area;
 }
 void PHContactEngine::Render(GRRender* render, SGScene* scene){
-	if (!bDraw) return;
+	if (!render->bDrawDebug) return;
 	if (collisionEngine->NFrame() < 2) return;
 	if ((render->drawState & GRRender::DRAW_OPAQUE) == 0) return;
 	render->SetDepthTest(false);

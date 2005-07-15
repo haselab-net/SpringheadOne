@@ -144,7 +144,6 @@ public:
 											//<		セーブに備えて覚えておく
 	PHSolids solids;						///<	ペナルティ法の対象の剛体
 	size_t nSolidsInitilized;				///<	solidsのうちどこまでが初期化済みかを示す．
-	bool bDraw;								///<	描画フラグ
 	///
 	PHContactEngine();
 	CDCollisionEngine* GetCollisionEngine(){ return collisionEngine; }

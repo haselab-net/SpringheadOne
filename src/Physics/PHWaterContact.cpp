@@ -698,6 +698,7 @@ struct PHWConvexCalc{
 PHWConvexCalc convCalc;
 void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
 	//	•`‰æ
+	if (!render->bDrawDebug) return;
 	if (!render || !render->CanDraw()) return;
 	render->SetModelMatrix(water->GetPosture());
 	render->SetDepthTest(false);

@@ -28,6 +28,7 @@ SGOBJECTIMPABST(GRRender, SGObject);
 GRRender::GRRender(){
 	camera = new GRCamera;
 	drawState = DRAW_BOTH;
+	bDrawDebug = false;
 }
 GRRender::~GRRender(){
 }

@@ -3,7 +3,7 @@ Scene {
 	Simulator{0.01; 0.99;}
 	SolidContainer{
 		Solid soBlock1{
-			10.0;
+			6.0;
 			10.0, 0.0, 0.0,
 			0.0, 10.0, 0.0,
 			0.0, 0.0, 10.0;;
@@ -63,8 +63,8 @@ Scene {
 			9.8;	//gravity
 			1.0;	//hscale
 			1000.0;	//density
-			0.999;	//loss
-			0.0; -2.0;	//	vx, vy
+			0.99;	//loss
+			0.0; -3.0;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}

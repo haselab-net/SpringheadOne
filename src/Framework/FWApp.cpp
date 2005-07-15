@@ -377,9 +377,7 @@ bool FWApp::OnKeyDown(unsigned int nChar){
 		else scene->SetTimeStep(scene->GetTimeStep() + 0.001);
 		DSTR << "dt:" << scene->GetTimeStep() << std::endl;
 	}else if ( nChar == 'D' ){
-		PHContactEngine* pce;
-		scene->GetBehaviors().Find(pce);
-		if (pce) pce->bDraw = !pce->bDraw;
+		render->bDrawDebug = !render->bDrawDebug;
 	}else{
 		return false;
 	}

@@ -26,6 +26,8 @@ public:
 class SPR_DLL GRRender:public SGEngine{
 public:
 	SGOBJECTDEFABST(GRRender);
+	bool bDrawDebug;
+
 	UTRef<GRCamera> camera;
 	enum TDrawState{
 		DRAW_OPAQUE=1,

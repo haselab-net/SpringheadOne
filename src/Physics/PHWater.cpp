@@ -237,99 +237,100 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 	
 	if ( (materialD3->bOpaque && render->drawState & GRRender::DRAW_OPAQUE)
 		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
-#if 0	//	’Êí‚Ì•`‰æ
-        // this function sets the texture
-		materialD3->Render(fr, render);
-		
-		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2);
-		struct VtxFVF{
-			Vec3f pos;
-			Vec3f normal;
-			Vec2f tex;
-		};
-		const float hmul = 1.0f;
-		VtxFVF* buf= new VtxFVF[mx*2];
-	    float xo = -rx, yo = -ry;
-		float dxinv = 1/rx;
-		float dyinv = 1/ry;
-		int boundY_1 = (bound.y-1+my)%my;
-		for(int y=0; y<my; ++y){
-			double py;
-			if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
-			else if (y>boundY_1) py = yo + (y-bound.y+my)%my*dh;
-			else continue;
-			int start1 = y*mx;
-			int start2 = ((y+1)%my) * mx;
-			double left = xo;
-			double px = xo;
-			for(int x=bound.x; x<mx; ++x){
-				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]*hmul);
-				buf[(x-bound.x)*2+1].normal	= pnormal[start1+x];
-				buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]*hmul);
-				buf[(x-bound.x)*2].normal	= pnormal[start2+x];
-				px += dh;
-			}
-			int offset = mx - bound.x;
-			for(int x=0; x<bound.x; ++x){
-				buf[(x+offset)*2+1].pos		= Vec3f(px, py, pheight[start1+x]*hmul);
-				buf[(x+offset)*2+1].normal	= pnormal[start1+x];
-				buf[(x+offset)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]*hmul);
-				buf[(x+offset)*2].normal	= pnormal[start2+x];
-				px += dh;
-			}
-			const float nmul = 1.0;
-			for(int i=0; i<2*mx; ++i){
-				buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*dxinv/4
-					+  buf[i].normal.x*nmul + 0.5f;
-				buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*dyinv/4
-					+  buf[i].normal.y*nmul + 0.5f;
-			}
-			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
-		}	
-		delete buf;
-		render->SetTexture(NULL);
-#else //	F‚Åˆ³—Í‚ð•\Œ»
-		render->SetMaterial(GRMaterialData(Vec4f(0,0,0,1),0));
-		render->device->SetRenderState(D3DRS_LIGHTING, false);
-		render->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
-		struct VtxFVF{
-			Vec3f pos;
-			DWORD color;
-		};
-		VtxFVF* buf= new VtxFVF[mx*2];
-	    float xo = -rx, yo = -ry;
-		float dxinv = 1/rx;
-		float dyinv = 1/ry;
-		int boundY_1 = (bound.y-1+my)%my;
-		for(int y=0; y<my; ++y){
-			double py;
-			if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
-			else if (y>boundY_1) py = yo + (y-bound.y+my)%my*dh;
-			else continue;
-			int start1 = y*mx;
-			int start2 = ((y+1)%my) * mx;
-			double left = xo;
-			double px = xo;
-			for(int x=bound.x; x<mx; ++x){
-				buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, 0);
-				buf[(x-bound.x)*2+1].color	= GetColor(pheight[start1+x]);
-				buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, 0);
-				buf[(x-bound.x)*2].color	= GetColor(pheight[start2+x]);
-				px += dh;
-			}
-			int offset = mx - bound.x;
-			for(int x=0; x<bound.x; ++x){
-				buf[(x+offset)*2+1].pos		= Vec3f(px, py, 0);
-				buf[(x+offset)*2+1].color	= GetColor(pheight[start1+x]);
-				buf[(x+offset)*2].pos		= Vec3f(px, py+dh, 0);
-				buf[(x+offset)*2].color		= GetColor(pheight[start2+x]);
-				px += dh;
-			}
-			render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
-		}	
-		render->device->SetRenderState(D3DRS_LIGHTING, true);
-		delete buf;		
-#endif
+		//	’Êí‚Ì•`‰æ
+		if (!render->bDrawDebug){
+			// this function sets the texture
+			materialD3->Render(fr, render);
+			
+			render->device->SetFVF(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2);
+			struct VtxFVF{
+				Vec3f pos;
+				Vec3f normal;
+				Vec2f tex;
+			};
+			const float hmul = 1.0f;
+			VtxFVF* buf= new VtxFVF[mx*2];
+			float xo = -rx, yo = -ry;
+			float dxinv = 1/rx;
+			float dyinv = 1/ry;
+			int boundY_1 = (bound.y-1+my)%my;
+			for(int y=0; y<my; ++y){
+				double py;
+				if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
+				else if (y>boundY_1) py = yo + (y-bound.y+my)%my*dh;
+				else continue;
+				int start1 = y*mx;
+				int start2 = ((y+1)%my) * mx;
+				double left = xo;
+				double px = xo;
+				for(int x=bound.x; x<mx; ++x){
+					buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, pheight[start1+x]*hmul);
+					buf[(x-bound.x)*2+1].normal	= pnormal[start1+x];
+					buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]*hmul);
+					buf[(x-bound.x)*2].normal	= pnormal[start2+x];
+					px += dh;
+				}
+				int offset = mx - bound.x;
+				for(int x=0; x<bound.x; ++x){
+					buf[(x+offset)*2+1].pos		= Vec3f(px, py, pheight[start1+x]*hmul);
+					buf[(x+offset)*2+1].normal	= pnormal[start1+x];
+					buf[(x+offset)*2].pos		= Vec3f(px, py+dh, pheight[start2+x]*hmul);
+					buf[(x+offset)*2].normal	= pnormal[start2+x];
+					px += dh;
+				}
+				const float nmul = 1.0;
+				for(int i=0; i<2*mx; ++i){
+					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*dxinv/4
+						+  buf[i].normal.x*nmul + 0.5f;
+					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*dyinv/4
+						+  buf[i].normal.y*nmul + 0.5f;
+				}
+				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+			}	
+			delete buf;
+			render->SetTexture(NULL);
+		}else{ //	F‚Åˆ³—Í‚ð•\Œ»
+			render->SetMaterial(GRMaterialData(Vec4f(0,0,0,1),0));
+			render->device->SetRenderState(D3DRS_LIGHTING, false);
+			render->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+			struct VtxFVF{
+				Vec3f pos;
+				DWORD color;
+			};
+			VtxFVF* buf= new VtxFVF[mx*2];
+			float xo = -rx, yo = -ry;
+			float dxinv = 1/rx;
+			float dyinv = 1/ry;
+			int boundY_1 = (bound.y-1+my)%my;
+			for(int y=0; y<my; ++y){
+				double py;
+				if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
+				else if (y>boundY_1) py = yo + (y-bound.y+my)%my*dh;
+				else continue;
+				int start1 = y*mx;
+				int start2 = ((y+1)%my) * mx;
+				double left = xo;
+				double px = xo;
+				for(int x=bound.x; x<mx; ++x){
+					buf[(x-bound.x)*2+1].pos	= Vec3f(px, py, 0);
+					buf[(x-bound.x)*2+1].color	= GetColor(pheight[start1+x]);
+					buf[(x-bound.x)*2].pos		= Vec3f(px, py+dh, 0);
+					buf[(x-bound.x)*2].color	= GetColor(pheight[start2+x]);
+					px += dh;
+				}
+				int offset = mx - bound.x;
+				for(int x=0; x<bound.x; ++x){
+					buf[(x+offset)*2+1].pos		= Vec3f(px, py, 0);
+					buf[(x+offset)*2+1].color	= GetColor(pheight[start1+x]);
+					buf[(x+offset)*2].pos		= Vec3f(px, py+dh, 0);
+					buf[(x+offset)*2].color		= GetColor(pheight[start2+x]);
+					px += dh;
+				}
+				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+			}	
+			render->device->SetRenderState(D3DRS_LIGHTING, true);
+			delete buf;
+		}
 		render->SetDepthTest(false);
 		GRMaterialData mate(Vec4f(1,0,0,1), 4);
 		render->SetMaterial(mate);
@@ -343,9 +344,8 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		lines.push_back(Vec3f(-rx, ry, 0));
 		lines.push_back(Vec3f(-rx, -ry, 0));
 		render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
-		bool bDrawVelocity = true;
 		lines.resize(2);
-		if (bDrawVelocity){
+		if (render->bDrawDebug){
 			render->device->SetRenderState(D3DRS_LIGHTING, false);
 			render->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
 			struct VtxFVF{
