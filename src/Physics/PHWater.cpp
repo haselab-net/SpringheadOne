@@ -498,22 +498,22 @@ void PHWater::Step(SGScene* s){
 		Vec2f diff = af.Pos().sub_vector(0, Vec2f());
 		if (diff.X() > dh){
 			posture.Pos() += posture.Rot() * Vec3f(dh, 0, 0);
-			bound.x = (bound.x+1) % mx;
+			bound.x = int(bound.x+diff.X()*dhinv) % mx;
 			texOffset.x ++;
 		}
 		if (diff.X() < -dh){
 			posture.Pos() -= posture.Rot() * Vec3f(dh, 0, 0);
-			bound.x = (bound.x-1+mx) % mx;
+			bound.x = int(bound.x + ceil(diff.X()*dhinv)+mx) % mx;
 			texOffset.x --;
 		}
 		if (diff.Y() > dh){
 			posture.Pos() += posture.Rot() * Vec3f(0, dh, 0);
-			bound.y = (bound.y+1) % my;
+			bound.y = int(bound.y+diff.Y()*dhinv) % my;
 			texOffset.y ++;
 		}
 		if (diff.Y() < -dh){
 			posture.Pos() -= posture.Rot() * Vec3f(0, dh, 0);
-			bound.y = (bound.y-1+my) % my;
+			bound.y = int(bound.y+ceil(diff.Y()*dhinv)+my) % my;
 			texOffset.y --;
 		}
 	}
@@ -528,16 +528,6 @@ void PHWater::Step(SGScene* s){
 	// boundary condition
     Bound();
     
-    /*if(yflow != 0.0) {
-        shiftWater(height, yflow);
-        shiftWater(wh1, yflow);
-        shiftWater(u, yflow);
-        shiftWater(v, yflow);
-        shiftWater(u1, yflow);
-        shiftWater(v1, yflow);
-        shiftWater(pw, yflow);
-    }*/
-
 	//法線と屈折ベクトルを計算
 	for(j = 0; j < my - 1; j++)for(i = 0; i < mx - 1; i++){
 		vv1 = Vec3d(-dh, 0.0, height[i][j] - height[i + 1][j    ]);
@@ -571,10 +561,10 @@ void PHWater::Step(SGScene* s){
 void PHWater::Integrate(double dt){
     int i, j;
 	double dt_dh = dt / dh;
-	double C = gravity * (dt_dh) * 0.5;
+	double C = gravity * (dt_dh);
 #define UPDATE_UV(x0, x1, y0, y1)	\
-    utmp[i][j] = loss * (u[x0][y0] - C * (height[x1][y0] - height[x0][y0] + height[x1][y1] - height[x0][y1]));	\
-    vtmp[i][j] = loss * (v[x0][y0] - C * (height[x0][y1] - height[x0][y0] + height[x1][y1] - height[x1][y0]));
+    utmp[i][j] = loss * (u[x0][y0] - C * (height[x1][y0] - height[x0][y0]));	\
+    vtmp[i][j] = loss * (v[x0][y0] - C * (height[x0][y1] - height[x0][y0]));
 
 	//	セルはトーラス状につながっていると考える(上と下，右と左はつながっている)
     // calculate temporary velocities toward the z-axis
@@ -603,11 +593,11 @@ void PHWater::Integrate(double dt){
 		水深を一定値(depth)としているがこれをdepth + height[i][j]としてみたらどうか。
 	 */
 
-	C = depth * dt_dh * 0.5;
+	C = depth * dt_dh;
 #define UPDATE_H(x0, x1, y0, y1)	\
 	htmp[x0][y0] = height[x0][y0] - C * (	\
-		(utmp[x0][y0] - utmp[x1][y0] + utmp[x0][y1] - utmp[x1][y1]) +	\
-		(vtmp[x0][y0] - vtmp[x0][y1] + vtmp[x1][y0] - vtmp[x1][y1]));
+		(utmp[x0][y0] - utmp[x1][y0]) +	\
+		(vtmp[x0][y0] - vtmp[x0][y1]));
 
     // update temporal heights of all cells
     for(i = 1; i < mx; i++)for(j = 1; j < my; j++){

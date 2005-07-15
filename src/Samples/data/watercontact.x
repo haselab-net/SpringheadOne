@@ -3,10 +3,10 @@ Scene {
 	Simulator{0.01; 0.99;}
 	SolidContainer{
 		Solid soBlock1{
-			20.0;
-			10.0, 0.0, 0.0,
-			0.0, 10.0, 0.0,
-			0.0, 0.0, 10.0;;
+			200000000000.0;
+			100000000000.0, 0.0, 0.0,
+			0.0, 100000000000.0, 0.0,
+			0.0, 0.0, 100000000000.0;;
 			0.0; 0.0; 0.0;;
 			0.0; 0.0; 0.0;;
 			0.0; 0.0; 0.0;;
@@ -15,7 +15,7 @@ Scene {
 	}
 	GravityEngine{
 		0.0; -9.8; 0.0;;
-		{soBlock1}
+#		{soBlock1}
 	}
 	WaterEngine{
 		{water1}
@@ -59,12 +59,12 @@ Scene {
 			60;
 			60;
 			0.1;	//dh
-			0.5;	//depth
+			1.0;	//depth
 			9.8;	//gravity
 			1.0;	//hscale
 			1000.0;	//density
 			0.999;	//loss
-			0.0; -2.0;	//	vx, vy
+			0.0; -1.0;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}
@@ -94,7 +94,7 @@ Scene {
 				0.0, -0.5, 0.0, 0.0,
 				0.0, 0.0, 0.0, 1.0;;
 			}
-			Import{ "mechanism/cube.xi"; }
+			Import{ "cube.xi"; }
 		}
 	}
 }

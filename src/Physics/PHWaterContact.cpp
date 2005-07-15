@@ -292,7 +292,7 @@ struct PHWConvexCalc{
 		}
 
 		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
-		const float lineWidth = 2.5f;	//	線の幅
+		const float lineWidth = 2.0f;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
 		TVec2<int> water_m(water->mx, water->my);
 		for(int i=0; i<border.size()-1; ++i){
@@ -320,6 +320,7 @@ struct PHWConvexCalc{
 			}
 			float k = delta[Y] / delta[X];
 
+#if 1
 			//	最初の四角
 			int ix = ceil(vtx[0][X]-lineWidth);
 			float alphaX = 1 - (vtx[0][X]-ix)*lineWidthInv;
@@ -381,7 +382,7 @@ struct PHWConvexCalc{
 				}
 				alphaX -= lineWidthInv;
 			}
-
+#endif
 			//	波高の境界条件
 #if 0
 			int to= alphaLen[Y] < 0 ? 1 : -1;
@@ -409,7 +410,7 @@ struct PHWConvexCalc{
 			}
 #endif
 #if 0
-			int from= alphaLen[Y] < 0 ? -3 : 3;
+			int from= alphaLen[Y] < 0 ? -4 : 4;
 			float y = vtx[0][Y] + 0.5f;
 			if (from < 0) y += 1;
 			for(int ix = ceil(vtx[0][X]+0.5f); ix < vtx[1][X]+0.5f; ++ix){
