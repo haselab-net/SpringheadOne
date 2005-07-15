@@ -80,12 +80,12 @@ Scene {
 	Frame frBlock1 {
 		Frame{
 			FrameTransformMatrix  {
-				2.0, 0.0, 0.0, 0.0,
+				1.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 2.0, 0.0,
-				0.0, -2.0, 0.0, 0.0,
+				0.0, -1.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 1.0;;
 			}
-	#		Import{ "wheel.xi"; }
+			Import{ "wheel.xi"; }
 		}
 		Frame{
 			FrameTransformMatrix  {
@@ -94,7 +94,7 @@ Scene {
 				0.0, -0.5, 0.0, 0.0,
 				0.0, 0.0, 0.0, 1.0;;
 			}
-			Import{ "cube.xi"; }
+#			Import{ "cube.xi"; }
 		}
 	}
 }

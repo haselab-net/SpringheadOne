@@ -271,6 +271,7 @@ void D3Render::SetDepthFunc(TDepthFunc f){
 	device->SetRenderState(D3DRS_ZFUNC, d3f);
 }
 void D3Render::DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end){
+	if (end <= begin) return;
 	D3DPRIMITIVETYPE type;
 	int nVtx=1;
 	if (ty==POINTS){ type = D3DPT_POINTLIST; nVtx=1; }
