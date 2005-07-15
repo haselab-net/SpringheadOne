@@ -3,10 +3,10 @@ Scene {
 	Simulator{0.01; 0.99;}
 	SolidContainer{
 		Solid soBlock1{
-			200000000000.0;
-			100000000000.0, 0.0, 0.0,
-			0.0, 100000000000.0, 0.0,
-			0.0, 0.0, 100000000000.0;;
+			20.0;
+			10.0, 0.0, 0.0,
+			0.0, 10.0, 0.0,
+			0.0, 0.0, 10.0;;
 			0.0; 0.0; 0.0;;
 			0.0; 0.0; 0.0;;
 			0.0; 0.0; 0.0;;
@@ -15,7 +15,7 @@ Scene {
 	}
 	GravityEngine{
 		0.0; -9.8; 0.0;;
-#		{soBlock1}
+		{soBlock1}
 	}
 	WaterEngine{
 		{water1}
@@ -64,7 +64,7 @@ Scene {
 			1.0;	//hscale
 			1000.0;	//density
 			0.999;	//loss
-			0.0; -1.0;	//	vx, vy
+			0.0; -3.0;	//	vx, vy
 			WaterTrackTarget{
 				{frBlock1}
 			}

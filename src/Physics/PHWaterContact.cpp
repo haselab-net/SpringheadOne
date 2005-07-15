@@ -207,26 +207,48 @@ struct PHWConvexCalc{
 			}
 		}
 	}
-	bool NextLine(){
+	bool NextLineX(){
 		curY++;
 		left += dLeft;
 		right += dRight;
 		if (iLeft == iRight && curY > border[iLeft].y) return false;
 		while (border[iLeft].y < curY && iLeft!= iRight){
-			Vec2f last = border[iLeft];
+			Vec2f last = border[iLeft]-Vec2f(0.5f, 0);
 			-- iLeft;
-			Vec2f delta = border[iLeft] - last;
+			Vec2f delta = border[iLeft]-Vec2f(0.5f, 0) - last;
 			dLeft = delta.x / delta.y;
 			left = last.x + dLeft * (curY-last.y);
 		}
 		while (border[iRight].y < curY && iLeft!= iRight){
-			Vec2f last = border[iRight];
+			Vec2f last = border[iRight]-Vec2f(0.5f, 0);
 			++iRight;
-			Vec2f delta = border[iRight]- last;
+			Vec2f delta = border[iRight]-Vec2f(0.5f, 0) - last;
 			dRight = delta.x / delta.y;
 			right = last.x + dRight * (curY-last.y);
 		}
 		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		return true;
+	}
+	bool NextLineY(){
+		curY++;
+		left += dLeft;
+		right += dRight;
+		if (iLeft == iRight && curY > border[iLeft].y-0.5f) return false;
+		while (border[iLeft].y-0.5f < curY && iLeft!= iRight){
+			Vec2f last = border[iLeft]-Vec2f(0,0.5f);
+			-- iLeft;
+			Vec2f delta = border[iLeft]-Vec2f(0,0.5f) - last;
+			dLeft = delta.x / delta.y;
+			left = last.x + dLeft * (curY-last.y);
+		}
+		while (border[iRight].y-0.5f < curY && iLeft!= iRight){
+			Vec2f last = border[iRight]-Vec2f(0,0.5f);
+			++iRight;
+			Vec2f delta = border[iRight]-Vec2f(0,0.5f) - last;
+			dRight = delta.x / delta.y;
+			right = last.x + dRight * (curY-last.y);
+		}
+		if (iLeft == iRight && curY > border[iLeft].y-0.5) return false;
 		return true;
 	}
 	//	“à•”‚ð“h‚è‚Â‚Ô‚µCƒAƒ“ƒ`ƒGƒCƒŠƒAƒX‚Ì‚Ó‚¿•t
@@ -243,9 +265,9 @@ struct PHWConvexCalc{
 		for(; lines.begin!=lines.end && lines.begin->deleted; ++lines.begin);
 		if (lines.begin == lines.end) return;
 		std::vector<Vec2f> tmp;
-		tmp.push_back((lines.begin->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv - Vec2f(0.5f,0.5f));
+		tmp.push_back((lines.begin->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
 		for(CDQHLine<QH2DVertex>*cur=lines.begin->neighbor[0]; cur!= lines.begin; cur=cur->neighbor[0]){
-			tmp.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv - Vec2f(0.5f,0.5f));
+			tmp.push_back((cur->vtx[0]->GetPos()+Vec2f(water->rx, water->ry)) * dhInv);
 		}
 		if (tmp.size() < 3) return;
 		//	“Ê•ï‚Ìã’[‚Ì’¸“_‚ðŒ©‚Â‚¯‚éD
@@ -264,13 +286,13 @@ struct PHWConvexCalc{
 		//----------------------------------------------------------------
 		//	‹«ŠEðŒ‚ÌÝ’è
 		//	‚Å‚«‚½“Ê•ï‚Ì“à‘¤‚ÌƒZƒ‹‚Ì‘¬“x‚ðÝ’èD“Ê•ï‚Ì’†‚ð“h‚è‚Â‚Ô‚µˆ—
+		engine->points.clear();
+
 		curY = border[0].y;
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
 		iRight = 0;
-		engine->points.clear();
-
-		while(NextLine()){
+		while(NextLineX()){
 			int xStart, xEnd;
 			xStart = ceil(left);
 			xEnd = right;
@@ -283,6 +305,29 @@ struct PHWConvexCalc{
 				Vec3f p = Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
 				Vec3f v = solidVel + (solidAngVel%p) - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->u[cx][cy] = v.x;
+//				engine->water->height[cx][cy] = 0;
+
+//				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
+//				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
+			}
+		}
+
+		curY = border[0].y-0.5f;
+		if (curY < -1) curY = -1;
+		iLeft = border.size()-1;
+		iRight = 0;
+		while(NextLineY()){
+			int xStart, xEnd;
+			xStart = ceil(left);
+			xEnd = right;
+			if (xStart < 0) xStart = 0;
+			if (xEnd > water->mx-1) xEnd = water->mx-1;
+			for(int x = xStart; x<=xEnd; ++x){
+				int cx = (x + engine->water->bound.x) % engine->water->mx;
+				int cy = (curY + engine->water->bound.y) % engine->water->my;
+
+				Vec3f p = Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+				Vec3f v = solidVel + (solidAngVel%p) - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->v[cx][cy] = v.y;
 //				engine->water->height[cx][cy] = 0;
 
@@ -321,10 +366,12 @@ struct PHWConvexCalc{
 			float k = delta[Y] / delta[X];
 
 #if 1
+			//--------------------------------------------------
+			//	u
 			//	Å‰‚ÌŽlŠp
-			int ix = ceil(vtx[0][X]-lineWidth);
-			float alphaX = 1 - (vtx[0][X]-ix)*lineWidthInv;
-			int xEnd = vtx[0][X];
+			int ix = ceil(vtx[0][X]-0.5f -lineWidth);
+			float alphaX = 1 - (vtx[0][X]-0.5f-ix)*lineWidthInv;
+			int xEnd = vtx[0][X]-0.5f;
 			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
 			float yStart = vtx[0][Y] + alphaLen[Y];
 			float yEnd = vtx[0][Y];
@@ -339,8 +386,72 @@ struct PHWConvexCalc{
 				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
 				float alphaY = 1 + (iy-vtx[0][Y])*dAlpha[Y];
 				for(; iy<=iyEnd; ++iy){
-					if (Y) SetWaterVelocity(ix, iy, alphaX*alphaY);
-					else SetWaterVelocity(iy, ix, alphaX*alphaY);
+					if (Y) SetWaterVelocityU(ix, iy, alphaX*alphaY);
+					else SetWaterVelocityV(iy, ix, alphaX*alphaY);
+					alphaY += dAlpha[Y];
+				}
+				alphaX += lineWidthInv;
+			}
+			//	’¼ü•”•ª
+			xEnd = vtx[1][X]-0.5f;
+			for(; ix<=xEnd; ++ix){
+				int iy=ceil(yStart);
+				if (iy<0) iy = 0;
+				int iyEnd = yEnd;
+				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
+				float alpha = 1 + (iy-yLine)*dAlpha[Y];
+				for(; iy<=iyEnd; ++iy){
+					if (Y){
+						SetWaterVelocityU(ix, iy, alpha);
+					}else{
+						SetWaterVelocityV(iy, ix, alpha);
+					}
+					alpha += dAlpha[Y];
+				}
+				yLine += k;
+				yStart += k;
+				yEnd += k;
+			}
+			//	ÅŒã‚ÌŽlŠp
+			alphaX = 1 - (ix-(vtx[1][X]-0.5f))*lineWidthInv;
+			xEnd = vtx[1][X]-0.5f + lineWidth;
+			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
+			for(; ix<=xEnd; ++ix){
+				int iy=ceil(yStart);
+				if (iy<0) iy = 0;
+				int iyEnd = yEnd;
+				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
+				float alphaY = 1 + (iy-vtx[1][Y])*dAlpha[Y];
+				for(; iy<=iyEnd; ++iy){
+					if (Y) SetWaterVelocityU(ix, iy, alphaX*alphaY);
+					else SetWaterVelocityV(iy, ix, alphaX*alphaY);
+					alphaY += dAlpha[Y];
+				}
+				alphaX -= lineWidthInv;
+			}
+
+			//--------------------------------------------------
+			//	v
+			//	Å‰‚ÌŽlŠp
+			ix = ceil(vtx[0][X]-lineWidth);
+			alphaX = 1 - (vtx[0][X]-ix)*lineWidthInv;
+			xEnd = vtx[0][X];
+			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
+			yStart = vtx[0][Y]-0.5f + alphaLen[Y];
+			yEnd = vtx[0][Y]-0.5f;
+			yLine = yEnd;
+			if (yStart > yEnd){
+				std::swap(yStart, yEnd);
+			}
+			for(; ix<=xEnd; ++ix){
+				int iy=ceil(yStart);
+				if (iy<0) iy = 0;
+				int iyEnd = yEnd;
+				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
+				float alphaY = 1 + (iy-(vtx[0][Y]-0.5f))*dAlpha[Y];
+				for(; iy<=iyEnd; ++iy){
+					if (Y) SetWaterVelocityV(ix, iy, alphaX*alphaY);
+					else SetWaterVelocityU(iy, ix, alphaX*alphaY);
 					alphaY += dAlpha[Y];
 				}
 				alphaX += lineWidthInv;
@@ -355,9 +466,9 @@ struct PHWConvexCalc{
 				float alpha = 1 + (iy-yLine)*dAlpha[Y];
 				for(; iy<=iyEnd; ++iy){
 					if (Y){
-						SetWaterVelocity(ix, iy, alpha);
+						SetWaterVelocityV(ix, iy, alpha);
 					}else{
-						SetWaterVelocity(iy, ix, alpha);
+						SetWaterVelocityU(iy, ix, alpha);
 					}
 					alpha += dAlpha[Y];
 				}
@@ -374,10 +485,10 @@ struct PHWConvexCalc{
 				if (iy<0) iy = 0;
 				int iyEnd = yEnd;
 				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-vtx[1][Y])*dAlpha[Y];
+				float alphaY = 1 + (iy-(vtx[1][Y]-0.5f))*dAlpha[Y];
 				for(; iy<=iyEnd; ++iy){
-					if (Y) SetWaterVelocity(ix, iy, alphaX*alphaY);
-					else SetWaterVelocity(iy, ix, alphaX*alphaY);
+					if (Y) SetWaterVelocityV(ix, iy, alphaX*alphaY);
+					else SetWaterVelocityU(iy, ix, alphaX*alphaY);
 					alphaY += dAlpha[Y];
 				}
 				alphaX -= lineWidthInv;
@@ -386,9 +497,9 @@ struct PHWConvexCalc{
 			//	”g‚‚Ì‹«ŠEðŒ
 #if 0
 			int to= alphaLen[Y] < 0 ? 1 : -1;
-			float y = vtx[0][Y] + 0.5f;
+			float y = vtx[0][Y];
 			if (to > 0) y += 1;
-			for(int ix = ceil(vtx[0][X]+0.5f); ix < vtx[1][X]+0.5f; ++ix){
+			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
 				int iy = y;
 				y += k;
 				int iy2 = iy + to;
@@ -411,9 +522,9 @@ struct PHWConvexCalc{
 #endif
 #if 0
 			int from= alphaLen[Y] < 0 ? -4 : 4;
-			float y = vtx[0][Y] + 0.5f;
+			float y = vtx[0][Y];
 			if (from < 0) y += 1;
-			for(int ix = ceil(vtx[0][X]+0.5f); ix < vtx[1][X]+0.5f; ++ix){
+			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
 				int iy = y;
 				y += k;
 				int iy2 = iy + from;
@@ -436,15 +547,26 @@ struct PHWConvexCalc{
 #endif
 		}
 	}
-	void SetWaterVelocity(int ix, int iy, float alpha){
+	void SetWaterVelocityU(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
 
 		int cx = (ix + engine->water->bound.x) % engine->water->mx;
 		int cy = (iy + engine->water->bound.y) % engine->water->my;
 
-		Vec3f p = Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+		Vec3f p = Vec3f((ix+0.5f)*water->dh-water->rx, iy*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
 		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 		engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
+//		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+//		engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
+	}
+	void SetWaterVelocityV(int ix, int iy, float alpha){
+		assert(0<=alpha && alpha<=1);
+
+		int cx = (ix + engine->water->bound.x) % engine->water->mx;
+		int cy = (iy + engine->water->bound.y) % engine->water->my;
+
+		Vec3f p = Vec3f(ix*water->dh-water->rx, (iy+0.5f)*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 		engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
 //		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
 //		engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
@@ -579,7 +701,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	if (!render || !render->CanDraw()) return;
 	render->SetModelMatrix(water->GetPosture());
 	render->SetDepthTest(false);
-	GRMaterialData mat(Vec4f(0, 0, 1, 1), 2);
+	GRMaterialData mat(Vec4f(0, 0, 1, 0.5f), 2);
 	render->SetMaterial(mat);
 	render->DrawDirect(GRRender::TRIANGLES, &*(tris.begin()), &*(tris.end()));
 
@@ -590,8 +712,8 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	float rx = water->rx;
 	float ry = water->ry;
 	for(int i=0; i<convCalc.border.size(); ++i){
-		vtxs.push_back(Vec3f((convCalc.border[i].x+0.5)*dh-rx, (convCalc.border[i].y+0.5)*dh-ry, 0));
-		vtxs.push_back(Vec3f((convCalc.border[(i+1)%convCalc.border.size()].x+0.5)*dh-rx, (convCalc.border[(i+1)%convCalc.border.size()].y+0.5)*dh-ry, 0));
+		vtxs.push_back(Vec3f((convCalc.border[i].x)*dh-rx, (convCalc.border[i].y)*dh-ry, 0));
+		vtxs.push_back(Vec3f((convCalc.border[(i+1)%convCalc.border.size()].x)*dh-rx, (convCalc.border[(i+1)%convCalc.border.size()].y)*dh-ry, 0));
 	}
 	render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 

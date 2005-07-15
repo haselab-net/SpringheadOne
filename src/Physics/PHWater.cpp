@@ -498,22 +498,22 @@ void PHWater::Step(SGScene* s){
 		Vec2f diff = af.Pos().sub_vector(0, Vec2f());
 		if (diff.X() > dh){
 			posture.Pos() += posture.Rot() * Vec3f(dh, 0, 0);
-			bound.x = int(bound.x+diff.X()*dhinv) % mx;
+			bound.x = (bound.x+1) % mx;
 			texOffset.x ++;
 		}
 		if (diff.X() < -dh){
 			posture.Pos() -= posture.Rot() * Vec3f(dh, 0, 0);
-			bound.x = int(bound.x + ceil(diff.X()*dhinv)+mx) % mx;
+			bound.x = (bound.x-1+mx) % mx;
 			texOffset.x --;
 		}
 		if (diff.Y() > dh){
 			posture.Pos() += posture.Rot() * Vec3f(0, dh, 0);
-			bound.y = int(bound.y+diff.Y()*dhinv) % my;
+			bound.y = (bound.y+1) % my;
 			texOffset.y ++;
 		}
 		if (diff.Y() < -dh){
 			posture.Pos() -= posture.Rot() * Vec3f(0, dh, 0);
-			bound.y = int(bound.y+ceil(diff.Y()*dhinv)+my) % my;
+			bound.y = (bound.y-1+my) % my;
 			texOffset.y --;
 		}
 	}
