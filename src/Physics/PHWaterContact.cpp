@@ -114,6 +114,7 @@ struct PHWConvexCalc{
 
 	//	塗りつぶし作業用	水cell座標系 (0..mx,0..my)
 	std::vector<Vec2f> border;		//	凸形状を水で輪切りにしたときの輪
+	std::vector<Vec2f> line[4];		//	輪を上右下左の4つの折れ線に分けたもの
 	int iLeft, iRight;				//	ボーダの左端の頂点と右端の頂点
 	float left, right;				//	左端，右端
 	int curY;						//	現在の行
@@ -257,12 +258,13 @@ struct PHWConvexCalc{
 		border.clear();
 		//	水に境界条件を設定(凸形状ごとに処理する)
 		//	境界を作る頂点を水面に投影し，凸包を作る．
-		CDQHLines<QH2DVertex> lines(100);
+		static CDQHLines<QH2DVertex> lines(100);
+		lines.Clear();
 		std::vector<QH2DVertex*> qhvtxs;
 		qhvtxs.resize(vtxsOn.size());
 		for(int i=0; i<vtxsOn.size(); ++i) qhvtxs[i] = (QH2DVertex*)&vtxsOn[i];
 		lines.CreateConvexHull(&*qhvtxs.begin(), &*qhvtxs.end());
-		float dhInv = 1/engine->water->dh;
+		float dhInv = 1/water->dh;
 		for(; lines.begin!=lines.end && lines.begin->deleted; ++lines.begin);
 		if (lines.begin == lines.end) return;
 		std::vector<Vec2f> tmp;
@@ -293,47 +295,181 @@ struct PHWConvexCalc{
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
 		iRight = 0;
-		while(NextLineX()){
+		while(NextLineX()){	//	onlineを含めて，塗りつぶし
 			int xStart, xEnd;
 			xStart = ceil(left);
 			xEnd = right;
 			if (xStart < 0) xStart = 0;
 			if (xEnd > water->mx-1) xEnd = water->mx-1;
 			for(int x = xStart; x<=xEnd; ++x){
-				int cx = (x + engine->water->bound.x) % engine->water->mx;
-				int cy = (curY + engine->water->bound.y) % engine->water->my;
+				int cx = (x + water->bound.x) % water->mx;
+				int cy = (curY + water->bound.y) % water->my;
 
 				Vec3f p = Vec3f((x+0.5f)*water->dh-water->rx, curY*water->dh-water->ry, 0) - solidCenter;
 				Vec3f v = solidVel + (solidAngVel^p) - Vec3f(water->velocity.x, water->velocity.y, 0);
-				engine->water->u[cx][cy] = v.x;
-//				engine->water->height[cx][cy] = 0;
+				water->u[cx][cy] = v.x;
 
-				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
-				engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f);
+//				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
+//				engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f);
 			}
 		}
-
 		curY = border[0].y-0.5f;
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
 		iRight = 0;
-		while(NextLineY()){
+		while(NextLineY()){	//	onlineを含めて塗りつぶし
 			int xStart, xEnd;
 			xStart = ceil(left);
 			xEnd = right;
 			if (xStart < 0) xStart = 0;
 			if (xEnd > water->mx-1) xEnd = water->mx-1;
 			for(int x = xStart; x<=xEnd; ++x){
-				int cx = (x + engine->water->bound.x) % engine->water->mx;
-				int cy = (curY + engine->water->bound.y) % engine->water->my;
+				int cx = (x + water->bound.x) % water->mx;
+				int cy = (curY + water->bound.y) % water->my;
 
-				Vec3f p = Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+				Vec3f p = Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, water->height[cx][cy]) - solidCenter;
 				Vec3f v = solidVel + (solidAngVel%p) - Vec3f(water->velocity.x, water->velocity.y, 0);
-				engine->water->v[cx][cy] = v.y;
-//				engine->water->height[cx][cy] = 0;
+				water->v[cx][cy] = v.y;
 			}
 		}
 
+		//	border の周りに，ぼかしを描画する．
+		//	準備のため，まず border を上右下左に4分割する．
+		for(int i=0; i<4; ++i) line[i].clear();
+		//	上の水平線
+		int i=border.size()-1;
+		for(; i>=1; --i){
+			Vec2f d = border[i] - border[i-1];
+			if (d.x<0 || d.x < abs(d.y)) break;
+		}
+		for(;i<border.size(); ++i){
+			line[0].push_back(border[i]);
+		}
+		for(i=0;i<border.size(); ++i){
+			Vec2f d = border[i+1] - border[i];
+			if (d.x<0 || d.x<abs(d.y)) break;
+			line[0].push_back(border[i+1]);
+		}
+		//	右の垂直線
+		line[1].push_back(border[i]);
+		for(;i<border.size(); ++i){
+			Vec2f d = border[i+1] - border[i];
+			if (d.y<0 || abs(d.x)>d.y) break;
+			line[1].push_back(border[i+1]);
+		}
+		//	下の水平線
+		line[2].push_back(border[i]);
+		for(;i<border.size(); ++i){
+			Vec2f d = border[i+1] - border[i];
+			if (d.x>0 || -d.x<abs(d.y)) break;
+			line[2].push_back(border[i+1]);
+		}
+		//	左の垂直線
+		line[3].push_back(border[i]);
+		for(;i<border.size(); ++i){
+			Vec2f d = border[i+1] - border[i];
+			if (d.y>0 || abs(d.x)>-d.y) break;
+			line[3].push_back(border[i+1]);
+		}
+
+		//	凸包の外側のぼかし
+		//	onlineは書かない．
+		const float lineWidth = 3.0f;	//	線の幅
+		const float lineWidthInv = 1/lineWidth;
+		
+#define DRAWLINE(vtxs, id1, id2, X, Y, XOFF, YOFF, yStart, yEnd, func)\
+		for(int i=0; i<vtxs.size()-1; ++i){							\
+			Vec2f delta = vtxs[id2] - vtxs[id1];					\
+			float k = delta.Y / delta.X;							\
+			int ix = ceil(vtxs[id1].X+XOFF);						\
+			float y = vtxs[id1].Y+YOFF + k*(ix-(vtxs[id1].X+XOFF));	\
+			for(; ix < vtxs[id2].X+XOFF; ++ix){						\
+				for(int iy = y+yStart+1; iy < y+yEnd; ++iy){		\
+					func(i##X, i##Y, 1-abs(iy-y)*lineWidthInv);		\
+				}													\
+				y += k;												\
+			}														\
+		}															
+
+#define DRAWRECT(vtx, XOFF, YOFF, xStart, xEnd, yStart, yEnd, func)				\
+		for(int ix = ceil(vtx.x+XOFF+xStart); ix < vtx.x+XOFF+xEnd; ++ix){		\
+			for(int iy = ceil(vtx.y+YOFF+yStart); iy < vtx.y+YOFF+yEnd; ++iy){	\
+				float dist = sqrt(Square(ix - (vtx.x+XOFF))						\
+									+ Square(iy - (vtx.y+YOFF)));				\
+				if (dist > lineWidth) dist = lineWidth;							\
+				func(ix, iy, 1-dist*lineWidthInv);								\
+			}																	\
+		}
+
+		DRAWRECT(line[0].back(), -0.5f, 0, 0, lineWidth, -lineWidth, 0, SetWaterVelocityU);
+		DRAWRECT(line[1].back(), -0.5f, 0, 0, lineWidth, 0, lineWidth, SetWaterVelocityU);
+		DRAWRECT(line[2].back(), -0.5f, 0, -lineWidth, 0, 0, lineWidth, SetWaterVelocityU);
+		DRAWRECT(line[3].back(), -0.5f, 0, -lineWidth, 0, -lineWidth, 0, SetWaterVelocityU);
+		
+		DRAWRECT(line[0].back(), 0, -0.5f, 0, lineWidth, -lineWidth, 0, SetWaterVelocityV);
+		DRAWRECT(line[1].back(), 0, -0.5f, 0, lineWidth, 0, lineWidth, SetWaterVelocityV);
+		DRAWRECT(line[2].back(), 0, -0.5f, -lineWidth, 0, 0, lineWidth, SetWaterVelocityV);
+		DRAWRECT(line[3].back(), 0, -0.5f, -lineWidth, 0, -lineWidth, 0, SetWaterVelocityV);
+		
+		DRAWLINE(line[0], i, i+1, x, y, -0.5f, 0, -lineWidth, 0, SetWaterVelocityU);
+		DRAWLINE(line[1], i, i+1, y, x, 0, -0.5f,  0, lineWidth, SetWaterVelocityU)
+		DRAWLINE(line[2], i+1, i, x, y, -0.5f, 0,  0, lineWidth, SetWaterVelocityU)
+		DRAWLINE(line[3], i+1, i, y, x, 0, -0.5f, -lineWidth, 0, SetWaterVelocityU)
+
+		DRAWLINE(line[0], i, i+1, x, y, 0, -0.5f, -lineWidth, 0, SetWaterVelocityV)
+		DRAWLINE(line[1], i, i+1, y, x, -0.5f, 0,  0, lineWidth, SetWaterVelocityV)
+		DRAWLINE(line[2], i+1, i, x, y, 0, -0.5f,  0, lineWidth, SetWaterVelocityV)
+		DRAWLINE(line[3], i+1, i, y, x, -0.5f, 0, -lineWidth, 0, SetWaterVelocityV)
+
+#if 0
+		//	凸包の外側にアンチエイリアス処理
+		//	onlineは書かない．
+		const float lineWidth = 2.0f;	//	線の幅
+		const float lineWidthInv = 1/lineWidth;
+
+		//	u
+		TVec2<int> water_m(water->mx, water->my);
+		for(int i=0; i<border.size()-1; ++i){
+			Vec2f delta = border[i+1] - border[i];
+			int X, Y;
+			float offsetX, offsetY;
+			if (abs(delta.x) < abs(delta.y)){
+				X=1; Y=0;
+				offsetX = 0;
+				offsetY = -0.5f;
+			}else{
+				X=0; Y=1;
+				offsetX = -0.5f;
+				offsetY = 0;
+			}
+			float DY = delta[Y] / delta[X];
+			if (delta[X] > 0){
+				int ix = ceil(border[i][X]+offsetX);
+				float y = border[i][Y]+offsetY + DY*(ix-(border[i][X]+offsetX));
+				for(; ix < border[i+1][X]+offsetX; ++ix){
+					if (Y){
+						for(int iy = y; iy > y-lineWidth; --iy){
+							SetWaterVelocityU(ix, iy, (iy-(y-lineWidth))*lineWidthInv);
+						}
+					}else{
+						for(int iy = y + 1; iy < y+lineWidth; ++iy){
+							SetWaterVelocityU(iy, ix, ((y+lineWidth)-iy)*lineWidthInv);
+						}
+					}
+				}
+			}else{
+				int ix = border[i][X]+offsetX;
+				float y = border[i][Y]+offsetY + DY*(ix-(border[i][X]+offsetX));
+				for(; ix > ceil(border[i+1][X]+offsetX); --ix){
+					for(int iy = y + 1; iy < y+lineWidth; ++iy){						
+//						if(Y) SetWaterVelocityU(ix, iy, (y+lineWidth-iy)*lineWidthInv);
+//						else SetWaterVelocityU(iy, ix, (y+lineWidth-iy)*lineWidthInv);
+					}
+				}
+			}
+		}
+#endif
+#if 0
 		//	できた凸包の外側にアンチエイリアス処理．グラデーションしながら線分を描画
 		const float lineWidth = 2.0f;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
@@ -544,28 +680,31 @@ struct PHWConvexCalc{
 			}
 #endif
 		}
+#endif
 	}
 	void SetWaterVelocityU(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
+//		alpha = 1 - 1/(1+exp((alpha-0.5)*4));	//	シグモイド
 
-		int cx = (ix + engine->water->bound.x) % engine->water->mx;
-		int cy = (iy + engine->water->bound.y) % engine->water->my;
+		int cx = (ix + water->bound.x) % water->mx;
+		int cy = (iy + water->bound.y) % water->my;
 
-		Vec3f p = Vec3f((ix+0.5f)*water->dh-water->rx, iy*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+		Vec3f p = Vec3f((ix+0.5f)*water->dh-water->rx, iy*water->dh-water->ry, water->height[cx][cy]) - solidCenter;
 		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
-		engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
-		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+		water->u[cx][cy] = alpha*v.x + (1-alpha)*water->u[cx][cy];
+		engine->points.push_back(Vec3f((ix+0.5)*water->dh-water->rx, iy*water->dh-water->ry, 0));
 		engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f * alpha);
 	}
 	void SetWaterVelocityV(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
+//		alpha = 1 - 1/(1+exp((alpha-0.5)*4));	//	シグモイド
 
-		int cx = (ix + engine->water->bound.x) % engine->water->mx;
-		int cy = (iy + engine->water->bound.y) % engine->water->my;
+		int cx = (ix + water->bound.x) % water->mx;
+		int cy = (iy + water->bound.y) % water->my;
 
-		Vec3f p = Vec3f(ix*water->dh-water->rx, (iy+0.5f)*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
+		Vec3f p = Vec3f(ix*water->dh-water->rx, (iy+0.5f)*water->dh-water->ry, water->height[cx][cy]) - solidCenter;
 		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
-		engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
+		water->v[cx][cy] = alpha*v.y + (1-alpha)*water->v[cx][cy];
 	}
 	void CalcTriangle(Vec3f* p, float* depth, float* height){
 		const float B=0.1f;
@@ -682,8 +821,8 @@ struct PHWConvexCalc{
 		}
 */	
 		//	圧力による力を計算．安定させるため，粘性も入れる．
-		buo += (volume + B*velInt) * engine->water->density;
-		tbuo += (volumeMom + B*velIntMom) * engine->water->density;
+		buo += (volume + B*velInt) * water->density * water->gravity;
+		tbuo += (volumeMom + B*velIntMom) * water->density * water->gravity;
 
 		engine->tris.push_back(p[0]);
 		engine->tris.push_back(p[1]);
@@ -706,18 +845,25 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	render->SetMaterial(mat);
 	render->DrawDirect(GRRender::TRIANGLES, &*(tris.begin()), &*(tris.end()));
 
-	GRMaterialData mat2(Vec4f(1, 1, 0, 1), 2);
-	render->SetMaterial(mat2);
-	std::vector<Vec3f> vtxs;
+	GRMaterialData mats[4] = {
+		GRMaterialData(Vec4f(1,    0.5f, 0.5f, 1), 2),
+		GRMaterialData(Vec4f(1,       1, 0.5f, 1), 2),
+		GRMaterialData(Vec4f(0.5f,    1,    1, 1), 2),
+		GRMaterialData(Vec4f(0.5f, 0.5f,    1, 1), 2)
+	};
+
 	float dh = water->dh;
 	float rx = water->rx;
 	float ry = water->ry;
-	for(int i=0; i<convCalc.border.size(); ++i){
-		vtxs.push_back(Vec3f((convCalc.border[i].x)*dh-rx, (convCalc.border[i].y)*dh-ry, 0));
-		vtxs.push_back(Vec3f((convCalc.border[(i+1)%convCalc.border.size()].x)*dh-rx, (convCalc.border[(i+1)%convCalc.border.size()].y)*dh-ry, 0));
+	for(int ii=0; ii<4; ++ii){
+		render->SetMaterial(mats[ii]);
+		std::vector<Vec3f> vtxs;
+		for(int i=0; i<convCalc.line[ii].size()-1; ++i){
+			vtxs.push_back(Vec3f((convCalc.line[ii][i].x)*dh-rx, (convCalc.line[ii][i].y)*dh-ry, 0));
+			vtxs.push_back(Vec3f((convCalc.line[ii][i+1].x)*dh-rx, (convCalc.line[ii][i+1].y)*dh-ry, 0));
+		}
+		render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 	}
-	render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
-
 	//	境界条件の速度の表示
 	D3Render* d3r = DCAST(D3Render, render);
 	if (d3r){
