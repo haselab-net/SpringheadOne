@@ -5,6 +5,7 @@
 #include <Collision/CDMesh.h>
 #include <Collision/CDQuickHull2D.h>
 #include <Collision/CDQuickHull2DImp.h>
+#include <ImpD3D/D3Render.h>
 
 namespace Spr{;
 
@@ -128,8 +129,8 @@ struct PHWConvexCalc{
 		Asinv = As.inv();
 		Aws = Awinv * As;
 		solidCenter = Aws * solid->solid->GetCenter();
-		solidVel = Aws.Rot() * solid->solid->GetVelocity();
-		solidAngVel = Aws.Rot() * solid->solid->GetAngularVelocity();	
+		solidVel = Awinv.Rot() * solid->solid->GetVelocity();
+		solidAngVel = Awinv.Rot() * solid->solid->GetAngularVelocity();	
 	}
 	void Calc(CDPolyhedron* p){
 		poly = p;
@@ -302,13 +303,13 @@ struct PHWConvexCalc{
 				int cx = (x + engine->water->bound.x) % engine->water->mx;
 				int cy = (curY + engine->water->bound.y) % engine->water->my;
 
-				Vec3f p = Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
-				Vec3f v = solidVel + (solidAngVel%p) - Vec3f(water->velocity.x, water->velocity.y, 0);
+				Vec3f p = Vec3f((x+0.5f)*water->dh-water->rx, curY*water->dh-water->ry, 0) - solidCenter;
+				Vec3f v = solidVel + (solidAngVel^p) - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->u[cx][cy] = v.x;
 //				engine->water->height[cx][cy] = 0;
 
-//				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
-//				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
+				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
+				engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f);
 			}
 		}
 
@@ -330,9 +331,6 @@ struct PHWConvexCalc{
 				Vec3f v = solidVel + (solidAngVel%p) - Vec3f(water->velocity.x, water->velocity.y, 0);
 				engine->water->v[cx][cy] = v.y;
 //				engine->water->height[cx][cy] = 0;
-
-//				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
-//				engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f);
 			}
 		}
 
@@ -556,8 +554,8 @@ struct PHWConvexCalc{
 		Vec3f p = Vec3f((ix+0.5f)*water->dh-water->rx, iy*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
 		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 		engine->water->u[cx][cy] = alpha*v.x + (1-alpha)*engine->water->u[cx][cy];
-//		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-//		engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
+		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
+		engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f * alpha);
 	}
 	void SetWaterVelocityV(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
@@ -568,8 +566,6 @@ struct PHWConvexCalc{
 		Vec3f p = Vec3f(ix*water->dh-water->rx, (iy+0.5f)*water->dh-water->ry, engine->water->height[cx][cy]) - solidCenter;
 		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 		engine->water->v[cx][cy] = alpha*v.y + (1-alpha)*engine->water->v[cx][cy];
-//		engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-//		engine->points.push_back(engine->points.back() + Vec3f(v.x, v.y, 0) * 0.1f * alpha);
 	}
 	void CalcTriangle(Vec3f* p, float* depth, float* height){
 		const float B=0.1f;
@@ -696,6 +692,10 @@ struct PHWConvexCalc{
 };
 
 PHWConvexCalc convCalc;
+struct PHWCE_VtxFVF{
+	Vec3f pos;
+	DWORD color;
+};
 void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
 	//	•`‰æ
 	if (!render->bDrawDebug) return;
@@ -718,12 +718,20 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	}
 	render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 
-	render->SetMaterial(GRMaterialData(Vec4f(1, 0, 1, 1), 2));
-	render->DrawDirect(GRRender::LINES, &*points.begin(), &*points.end());
-	render->SetMaterial(GRMaterialData(Vec4f(1, 1, 1, 1), 2));
-	std::vector<Vec3f> starts;
-	for(int i=0; i<points.size(); i+=2) starts.push_back(points[i]);
-	render->DrawDirect(GRRender::POINTS, &*starts.begin(), &*starts.end());
+	//	‹«ŠEðŒ‚Ì‘¬“x‚Ì•\Ž¦
+	D3Render* d3r = DCAST(D3Render, render);
+	if (d3r){
+		d3r->device->SetRenderState(D3DRS_LIGHTING, false);
+		d3r->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
+		std::vector<PHWCE_VtxFVF> vtxs;
+		for(int i=0; i<points.size(); ++i){
+			vtxs.push_back(PHWCE_VtxFVF());
+			vtxs.back().pos = points[i];
+			vtxs.back().color = D3DCOLOR_RGBA(0xFF,0,0xFF, i%2 ? 0 : 0xFF);
+		}
+		if (vtxs.size()) d3r->device->DrawPrimitiveUP(D3DPT_LINELIST, vtxs.size()/2, vtxs.begin(), sizeof(PHWCE_VtxFVF));
+		d3r->device->SetRenderState(D3DRS_LIGHTING, true);
+	}
 	render->SetDepthTest(true);
 }
 void PHWaterContactEngine::Step(SGScene* s){

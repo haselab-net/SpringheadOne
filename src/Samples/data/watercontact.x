@@ -61,7 +61,7 @@ Scene {
 			9.8;								#	gravity：重力
 			1000.0;								#	density：密度
 			0.99;								#	loss：水の減衰率(1ステップあたりの速度の減衰)
-			0.0; -3.0;	//	vx, vy				#	水の定常流．
+			0.0; -2.0;	//	vx, vy				#	水の定常流．
 			WaterTrackTarget{
 				{frBlock1}						#	水はこのフレームが中心なるようにセルを展開する．
 			}
@@ -75,13 +75,21 @@ Scene {
 		}
 	}
 	Frame frBlock1 {							#	剛体の形と位置を持つフレーム
+		FrameTransformMatrix  {
+			1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 2.0, 0.0, 1.0;;
+		}
+		Frame{
 			FrameTransformMatrix  {
-				1.0, 0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0, 0.0,
 				0.0, 0.0, 1.0, 0.0,
-				0.0, 2.0, 0.0, 1.0;;
+				0.0, 1.0, 0.0, 0.0,
+				-1.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 0.0, 1.0;;
 			}
-		Import{ "kayak.x"; }					#	他のXファイルをここに展開する インポート関数
+#			Import{ "kayak.x"; }					#	他のXファイルをここに展開する インポート関数
+		}
 		Frame{
 			FrameTransformMatrix  {	
 				1.0, 0.0, 0.0, 0.0,
@@ -89,7 +97,7 @@ Scene {
 				0.0, -1.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 1.0;;
 			}
-#			Import{ "wheel.xi"; }
+			Import{ "wheel.xi"; }
 		}
 		Frame{
 			FrameTransformMatrix  {

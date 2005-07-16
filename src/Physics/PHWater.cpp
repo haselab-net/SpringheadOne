@@ -142,7 +142,6 @@ void PHWater::Init(SGScene* scene){
 
     // initialize height matrix array
 	height.clear();
-	height[8][8] = 1.0;
 
     // temporary height variable
 	htmp.clear();
@@ -350,19 +349,35 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			struct VtxFVF{
 				Vec3f pos;
 				DWORD color;
-			} vtx[2];
+			} vtx[4];
 			vtx[0].color = D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff);
 			vtx[1].color = D3DCOLOR_ARGB(0x10, 0xff, 0xff, 0xff);
+			vtx[2].color = D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff);
+			vtx[3].color = D3DCOLOR_ARGB(0x10, 0xff, 0xff, 0xff);
 			for(int iy=0; iy<my; ++iy){
 				for(int ix=0; ix<mx; ++ix){
-					vtx[0].pos = Vec3f((ix+0.5f)*dh-rx, (iy+0.5f)*dh-ry, 0);
 					int cx = (ix+bound.x)%mx;
 					int cy = (iy+bound.y)%my;
-					Vec2f vel(u[cx][cy], v[cx][cy]);
-					vel += velocity;
+#if 0	//	速度の格子点に流速を表示
+					vtx[0].pos = Vec3f((ix+0.5f)*dh-rx, (iy)*dh-ry, 0);
+					float vel =  u[cx][cy] + velocity.x;
 					vel *= dh;
-					vtx[1].pos = Vec3f((ix+0.5f)*dh-rx + vel.x, (iy+0.5f)*dh-ry + vel.y, 0);
+					vtx[1].pos = Vec3f((ix+0.5f)*dh-rx + vel, (iy)*dh-ry, 0);
+
+					vtx[2].pos = Vec3f((ix)*dh-rx, (iy+0.5f)*dh-ry, 0);
+					vel =  v[cx][cy] + velocity.y;
+					vel *= dh;
+					vtx[3].pos = Vec3f((ix)*dh-rx, (iy+0.5f)*dh-ry + vel, 0);
+
+					render->device->DrawPrimitiveUP(D3DPT_LINELIST, 4, vtx, sizeof(vtx[0]));
+#else	//	高さの格子点に流速を表示
+					vtx[0].pos = Vec3f(ix*dh-rx, iy*dh-ry, 0);
+					int cx_ = (cx+mx-1)%mx;
+					int cy_ = (cy+my-1)%my;
+					Vec2f vel = dh * (0.5f * Vec2f(u[cx][cy] + u[cx_][cy], v[cx][cy] + v[cx][cy_]) + velocity);
+					vtx[1].pos = Vec3f(ix*dh-rx + vel.x, iy*dh-ry + vel.y, 0);
 					render->device->DrawPrimitiveUP(D3DPT_LINELIST, 2, vtx, sizeof(vtx[0]));
+#endif
 				}
 			}
 			render->device->SetRenderState(D3DRS_LIGHTING, true);
@@ -426,8 +441,6 @@ void PHWater::RenderGL(SGFrame* fr, GLRender* render){
 
     // this function adjusts the boundary problem
 void PHWater::Bound(){
-	//	どうして bx1 が +1なのかなぞ． bx1 がbound.xで良い気がするのだけど．
-	//	多分レンダリングが変なのでしょうけど，原因不明．
 	int bx1 = (bound.X()) % mx;
 	int bx1_ = (bound.X()+1) % mx;
 	int bx2 = (bound.X()-1+mx) % mx;
