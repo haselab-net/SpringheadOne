@@ -309,8 +309,8 @@ struct PHWConvexCalc{
 				Vec3f v = solidVel + (solidAngVel^p) - Vec3f(water->velocity.x, water->velocity.y, 0);
 				water->u[cx][cy] = v.x;
 
-//				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
-//				engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f);
+				engine->points.push_back(Vec3f(x*water->dh-water->rx, curY*water->dh-water->ry, 0));
+				engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f);
 			}
 		}
 		curY = border[0].y-0.5f;
@@ -377,7 +377,8 @@ struct PHWConvexCalc{
 		const float lineWidth = 3.0f;	//	ê¸ÇÃïù
 		const float lineWidthInv = 1/lineWidth;
 		
-#define DRAWLINE(vtxs, id1, id2, X, Y, XOFF, YOFF, yStart, yEnd, func)\
+		//	ê¸ÇÃï`âÊ
+		#define DRAWLINE(vtxs, id1, id2, X, Y, XOFF, YOFF, yStart, yEnd, func)\
 		for(int i=0; i<vtxs.size()-1; ++i){							\
 			Vec2f delta = vtxs[id2] - vtxs[id1];					\
 			float k = delta.Y / delta.X;							\
@@ -390,8 +391,8 @@ struct PHWConvexCalc{
 				y += k;												\
 			}														\
 		}															
-
-#define DRAWRECT(vtx, XOFF, YOFF, xStart, xEnd, yStart, yEnd, func)				\
+		//	4ã˜ÇÃ4äpå`ÇÃï`âÊ
+		#define DRAWRECT(vtx, XOFF, YOFF, xStart, xEnd, yStart, yEnd, func)				\
 		for(int ix = ceil(vtx.x+XOFF+xStart); ix < vtx.x+XOFF+xEnd; ++ix){		\
 			for(int iy = ceil(vtx.y+YOFF+yStart); iy < vtx.y+YOFF+yEnd; ++iy){	\
 				float dist = sqrt(Square(ix - (vtx.x+XOFF))						\
@@ -412,275 +413,14 @@ struct PHWConvexCalc{
 		DRAWRECT(line[3].back(), 0, -0.5f, -lineWidth, 0, -lineWidth, 0, SetWaterVelocityV);
 		
 		DRAWLINE(line[0], i, i+1, x, y, -0.5f, 0, -lineWidth, 0, SetWaterVelocityU);
-		DRAWLINE(line[1], i, i+1, y, x, 0, -0.5f,  0, lineWidth, SetWaterVelocityU)
-		DRAWLINE(line[2], i+1, i, x, y, -0.5f, 0,  0, lineWidth, SetWaterVelocityU)
-		DRAWLINE(line[3], i+1, i, y, x, 0, -0.5f, -lineWidth, 0, SetWaterVelocityU)
+		DRAWLINE(line[1], i, i+1, y, x, 0, -0.5f,  0, lineWidth, SetWaterVelocityU);
+		DRAWLINE(line[2], i+1, i, x, y, -0.5f, 0,  0, lineWidth, SetWaterVelocityU);
+		DRAWLINE(line[3], i+1, i, y, x, 0, -0.5f, -lineWidth, 0, SetWaterVelocityU);
 
-		DRAWLINE(line[0], i, i+1, x, y, 0, -0.5f, -lineWidth, 0, SetWaterVelocityV)
-		DRAWLINE(line[1], i, i+1, y, x, -0.5f, 0,  0, lineWidth, SetWaterVelocityV)
-		DRAWLINE(line[2], i+1, i, x, y, 0, -0.5f,  0, lineWidth, SetWaterVelocityV)
-		DRAWLINE(line[3], i+1, i, y, x, -0.5f, 0, -lineWidth, 0, SetWaterVelocityV)
-
-#if 0
-		//	ì ïÔÇÃäOë§Ç…ÉAÉìÉ`ÉGÉCÉäÉAÉXèàóù
-		//	onlineÇÕèëÇ©Ç»Ç¢ÅD
-		const float lineWidth = 2.0f;	//	ê¸ÇÃïù
-		const float lineWidthInv = 1/lineWidth;
-
-		//	u
-		TVec2<int> water_m(water->mx, water->my);
-		for(int i=0; i<border.size()-1; ++i){
-			Vec2f delta = border[i+1] - border[i];
-			int X, Y;
-			float offsetX, offsetY;
-			if (abs(delta.x) < abs(delta.y)){
-				X=1; Y=0;
-				offsetX = 0;
-				offsetY = -0.5f;
-			}else{
-				X=0; Y=1;
-				offsetX = -0.5f;
-				offsetY = 0;
-			}
-			float DY = delta[Y] / delta[X];
-			if (delta[X] > 0){
-				int ix = ceil(border[i][X]+offsetX);
-				float y = border[i][Y]+offsetY + DY*(ix-(border[i][X]+offsetX));
-				for(; ix < border[i+1][X]+offsetX; ++ix){
-					if (Y){
-						for(int iy = y; iy > y-lineWidth; --iy){
-							SetWaterVelocityU(ix, iy, (iy-(y-lineWidth))*lineWidthInv);
-						}
-					}else{
-						for(int iy = y + 1; iy < y+lineWidth; ++iy){
-							SetWaterVelocityU(iy, ix, ((y+lineWidth)-iy)*lineWidthInv);
-						}
-					}
-				}
-			}else{
-				int ix = border[i][X]+offsetX;
-				float y = border[i][Y]+offsetY + DY*(ix-(border[i][X]+offsetX));
-				for(; ix > ceil(border[i+1][X]+offsetX); --ix){
-					for(int iy = y + 1; iy < y+lineWidth; ++iy){						
-//						if(Y) SetWaterVelocityU(ix, iy, (y+lineWidth-iy)*lineWidthInv);
-//						else SetWaterVelocityU(iy, ix, (y+lineWidth-iy)*lineWidthInv);
-					}
-				}
-			}
-		}
-#endif
-#if 0
-		//	Ç≈Ç´ÇΩì ïÔÇÃäOë§Ç…ÉAÉìÉ`ÉGÉCÉäÉAÉXèàóùÅDÉOÉâÉfÅ[ÉVÉáÉìÇµÇ»Ç™ÇÁê¸ï™Çï`âÊ
-		const float lineWidth = 2.0f;	//	ê¸ÇÃïù
-		const float lineWidthInv = 1/lineWidth;
-		TVec2<int> water_m(water->mx, water->my);
-		for(int i=0; i<border.size()-1; ++i){
-			Vec2f delta = border[i+1] - border[i];
-			Vec2f dir = delta.unit();
-			Vec2f dAlpha;	
-			dAlpha.x = -dir.y*lineWidthInv;	//	dir.x Ç…1êiÇﬁÇ∆ dAlphaîZÇ≠Ç»ÇÈ
-			dAlpha.y = dir.x*lineWidthInv;	//	dir.y Ç…1êiÇﬁÇ∆ dAlphaîZÇ≠Ç»ÇÈ
-			Vec2f alphaLen;					//	alphaLenêiÇﬁÇ∆ê¸Ç©ÇÁî≤ÇØÇÈ
-			alphaLen.x = -1/dAlpha.x;
-			alphaLen.y = -1/dAlpha.y;
-
-			int X=0, Y=1;
-			if (abs(delta.x) < abs(delta.y)){
-				X=1; Y=0;
-			}
-			Vec2f vtx[2];
-			if (delta[X] < 0){
-				delta *= -1;
-				vtx[0] = border[i+1];
-				vtx[1] = border[i];
-			}else{
-				vtx[0] = border[i];
-				vtx[1] = border[i+1];
-			}
-			float k = delta[Y] / delta[X];
-
-#if 1
-			//--------------------------------------------------
-			//	u
-			//	ç≈èâÇÃéläp
-			int ix = ceil(vtx[0][X]-0.5f -lineWidth);
-			float alphaX = 1 - (vtx[0][X]-0.5f-ix)*lineWidthInv;
-			int xEnd = vtx[0][X]-0.5f;
-			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
-			float yStart = vtx[0][Y] + alphaLen[Y];
-			float yEnd = vtx[0][Y];
-			float yLine = yEnd;
-			if (yStart > yEnd){
-				std::swap(yStart, yEnd);
-			}
-			for(; ix<=xEnd; ++ix){
-				int iy=ceil(yStart);
-				if (iy<0) iy = 0;
-				int iyEnd = yEnd;
-				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-vtx[0][Y])*dAlpha[Y];
-				for(; iy<=iyEnd; ++iy){
-					if (Y) SetWaterVelocityU(ix, iy, alphaX*alphaY);
-					else SetWaterVelocityV(iy, ix, alphaX*alphaY);
-					alphaY += dAlpha[Y];
-				}
-				alphaX += lineWidthInv;
-			}
-			//	íºê¸ïîï™
-			xEnd = vtx[1][X]-0.5f;
-			for(; ix<=xEnd; ++ix){
-				int iy=ceil(yStart);
-				if (iy<0) iy = 0;
-				int iyEnd = yEnd;
-				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alpha = 1 + (iy-yLine)*dAlpha[Y];
-				for(; iy<=iyEnd; ++iy){
-					if (Y){
-						SetWaterVelocityU(ix, iy, alpha);
-					}else{
-						SetWaterVelocityV(iy, ix, alpha);
-					}
-					alpha += dAlpha[Y];
-				}
-				yLine += k;
-				yStart += k;
-				yEnd += k;
-			}
-			//	ç≈å„ÇÃéläp
-			alphaX = 1 - (ix-(vtx[1][X]-0.5f))*lineWidthInv;
-			xEnd = vtx[1][X]-0.5f + lineWidth;
-			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
-			for(; ix<=xEnd; ++ix){
-				int iy=ceil(yStart);
-				if (iy<0) iy = 0;
-				int iyEnd = yEnd;
-				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-yLine)*dAlpha[Y];
-				for(; iy<=iyEnd; ++iy){
-					if (Y) SetWaterVelocityU(ix, iy, alphaX*alphaY);
-					else SetWaterVelocityV(iy, ix, alphaX*alphaY);
-					alphaY += dAlpha[Y];
-				}
-				alphaX -= lineWidthInv;
-			}
-
-			//--------------------------------------------------
-			//	v
-			//	ç≈èâÇÃéläp
-			ix = ceil(vtx[0][X]-lineWidth);
-			alphaX = 1 - (vtx[0][X]-ix)*lineWidthInv;
-			xEnd = vtx[0][X];
-			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
-			yStart = vtx[0][Y]-0.5f + alphaLen[Y];
-			yEnd = vtx[0][Y]-0.5f;
-			yLine = yEnd;
-			if (yStart > yEnd){
-				std::swap(yStart, yEnd);
-			}
-			for(; ix<=xEnd; ++ix){
-				int iy=ceil(yStart);
-				if (iy<0) iy = 0;
-				int iyEnd = yEnd;
-				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-(vtx[0][Y]-0.5f))*dAlpha[Y];
-				for(; iy<=iyEnd; ++iy){
-					if (Y) SetWaterVelocityV(ix, iy, alphaX*alphaY);
-					else SetWaterVelocityU(iy, ix, alphaX*alphaY);
-					alphaY += dAlpha[Y];
-				}
-				alphaX += lineWidthInv;
-			}
-			//	íºê¸ïîï™
-			xEnd = vtx[1][X];
-			for(; ix<=xEnd; ++ix){
-				int iy=ceil(yStart);
-				if (iy<0) iy = 0;
-				int iyEnd = yEnd;
-				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alpha = 1 + (iy-yLine)*dAlpha[Y];
-				for(; iy<=iyEnd; ++iy){
-					if (Y){
-						SetWaterVelocityV(ix, iy, alpha);
-					}else{
-						SetWaterVelocityU(iy, ix, alpha);
-					}
-					alpha += dAlpha[Y];
-				}
-				yLine += k;
-				yStart += k;
-				yEnd += k;
-			}
-			//	ç≈å„ÇÃéläp
-			alphaX = 1 - (ix-vtx[1][X])*lineWidthInv;
-			xEnd = vtx[1][X] + lineWidth;
-			if (xEnd > water_m[X]-1) xEnd = water_m[X]-1;
-			for(; ix<=xEnd; ++ix){
-				int iy=ceil(yStart);
-				if (iy<0) iy = 0;
-				int iyEnd = yEnd;
-				if (iyEnd > water_m[Y]-1) iyEnd = water_m[Y]-1;
-				float alphaY = 1 + (iy-yLine)*dAlpha[Y];
-				for(; iy<=iyEnd; ++iy){
-					if (Y) SetWaterVelocityV(ix, iy, alphaX*alphaY);
-					else SetWaterVelocityU(iy, ix, alphaX*alphaY);
-					alphaY += dAlpha[Y];
-				}
-				alphaX -= lineWidthInv;
-			}
-#endif
-			//	îgçÇÇÃã´äEèåè
-#if 0
-			int to= alphaLen[Y] < 0 ? 1 : -1;
-			float y = vtx[0][Y];
-			if (to > 0) y += 1;
-			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
-				int iy = y;
-				y += k;
-				int iy2 = iy + to;
-				if (Y){
-					int cx = (ix + water->bound.x)%water->mx;
-					int cy = (iy + water->bound.y)%water->my;
-					int cy2 = (iy2 + water->bound.y)%water->my;
-					water->height[cx][cy2] = water->height[cx][cy];
-					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy2*water->dh-water->ry, 0));
-				}else{
-					int cy = (ix + water->bound.y)%water->my;
-					int cx = (iy + water->bound.x)%water->mx;
-					int cx2 = (iy2 + water->bound.x)%water->mx;
-					water->height[cx2][cy] = water->height[cx][cy];
-					engine->points.push_back(Vec3f(iy*water->dh-water->ry, ix*water->dh-water->rx, 0));
-					engine->points.push_back(Vec3f(iy2*water->dh-water->ry, ix*water->dh-water->rx, 0));
-				}
-			}
-#endif
-#if 0
-			int from= alphaLen[Y] < 0 ? -4 : 4;
-			float y = vtx[0][Y];
-			if (from < 0) y += 1;
-			for(int ix = ceil(vtx[0][X]); ix < vtx[1][X]; ++ix){
-				int iy = y;
-				y += k;
-				int iy2 = iy + from;
-				if (Y){
-					int cx = (ix + water->bound.x)%water->mx;
-					int cy = (iy + water->bound.y)%water->my;
-					int cy2 = (iy2 + water->bound.y)%water->my;
-					water->height[cx][cy] = water->height[cx][cy2];
-					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy*water->dh-water->ry, 0));
-					engine->points.push_back(Vec3f(ix*water->dh-water->rx, iy2*water->dh-water->ry, 0));
-				}else{
-					int cy = (ix + water->bound.y)%water->my;
-					int cx = (iy + water->bound.x)%water->mx;
-					int cx2 = (iy2 + water->bound.x)%water->mx;
-					water->height[cx][cy] = water->height[cx2][cy];
-					engine->points.push_back(Vec3f(iy*water->dh-water->ry, ix*water->dh-water->rx, 0));
-					engine->points.push_back(Vec3f(iy2*water->dh-water->ry, ix*water->dh-water->rx, 0));
-				}
-			}
-#endif
-		}
-#endif
+		DRAWLINE(line[0], i, i+1, x, y, 0, -0.5f, -lineWidth, 0, SetWaterVelocityV);
+		DRAWLINE(line[1], i, i+1, y, x, -0.5f, 0,  0, lineWidth, SetWaterVelocityV);
+		DRAWLINE(line[2], i+1, i, x, y, 0, -0.5f,  0, lineWidth, SetWaterVelocityV);
+		DRAWLINE(line[3], i+1, i, y, x, -0.5f, 0, -lineWidth, 0, SetWaterVelocityV);
 	}
 	void SetWaterVelocityU(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
@@ -737,8 +477,8 @@ struct PHWConvexCalc{
 				+	((1.0f/24.0f)*vel[0] + (1.0f/24.0f)*vel[1] + (1.0f/12.0f)*vel[2]) * p[2]
 			  ) ^ normalS;
 
+/*		ÇŸÇ∆ÇÒÇ«âeãøÇ™Ç»Ç¢ÇÃÇ≈ÅCçÇë¨âªÇÃÇΩÇﬂè»ó™
 		//	îgçÇÇÃï‚ê≥	éOäpå`ì‡ÇÃêÖÇ…Ç¬Ç¢ÇƒÅCîgçÇÇ…è’ìÀÇ…ÇÊÇÈà≥óÕÇÃâeãøÇâ¡Ç¶ÇÈÅD
-/*		Ç¬Ç¢Ç≈Ç…à≥óÕÇÃîgçÇÇ…ÇÊÇÈï‚ê≥ÇÇ‚Ç¡ÇƒÇ¢ÇÈÇ™ÉoÉOÇ™Ç†Ç¡ÇƒÅCî≠éUÇ∑ÇÈÅD
 		float velH = - (vtxVel[0].z+vtxVel[1].z+vtxVel[2].z)/3 * B * water->dh*water->dh;
 		Vec2f vtx[3];
 		for(int i=0; i<3; ++i){

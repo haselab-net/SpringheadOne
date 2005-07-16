@@ -70,7 +70,7 @@ Scene {
 				5.000000;
 				0.30; 0.3; 0.30;;
 				0.30;0.30;0.30;;
-			TextureFilename { "sky.jpg"; }
+				TextureFilename { "sky.jpg"; }
 			}
 		}
 	}
