@@ -1,5 +1,3 @@
-set PATH=\\192.168.251.1\VSS\win32;%PATH%
-set SSDIR=\\192.168.251.1\VSS
 if exist pack\springhead rmdir /S /Q pack\springhead
 if not exist pack mkdir pack
 cd pack
