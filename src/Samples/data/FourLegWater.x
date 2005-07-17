@@ -288,7 +288,7 @@ Frame frWater{
 		9.8;								#	gravity：重力
 		30.0;								#	density：密度
 		0.99;								#	loss：水の減衰率(1ステップあたりの速度の減衰)
-		-2.0; 0.0;	//	vx, vy				#	水の定常流．
+		-1.0; 0.0;	//	vx, vy				#	水の定常流．
 		WaterTrackTarget{
 			{frBody}						#	水はこのフレームが中心なるようにセルを展開する．
 		}

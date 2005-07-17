@@ -88,7 +88,7 @@ Scene {
 				-1.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 1.0;;
 			}
-			Import{ "kayak.x"; }				#	他のXファイルをここに展開する インポート関数
+			Import{ "kayak_test.x"; }				#	他のXファイルをここに展開する インポート関数
 		}
 		Frame{
 			FrameTransformMatrix  {	
