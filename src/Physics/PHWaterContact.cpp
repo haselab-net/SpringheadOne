@@ -598,11 +598,13 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	for(int ii=0; ii<4; ++ii){
 		render->SetMaterial(mats[ii]);
 		std::vector<Vec3f> vtxs;
-		for(int i=0; i<convCalc.line[ii].size()-1; ++i){
-			vtxs.push_back(Vec3f((convCalc.line[ii][i].x)*dh-rx, (convCalc.line[ii][i].y)*dh-ry, 0));
-			vtxs.push_back(Vec3f((convCalc.line[ii][i+1].x)*dh-rx, (convCalc.line[ii][i+1].y)*dh-ry, 0));
+		if (convCalc.line[ii].size() > 1){
+			for(int i=0; i<convCalc.line[ii].size()-1; ++i){
+				vtxs.push_back(Vec3f((convCalc.line[ii][i].x)*dh-rx, (convCalc.line[ii][i].y)*dh-ry, 0));
+				vtxs.push_back(Vec3f((convCalc.line[ii][i+1].x)*dh-rx, (convCalc.line[ii][i+1].y)*dh-ry, 0));
+			}
+			render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 		}
-		render->DrawDirect(GRRender::LINES, &*vtxs.begin(), &*vtxs.end());
 	}
 	//	‹«ŠEğŒ‚Ì‘¬“x‚Ì•\¦
 	D3Render* d3r = DCAST(D3Render, render);
