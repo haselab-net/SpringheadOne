@@ -39,7 +39,32 @@ public:
 
 	SGFrames targets;
 };
+#if 0
+class PHWFRM : public UTRefCount{
+public:
+	class ForceSet{
+	public:
+		
+	};
+public:
+	int id;
+	float buo_scl, pres_scl, fric_scl, vel_scl, unit_mass, disp_scl;
+    float wz, wa;
+	float dlen;
+	Affinef	posture;
+	float v0;
+	FIString	filename;
+	Vec3f	d, s;
 
+	float dthe, dphi;
+	int nhsrc, ndata;
+	float rate;
+	int nthe, nphi, ntex, sym[3], n;
+	vector<ForceSet> frc_set;
+
+	bool Load(FIString);
+};
+#endif
 class PHWater : public GRVisual{
 public:
 	SGOBJECTDEF(PHWater);

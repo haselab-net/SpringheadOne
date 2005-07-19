@@ -6,6 +6,7 @@
 #include <Collision/CDQuickHull2D.h>
 #include <Collision/CDQuickHull2DImp.h>
 #include <ImpD3D/D3Render.h>
+#include <WinBasis/WBPath.h>
 
 namespace Spr{;
 
@@ -38,7 +39,6 @@ void PHWGeometry::Set(SGFrame* f, CDMesh* g){
 	conveces.resize(g->conveces.size());
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
 }
-
 
 //----------------------------------------------------------------------------
 //	PHWaterContactEngine
@@ -617,7 +617,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 			vtxs.back().pos = points[i];
 			vtxs.back().color = D3DCOLOR_RGBA(0xFF,0,0xFF, i%2 ? 0 : 0xFF);
 		}
-		if (vtxs.size()) d3r->device->DrawPrimitiveUP(D3DPT_LINELIST, vtxs.size()/2, vtxs.begin(), sizeof(PHWCE_VtxFVF));
+		if (vtxs.size()) d3r->device->DrawPrimitiveUP(D3DPT_LINELIST, vtxs.size()/2, &*(vtxs.begin()), sizeof(PHWCE_VtxFVF));
 		d3r->device->SetRenderState(D3DRS_LIGHTING, true);
 	}
 	render->SetDepthTest(true);
@@ -681,6 +681,11 @@ void PHWaterContactEngine::Step(SGScene* s){
 DEF_RECORD(XWaterContactEngine, {
 	GUID Guid(){ return WBGuid("3cec723b-36dc-433e-8ade-06a3e3fd5ee3"); } 
 });
+typedef UTString STRING;
+DEF_RECORD(XWaterRegistanceMap, {
+	GUID Guid(){ return WBGuid("dbd4feca-a6ac-48f1-87c9-863162e13658"); } 
+	STRING filename;
+});
 
 class PHWaterContactEngineLoader:public FIObjectLoader<PHWaterContactEngine>{
 public:
@@ -712,6 +717,291 @@ public:
 	}
 };
 DEF_REGISTER_BOTH(PHWaterContactEngine);
+
+//----------------------------------------------------------------------------
+//PHWaterRegistanceMap
+
+SGOBJECTIMP(PHWaterRegistanceMap, SGObject);
+
+bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
+	if(DCAST(PHSolid, o)){
+		solid = DCAST(PHSolid, o);
+		return true;
+	}
+	return false;
+}
+
+void PHWaterRegistanceMap::Loaded(SGScene* scene){
+#if 0
+	FILE* fp = fopen(filename, "r");
+	if(!fp)return;
+    
+    fscanf(fp, "%d%f%f%f%f%f%f", &id, &buo_scl, &pres_scl, &fric_scl, &vel_scl, &unit_mass, &disp_scl);
+    fscanf(fp, "%f%f", &wz, &wa);
+
+	//objの位置と姿勢
+    Vec3f pos0, we0;
+    fscanf(fp, "%f%f%f%f%f%f", &pos0.X(), &pos0.Y(), &pos0.Z(), &we0.X(), &we0.Y(), &we0.Z());
+    fscanf(fp, "%f", &dlen);
+    //メッシュを細分化してサンプル点を生成する処理
+	/*if(dlen > 0.0) { 
+        pobj.mesh = (Tmesh *)malloc(sizeof(Tmesh)*obj[pobj.id_obj].nf);
+        for(i=0; i<obj[pobj.id_obj].nf; i++) pobj.mesh[i].dlen = dlen;
+        genMesh(&pobj);
+    } else {
+        // USE OBJECT VERTEX AS SAMPLE POINTS
+        pobj.mesh = NULL;
+        genPoints();
+    }*/
+
+	//yaw pitch rollかと思われ
+    we0.X() = Rad(we0.X());
+    we0.Y() = Rad(we0.Y());
+    we0.Z() = Rad(we0.Z());
+    float stx, sty, stz, ctx, cty, ctz;
+    stx = sin(we0.X()); ctx = cos(we0.X());
+    sty = sin(we0.Y()); cty = cos(we0.Y());
+    stz = sin(we0.Z()); ctz = cos(we0.Z());
+	Affinef aff;
+	aff.Rot() = Matrix3f(cty*ctz, -stx*sty*ctz-ctx*stz, -ctx*sty*ctz+stx*stz,
+						 cty*stz, -stx*sty*stz+ctx*ctz, -ctx*sty*stz-stx*ctz,
+						 sty,	   stx*cty,				 ctx*cty);
+	aff.Pos() = pos0;
+	posture = aff;
+
+	
+    ThapticSource *hp;
+    filename.resize(256);
+	fscanf(fp, "%f%s", &v0, &filename[0]);
+    fscanf(fp, "%f%f%f%f%f%f", &d.X(), &d.Y(), &d.Z(), &s.X(), &s.Y(), &s.Z());
+    FILE* fm = fopen(filename.c_str(), "rb");
+    if(fm != NULL) {
+        Trealf dthe, dphi, fmax, frc_max = 0.0, d;
+        int ndata, nthe, nphi, rate, sym[3], n, m, nd, *id, nhsrc;
+        Tpoint3f p, normal;
+        Trealf xmean, ymean, zmean;
+        
+        fread(&dthe, sizeof(float), 1, fm);
+        fread(&dphi, sizeof(float), 1, fm);
+        fread(&nhsrc, sizeof(int), 1, fm);
+        fread(&ndata, sizeof(int), 1, fm);
+        fread(&rate, sizeof(int), 1, fm);
+        fread(&nthe, sizeof(int), 1, fm);
+        fread(&nphi, sizeof(int), 1, fm);
+        fread(sym, sizeof(int), 3, fm);
+        fread(&n, sizeof(int), 1, fm);
+        
+		vector<int> id; id.resize(n);
+        fread(&id[0], sizeof(int), n, fm);
+        
+        ntex = (nthe - 2) * nphi + 2;
+
+        frc_set.resize(nhsrc);
+        int i;
+		for(i = 0; i < nhsrc; i++) {
+            /*frc_set[i].dthe = dthe;
+            frc_set[i].dphi = dphi;
+            frc_set[i].nthe = nthe;
+            frc_set[i].nphi = nphi;
+            frc_set[i].ntex = nd;
+            frc_set[i].v0 = v0;*/
+            frc_set[i].frc.resize(ntex);
+            for(j=0; j < ntex; j++) {
+                frc_set[i].frc[j].xprs =  frc_set[i].frc[j].yprs = frc_set[i].frc[j].zprs =
+                frc_set[i].frc[j].xfri =  frc_set[i].frc[j].yfri = frc_set[i].frc[j].zfri = NULL;
+                frc_set[i].frc[j].n = 0;
+                frc_set[i].frc[j].rate = 0;
+            }
+        }
+		Vec3f p, normal;
+        hsrc.resize(nhsrc);
+        //hp = pobj.hsrc;
+        for(i = 0; i < nhsrc; i++) {
+            fread(&p, sizeof(Vec3f), 1, fm);
+            fread(&normal, sizeof(Vec3f), 1, fm);
+            p += d;
+            p.X() *= s.X(); p.Y() *= s.Y(); p.Z() *= s.Z();
+            
+			if(nhsrc == 1){normal.X() = 1.0; normal.Y() = 0.0; normal.Z() = 0.0;}
+            hsrc[i].ntex = -1;
+            hsrc[i].itex = NULL;
+            hsrc[i].fset = &(frc_set[i]);
+            hsrc[i].sym.x = sym[0];
+            hsrc[i].sym.y = sym[1];
+            hsrc[i].sym.z = sym[2];
+            hsrc[i].vx = hsrc[i].vy = hsrc[i].vz = hsrc[i].v = hsrc[i].tcoord = 0.0;
+            hsrc[i].x0 = p.x;
+            hsrc[i].y0 = p.y;
+            hsrc[i].z0 = p.z;
+            hsrc[i].x = hsrc[i].x0;
+            hsrc[i].y = hsrc[i].y0;
+            hsrc[i].z = hsrc[i].z0;
+            hsrc[i].x_ori = hsrc[i].x0;
+            hsrc[i].y_ori = hsrc[i].y0;
+            hsrc[i].z_ori = hsrc[i].z0;
+            hsrc[i].nx = normal.x;
+            hsrc[i].ny = normal.y;
+            hsrc[i].nz = normal.z;
+            hsrc[i].prs.x = 
+            hsrc[i].prs.y = 
+            hsrc[i].prs.z = 0.0;
+            for(j=0; j<n; j++) {
+                k = id[j];
+                frc_set[i].frc[k].n = ndata;
+                frc_set[i].frc[k].rate = rate;
+                frc_set[i].frc[k].v = v0;
+                frc_set[i].frc[k].xprs = (Trealf *)malloc(sizeof(Trealf)*ndata);
+                frc_set[i].frc[k].yprs = (Trealf *)malloc(sizeof(Trealf)*ndata);
+                frc_set[i].frc[k].zprs = (Trealf *)malloc(sizeof(Trealf)*ndata);
+                frc_set[i].frc[k].xfri = (Trealf *)malloc(sizeof(Trealf)*ndata);
+                frc_set[i].frc[k].yfri = (Trealf *)malloc(sizeof(Trealf)*ndata);
+                frc_set[i].frc[k].zfri = (Trealf *)malloc(sizeof(Trealf)*ndata);
+                fread(frc_set[i].frc[k].xprs, sizeof(Trealf), ndata, fm);
+                fread(frc_set[i].frc[k].yprs, sizeof(Trealf), ndata, fm);
+                fread(frc_set[i].frc[k].zprs, sizeof(Trealf), ndata, fm);
+                fread(frc_set[i].frc[k].xfri, sizeof(Trealf), ndata, fm);
+                fread(frc_set[i].frc[k].yfri, sizeof(Trealf), ndata, fm);
+                fread(frc_set[i].frc[k].zfri, sizeof(Trealf), ndata, fm);
+                frc_set[i].frc[k].peri_prs.x =
+                frc_set[i].frc[k].peri_prs.y =
+                frc_set[i].frc[k].peri_prs.z = (Trealf)frc_set[i].frc[k].n/(Trealf)frc_set[i].frc[k].rate;
+                frc_set[i].frc[k].peri_fri.x =
+                frc_set[i].frc[k].peri_fri.y =
+                frc_set[i].frc[k].peri_fri.z = (Trealf)frc_set[i].frc[k].n/(Trealf)frc_set[i].frc[k].rate;
+                frc_set[i].frc[k].phas_prs.x =
+                frc_set[i].frc[k].phas_prs.y =
+                frc_set[i].frc[k].phas_prs.z = 0.0;
+                frc_set[i].frc[k].phas_fri.x =
+                frc_set[i].frc[k].phas_fri.y =
+                frc_set[i].frc[k].phas_fri.z = 0.0;
+
+                fmax = 0.0;
+                xmean = ymean = zmean = 0.0;
+                for(m=0; m<ndata; m++) {
+                    d = frc_set[i].frc[k].xprs[m]*frc_set[i].frc[k].xprs[m]
+                       +frc_set[i].frc[k].yprs[m]*frc_set[i].frc[k].yprs[m]
+                       +frc_set[i].frc[k].zprs[m]*frc_set[i].frc[k].zprs[m];
+                    if(d > 0.0) d = sqrt(d);
+                    if(fmax < d) fmax = d;
+                    d = frc_set[i].frc[k].xfri[m]*frc_set[i].frc[k].xfri[m]
+                       +frc_set[i].frc[k].yfri[m]*frc_set[i].frc[k].yfri[m]
+                       +frc_set[i].frc[k].zfri[m]*frc_set[i].frc[k].zfri[m];
+                    if(d > 0.0) d = sqrt(d);
+                    if(fmax < d) fmax = d;
+                    xmean += frc_set[i].frc[k].xprs[m];
+                    ymean += frc_set[i].frc[k].yprs[m];
+                    zmean += frc_set[i].frc[k].zprs[m];
+                }
+                
+//                fprintf(sysout, "%d, %d: %f, %f %f %f\n", id[j], nd, fmax*100000., xmean*100000., ymean*100000., zmean*100000.);
+                if(frc_max < fmax) frc_max = fmax;
+            }
+            hp++;
+        }
+        printf("frc_max: %f\n", frc_max);
+        for(i=0; i<nhsrc; i++) {
+            for(j=0; j<frc_set[i].ntex; j++) {
+                if(frc_set[i].frc[j].rate > 0) {
+                    for(k=0; k<frc_set[i].frc[j].n; k++) {
+                        frc_set[i].frc[j].xprs[k] /= frc_max;
+                        frc_set[i].frc[j].yprs[k] /= frc_max;
+                        frc_set[i].frc[j].zprs[k] /= frc_max;
+                        frc_set[i].frc[j].xfri[k] /= frc_max;
+                        frc_set[i].frc[j].yfri[k] /= frc_max;
+                        frc_set[i].frc[j].zfri[k] /= frc_max;
+                    }
+                }
+            }
+        }
+        free(id);
+    } else {
+        // SET POINT HAPTIC SOURCE
+        int j, n, id_fset;
+
+        fscanf(fp, "%d", &n);
+        pobj.nhsrc = n;
+        pobj.hsrc = (ThapticSource *)malloc(sizeof(ThapticSource)*n);
+        hp = pobj.hsrc;
+        for(i=0; i<n; i++) {
+            fscanf(fp,"%f%f%f%d", &hp->x0, &hp->y0, &hp->z0, &hp->ntex);
+            if(hp->ntex > 0) {
+                hp->itex = (int *)malloc(sizeof(int)*hp->ntex);
+                for(j=0; j<hp->ntex; j++) fscanf(fp, "%d", &hp->itex[j]);
+                hp->fset = NULL;
+            } else {
+                hp->itex = NULL;
+                fscanf(fp, "%d", &id_fset);
+                hp->fset = &(frc_set[id_fset]);
+            }
+            fscanf(fp,"%s%s%s", cx, cy, cz);
+            hp->x = hp->x0;
+            hp->y = hp->y0;
+            hp->z = hp->z0;
+            hp->x_ori = hp->x0;
+            hp->y_ori = hp->y0;
+            hp->z_ori = hp->z0;
+            hp->vx = hp->vy = hp->vz =
+            hp->v = hp->tcoord = 0.0;
+            hp->sym.x = hp->sym.y = hp->sym.z = FALSE;
+            if(cx[0] == 'x') hp->sym.x = TRUE;
+            if(cy[0] == 'y') hp->sym.y = TRUE;
+            if(cz[0] == 'z') hp->sym.z = TRUE;
+            hp++;
+        }
+    }
+    
+    pobj.im.x = pobj.im.y = pobj.im.z = -1.0;
+    fscanf(fp, "%s", com);
+    if(!strcmp("param", com)) {
+        fscanf(fp, "%f%f%f%f%f", &pobj.mass, &pobj.im.x, &pobj.im.y, &pobj.im.z, &pobj.loss);
+        pobj.ori[0] = 1.0; pobj.ori[1] = 0.0; pobj.ori[2] = 0.0; pobj.ori[3] = 0.0;
+        pobj.a.x = pobj.a.y = pobj.a.z = 
+        pobj.vel.x = pobj.vel.y = pobj.vel.z = 0.0;
+    }
+	
+}
+#endif
+
+}
+
+class PHWaterRegistanceMapLoader : public FIObjectLoader<PHWaterRegistanceMap>{
+public:
+	virtual bool LoadData(FILoadScene* ctx, PHWaterRegistanceMap* rm){
+		//FRM
+		const char* fn = NULL;
+		ctx->docs.Top()->GetWholeData(fn);
+		WBPath xFilePath;
+		xFilePath.Path(ctx->fileName);
+		xFilePath.Path(xFilePath.FullPath());
+		WBPath imPath;
+		imPath.Path(fn);
+		FIString oldCwd = imPath.GetCwd();
+		imPath.SetCwd(xFilePath.Drive() + xFilePath.Dir());
+		rm->filename = imPath.FullPath();
+		return true;
+	}
+	virtual void Loaded(FILoadScene* ctx){}
+	PHWaterRegistanceMapLoader(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_RECORD_PROTO(XWaterRegistanceMap);
+	}
+};
+
+class PHWaterRegistanceMapSaver:public FIBaseSaver{
+public:
+	virtual UTString GetType() const{ return "PHWaterRegistanceMap"; }
+	virtual void Save(FISaveScene* ctx, SGObject* arg){
+		/*PHWaterContactEngine* pc = (PHWaterContactEngine*)arg;
+		FIDocNodeBase* doc = ctx->CreateDocNode("WaterContactEngine", pc);
+		ctx->docs.back()->AddChild(doc);
+		for(PHWSolids::iterator it = pc->solids.begin(); it != pc->solids.end(); ++it){
+			doc->AddChild(ctx->CreateDocNode("REF", (*it)->solid));
+		}
+		doc->AddChild(ctx->CreateDocNode("REF", pc->water));*/
+	}
+};
+DEF_REGISTER_BOTH(PHWaterRegistanceMap);
 
 }
 

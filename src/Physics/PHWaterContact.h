@@ -26,12 +26,33 @@ public:
 };
 typedef std::vector<UTRef<PHWGeometry> >	PHWGeometries;
 
-//剛体が持つ形状データをリストアップしたもの
 class PHSolid;
+/** FRMクラス．
+
+ */
+class PHWForceTexture{		//wsのTfluidForceTex
+
+};
+class PHWHapticSource{		//wsのThapticSourceとTforceSet（1対1と思われるので融合)
+
+};
+class PHWaterRegistanceMap : public SGObject{	//wsのThapticObjみたいなもの
+public:
+	SGOBJECTDEF(PHWaterRegistanceMap);
+
+	virtual bool AddChildObject(SGObject* o, SGScene* s);
+	virtual void Loaded(SGScene* scene);
+	
+	UTRef<PHSolid>	solid;
+	UTString		filename;
+};
+typedef std::vector<UTRef<PHWaterRegistanceMap> > PHWaterRegistanceMaps;
+
 class PHWSolid : public UTRefCount{
 public:
 	UTRef<PHSolid>		solid;		//剛体
 	UTRef<SGFrame>		frame;		//剛体フレーム
+	//UTRef<PHWRegistanceMap> frm;
 	Affinef				posture;	//剛体フレームのワールドフレームに対するposture
 	PHWGeometries		geometries;	//剛体のフレームの形状データ
 	void Init();
@@ -50,6 +71,7 @@ public:
 
 	UTRef<PHWater>	water;			///水
 	PHWSolids		solids;			///水に接触する剛体
+	PHWaterRegistanceMaps	frms;	///
 
 	std::vector<Vec3f> tris;		///<	デバッグ用:水面下の3角形
 	std::vector<Vec3f> points;		///<	デバッグ用:物体と重なっている水

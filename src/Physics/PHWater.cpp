@@ -817,7 +817,8 @@ class PHWaterLoader:public FIObjectLoader<PHWater>{
 public:
 	virtual bool LoadData(FILoadScene* ctx, PHWater* water){
 		XWater data;
-		ctx->docs.Top()->GetWholeData(data);
+		FIDocNodeBase* docWater = ctx->docs.Top();
+		docWater->GetWholeData(data);
 		water->mx = data.mx;
 		water->my = data.my;
 		water->dh = data.dh;
@@ -828,6 +829,7 @@ public:
 		water->velocity.x = data.vx;
 		water->velocity.y = data.vy;
 		water->frame = DCAST(SGFrame, ctx->objects.Top());
+		
 		return true;
 	}
 	PHWaterLoader(){
