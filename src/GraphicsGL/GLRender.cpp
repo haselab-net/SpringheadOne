@@ -295,6 +295,8 @@ fontID = CreateFont(font.height,// Height Of Font ( NEW )
 	}
 */
 }
+
+    // write the code to implement the texture mapping in this method
 void GLRender::SetTexture(const char* fn){
 	if (fn){
 		int texId = textureManager.Get(fn);
