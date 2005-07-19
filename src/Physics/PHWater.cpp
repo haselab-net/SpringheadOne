@@ -411,11 +411,11 @@ void PHWater::RenderGL(SGFrame* fr, GLRender* render){
         glEnable(GL_TEXTURE_GEN_S); 
         glEnable(GL_TEXTURE_GEN_T);
         
-        glBegin(GL_QUAD_STRIP);
         // boundY - 1
 		int boundY_1 = (bound.y-1+my)%my;
         int y_temp;
         for(int y = 0; y < my; ++y){
+	        glBegin(GL_QUAD_STRIP);
             double py;
             y_temp = (y + 1)%my;
                         if (y < boundY_1) py = yo + (y-bound.y+my)%my*dh; 
@@ -442,9 +442,9 @@ void PHWater::RenderGL(SGFrame* fr, GLRender* render){
                 
                 px+= dh;
             }
+	        glEnd();
         }
         
-        glEnd();
 
         // disable the environmental mapping
         glDisable(GL_TEXTURE_GEN_T); 
