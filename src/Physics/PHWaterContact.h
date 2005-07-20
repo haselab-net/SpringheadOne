@@ -43,6 +43,7 @@ public:
 	int	  nthe, nphi;
 	int   ntex;
 	float v0;
+	Vec3f p, p0, p_ori, prs, n;
 	std::vector<PHWForceTexture> ftex;
 };
 class PHWaterRegistanceMap : public SGObject{	//ws‚ÌThapticObj‚Ý‚½‚¢‚È‚à‚Ì
@@ -52,6 +53,7 @@ public:
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual void Loaded(SGScene* scene);
 	
+	Affinef			posture;
 	UTRef<PHSolid>	solid;
 	UTString		filename;
 

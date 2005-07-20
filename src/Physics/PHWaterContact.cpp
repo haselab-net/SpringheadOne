@@ -63,6 +63,10 @@ bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 		water = DCAST(PHWater, o);
 		return true;
 	}
+	if(DCAST(PHWaterRegistanceMap, o)){
+		frms.push_back(DCAST(PHWaterRegistanceMap, o));
+		return true;
+	}
 	return false;
 }
 
@@ -72,6 +76,8 @@ void PHWaterContactEngine::Clear(SGScene* s){
 }
 void PHWaterContactEngine::Loaded(SGScene* scene){
 	Init(scene);
+	for(int i = 0; i < frms.size(); i++)
+		frms[i]->Loaded(scene);
 }
 
 void PHWaterContactEngine::Init(SGScene* scene){
@@ -681,11 +687,6 @@ void PHWaterContactEngine::Step(SGScene* s){
 DEF_RECORD(XWaterContactEngine, {
 	GUID Guid(){ return WBGuid("3cec723b-36dc-433e-8ade-06a3e3fd5ee3"); } 
 });
-typedef UTString STRING;
-DEF_RECORD(XWaterRegistanceMap, {
-	GUID Guid(){ return WBGuid("dbd4feca-a6ac-48f1-87c9-863162e13658"); } 
-	STRING filename;
-});
 
 class PHWaterContactEngineLoader:public FIObjectLoader<PHWaterContactEngine>{
 public:
@@ -732,18 +733,17 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 }
 
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
-#if 0
-	FILE* fp = fopen(filename, "r");
-	if(!fp)return;
+	//FILE* fp = fopen(filename.c_str(), "rb");
+	//if(!fp)return;
     
-	int id;
-	float buo_scl, pres_scl, fric_scl, vel_scl, unit_mass, disp_scl;
-	float wz, wa;
-    fscanf(fp, "%d%f%f%f%f%f%f", &id, &buo_scl, &pres_scl, &fric_scl, &vel_scl, &unit_mass, &disp_scl);
-    fscanf(fp, "%f%f", &wz, &wa);
+	//int id;
+	//float buo_scl, pres_scl, fric_scl, vel_scl, unit_mass, disp_scl;
+	//float wz, wa;
+    //fscanf(fp, "%d%f%f%f%f%f%f", &id, &buo_scl, &pres_scl, &fric_scl, &vel_scl, &unit_mass, &disp_scl);
+    //fscanf(fp, "%f%f", &wz, &wa);
 
 	//objの位置と姿勢
-    Vec3f pos0, we0;
+    /*Vec3f pos0, we0;
 	fscanf(fp, "%f%f%f%f%f%f", &pos0.X(), &pos0.Y(), &pos0.Z(), &we0.X(), &we0.Y(), &we0.Z());
 	//yaw pitch rollかと思われ
     we0.X() = Rad(we0.X());
@@ -758,11 +758,11 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 						 cty*stz, -stx*sty*stz+ctx*ctz, -ctx*sty*stz-stx*ctz,
 						 sty,	   stx*cty,				 ctx*cty);
 	aff.Pos() = pos0;
-	posture = aff;
+	posture = aff;*/
     
     //メッシュを細分化してサンプル点を生成する処理
-	float dlen
-    fscanf(fp, "%f", &dlen);
+	//float dlen;
+    //fscanf(fp, "%f", &dlen);
 	/*if(dlen > 0.0) { 
         pobj.mesh = (Tmesh *)malloc(sizeof(Tmesh)*obj[pobj.id_obj].nf);
         for(i=0; i<obj[pobj.id_obj].nf; i++) pobj.mesh[i].dlen = dlen;
@@ -773,28 +773,30 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
         genPoints();
     }*/
 	
-    ThapticSource *hp;
-	float v0;
+	/*float v0;
     filename.resize(256);
 	Vec3f d, s;
 	fscanf(fp, "%f%s", &v0, &filename[0]);
     fscanf(fp, "%f%f%f%f%f%f", &d.X(), &d.Y(), &d.Z(), &s.X(), &s.Y(), &s.Z());
-
+	*/
+	float v0 = 2.0;
     FILE* fm = fopen(filename.c_str(), "rb");
     if(fm != NULL) {
         float dthe, dphi;
-		int nhsrc, ndata, rate, nthe, nphi, rate, sym[3], n;
-		fread(&dthe, sizeof(float), 1, fm);
-        fread(&dphi, sizeof(float), 1, fm);
-        fread(&nhsrc, sizeof(int), 1, fm);
-        fread(&ndata, sizeof(int), 1, fm);
-        fread(&rate, sizeof(int), 1, fm);
-        fread(&nthe, sizeof(int), 1, fm);
-        fread(&nphi, sizeof(int), 1, fm);
+		int nhsrc, ntex, ndata, rate, nthe, nphi, sym[3], n;
+		fread(&dthe, sizeof(float), 1, fm);	//1.57
+        fread(&dphi, sizeof(float), 1, fm);	//0.52
+        fread(&nhsrc, sizeof(int), 1, fm);	//12
+        fread(&ndata, sizeof(int), 1, fm);	//998
+        fread(&rate, sizeof(int), 1, fm);	//999
+        fread(&nthe, sizeof(int), 1, fm);	//3
+        fread(&nphi, sizeof(int), 1, fm);	//12
         fread(sym, sizeof(int), 3, fm);
-        fread(&n, sizeof(int), 1, fm);
+        fread(&n, sizeof(int), 1, fm);		//12
+
+		ntex = (nthe - 2) * nphi + 2;		//14
         
-		vector<int> id; id.resize(n);
+		std::vector<int> id; id.resize(n);
         fread(&id[0], sizeof(int), n, fm);
         
 		hsrc.resize(nhsrc);
@@ -808,7 +810,6 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
             hsrc[i].dphi = dphi;
             hsrc[i].nthe = nthe;
             hsrc[i].nphi = nphi;
-            hsrc[i].ntex = (nthe - 2) * nphi + 2;
             hsrc[i].v0 = v0;
             
 			//hsrc[i].sym = sym;
@@ -816,8 +817,8 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
             
 			fread(&p, sizeof(Vec3f), 1, fm);
             fread(&normal, sizeof(Vec3f), 1, fm);
-            p += d;
-            p.X() *= s.X(); p.Y() *= s.Y(); p.Z() *= s.Z();
+            //p += d;
+            //p.X() *= s.X(); p.Y() *= s.Y(); p.Z() *= s.Z();
 			if(nhsrc == 1){normal.X() = 1.0; normal.Y() = 0.0; normal.Z() = 0.0;}
             hsrc[i].p = hsrc[i].p0 = hsrc[i].p_ori = p;
             hsrc[i].n = normal;
@@ -826,8 +827,8 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 
 			//n = ntexじゃないとつじつまが合わない
             hsrc[i].ftex.resize(ntex);
-            for(j = 0; j < n; j++) {
-                k = id[j];
+            for(int j = 0; j < n; j++) {
+                int k = id[j];
                 hsrc[i].ftex[k].ndata = ndata;
                 hsrc[i].ftex[k].rate = rate;
                 hsrc[i].ftex[k].v0 = v0;
@@ -861,16 +862,16 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
                 hsrc[i].ftex[k].phas_fri.z = 0.0;*/
 
                 frc_max = 0.0;
-                for(m = 0; m < ndata; m++)
-					fmax = std::max(fmax, std::max(hsrc[i].ftex[k].prs[m].norm(), hsrc[i].ftex[k].fri[m].norm()));
+                for(int m = 0; m < ndata; m++)
+					frc_max = std::max(frc_max, std::max(hsrc[i].ftex[k].prs[m].norm(), hsrc[i].ftex[k].fri[m].norm()));
             }
         }
         for(i = 0; i < nhsrc; i++) {
-            for(j = 0; j < hsrc[i].ntex; j++) {
+            for(int j = 0; j < n; j++) {
                 //if(hsrc[i].ftex[j].rate > 0) {
-                    for(k = 0; k < ndata; k++) {
-                        hsrc[i].ftex[j].prs[k] /= frc_max;
-                        hsrc[i].ftex[j].fri[k] /= frc_max;
+                    for(int k = 0; k < ndata; k++) {
+                        hsrc[i].ftex[id[j]].prs[k] /= frc_max;
+                        hsrc[i].ftex[id[j]].fri[k] /= frc_max;
                     }
                 //}
             }
@@ -919,15 +920,19 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
         pobj.a.x = pobj.a.y = pobj.a.z = 
         pobj.vel.x = pobj.vel.y = pobj.vel.z = 0.0;
     }*/
-	fclose(fp); fclose(fm);
+	fclose(fm);
 }
-#endif
 
-}
+typedef UTString String;
+DEF_RECORD(XWaterRegistanceMap, {
+	GUID Guid(){ return WBGuid("dbd4feca-a6ac-48f1-87c9-863162e13658"); } 
+	String filename;
+});
 
 class PHWaterRegistanceMapLoader : public FIObjectLoader<PHWaterRegistanceMap>{
 public:
 	virtual bool LoadData(FILoadScene* ctx, PHWaterRegistanceMap* rm){
+		ctx->objects.Push(rm);
 		//FRM
 		const char* fn = NULL;
 		ctx->docs.Top()->GetWholeData(fn);
@@ -941,10 +946,13 @@ public:
 		rm->filename = imPath.FullPath();
 		return true;
 	}
-	virtual void Loaded(FILoadScene* ctx){}
+	virtual void Loaded(FILoadScene* ctx){
+		ctx->objects.Pop();
+	}
 	PHWaterRegistanceMapLoader(){
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
+		db->REG_FIELD(String);
 		db->REG_RECORD_PROTO(XWaterRegistanceMap);
 	}
 };

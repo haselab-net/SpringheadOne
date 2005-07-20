@@ -36,6 +36,7 @@ void RegisterLoaderForPhysics(FILoadScene* l){
 	REGISTER_LOADER(l, PHWater);
 	REGISTER_LOADER(l, PHWaterContactEngine);
 	REGISTER_LOADER(l, PHWaterTrackTarget);
+	REGISTER_LOADER(l, PHWaterRegistanceMap);
 }
 void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHSolid);
@@ -65,6 +66,7 @@ void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHWater);
 	REGISTER_SAVER(l, PHWaterContactEngine);
 	REGISTER_SAVER(l, PHWaterTrackTarget);
+	REGISTER_SAVER(l, PHWaterRegistanceMap);
 }
 }
 
