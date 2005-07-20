@@ -736,24 +736,15 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 	FILE* fp = fopen(filename, "r");
 	if(!fp)return;
     
+	int id;
+	float buo_scl, pres_scl, fric_scl, vel_scl, unit_mass, disp_scl;
+	float wz, wa;
     fscanf(fp, "%d%f%f%f%f%f%f", &id, &buo_scl, &pres_scl, &fric_scl, &vel_scl, &unit_mass, &disp_scl);
     fscanf(fp, "%f%f", &wz, &wa);
 
 	//objの位置と姿勢
     Vec3f pos0, we0;
-    fscanf(fp, "%f%f%f%f%f%f", &pos0.X(), &pos0.Y(), &pos0.Z(), &we0.X(), &we0.Y(), &we0.Z());
-    fscanf(fp, "%f", &dlen);
-    //メッシュを細分化してサンプル点を生成する処理
-	/*if(dlen > 0.0) { 
-        pobj.mesh = (Tmesh *)malloc(sizeof(Tmesh)*obj[pobj.id_obj].nf);
-        for(i=0; i<obj[pobj.id_obj].nf; i++) pobj.mesh[i].dlen = dlen;
-        genMesh(&pobj);
-    } else {
-        // USE OBJECT VERTEX AS SAMPLE POINTS
-        pobj.mesh = NULL;
-        genPoints();
-    }*/
-
+	fscanf(fp, "%f%f%f%f%f%f", &pos0.X(), &pos0.Y(), &pos0.Z(), &we0.X(), &we0.Y(), &we0.Z());
 	//yaw pitch rollかと思われ
     we0.X() = Rad(we0.X());
     we0.Y() = Rad(we0.Y());
@@ -768,20 +759,32 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 						 sty,	   stx*cty,				 ctx*cty);
 	aff.Pos() = pos0;
 	posture = aff;
-
+    
+    //メッシュを細分化してサンプル点を生成する処理
+	float dlen
+    fscanf(fp, "%f", &dlen);
+	/*if(dlen > 0.0) { 
+        pobj.mesh = (Tmesh *)malloc(sizeof(Tmesh)*obj[pobj.id_obj].nf);
+        for(i=0; i<obj[pobj.id_obj].nf; i++) pobj.mesh[i].dlen = dlen;
+        genMesh(&pobj);
+    }else {
+        // USE OBJECT VERTEX AS SAMPLE POINTS
+        pobj.mesh = NULL;
+        genPoints();
+    }*/
 	
     ThapticSource *hp;
+	float v0;
     filename.resize(256);
+	Vec3f d, s;
 	fscanf(fp, "%f%s", &v0, &filename[0]);
     fscanf(fp, "%f%f%f%f%f%f", &d.X(), &d.Y(), &d.Z(), &s.X(), &s.Y(), &s.Z());
+
     FILE* fm = fopen(filename.c_str(), "rb");
     if(fm != NULL) {
-        Trealf dthe, dphi, fmax, frc_max = 0.0, d;
-        int ndata, nthe, nphi, rate, sym[3], n, m, nd, *id, nhsrc;
-        Tpoint3f p, normal;
-        Trealf xmean, ymean, zmean;
-        
-        fread(&dthe, sizeof(float), 1, fm);
+        float dthe, dphi;
+		int nhsrc, ndata, rate, nthe, nphi, rate, sym[3], n;
+		fread(&dthe, sizeof(float), 1, fm);
         fread(&dphi, sizeof(float), 1, fm);
         fread(&nhsrc, sizeof(int), 1, fm);
         fread(&ndata, sizeof(int), 1, fm);
@@ -794,127 +797,85 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 		vector<int> id; id.resize(n);
         fread(&id[0], sizeof(int), n, fm);
         
-        ntex = (nthe - 2) * nphi + 2;
-
-        frc_set.resize(nhsrc);
+		hsrc.resize(nhsrc);
+        //frc_set.resize(nhsrc);
         int i;
-		for(i = 0; i < nhsrc; i++) {
-            /*frc_set[i].dthe = dthe;
-            frc_set[i].dphi = dphi;
-            frc_set[i].nthe = nthe;
-            frc_set[i].nphi = nphi;
-            frc_set[i].ntex = nd;
-            frc_set[i].v0 = v0;*/
-            frc_set[i].frc.resize(ntex);
-            for(j=0; j < ntex; j++) {
-                frc_set[i].frc[j].xprs =  frc_set[i].frc[j].yprs = frc_set[i].frc[j].zprs =
-                frc_set[i].frc[j].xfri =  frc_set[i].frc[j].yfri = frc_set[i].frc[j].zfri = NULL;
-                frc_set[i].frc[j].n = 0;
-                frc_set[i].frc[j].rate = 0;
-            }
-        }
+		float frc_max;
 		Vec3f p, normal;
-        hsrc.resize(nhsrc);
-        //hp = pobj.hsrc;
+		std::vector<float> xprs(ndata), yprs(ndata), zprs(ndata), xfri(ndata), yfri(ndata), zfri(ndata);
         for(i = 0; i < nhsrc; i++) {
-            fread(&p, sizeof(Vec3f), 1, fm);
+            hsrc[i].dthe = dthe;
+            hsrc[i].dphi = dphi;
+            hsrc[i].nthe = nthe;
+            hsrc[i].nphi = nphi;
+            hsrc[i].ntex = (nthe - 2) * nphi + 2;
+            hsrc[i].v0 = v0;
+            
+			//hsrc[i].sym = sym;
+            //hsrc[i].vx = hsrc[i].vy = hsrc[i].vz = hsrc[i].v = hsrc[i].tcoord = 0.0;
+            
+			fread(&p, sizeof(Vec3f), 1, fm);
             fread(&normal, sizeof(Vec3f), 1, fm);
             p += d;
             p.X() *= s.X(); p.Y() *= s.Y(); p.Z() *= s.Z();
-            
 			if(nhsrc == 1){normal.X() = 1.0; normal.Y() = 0.0; normal.Z() = 0.0;}
-            hsrc[i].ntex = -1;
-            hsrc[i].itex = NULL;
-            hsrc[i].fset = &(frc_set[i]);
-            hsrc[i].sym.x = sym[0];
-            hsrc[i].sym.y = sym[1];
-            hsrc[i].sym.z = sym[2];
-            hsrc[i].vx = hsrc[i].vy = hsrc[i].vz = hsrc[i].v = hsrc[i].tcoord = 0.0;
-            hsrc[i].x0 = p.x;
-            hsrc[i].y0 = p.y;
-            hsrc[i].z0 = p.z;
-            hsrc[i].x = hsrc[i].x0;
-            hsrc[i].y = hsrc[i].y0;
-            hsrc[i].z = hsrc[i].z0;
-            hsrc[i].x_ori = hsrc[i].x0;
-            hsrc[i].y_ori = hsrc[i].y0;
-            hsrc[i].z_ori = hsrc[i].z0;
-            hsrc[i].nx = normal.x;
-            hsrc[i].ny = normal.y;
-            hsrc[i].nz = normal.z;
-            hsrc[i].prs.x = 
-            hsrc[i].prs.y = 
-            hsrc[i].prs.z = 0.0;
-            for(j=0; j<n; j++) {
-                k = id[j];
-                frc_set[i].frc[k].n = ndata;
-                frc_set[i].frc[k].rate = rate;
-                frc_set[i].frc[k].v = v0;
-                frc_set[i].frc[k].xprs = (Trealf *)malloc(sizeof(Trealf)*ndata);
-                frc_set[i].frc[k].yprs = (Trealf *)malloc(sizeof(Trealf)*ndata);
-                frc_set[i].frc[k].zprs = (Trealf *)malloc(sizeof(Trealf)*ndata);
-                frc_set[i].frc[k].xfri = (Trealf *)malloc(sizeof(Trealf)*ndata);
-                frc_set[i].frc[k].yfri = (Trealf *)malloc(sizeof(Trealf)*ndata);
-                frc_set[i].frc[k].zfri = (Trealf *)malloc(sizeof(Trealf)*ndata);
-                fread(frc_set[i].frc[k].xprs, sizeof(Trealf), ndata, fm);
-                fread(frc_set[i].frc[k].yprs, sizeof(Trealf), ndata, fm);
-                fread(frc_set[i].frc[k].zprs, sizeof(Trealf), ndata, fm);
-                fread(frc_set[i].frc[k].xfri, sizeof(Trealf), ndata, fm);
-                fread(frc_set[i].frc[k].yfri, sizeof(Trealf), ndata, fm);
-                fread(frc_set[i].frc[k].zfri, sizeof(Trealf), ndata, fm);
-                frc_set[i].frc[k].peri_prs.x =
-                frc_set[i].frc[k].peri_prs.y =
-                frc_set[i].frc[k].peri_prs.z = (Trealf)frc_set[i].frc[k].n/(Trealf)frc_set[i].frc[k].rate;
-                frc_set[i].frc[k].peri_fri.x =
-                frc_set[i].frc[k].peri_fri.y =
-                frc_set[i].frc[k].peri_fri.z = (Trealf)frc_set[i].frc[k].n/(Trealf)frc_set[i].frc[k].rate;
-                frc_set[i].frc[k].phas_prs.x =
-                frc_set[i].frc[k].phas_prs.y =
-                frc_set[i].frc[k].phas_prs.z = 0.0;
-                frc_set[i].frc[k].phas_fri.x =
-                frc_set[i].frc[k].phas_fri.y =
-                frc_set[i].frc[k].phas_fri.z = 0.0;
+            hsrc[i].p = hsrc[i].p0 = hsrc[i].p_ori = p;
+            hsrc[i].n = normal;
+            
+			hsrc[i].prs.clear();
 
-                fmax = 0.0;
-                xmean = ymean = zmean = 0.0;
-                for(m=0; m<ndata; m++) {
-                    d = frc_set[i].frc[k].xprs[m]*frc_set[i].frc[k].xprs[m]
-                       +frc_set[i].frc[k].yprs[m]*frc_set[i].frc[k].yprs[m]
-                       +frc_set[i].frc[k].zprs[m]*frc_set[i].frc[k].zprs[m];
-                    if(d > 0.0) d = sqrt(d);
-                    if(fmax < d) fmax = d;
-                    d = frc_set[i].frc[k].xfri[m]*frc_set[i].frc[k].xfri[m]
-                       +frc_set[i].frc[k].yfri[m]*frc_set[i].frc[k].yfri[m]
-                       +frc_set[i].frc[k].zfri[m]*frc_set[i].frc[k].zfri[m];
-                    if(d > 0.0) d = sqrt(d);
-                    if(fmax < d) fmax = d;
-                    xmean += frc_set[i].frc[k].xprs[m];
-                    ymean += frc_set[i].frc[k].yprs[m];
-                    zmean += frc_set[i].frc[k].zprs[m];
-                }
-                
-//                fprintf(sysout, "%d, %d: %f, %f %f %f\n", id[j], nd, fmax*100000., xmean*100000., ymean*100000., zmean*100000.);
-                if(frc_max < fmax) frc_max = fmax;
+			//n = ntexじゃないとつじつまが合わない
+            hsrc[i].ftex.resize(ntex);
+            for(j = 0; j < n; j++) {
+                k = id[j];
+                hsrc[i].ftex[k].ndata = ndata;
+                hsrc[i].ftex[k].rate = rate;
+                hsrc[i].ftex[k].v0 = v0;
+                fread(&xprs[0], sizeof(float), ndata, fm);
+                fread(&yprs[0], sizeof(float), ndata, fm);
+                fread(&zprs[0], sizeof(float), ndata, fm);
+                fread(&xfri[0], sizeof(float), ndata, fm);
+                fread(&yfri[0], sizeof(float), ndata, fm);
+                fread(&zfri[0], sizeof(float), ndata, fm);
+				hsrc[i].ftex[k].prs.resize(ndata);
+                hsrc[i].ftex[k].fri.resize(ndata);
+				for(int ii = 0; ii < ndata; ii++){
+					hsrc[i].ftex[k].prs[ii].X() = xprs[ii];
+					hsrc[i].ftex[k].prs[ii].Y() = yprs[ii];
+					hsrc[i].ftex[k].prs[ii].Z() = zprs[ii];
+					hsrc[i].ftex[k].fri[ii].X() = xfri[ii];
+					hsrc[i].ftex[k].fri[ii].Y() = yfri[ii];
+					hsrc[i].ftex[k].fri[ii].Z() = zfri[ii];
+				}
+                /*hsrc[i].ftex[k].peri_prs.x =
+                hsrc[i].ftex[k].peri_prs.y =
+                hsrc[i].ftex[k].peri_prs.z = (Trealf)hsrc[i].ftex[k].n/(Trealf)hsrc[i].ftex[k].rate;
+                hsrc[i].ftex[k].peri_frdi.x =
+                hsrc[i].ftex[k].peri_fri.y =
+                hsrc[i].ftex[k].peri_fri.z = (Trealf)hsrc[i].ftex[k].n/(Trealf)hsrc[i].ftex[k].rate;
+                hsrc[i].ftex[k].phas_prs.x =
+                hsrc[i].ftex[k].phas_prs.y =
+                hsrc[i].ftex[k].phas_prs.z = 0.0;
+                hsrc[i].ftex[k].phas_fri.x =
+                hsrc[i].ftex[k].phas_fri.y =
+                hsrc[i].ftex[k].phas_fri.z = 0.0;*/
+
+                frc_max = 0.0;
+                for(m = 0; m < ndata; m++)
+					fmax = std::max(fmax, std::max(hsrc[i].ftex[k].prs[m].norm(), hsrc[i].ftex[k].fri[m].norm()));
             }
-            hp++;
         }
-        printf("frc_max: %f\n", frc_max);
-        for(i=0; i<nhsrc; i++) {
-            for(j=0; j<frc_set[i].ntex; j++) {
-                if(frc_set[i].frc[j].rate > 0) {
-                    for(k=0; k<frc_set[i].frc[j].n; k++) {
-                        frc_set[i].frc[j].xprs[k] /= frc_max;
-                        frc_set[i].frc[j].yprs[k] /= frc_max;
-                        frc_set[i].frc[j].zprs[k] /= frc_max;
-                        frc_set[i].frc[j].xfri[k] /= frc_max;
-                        frc_set[i].frc[j].yfri[k] /= frc_max;
-                        frc_set[i].frc[j].zfri[k] /= frc_max;
+        for(i = 0; i < nhsrc; i++) {
+            for(j = 0; j < hsrc[i].ntex; j++) {
+                //if(hsrc[i].ftex[j].rate > 0) {
+                    for(k = 0; k < ndata; k++) {
+                        hsrc[i].ftex[j].prs[k] /= frc_max;
+                        hsrc[i].ftex[j].fri[k] /= frc_max;
                     }
-                }
+                //}
             }
         }
-        free(id);
-    } else {
+    }/* else {
         // SET POINT HAPTIC SOURCE
         int j, n, id_fset;
 
@@ -948,17 +909,17 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
             if(cz[0] == 'z') hp->sym.z = TRUE;
             hp++;
         }
-    }
+    }*/
     
-    pobj.im.x = pobj.im.y = pobj.im.z = -1.0;
+    /*pobj.im.x = pobj.im.y = pobj.im.z = -1.0;
     fscanf(fp, "%s", com);
     if(!strcmp("param", com)) {
         fscanf(fp, "%f%f%f%f%f", &pobj.mass, &pobj.im.x, &pobj.im.y, &pobj.im.z, &pobj.loss);
         pobj.ori[0] = 1.0; pobj.ori[1] = 0.0; pobj.ori[2] = 0.0; pobj.ori[3] = 0.0;
         pobj.a.x = pobj.a.y = pobj.a.z = 
         pobj.vel.x = pobj.vel.y = pobj.vel.z = 0.0;
-    }
-	
+    }*/
+	fclose(fp); fclose(fm);
 }
 #endif
 

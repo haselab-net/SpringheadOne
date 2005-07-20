@@ -31,10 +31,19 @@ class PHSolid;
 
  */
 class PHWForceTexture{		//wsのTfluidForceTex
-
+public:
+	int ndata;	//prs, friのデータ長
+	int rate;	//流体計測時タイムステップの逆数
+	float v0;	//基本流速
+	std::vector<Vec3f>	prs, fri;	//valarrayの方がいいかな？
 };
 class PHWHapticSource{		//wsのThapticSourceとTforceSet（1対1と思われるので融合)
-
+public:
+	float dthe, dphi;
+	int	  nthe, nphi;
+	int   ntex;
+	float v0;
+	std::vector<PHWForceTexture> ftex;
 };
 class PHWaterRegistanceMap : public SGObject{	//wsのThapticObjみたいなもの
 public:
@@ -45,6 +54,8 @@ public:
 	
 	UTRef<PHSolid>	solid;
 	UTString		filename;
+
+	std::vector<PHWHapticSource> hsrc;
 };
 typedef std::vector<UTRef<PHWaterRegistanceMap> > PHWaterRegistanceMaps;
 
