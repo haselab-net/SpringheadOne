@@ -807,6 +807,15 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 				}
 				vtxHsrcMap[i] = &hsrc[minId];
 			}
+			//	dirHsrcMap ‚ğ‰Šú‰»	the, phi ‚ğ—^‚¦‚é‚ÆÅ‹ß–T‚Ìhsrc‚ğ•Ô‚·D
+			const int NTHETA=30;
+			const int NPHI=30;
+			for(int ith = 0; ith < NTHETA; ++ith){
+				for(int iphi = 0; iphi < NTHETA; ++iphi){
+
+				}	
+			}
+
 		}else{
 			DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
 		}
