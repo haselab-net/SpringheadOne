@@ -62,6 +62,7 @@ public:
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual void Loaded(SGScene* scene);
 	
+	UTRef<SGFrame>	frame;
 	UTRef<CDMesh>	mesh;
 	UTString		filename;
 	std::vector<PHWHapticSource> hsrc;

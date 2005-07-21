@@ -161,6 +161,10 @@ public:
 	//@}
 	///	ロード後，参照の解決が終わってから呼び出す関数．
 	void Loaded(SGScene* scene);
+
+	///	子フレームを含めて，すべてのContactsを列挙する
+	void EnumContents(SGObjects& objs);
+	void EnumContents(SGObjects& objs, SGFrames& frames);
 };
 
 }

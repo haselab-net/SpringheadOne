@@ -7,7 +7,6 @@ Scene {
 		0.01;	#	シミュレーションの時間刻み	dt
 		0.99;	#	速度の減衰率．1秒間に減衰する割合
 	}
-	
 	SolidContainer{				#	剛体を入れておくコンテナ
 		Solid soBlock1{			#	1つ目の剛体
 			100.0;				#	質量
@@ -31,11 +30,12 @@ Scene {
 		{water1}				#	水オブジェクトのの名前
 		{soBlock1}				#	接触する剛体の名前
 
-		WaterRegistanceMap{
+		WaterRegistanceMap wrm1{
 			"canoe.ffm";
-			{Mesh_kayak}		#	適用するメッシュの名前．
+			{frKayak}		#	適用するメッシュの名前．
 		}
 	}
+
 	Light8{						#	光源
 		3;										#	1:点 2:スポット 3:方向 光源
 		0.900000;0.900000;0.900000;0.900000;;	#	Diffuse		光の色
@@ -86,7 +86,7 @@ Scene {
 			0.0, 0.0, 1.0, 0.0,
 			0.0, 0.0, 0.0, 1.0;;
 		}
-		Frame{
+		Frame frKayak{
 			FrameTransformMatrix  {
 				0.0, 0.0, 1.0, 0.0,
 				0.0, 1.0, 0.0, 0.0,

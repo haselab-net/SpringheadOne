@@ -118,6 +118,21 @@ void SGFrame::Loaded(SGScene* scene)
 		ChildObject(i)->Loaded(scene);
 }
 
+void SGFrame::EnumContents(SGObjects& objs){
+	objs.insert(objs.end(), contents.begin(), contents.end());
+	for(SGFrames::iterator it = children.begin(); it!=children.end(); ++it){
+		(*it)->EnumContents(objs);
+	}
+}
+void SGFrame::EnumContents(SGObjects& objs, SGFrames& frms){
+	objs.insert(objs.end(), contents.begin(), contents.end());
+	for(int i=0; i<contents.size(); ++i) frms.push_back(this);
+	for(SGFrames::iterator it = children.begin(); it!=children.end(); ++it){
+		(*it)->EnumContents(objs, frms);
+	}
+}
+
+
 //----------------------------------------------------------------------------
 //	FileIO
 class SGFrameLoader:public FIObjectLoader<SGFrame>{

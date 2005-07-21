@@ -764,29 +764,48 @@ DEF_REGISTER_BOTH(PHWaterContactEngine);
 SGOBJECTIMP(PHWaterRegistanceMap, SGObject);
 
 bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
-	if(DCAST(CDMesh, o)){
-		mesh = DCAST(CDMesh, o);
-		//	vtxHsrcMap を初期化
-		vtxHsrcMap.resize(mesh->vertices.size());
-		for(int i=0; i<mesh->vertices.size(); ++i){
-			float minDist = 1e10f;
-			int minId = -1;
-			for(int j=0; j<hsrc.size(); ++j){
-				Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
-				float dist_n = dist.norm();
-				if (dist_n < minDist){
-					minDist = dist_n;
-					minId = i;
-				}
-			}
-			vtxHsrcMap[i] = &hsrc[minId];
-		}
+	if(DCAST(SGFrame, o)){
+		frame = DCAST(SGFrame, o);
 		return true;
 	}
 	return false;
 }
 
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
+	//	フレームからCDMeshを取り出す．
+	if (frame){
+		SGObjects objs;
+		frame->EnumContents(objs);
+		for(SGObjects::iterator it = objs.begin(); it != objs.end(); ++it){
+			CDMesh* m = DCAST(CDMesh, *it);
+			if (m){
+				if (mesh) {
+					DSTR << "Don't put multiple meshes in the frame for WaterRegistanceMap";
+					exit(-1);
+				}
+				mesh = m;
+			}
+		}
+		if (mesh){
+			//	vtxHsrcMap を初期化
+			vtxHsrcMap.resize(mesh->vertices.size());
+			for(int i=0; i<mesh->vertices.size(); ++i){
+				float minDist = 1e10f;
+				int minId = -1;
+				for(int j=0; j<hsrc.size(); ++j){
+					Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
+					float dist_n = dist.norm();
+					if (dist_n < minDist){
+						minDist = dist_n;
+						minId = i;
+					}
+				}
+				vtxHsrcMap[i] = &hsrc[minId];
+			}
+		}else{
+			DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
+		}
+	}
 	//FILE* fp = fopen(filename.c_str(), "rb");
 	//if(!fp)return;
     
