@@ -45,6 +45,7 @@ void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
 	frm = NULL;
 	for(int i=0; i < e->frms.size(); ++i){
+		if (!e->frms[i]->mesh) e->frms[i]->InitMesh();
 		if (e->frms[i]->mesh == mesh){
 			frm = e->frms[i];
 			break;
@@ -520,17 +521,20 @@ struct PHWConvexCalc{
 
 		Vec3f vtxVel[3];
 		float vel[3];
+		float pres[3];
 		for(int i=0; i<3; ++i){
 			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter));
 			vel[i] = -vtxVel[i] * normal;
-			depth[i] += pressure[i] / (water->density * water->gravity);
+			pres[i] = pressure[i] / (water->density * water->gravity);
+			assert(abs(pres[i]) < 1.0f);
 		}
-		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normalS;
+
+		Vec3f volume = (1.0f/6.0f) * (depth[0]+pres[0] + depth[1]+pres[1] + depth[2]+pres[2]) * normalS;
 		Vec3f velInt = (1.0f/6.0f) * (vel[0] + vel[1] + vel[2]) * normalS;
 		Vec3f volumeMom = (
-					((1.0f/12.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[0]
-				+	((1.0f/24.0f)*depth[0] + (1.0f/12.0f)*depth[1] + (1.0f/24.0f)*depth[2]) * p[1]
-				+	((1.0f/24.0f)*depth[0] + (1.0f/24.0f)*depth[1] + (1.0f/12.0f)*depth[2]) * p[2]
+					((1.0f/12.0f)*(depth[0]+pres[0]) + (1.0f/24.0f)*(depth[1]+pres[1]) + (1.0f/24.0f)*(depth[2]+pres[2])) * p[0]
+				+	((1.0f/24.0f)*(depth[0]+pres[0]) + (1.0f/12.0f)*(depth[1]+pres[1]) + (1.0f/24.0f)*(depth[2]+pres[2])) * p[1]
+				+	((1.0f/24.0f)*(depth[0]+pres[0]) + (1.0f/24.0f)*(depth[1]+pres[1]) + (1.0f/12.0f)*(depth[2]+pres[2])) * p[2]
 			  ) ^ normalS;
 		Vec3f velIntMom = (
 					((1.0f/12.0f)*vel[0] + (1.0f/24.0f)*vel[1] + (1.0f/24.0f)*vel[2]) * p[0]
@@ -721,11 +725,11 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.pressure.resize(geo->mesh->vertices.size());
 			convCalc.height.resize(geo->mesh->vertices.size());
 			convCalc.vtxs.resize(geo->mesh->vertices.size());
-			for(int i=0; i<geo->mesh->tvtxs.size(); ++i){
+			for(int i=0; i<geo->mesh->vertices.size(); ++i){
 				convCalc.vtxs[i] = convCalc.Awg * geo->mesh->vertices[i];	//	水座標系での頂点
 				convCalc.height[i] = water->LerpHeight(convCalc.vtxs[i].x, convCalc.vtxs[i].y);
 				convCalc.depth[i] = convCalc.height[i] - convCalc.vtxs[i].z;
-				//	Todo ここで，FRMから頂点での圧力補正を求める．
+				//	FRMから頂点での圧力補正を求める．
 				if (convCalc.depth[i] > 0 && geo->frm){
 					Vec3f prs, fri;
 					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure();
@@ -805,8 +809,8 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 }
 void PHWaterRegistanceMap::SetVelocity(Vec3f vel){
 	float l = Square(vel.x)+Square(vel.y);
-	float th = 0.5f*M_PI - atan2(l, vel.z);
-	float phi = atan2(vel.x, vel.y);
+	float th = 0.5f*M_PI - atan2(vel.z, l);
+	float phi = atan2(vel.y, vel.x);
 	float norm = vel.norm();
 	for(int i=0; i<hsrc.size(); ++i){
 		hsrc[i].SetVelocity(th, phi, norm);
@@ -1001,8 +1005,10 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
         pobj.vel.x = pobj.vel.y = pobj.vel.z = 0.0;
     }*/
 	fclose(fm);
+	InitFrmMap();
+}
 
-
+void PHWaterRegistanceMap::InitMesh(){
 	//-----------------------------------------------------------------------
 	//	HSrcと頂点・座標との対応表の作成
 	//
@@ -1020,82 +1026,84 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 				mesh = m;
 			}
 		}
-		if (mesh){
-			//	vtxHsrcMap を初期化
-			vtxHsrcMap.resize(mesh->vertices.size());
-			for(int i=0; i<mesh->vertices.size(); ++i){
+	}
+}
+void PHWaterRegistanceMap::InitFrmMap(){
+	if (mesh){
+		//	vtxHsrcMap を初期化
+		vtxHsrcMap.resize(mesh->vertices.size());
+		for(int i=0; i<mesh->vertices.size(); ++i){
+			float minDist = 1e10f;
+			int minId = -1;
+			for(int j=0; j<hsrc.size(); ++j){
+				Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
+				float dist_n = dist.norm();
+				if (dist_n < minDist){
+					minDist = dist_n;
+					minId = j;
+				}
+			}
+			vtxHsrcMap[i] = &hsrc[minId];
+		}
+
+		//	方向とhsrcのマップの初期化
+		dirHsrcMap.resize(NTHETA * NPHI);
+		CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces.front());
+		assert(poly);
+		//	dirHsrcMap を初期化	the, phi を与えると最近傍のhsrcを返す．
+		//	theta : 緯度 (0北極 - NTHETA南極)
+		//	phi:	経度 (0-NPHIで1周)
+		float theta = dTheta*0.5;
+		for(int ith = 0; ith < NTHETA; ++ith){
+			float phi = dPhi*0.5;
+			for(int iphi = 0; iphi < NPHI; ++iphi){
+				Vec3f dir;
+				float th = M_PI*0.5f-theta;
+				dir.z = sin(th);
+				dir.x = cos(phi) * cos(th);
+				dir.y = sin(phi) * cos(th);
+				Vec3f crossPoint;
+				for(CDFaces::iterator itf = poly->faces.begin(); itf != poly->faces.end(); ++itf){
+					CDFace& face = *itf;
+					int i=0;
+					for(; i<3; ++i){
+						Vec3f ns = poly->base[face.vtxs[i]] ^ poly->base[face.vtxs[(i+1)%3]];
+						if (dir*ns < 0) break;
+					}
+					if (i == 3){	//	dirが3角形の中
+						Vec3f n = (poly->base[face.vtxs[2]] - poly->base[face.vtxs[0]]) ^ (poly->base[face.vtxs[1]] - poly->base[face.vtxs[0]]);
+						n.unitize();
+						float dist = n * poly->base[face.vtxs[0]];
+						float mul = dist / (dir*n);
+						crossPoint = dir*mul;
+						assert(abs(n*(crossPoint - poly->base[face.vtxs[0]])) < 1e-6f);
+						break;
+					}
+				}
 				float minDist = 1e10f;
 				int minId = -1;
-				for(int j=0; j<hsrc.size(); ++j){
-					Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
-					float dist_n = dist.norm();
-					if (dist_n < minDist){
-						minDist = dist_n;
+				for(int i=0; i<hsrc.size(); ++i){
+					float dist = (crossPoint - hsrc[i].GetPos()).norm();
+					if (dist < minDist){
+						minDist = dist;
 						minId = i;
 					}
 				}
-				vtxHsrcMap[i] = &hsrc[minId];
+				dirHsrcMap[ith*NPHI+iphi] = &hsrc[minId];
+				phi += dPhi;
 			}
-
-			//	方向とhsrcのマップの初期化
-			dirHsrcMap.resize(NTHETA * NPHI);
-			CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces.front());
-			assert(poly);
-			//	dirHsrcMap を初期化	the, phi を与えると最近傍のhsrcを返す．
-			//	theta : 緯度 (0北極 - NTHETA南極)
-			//	phi:	経度 (0-NPHIで1周)
-			float theta = dTheta*0.5;
-			for(int ith = 0; ith < NTHETA; ++ith){
-				float phi = dPhi*0.5;
-				for(int iphi = 0; iphi < NPHI; ++iphi){
-					Vec3f dir;
-					float th = M_PI*0.5f-theta;
-					dir.z = sin(th);
-					dir.x = cos(phi) * cos(th);
-					dir.y = sin(phi) * cos(th);
-					Vec3f crossPoint;
-					for(CDFaces::iterator itf = poly->faces.begin(); itf != poly->faces.end(); ++itf){
-						CDFace& face = *itf;
-						int i=0;
-						for(; i<3; ++i){
-							Vec3f ns = poly->base[face.vtxs[i]] ^ poly->base[face.vtxs[(i+1)%3]];
-							if (dir*ns < 0) break;
-						}
-						if (i == 3){	//	dirが3角形の中
-							Vec3f n = (poly->base[face.vtxs[2]] - poly->base[face.vtxs[0]]) ^ (poly->base[face.vtxs[1]] - poly->base[face.vtxs[0]]);
-							n.unitize();
-							float dist = n * poly->base[face.vtxs[0]];
-							float mul = dist / (dir*n);
-							crossPoint = dir*mul;
-							assert(abs(n*(crossPoint - poly->base[face.vtxs[0]])) < 1e-6f);
-							break;
-						}
-					}
-					float minDist = 1e10f;
-					int minId = -1;
-					for(int i=0; i<hsrc.size(); ++i){
-						float dist = (crossPoint - hsrc[i].GetPos()).norm();
-						if (dist < minDist){
-							minDist = dist;
-							minId = i;
-						}
-					}
-					dirHsrcMap[ith*NPHI+iphi] = &hsrc[minId];
-					phi += dPhi;
-				}
-				theta += dTheta;
-			}
-
-		}else{
-			DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
+			theta += dTheta;
 		}
+
+	}else{
+		DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
 	}
 }
 //	対応表を使って，pos に一番近いhsrcを求める
 PHWHapticSource* PHWaterRegistanceMap::FindHsrc(Vec3f pos){
 	float l = Square(pos.x)+Square(pos.y);
-	float th = 0.5f*M_PI - atan2(l, pos.z);
-	float phi = atan2(pos.x, pos.y);
+	float th = 0.5f*M_PI - atan2(pos.z, l);
+	float phi = atan2(pos.y, pos.x);
 	if (phi<0) phi += 2*M_PI;
 	int ith = th / dTheta;
 	int iphi = phi / dPhi;

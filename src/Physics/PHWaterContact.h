@@ -66,6 +66,8 @@ public:
 	
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual void Loaded(SGScene* scene);
+	void InitMesh();
+	void InitFrmMap();
 	void SetVelocity(Vec3f vel);
 	
 	UTRef<SGFrame>	frame;
