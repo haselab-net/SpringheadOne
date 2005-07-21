@@ -1324,7 +1324,7 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 }
 
 float PHWHapticSource::GetPressure(){
-	return pressure * 100;
+	return pressure * 300;
 }
 
 }
