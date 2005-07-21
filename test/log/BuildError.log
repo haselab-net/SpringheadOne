@@ -1,4 +1,4 @@
-日付 : 2005.07.21 
+日付 : 2005.07.22 
  
 --- ビルドエラーのログ --- 
  
@@ -92,6 +92,10 @@ Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
   詳細な解析情報
     HIMouse.cpp(5): namespace Spr
     HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
+[C++ 警告] SGFrame.cpp(129): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    SGFrame.cpp(6): namespace Spr
+    SGFrame.cpp(127): 構文解析対象：void SGFrame::EnumContents(SGObjects &,SGFrames &)
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++ エラー] PHJoint.h(126): E2094 * 演算子が使われたがクラス Matrix3d では SpSubVec3d 型のための定義が存在しない
