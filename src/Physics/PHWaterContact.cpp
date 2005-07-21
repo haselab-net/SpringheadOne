@@ -679,9 +679,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			convCalc.Awginv = convCalc.Awg.inv();
 			Vec3f meshVel = convCalc.Awginv.Rot() * (convCalc.solidVel - Vec3f(water->velocity.x, water->velocity.y, 0));
-			float meshVelNorm = meshVel.norm();
-			float meshVelPhi = atan2(meshVel.x, meshVel.z);	//	経度
-			float meshVelTheta = atan2(sqrt(Square(meshVel.x)+Square(meshVel.z)), meshVel.y);
+			geo->frm->SetVelocity(meshVel);
 
 			//BBoxレベルでの接触チェック
 			//...
@@ -701,7 +699,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 				//	Todo ここで，FRMから頂点での圧力補正を求める．
 				if (convCalc.depth[i] > 0){
 					Vec3f prs, fri;
-					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure(meshVelTheta, meshVelPhi, meshVelNorm);
+					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure();
 				}else{
 					convCalc.pressure[i] = 0;
 				}
@@ -770,7 +768,14 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 	}
 	return false;
 }
-
+void PHWaterRegistanceMap::SetVelocity(Vec3f meshVel){
+	float meshVelNorm = meshVel.norm();
+	float meshVelPhi = atan2(meshVel.x, meshVel.z);	//	経度
+	float meshVelTheta = atan2(sqrt(Square(meshVel.x)+Square(meshVel.z)), meshVel.y);
+	for(int i=0; i<hsrc.size(); ++i){
+		hsrc[i].SetVelocity(meshVelTheta, meshVelPhi, meshVelNorm);
+	}
+}
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
 	//	フレームからCDMeshを取り出す．
 	if (frame){

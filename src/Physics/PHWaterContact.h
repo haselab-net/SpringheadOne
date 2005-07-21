@@ -48,10 +48,13 @@ public:
 	float v0;
 	Vec3f p, p0, p_ori, prs, n;
 	std::vector<PHWForceTexture> ftex;
-	//	流速が theta, phiの向きに， vel の大きさのときの，圧力と摩擦を求める
-	void GetData(Vec3f& prs, Vec3f&fri, float theta, float phi, float vel){}
-	//	実際は，ほぼ，prs だけが値を持つ． prs * normal が圧力補正値なので，これだけを返す．
-	float GetPressure(float theta, float phi, float vel){ return phi > 0 ? 0.1f : -0.1f;}
+	float pressure;
+
+	//	流速の設定	ここで，pressureを計算する．
+	//	実際は，ほぼ，prs だけが値を持ち， prs * normal が圧力補正値なので，これだけを計算する．
+	void SetVelocity(float theta, float phi, float v){ pressure=0.1f;}
+	//	
+	float GetPressure(){return pressure;}
 	//	Mesh座標系での Haptic Soruce の位置
 	Vec3f GetPos(){ return Vec3f(); }
 };
@@ -67,6 +70,7 @@ public:
 	UTString		filename;
 	std::vector<PHWHapticSource> hsrc;
 	std::vector<PHWHapticSource*> vtxHsrcMap;
+	void SetVelocity(Vec3f vel);
 };
 class  PHWaterRegistanceMaps: public std::vector<UTRef<PHWaterRegistanceMap> >{
 };
