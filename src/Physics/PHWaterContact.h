@@ -61,16 +61,27 @@ public:
 class PHWaterRegistanceMap : public SGObject{	//wsのThapticObjみたいなもの
 public:
 	SGOBJECTDEF(PHWaterRegistanceMap);
-
+	PHWaterRegistanceMap();
+	
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual void Loaded(SGScene* scene);
+	void SetVelocity(Vec3f vel);
 	
 	UTRef<SGFrame>	frame;
 	UTRef<CDMesh>	mesh;
 	UTString		filename;
 	std::vector<PHWHapticSource> hsrc;
 	std::vector<PHWHapticSource*> vtxHsrcMap;
-	void SetVelocity(Vec3f vel);
+	std::vector<PHWHapticSource*> dirHsrcMap;
+
+	//	ある座標の最近傍のhsrcを見つけるためのマップ
+	enum{
+		NTHETA=20,
+		NPHI=40,
+	} DirMapSize;
+	float dTheta, dPhi;	//	マップの間隔
+	//	最近棒のHsrcを見つける
+	PHWHapticSource* FindHsrc(Vec3f pos);
 };
 class  PHWaterRegistanceMaps: public std::vector<UTRef<PHWaterRegistanceMap> >{
 };

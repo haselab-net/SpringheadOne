@@ -761,6 +761,11 @@ DEF_REGISTER_BOTH(PHWaterContactEngine);
 
 SGOBJECTIMP(PHWaterRegistanceMap, SGObject);
 
+PHWaterRegistanceMap::PHWaterRegistanceMap(){
+	dTheta = M_PI / NTHETA;
+	dPhi = 2*M_PI / NTHETA;
+}
+
 bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 	if(DCAST(SGFrame, o)){
 		frame = DCAST(SGFrame, o);
@@ -768,58 +773,16 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 	}
 	return false;
 }
-void PHWaterRegistanceMap::SetVelocity(Vec3f meshVel){
-	float meshVelNorm = meshVel.norm();
-	float meshVelPhi = atan2(meshVel.x, meshVel.z);	//	経度
-	float meshVelTheta = atan2(sqrt(Square(meshVel.x)+Square(meshVel.z)), meshVel.y);
+void PHWaterRegistanceMap::SetVelocity(Vec3f vel){
+	float l = Square(vel.x)+Square(vel.y);
+	float th = 0.5f*M_PI - atan2(l, vel.z);
+	float phi = atan2(vel.x, vel.y);
+	float norm = vel.norm();
 	for(int i=0; i<hsrc.size(); ++i){
-		hsrc[i].SetVelocity(meshVelTheta, meshVelPhi, meshVelNorm);
+		hsrc[i].SetVelocity(th, phi, norm);
 	}
 }
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
-	//	フレームからCDMeshを取り出す．
-	if (frame){
-		SGObjects objs;
-		frame->EnumContents(objs);
-		for(SGObjects::iterator it = objs.begin(); it != objs.end(); ++it){
-			CDMesh* m = DCAST(CDMesh, *it);
-			if (m){
-				if (mesh) {
-					DSTR << "Don't put multiple meshes in the frame for WaterRegistanceMap";
-					exit(-1);
-				}
-				mesh = m;
-			}
-		}
-		if (mesh){
-			//	vtxHsrcMap を初期化
-			vtxHsrcMap.resize(mesh->vertices.size());
-			for(int i=0; i<mesh->vertices.size(); ++i){
-				float minDist = 1e10f;
-				int minId = -1;
-				for(int j=0; j<hsrc.size(); ++j){
-					Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
-					float dist_n = dist.norm();
-					if (dist_n < minDist){
-						minDist = dist_n;
-						minId = i;
-					}
-				}
-				vtxHsrcMap[i] = &hsrc[minId];
-			}
-			//	dirHsrcMap を初期化	the, phi を与えると最近傍のhsrcを返す．
-			const int NTHETA=30;
-			const int NPHI=30;
-			for(int ith = 0; ith < NTHETA; ++ith){
-				for(int iphi = 0; iphi < NTHETA; ++iphi){
-
-				}	
-			}
-
-		}else{
-			DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
-		}
-	}
 	//FILE* fp = fopen(filename.c_str(), "rb");
 	//if(!fp)return;
     
@@ -1008,6 +971,106 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
         pobj.vel.x = pobj.vel.y = pobj.vel.z = 0.0;
     }*/
 	fclose(fm);
+
+
+	//-----------------------------------------------------------------------
+	//	HSrcと頂点・座標との対応表の作成
+	//
+	//	フレームからCDMeshを取り出す．
+	if (frame){
+		SGObjects objs;
+		frame->EnumContents(objs);
+		for(SGObjects::iterator it = objs.begin(); it != objs.end(); ++it){
+			CDMesh* m = DCAST(CDMesh, *it);
+			if (m){
+				if (mesh) {
+					DSTR << "Don't put multiple meshes in the frame for WaterRegistanceMap";
+					exit(-1);
+				}
+				mesh = m;
+			}
+		}
+		if (mesh){
+			//	vtxHsrcMap を初期化
+			vtxHsrcMap.resize(mesh->vertices.size());
+			for(int i=0; i<mesh->vertices.size(); ++i){
+				float minDist = 1e10f;
+				int minId = -1;
+				for(int j=0; j<hsrc.size(); ++j){
+					Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
+					float dist_n = dist.norm();
+					if (dist_n < minDist){
+						minDist = dist_n;
+						minId = i;
+					}
+				}
+				vtxHsrcMap[i] = &hsrc[minId];
+			}
+
+			//	方向とhsrcのマップの初期化
+			dirHsrcMap.resize(NTHETA * NPHI);
+
+			CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces.front());
+			assert(poly);
+			//	dirHsrcMap を初期化	the, phi を与えると最近傍のhsrcを返す．
+			//	theta : 緯度 (0北極 - NTHETA南極)
+			//	phi:	経度 (0-NPHIで1周)
+			float theta = dTheta*0.5;
+			for(int ith = 0; ith < NTHETA; ++ith){
+				float phi = dPhi*0.5;
+				for(int iphi = 0; iphi < NPHI; ++iphi){
+					Vec3f dir;
+					float th = M_PI*0.5f-theta;
+					dir.z = sin(th);
+					dir.x = cos(phi) * cos(th);
+					dir.y = sin(phi) * cos(th);
+					Vec3f crossPoint;
+					for(CDFaces::iterator itf = poly->faces.begin(); itf != poly->faces.end(); ++itf){
+						CDFace& face = *itf;
+						int i=0;
+						for(; i<3; ++i){
+							Vec3f ns = poly->base[face.vtxs[i]] ^ poly->base[face.vtxs[(i+1)%3]];
+							if (dir*ns < 0) break;
+						}
+						if (i == 3){	//	dirが3角形の中
+							Vec3f n = (poly->base[face.vtxs[2]] - poly->base[face.vtxs[0]]) ^ (poly->base[face.vtxs[1]] - poly->base[face.vtxs[0]]);
+							n.unitize();
+							float dist = n * poly->base[face.vtxs[0]];
+							float mul = dist / (dir*n);
+							crossPoint = dir*mul;
+							assert(n*(crossPoint - poly->base[face.vtxs[0]]) == 0);
+							break;
+						}
+					}
+					float minDist = 1e10f;
+					int minId = -1;
+					for(int i=0; i<hsrc.size(); ++i){
+						float dist = (crossPoint - hsrc[i].GetPos()).norm();
+						if (dist < minDist){
+							minDist = dist;
+							minId = i;
+						}
+					}
+					dirHsrcMap[ith*NPHI*iphi] = &hsrc[minId];
+					phi += dPhi;
+				}
+				theta += dTheta;
+			}
+
+		}else{
+			DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
+		}
+	}
+}
+//	対応表を使って，pos に一番近いhsrcを求める
+PHWHapticSource* PHWaterRegistanceMap::FindHsrc(Vec3f pos){
+	float l = Square(pos.x)+Square(pos.y);
+	float th = 0.5f*M_PI - atan2(l, pos.z);
+	float phi = atan2(pos.x, pos.y);
+	if (phi<0) phi += 2*M_PI;
+	int ith = th / dTheta;
+	int iphi = phi / dPhi;
+	return dirHsrcMap[ith*NPHI+iphi];
 }
 
 typedef UTString String;
