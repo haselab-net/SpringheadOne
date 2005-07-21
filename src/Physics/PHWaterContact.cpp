@@ -472,7 +472,8 @@ struct PHWConvexCalc{
 		DRAWLINE(line[3], i+1, i, y, x, 0, 0, -lineWidth, 0, AddWaterHeight);
 	}
 	void AddWaterHeight(int ix, int iy, float alpha){
-		assert(0<=alpha && alpha<=1);
+		if(!frm) return;
+		assert(-1e-5<=alpha && alpha<=1+1e-5);
 		int cx = (ix + water->bound.x) % water->mx;
 		int cy = (iy + water->bound.y) % water->my;
 
@@ -482,7 +483,7 @@ struct PHWConvexCalc{
 		water->height[cx][cy] += prs*alpha / (water->density*water->gravity);
 	}
 	void SetWaterVelocityU(int ix, int iy, float alpha){
-		assert(0<=alpha && alpha<=1);
+		assert(-1e-5<=alpha && alpha<=1+1e-5);
 //		alpha = 1 - 1/(1+exp((alpha-0.5)*4));	//	シグモイド
 
 		int cx = (ix + water->bound.x) % water->mx;
@@ -495,7 +496,7 @@ struct PHWConvexCalc{
 		engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f * alpha);
 	}
 	void SetWaterVelocityV(int ix, int iy, float alpha){
-		assert(0<=alpha && alpha<=1);
+		assert(-1e-5<=alpha && alpha<=1+1e-5);
 //		alpha = 1 - 1/(1+exp((alpha-0.5)*4));	//	シグモイド
 
 		int cx = (ix + water->bound.x) % water->mx;
