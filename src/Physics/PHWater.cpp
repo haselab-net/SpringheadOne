@@ -460,13 +460,13 @@ void PHWater::RenderGL(SGFrame* fr, GLRender* render){
 
     // this function adjusts the boundary problem
 void PHWater::Bound(){
-	int bx1 = (bound.X()) % mx;
 	int bx1_ = (bound.X()+1) % mx;
+	int bx1 = (bound.X()) % mx;
 	int bx2 = (bound.X()-1+mx) % mx;
 	int bx2_ = (bound.X()-2+mx) % mx;
 
-	int by1 = (bound.Y()) % my;
 	int by1_ = (bound.Y()+1) % my;
+	int by1 = (bound.Y()) % my;
 	int by2 = (bound.Y()-1+my) %my;
 	int by2_ = (bound.Y()-2+my) % my;
 	

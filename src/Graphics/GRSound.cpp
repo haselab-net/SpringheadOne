@@ -237,6 +237,6 @@ HRESULT GRSound::loadWaveFile( SOUNDID id ,TCHAR* strFileName )
 HRESULT GRSound::freeDirectSound()
 {
 	SAFE_RELEASE(pDS);
-	DSTR << __FILE__ << "(" << __LINE__ << ") : " << "DirectSound‰ð•ú‚µ‚Ü‚µ‚½‚Á\n";
+//	DSTR << __FILE__ << "(" << __LINE__ << ") : " << "DirectSound‰ð•ú‚µ‚Ü‚µ‚½‚Á\n";
 	return S_OK;
 }

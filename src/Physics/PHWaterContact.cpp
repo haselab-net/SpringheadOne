@@ -526,7 +526,6 @@ struct PHWConvexCalc{
 			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter));
 			vel[i] = -vtxVel[i] * normal;
 			pres[i] = pressure[i] / (water->density * water->gravity);
-			assert(abs(pres[i]) < 1.0f);
 		}
 
 		Vec3f volume = (1.0f/6.0f) * (depth[0]+pres[0] + depth[1]+pres[1] + depth[2]+pres[2]) * normalS;
@@ -894,6 +893,7 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
             hsrc[i].dphi = dphi;
             hsrc[i].nthe = nthe;
             hsrc[i].nphi = nphi;
+            hsrc[i].ntex = ntex;
             hsrc[i].v0 = v0;
             
 			//hsrc[i].sym = sym;

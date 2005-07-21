@@ -352,7 +352,7 @@ SOURCE="$(SPRINGHEAD)\src\Framework\FrameworkMD.lib"
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Creature\CreatureMD.lib
+SOURCE="$(SPRINGHEAD)\src\Creature\CreatureMD.lib"
 
 !IF  "$(CFG)" == "DynaHaptic - Win32 MFC Debug"
 
@@ -538,7 +538,7 @@ SOURCE="$(SPRINGHEAD)\src\Framework\FrameworkM.lib"
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Creature\CreatureM.lib
+SOURCE="$(SPRINGHEAD)\src\Creature\CreatureM.lib"
 
 !IF  "$(CFG)" == "DynaHaptic - Win32 MFC Debug"
 
