@@ -20,6 +20,7 @@ class PHWaterRegistanceMap;
 class PHWaterContactEngine;
 class PHWGeometry : public UTRefCount{
 public:
+	PHWGeometry();
 	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
 	Vec3f			bbmin, bbmax;	//このジオメトリのBBOX
 	CDMesh*			mesh;

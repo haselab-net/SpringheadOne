@@ -33,12 +33,17 @@ void PHWSolid::EnumGeometries(SGFrame* f, PHWaterContactEngine* e){
 
 //----------------------------------------------------------------------------
 //PHWGeometry
+PHWGeometry::PHWGeometry(){
+	frm = NULL;
+	mesh = NULL;
+}
 void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 	frame = f;
 	mesh = g;
 	conveces.resize(g->conveces.size());
 	//	frm の割り当て
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
+	frm = NULL;
 	for(int i=0; i < e->frms.size(); ++i){
 		if (e->frms[i]->mesh == mesh){
 			frm = e->frms[i];
@@ -128,6 +133,7 @@ struct PHWConvexCalc{
 	std::vector<float> pressure;	//	FRMによる圧力補正
 	std::vector<float> height;		//	頂点での波高
 	std::vector<Vec3f> vtxs;		//	水座標系での頂点の座標
+	PHWaterRegistanceMap* frm;		//	frm
 	
 	//	凸形状単位のデータ
 	CDPolyhedron* poly;				//	対象の凸形状
@@ -432,7 +438,7 @@ struct PHWConvexCalc{
 				func(ix, iy, 1-dist*lineWidthInv);								\
 			}																	\
 		}
-
+		//	流速の境界条件
 		DRAWRECT(line[0].back(), -0.5f, 0, 0, lineWidth, -lineWidth, 0, SetWaterVelocityU);
 		DRAWRECT(line[1].back(), -0.5f, 0, 0, lineWidth, 0, lineWidth, SetWaterVelocityU);
 		DRAWRECT(line[2].back(), -0.5f, 0, -lineWidth, 0, 0, lineWidth, SetWaterVelocityU);
@@ -452,6 +458,28 @@ struct PHWConvexCalc{
 		DRAWLINE(line[1], i, i+1, y, x, -0.5f, 0,  0, lineWidth, SetWaterVelocityV);
 		DRAWLINE(line[2], i+1, i, x, y, 0, -0.5f,  0, lineWidth, SetWaterVelocityV);
 		DRAWLINE(line[3], i+1, i, y, x, -0.5f, 0, -lineWidth, 0, SetWaterVelocityV);
+
+
+		//	FRMを波高に適用
+		DRAWRECT(line[0].back(), 0, 0, 0, lineWidth, -lineWidth, 0, AddWaterHeight);
+		DRAWRECT(line[1].back(), 0, 0, 0, lineWidth, 0, lineWidth, AddWaterHeight);
+		DRAWRECT(line[2].back(), 0, 0, -lineWidth, 0, 0, lineWidth, AddWaterHeight);
+		DRAWRECT(line[3].back(), 0, 0, -lineWidth, 0, -lineWidth, 0, AddWaterHeight);
+	
+		DRAWLINE(line[0], i, i+1, x, y, 0, 0, -lineWidth, 0, AddWaterHeight);
+		DRAWLINE(line[1], i, i+1, y, x, 0, 0,  0, lineWidth, AddWaterHeight);
+		DRAWLINE(line[2], i+1, i, x, y, 0, 0,  0, lineWidth, AddWaterHeight);
+		DRAWLINE(line[3], i+1, i, y, x, 0, 0, -lineWidth, 0, AddWaterHeight);
+	}
+	void AddWaterHeight(int ix, int iy, float alpha){
+		assert(0<=alpha && alpha<=1);
+		int cx = (ix + water->bound.x) % water->mx;
+		int cy = (iy + water->bound.y) % water->my;
+
+		Vec3f p = Vec3f((ix+0.5f)*water->dh-water->rx, iy*water->dh-water->ry, water->height[cx][cy]) - solidCenter;
+		PHWHapticSource* hsrc = frm->FindHsrc(Awginv * p);
+		float prs = hsrc->GetPressure();
+		water->height[cx][cy] += prs*alpha / (water->density*water->gravity);
 	}
 	void SetWaterVelocityU(int ix, int iy, float alpha){
 		assert(0<=alpha && alpha<=1);
@@ -494,7 +522,7 @@ struct PHWConvexCalc{
 		for(int i=0; i<3; ++i){
 			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter));
 			vel[i] = -vtxVel[i] * normal;
-			depth[i] += pressure[i];
+			depth[i] += pressure[i] / (water->density * water->gravity);
 		}
 		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normalS;
 		Vec3f velInt = (1.0f/6.0f) * (vel[0] + vel[1] + vel[2]) * normalS;
@@ -679,7 +707,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			convCalc.Awginv = convCalc.Awg.inv();
 			Vec3f meshVel = convCalc.Awginv.Rot() * (convCalc.solidVel - Vec3f(water->velocity.x, water->velocity.y, 0));
-			geo->frm->SetVelocity(meshVel);
+			if (geo->frm) geo->frm->SetVelocity(meshVel);
 
 			//BBoxレベルでの接触チェック
 			//...
@@ -697,13 +725,14 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.height[i] = water->LerpHeight(convCalc.vtxs[i].x, convCalc.vtxs[i].y);
 				convCalc.depth[i] = convCalc.height[i] - convCalc.vtxs[i].z;
 				//	Todo ここで，FRMから頂点での圧力補正を求める．
-				if (convCalc.depth[i] > 0){
+				if (convCalc.depth[i] > 0 && geo->frm){
 					Vec3f prs, fri;
 					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure();
 				}else{
 					convCalc.pressure[i] = 0;
 				}
 			}
+			convCalc.frm = geo->frm;
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
 				if(!poly)continue;
@@ -1009,7 +1038,6 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 
 			//	方向とhsrcのマップの初期化
 			dirHsrcMap.resize(NTHETA * NPHI);
-
 			CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces.front());
 			assert(poly);
 			//	dirHsrcMap を初期化	the, phi を与えると最近傍のhsrcを返す．
@@ -1038,7 +1066,7 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 							float dist = n * poly->base[face.vtxs[0]];
 							float mul = dist / (dir*n);
 							crossPoint = dir*mul;
-							assert(n*(crossPoint - poly->base[face.vtxs[0]]) == 0);
+							assert(abs(n*(crossPoint - poly->base[face.vtxs[0]])) < 1e-6f);
 							break;
 						}
 					}
@@ -1051,7 +1079,7 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 							minId = i;
 						}
 					}
-					dirHsrcMap[ith*NPHI*iphi] = &hsrc[minId];
+					dirHsrcMap[ith*NPHI+iphi] = &hsrc[minId];
 					phi += dPhi;
 				}
 				theta += dTheta;
