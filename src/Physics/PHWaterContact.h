@@ -68,7 +68,7 @@ public:
 	virtual void Loaded(SGScene* scene);
 	void InitMesh();
 	void InitFrmMap();
-	void SetVelocity(Vec3f vel);
+	void SetVelocity(Vec3f vel, float t);
 	
 	UTRef<SGFrame>	frame;
 	UTRef<CDMesh>	mesh;

@@ -518,7 +518,7 @@ struct PHWConvexCalc{
 		Vec3f p = Vec3f((ix+0.5f)*water->dh-water->rx, iy*water->dh-water->ry, water->height[cx][cy]) - solidCenter;
 		PHWHapticSource* hsrc = frm->FindHsrc(Awginv * p);
 		float prs = hsrc->GetPressure();
-		water->height[cx][cy] += prs*alpha / (water->density*water->gravity);
+		water->height[cx][cy] += prs * alpha / (water->density*water->gravity);
 	}
 	void SetWaterVelocityU(int ix, int iy, float alpha){
 		assert(-1e-5<=alpha && alpha<=1+1e-5);
@@ -736,7 +736,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 				for(int i=0; i<frm->hsrc.size(); ++i){
 					buf.push_back(frm->hsrc[i].GetPos());
 				}
-				render->DrawDirect(GRRender::POINTS, buf.begin(), buf.end());
+				render->DrawDirect(GRRender::POINTS, &*(buf.begin()), &*(buf.end()));
 			}
 		}		
 	}
@@ -768,7 +768,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			convCalc.Awginv = convCalc.Awg.inv();
 			Vec3f meshVel = convCalc.Awginv.Rot() * (convCalc.solidVel - Vec3f(water->velocity.x, water->velocity.y, 0));
-			if (geo->frm) geo->frm->SetVelocity(meshVel);
+			if (geo->frm) geo->frm->SetVelocity(meshVel, s->GetTimeStep() * s->GetCount() / 10.0);
 
 			//BBoxレベルでの接触チェック
 			//...
@@ -863,13 +863,13 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 	}
 	return false;
 }
-void PHWaterRegistanceMap::SetVelocity(Vec3f vel){
+void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
 	float l = Square(vel.x)+Square(vel.y);
 	float th = 0.5f*M_PI - atan2(vel.z, l);
 	float phi = atan2(vel.y, vel.x);
 	float norm = vel.norm();
 	for(int i=0; i<hsrc.size(); ++i){
-		hsrc[i].SetVelocity(th, phi, vel, 0.0f);
+		hsrc[i].SetVelocity(th, phi, vel, t);
 	}
 }
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
