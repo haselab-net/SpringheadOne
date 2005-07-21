@@ -291,6 +291,28 @@ struct PHWConvexCalc{
 		if (iLeft == iRight && curY > border[iLeft].y-0.5) return false;
 		return true;
 	}
+	bool NextLine(){
+		curY++;
+		left += dLeft;
+		right += dRight;
+		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		while (border[iLeft].y < curY && iLeft!= iRight){
+			Vec2f last = border[iLeft];
+			-- iLeft;
+			Vec2f delta = border[iLeft] - last;
+			dLeft = delta.x / delta.y;
+			left = last.x + dLeft * (curY-last.y);
+		}
+		while (border[iRight].y < curY && iLeft!= iRight){
+			Vec2f last = border[iRight];
+			++iRight;
+			Vec2f delta = border[iRight] - last;
+			dRight = delta.x / delta.y;
+			right = last.x + dRight * (curY-last.y);
+		}
+		if (iLeft == iRight && curY > border[iLeft].y) return false;
+		return true;
+	}
 	//	内部を塗りつぶし，アンチエイリアスのふち付
 	void CalcBorder(){
 		border.clear();
@@ -370,6 +392,21 @@ struct PHWConvexCalc{
 				water->v[cx][cy] = v.y;
 			}
 		}
+		//	高さにFRMの補正を加える
+		curY = border[0].y;
+		if (curY < -1) curY = -1;
+		iLeft = border.size()-1;
+		iRight = 0;
+		while(NextLine()){	//	onlineを含めて塗りつぶし
+			int xStart, xEnd;
+			xStart = ceil(left);
+			xEnd = right;
+			if (xStart < 0) xStart = 0;
+			if (xEnd > water->mx-1) xEnd = water->mx-1;
+			for(int x = xStart; x<=xEnd; ++x){
+				AddWaterHeight(x, curY, 1);
+			}
+		}
 
 		//	border の周りに，ぼかしを描画する．
 		//	準備のため，まず border を上右下左に4分割する．
@@ -412,7 +449,7 @@ struct PHWConvexCalc{
 
 		//	凸包の外側のぼかし
 		//	onlineは書かない．
-		const float lineWidth = 3.0f;	//	線の幅
+		const float lineWidth = 2.0f;	//	線の幅
 		const float lineWidthInv = 1/lineWidth;
 		
 		//	線の描画
@@ -1287,7 +1324,7 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 }
 
 float PHWHapticSource::GetPressure(){
-	return pressure * 500;
+	return pressure * 100;
 }
 
 }
