@@ -47,15 +47,15 @@ public:
 	int	  nthe, nphi;
 	int   ntex;
 	float v0;
-	Vec3f p, p0, p_ori, prs, n;
+	Vec3f pos, normal;	//p0, p_oriは無視してよし．prsはhapticsourceに加わる圧力
 	std::vector<PHWForceTexture> ftex;
 	float pressure;
 
 	//	流速の設定	ここで，pressureを計算する．
 	//	実際は，ほぼ，prs だけが値を持ち， prs * normal が圧力補正値なので，これだけを計算する．
-	void SetVelocity(float theta, float phi, float v){ pressure=0.1f;}
+	void SetVelocity(float theta, float phi, Vec3f v, float t);
 	//	
-	float GetPressure(){return pressure;}
+	float GetPressure();
 	//	Mesh座標系での Haptic Soruce の位置
 	Vec3f GetPos(){ return Vec3f(); }
 };

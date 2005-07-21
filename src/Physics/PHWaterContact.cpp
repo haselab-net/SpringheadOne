@@ -813,7 +813,7 @@ void PHWaterRegistanceMap::SetVelocity(Vec3f vel){
 	float phi = atan2(vel.y, vel.x);
 	float norm = vel.norm();
 	for(int i=0; i<hsrc.size(); ++i){
-		hsrc[i].SetVelocity(th, phi, norm);
+		hsrc[i].SetVelocity(th, phi, vel, 0.0f);
 	}
 }
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
@@ -899,18 +899,16 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 			//hsrc[i].sym = sym;
             //hsrc[i].vx = hsrc[i].vy = hsrc[i].vz = hsrc[i].v = hsrc[i].tcoord = 0.0;
             
-			fread(&p, sizeof(Vec3f), 1, fm);
-            fread(&normal, sizeof(Vec3f), 1, fm);
+			fread(&hsrc[i].pos, sizeof(Vec3f), 1, fm);
+            fread(&hsrc[i].normal, sizeof(Vec3f), 1, fm);
             //p += d;
             //p.X() *= s.X(); p.Y() *= s.Y(); p.Z() *= s.Z();
-			if(nhsrc == 1){normal.X() = 1.0; normal.Y() = 0.0; normal.Z() = 0.0;}
-            hsrc[i].p = hsrc[i].p0 = hsrc[i].p_ori = p;
-            hsrc[i].n = normal;
-            
-			hsrc[i].prs.clear();
+			//if(nhsrc == 1){normal.X() = 1.0; normal.Y() = 0.0; normal.Z() = 0.0;}
+            //hsrc[i].p = hsrc[i].p0 = hsrc[i].p_ori = p;
+            //hsrc[i].n = normal;            
+			//hsrc[i].prs.clear();
 
-			//n = ntexじゃないとつじつまが合わない
-            hsrc[i].ftex.resize(ntex);
+			hsrc[i].ftex.resize(ntex);
             for(int j = 0; j < n; j++) {
                 int k = id[j];
                 hsrc[i].ftex[k].ndata = ndata;
@@ -1158,6 +1156,116 @@ public:
 	}
 };
 DEF_REGISTER_BOTH(PHWaterRegistanceMap);
+
+void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
+	/*Trealf the, Trealf phi,		//流速の極座標
+	Trealf t,					//恐らく未使用
+	Tpoint3f *vp,				//流速
+	TforceSet *fset,			//FRM
+	Tpoint3f *pres,				//返すべき圧力
+	Tpoint3f *fric)				//返すべき摩擦*/
+
+	//int ithe, iphi, k00, k01, k10, k11;
+    //Tpoint3f prs0, prs1, prs, fri0, fri1, fri, uu, vv, ww;
+    //Trealf ft, fp, fthe, fphi;
+    //TfluidForceTex *frc;
+	
+	Vec3f uu, vv, ww;
+
+	vv = -v;
+	uu = Vec3f(vv.y, -vv.x, 0.0).unit();
+	//uun = uu.norm();
+    /*if(a < 0.000000001) {
+        if(vv.z > 0.) {
+			uu = Vec3d(1.0, 0.0, 0.0);
+			ww = Vec3d(0.0, -1.0, 0.0);
+        } else {
+			uu = Vec3d(1.0, 0.0, 0.0);
+			ww = Vec3d(0.0, 1.0, 0.0);
+        }
+    } else {*/
+    //a = sqrt(a);
+    //uu.x /= a; uu.y /=a;
+	ww = Vec3f( uu.y * vv.z,
+			   -uu.x * vv.z,
+			    uu.x * vv.y - uu.y * vv.x).unit();
+    //}
+
+	//the, phi -> 変位
+	//dthe, dphi -> DBの格子幅
+	//ithe, iphi -> DBのインデックス
+	//fthe, fphi -> 変位を格子幅で正規化したもの
+	//ft, fp -> 一番近い格子からの変位[0, 1]
+    float	fthe = the / dthe;
+    float	fphi = phi / dphi;
+    int		ithe = (int)fthe;
+    int		iphi = (int)fphi;
+    float	ft = fthe - ithe;
+    float	fp = fphi - iphi;
+
+	int k00, k01, k10, k11;
+    if(ithe > 0) {
+        k00 = (ithe - 1) * nphi + (iphi + 1);
+		k01 = (iphi + 1 < nphi) ? k00 + 1 : k00 - iphi;
+		k10 = std::min(k00 + nphi, ntex - 1);
+		k11 = std::min(k10 + 1, ntex - 1);
+		//
+        //if(k10 >= ntex) k10 = ntex - 1;
+        //if(k11 >= ntex) k11 = ntex - 1;
+    } else {
+        k00 = 0;
+        k01 = 0;
+        k10 = iphi + 1;
+		k11 = (k10 < nphi) ? k10 + 1 : 1;
+    }
+
+    Vec3f prs00, prs01, prs10, prs11, fri00, fri01, fri10, fri11;
+	Vec3f prs0, prs1, fri0, fri1;
+    Vec3f prs, fri, pres, fric;
+    //frc = fset->frc;
+	
+	int idx;
+	if(ftex[k00].ndata > 0) {
+		idx = (int)(t*ftex[k00].rate) % ftex[k00].ndata;
+		prs00 = ftex[k00].prs[idx];
+		fri00 = ftex[k00].fri[idx];
+    }
+    if(ftex[k01].ndata > 0) {
+		idx = (int)(t*ftex[k01].rate) % ftex[k01].ndata;
+		prs01 = ftex[k01].prs[idx];
+		fri01 = ftex[k01].fri[idx];
+    }
+    if(ftex[k10].ndata > 0) {
+		idx = (int)(t*ftex[k10].rate) % ftex[k10].ndata;
+		prs10 = ftex[k10].prs[idx];
+        fri10 = ftex[k10].fri[idx];
+    }
+    if(ftex[k11].ndata > 0) {
+		idx = (int)(t*ftex[k11].rate) % ftex[k11].ndata;
+		prs11 = ftex[k11].prs[idx];
+        fri11 = ftex[k11].fri[idx];
+    }
+
+	Matrix3f mat;
+	mat.col(0) = uu;
+	mat.col(1) = vv;
+	mat.col(2) = ww;
+	prs0 = prs00 * (1.0 - ft) + prs10 * ft;
+	prs1 = prs01 * (1.0 - ft) + prs11 * ft;
+	prs  = prs0 * (1.0 - fp) + prs1 * fp;
+    pres = - mat * prs;
+    
+	fri0 = fri00 * (1.0 - ft) + fri10 * ft;
+    fri1 = fri01 * (1.0 - ft) + fri11 * ft;
+	fri = fri0 * (1.0 - fp) + fri1 * fp;
+	fric = mat * fri;
+	
+	pressure = prs * normal;
+}
+
+float PHWHapticSource::GetPressure(){
+	return pressure;
+}
 
 }
 
