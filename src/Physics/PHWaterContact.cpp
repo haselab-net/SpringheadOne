@@ -909,6 +909,9 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 			//hsrc[i].prs.clear();
 
 			hsrc[i].ftex.resize(ntex);
+			for(int j = 0; j < ntex; j++){
+				hsrc[i].ftex[j].ndata = 0;
+			}
             for(int j = 0; j < n; j++) {
                 int k = id[j];
                 hsrc[i].ftex[k].ndata = ndata;
