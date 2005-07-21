@@ -57,7 +57,7 @@ public:
 	//	
 	float GetPressure();
 	//	MeshÀ•WŒn‚Å‚Ì Haptic Soruce ‚ÌˆÊ’u
-	Vec3f GetPos(){ return Vec3f(); }
+	Vec3f GetPos(){ return pos; }
 };
 class PHWaterRegistanceMap : public SGObject{	//ws‚ÌThapticObj‚İ‚½‚¢‚È‚à‚Ì
 public:

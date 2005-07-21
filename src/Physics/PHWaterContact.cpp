@@ -645,6 +645,8 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	if (!render || !render->CanDraw()) return;
 	render->SetModelMatrix(water->GetPosture());
 	render->SetDepthTest(false);
+	
+	//	‹«ŠEü‚Ì•`‰æ
 	GRMaterialData mat(Vec4f(0, 0, 1, 0.5f), 2);
 	render->SetMaterial(mat);
 	render->DrawDirect(GRRender::TRIANGLES, &*(tris.begin()), &*(tris.end()));
@@ -684,6 +686,24 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		if (vtxs.size()) d3r->device->DrawPrimitiveUP(D3DPT_LINELIST, vtxs.size()/2, &*(vtxs.begin()), sizeof(PHWCE_VtxFVF));
 		d3r->device->SetRenderState(D3DRS_LIGHTING, true);
 	}
+	//	hsrc‚Ì•`‰æ
+	render->SetMaterial(GRMaterialData(Vec4f(1,1,0,1),2));
+	for(int i=0; i<solids.size(); ++i){
+		for(int j=0; j<solids[i]->geometries.size(); ++j){
+			SGFrame* frame =  solids[i]->geometries[j]->frame;
+			PHWaterRegistanceMap* frm = solids[i]->geometries[j]->frm;
+			if (frm && frame){
+				render->SetModelMatrix(frame->GetWorldPosture());
+				std::vector<Vec3f> buf;
+				for(int i=0; i<frm->hsrc.size(); ++i){
+					buf.push_back(frm->hsrc[i].GetPos());
+					DSTR << "hsrc " << buf.back() << std::endl;
+				}
+				render->DrawDirect(GRRender::POINTS, buf.begin(), buf.end());
+			}
+		}		
+	}
+
 	render->SetDepthTest(true);
 }
 void PHWaterContactEngine::Step(SGScene* s){
@@ -1037,7 +1057,7 @@ void PHWaterRegistanceMap::InitFrmMap(){
 			float minDist = 1e10f;
 			int minId = -1;
 			for(int j=0; j<hsrc.size(); ++j){
-				Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
+				Vec3f dist = mesh->vertices[i] - hsrc[j].GetPos();
 				float dist_n = dist.norm();
 				if (dist_n < minDist){
 					minDist = dist_n;
@@ -1267,7 +1287,7 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 }
 
 float PHWHapticSource::GetPressure(){
-	return pressure;
+	return pressure * 100;
 }
 
 }
