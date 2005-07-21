@@ -383,28 +383,28 @@ struct PHWConvexCalc{
 		for(;i<border.size(); ++i){
 			line[0].push_back(border[i]);
 		}
-		for(i=0;i<border.size(); ++i){
+		for(i=0;i<border.size()-1; ++i){
 			Vec2f d = border[i+1] - border[i];
 			if (d.x<0 || d.x<abs(d.y)) break;
 			line[0].push_back(border[i+1]);
 		}
 		//	âEÇÃêÇíºê¸
 		line[1].push_back(border[i]);
-		for(;i<border.size(); ++i){
+		for(;i<border.size()-1; ++i){
 			Vec2f d = border[i+1] - border[i];
 			if (d.y<0 || abs(d.x)>d.y) break;
 			line[1].push_back(border[i+1]);
 		}
 		//	â∫ÇÃêÖïΩê¸
 		line[2].push_back(border[i]);
-		for(;i<border.size(); ++i){
+		for(;i<border.size()-1; ++i){
 			Vec2f d = border[i+1] - border[i];
 			if (d.x>0 || -d.x<abs(d.y)) break;
 			line[2].push_back(border[i+1]);
 		}
 		//	ç∂ÇÃêÇíºê¸
 		line[3].push_back(border[i]);
-		for(;i<border.size(); ++i){
+		for(;i<border.size()-1; ++i){
 			Vec2f d = border[i+1] - border[i];
 			if (d.y>0 || abs(d.x)>-d.y) break;
 			line[3].push_back(border[i+1]);
@@ -688,6 +688,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	}
 	//	hsrcÇÃï`âÊ
 	render->SetMaterial(GRMaterialData(Vec4f(1,1,0,1),2));
+	render->SetLineWidth(10);
 	for(int i=0; i<solids.size(); ++i){
 		for(int j=0; j<solids[i]->geometries.size(); ++j){
 			SGFrame* frame =  solids[i]->geometries[j]->frame;
@@ -697,7 +698,6 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 				std::vector<Vec3f> buf;
 				for(int i=0; i<frm->hsrc.size(); ++i){
 					buf.push_back(frm->hsrc[i].GetPos());
-					DSTR << "hsrc " << buf.back() << std::endl;
 				}
 				render->DrawDirect(GRRender::POINTS, buf.begin(), buf.end());
 			}
@@ -1287,7 +1287,7 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 }
 
 float PHWHapticSource::GetPressure(){
-	return pressure * 100;
+	return pressure * 500;
 }
 
 }
