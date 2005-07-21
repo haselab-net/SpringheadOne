@@ -16,13 +16,16 @@ class CDMesh;
 //typedef std::vector<UTRef<CDConvex> > CDConveces;
 
 //ジオメトリが持つ凸多面体をリストアップしたもの
+class PHWaterRegistanceMap;
+class PHWaterContactEngine;
 class PHWGeometry : public UTRefCount{
 public:
 	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
 	Vec3f			bbmin, bbmax;	//このジオメトリのBBOX
 	CDMesh*			mesh;
+	PHWaterRegistanceMap* frm;		///
 	CDGeometries	conveces;		//このジオメトリを構成する凸多面体
-	void Set(SGFrame* f, CDMesh* g);
+	void Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e);
 };
 typedef std::vector<UTRef<PHWGeometry> >	PHWGeometries;
 
@@ -45,6 +48,12 @@ public:
 	float v0;
 	Vec3f p, p0, p_ori, prs, n;
 	std::vector<PHWForceTexture> ftex;
+	//	流速が theta, phiの向きに， vel の大きさのときの，圧力と摩擦を求める
+	void GetData(Vec3f& prs, Vec3f&fri, float theta, float phi, float vel){}
+	//	実際は，ほぼ，prs だけが値を持つ． prs * normal が圧力補正値なので，これだけを返す．
+	float GetPressure(float theta, float phi, float vel){ return phi > 0 ? 0.1f : -0.1f;}
+	//	Mesh座標系での Haptic Soruce の位置
+	Vec3f GetPos(){ return Vec3f(); }
 };
 class PHWaterRegistanceMap : public SGObject{	//wsのThapticObjみたいなもの
 public:
@@ -53,13 +62,13 @@ public:
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual void Loaded(SGScene* scene);
 	
-	Affinef			posture;
-	UTRef<PHSolid>	solid;
+	UTRef<CDMesh>	mesh;
 	UTString		filename;
-
 	std::vector<PHWHapticSource> hsrc;
+	std::vector<PHWHapticSource*> vtxHsrcMap;
 };
-typedef std::vector<UTRef<PHWaterRegistanceMap> > PHWaterRegistanceMaps;
+class  PHWaterRegistanceMaps: public std::vector<UTRef<PHWaterRegistanceMap> >{
+};
 
 class PHWSolid : public UTRefCount{
 public:
@@ -68,8 +77,8 @@ public:
 	//UTRef<PHWRegistanceMap> frm;
 	Affinef				posture;	//剛体フレームのワールドフレームに対するposture
 	PHWGeometries		geometries;	//剛体のフレームの形状データ
-	void Init();
-	void EnumGeometries(SGFrame*);
+	void Init(PHWaterContactEngine* e);
+	void EnumGeometries(SGFrame*, PHWaterContactEngine* e);
 };
 typedef std::vector<UTRef<PHWSolid> >		PHWSolids;
 

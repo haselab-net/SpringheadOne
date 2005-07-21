@@ -12,32 +12,39 @@ namespace Spr{;
 
 //----------------------------------------------------------------------------
 //PHWSolid
-void PHWSolid::Init(){
+void PHWSolid::Init(PHWaterContactEngine* e){
 	frame = solid->GetFrame();
 	//SGFrame::contentsからCDGeometryの派生クラスオブジェクトを探す
-	EnumGeometries(frame);
+	EnumGeometries(frame, e);
 }
 
-void PHWSolid::EnumGeometries(SGFrame* f){
+void PHWSolid::EnumGeometries(SGFrame* f, PHWaterContactEngine* e){
 	CDMesh* g;
 	for(SGObjects::iterator ic = f->contents.begin(); ic != f->contents.end(); ic++){
 		g = DCAST(CDMesh, *ic);
 		if(g){
 			geometries.push_back(new PHWGeometry);
-			geometries.back()->Set(f, g);
+			geometries.back()->Set(f, g, e);
 		}
 	}
 	for(SGFrames::iterator i = f->Children().begin(); i != f->Children().end(); i++)
-		EnumGeometries(*i);
+		EnumGeometries(*i, e);
 }
 
 //----------------------------------------------------------------------------
 //PHWGeometry
-void PHWGeometry::Set(SGFrame* f, CDMesh* g){
+void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 	frame = f;
 	mesh = g;
 	conveces.resize(g->conveces.size());
+	//	frm の割り当て
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
+	for(int i=0; i < e->frms.size(); ++i){
+		if (e->frms[i]->mesh == mesh){
+			frm = e->frms[i];
+			break;
+		}
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -54,17 +61,18 @@ void PHWaterContactEngine::SaveState(SGBehaviorStates& states) const{
 }
 
 bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
-	if(DCAST(PHSolid, o)){
-		solids.push_back(new PHWSolid);
-		solids.back()->solid = DCAST(PHSolid, o);
-		return true;
-	}
 	if(DCAST(PHWater, o)){
 		water = DCAST(PHWater, o);
 		return true;
 	}
+	if(DCAST(PHSolid, o)){
+		solids.push_back(new PHWSolid);	//	
+		solids.back()->solid = DCAST(PHSolid, o);
+		return true;
+	}
 	if(DCAST(PHWaterRegistanceMap, o)){
-		frms.push_back(DCAST(PHWaterRegistanceMap, o));
+		PHWaterRegistanceMap* frm = (PHWaterRegistanceMap*)o;
+		frms.push_back(frm);	//	frm追加
 		return true;
 	}
 	return false;
@@ -73,6 +81,7 @@ bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 void PHWaterContactEngine::Clear(SGScene* s){
 	water = 0;
 	solids.clear();
+	frms.clear();
 }
 void PHWaterContactEngine::Loaded(SGScene* scene){
 	Init(scene);
@@ -83,7 +92,7 @@ void PHWaterContactEngine::Loaded(SGScene* scene){
 void PHWaterContactEngine::Init(SGScene* scene){
 	//Solidの形状データを吸い出す
 	for(PHWSolids::iterator is = solids.begin(); is != solids.end(); is++)
-		(*is)->Init();
+		(*is)->Init(this);
 }
 
 struct QH2DVertex: public Vec3f{
@@ -91,6 +100,10 @@ struct QH2DVertex: public Vec3f{
 	Vec2f GetPos(){ return Vec2f(x,y); }
 };
 
+/*	FRMによる圧力補正についてのメモ
+	・浮力を求めるときに各頂点に対して圧力を補正．
+	・水に反映させるため，各頂点に圧力を加える．
+	の2つを行う．	*/
 SGScene* scene;
 struct PHWConvexCalc{
 	PHWaterContactEngine* engine;
@@ -108,9 +121,11 @@ struct PHWConvexCalc{
 	Affinef Asg;		//solid-coord to geometry-coord
 	
 	//	Mesh単位のデータ
-	Affinef	Ag;			//geomerty-coord to world-coord
-	Affinef Awg;		//water-coord to geometry-coord
+	Affinef	Ag;			//	geomerty-coord to world-coord
+	Affinef Awg;		//	water-coord to geometry-coord
+	Affinef Awginv;		//	水座標→Mesh座標
 	std::vector<float> depth;		//	頂点の水深
+	std::vector<float> pressure;	//	FRMによる圧力補正
 	std::vector<float> height;		//	頂点での波高
 	std::vector<Vec3f> vtxs;		//	水座標系での頂点の座標
 	
@@ -160,6 +175,7 @@ struct PHWConvexCalc{
 			if (nUnder == 0) continue;	//	水に漬かっていない
 			Vec3f faceVtxs[3];
 			float faceDepth[3];
+			float facePressure[3];
 			float faceHeight[3];
 			if (nUnder == 1){
 				int iUnder = iface->vtxs[under];
@@ -173,10 +189,13 @@ struct PHWConvexCalc{
 				faceDepth[0] = depth[iUnder];
 				faceDepth[1] = 0;
 				faceDepth[2] = 0;
+				facePressure[0] = pressure[iUnder];
+				facePressure[1] = 0;
+				facePressure[2] = 0;
 				faceHeight[0] = height[iUnder];
 				faceHeight[1] = a1*height[iUnder] + (1-a1)*height[i1];
 				faceHeight[2] = a2*height[iUnder] + (1-a2)*height[i2];
-				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				CalcTriangle(faceVtxs, faceDepth, faceHeight, facePressure);
 				vtxsOn.push_back(faceVtxs[1]);
 				vtxsOn.push_back(faceVtxs[2]);
 			}else if (nUnder == 2){
@@ -191,27 +210,33 @@ struct PHWConvexCalc{
 				faceDepth[0] = depth[i1];
 				faceDepth[1] = depth[i2];
 				faceDepth[2] = 0;
+				facePressure[0] = pressure[i1];
+				facePressure[1] = pressure[i2];
+				facePressure[2] = 0;
 				faceHeight[0] = height[i1];
 				faceHeight[1] = height[i2];
 				faceHeight[2] = a2*height[iOver] + (1-a2)*height[i2];
-				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				CalcTriangle(faceVtxs, faceDepth, faceHeight, facePressure);
 				vtxsOn.push_back(faceVtxs[2]);
 				
 				faceVtxs[1] = faceVtxs[2];
 				faceVtxs[2] = a1*vtxs[iOver] + (1-a1)*vtxs[i1];
 				faceDepth[1] = 0;
 				faceDepth[2] = 0;
+				facePressure[1] = 0;
+				facePressure[2] = 0;
 				faceHeight[1] = faceHeight[2];
 				faceHeight[2] = a1*height[iOver] + (1-a1)*height[i1];
-				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				CalcTriangle(faceVtxs, faceDepth, faceHeight, facePressure);
 				vtxsOn.push_back(faceVtxs[2]);
 			}else if (nUnder == 3){
 				for(int i=0; i<3; ++i){
 					faceVtxs[i] = vtxs[iface->vtxs[i]];
 					faceDepth[i] = depth[iface->vtxs[i]];
+					facePressure[i] = pressure[iface->vtxs[i]];
 					faceHeight[i] = height[iface->vtxs[i]];
 				}
-				CalcTriangle(faceVtxs, faceDepth, faceHeight);
+				CalcTriangle(faceVtxs, faceDepth, faceHeight, facePressure);
 			}
 		}
 	}
@@ -452,7 +477,7 @@ struct PHWConvexCalc{
 		Vec3f v = (solidVel + (solidAngVel%p)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 		water->v[cx][cy] = alpha*v.y + (1-alpha)*water->v[cx][cy];
 	}
-	void CalcTriangle(Vec3f* p, float* depth, float* height){
+	void CalcTriangle(Vec3f* p, float* depth, float* height, float* pressure){
 		const float B=0.1f;
 
 		assert(depth[0] >=0);
@@ -469,6 +494,7 @@ struct PHWConvexCalc{
 		for(int i=0; i<3; ++i){
 			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter));
 			vel[i] = -vtxVel[i] * normal;
+			depth[i] += pressure[i];
 		}
 		Vec3f volume = (1.0f/6.0f) * (depth[0] + depth[1] + depth[2]) * normalS;
 		Vec3f velInt = (1.0f/6.0f) * (vel[0] + vel[1] + vel[2]) * normalS;
@@ -633,7 +659,6 @@ void PHWaterContactEngine::Step(SGScene* s){
 	scene = s;
 	PHWGeometry* geo;
 	CDPolyhedron* poly;
-	PHWSolids::iterator is;
 	PHWGeometries::iterator ig;
 	CDGeometries::iterator ic;
 
@@ -643,8 +668,8 @@ void PHWaterContactEngine::Step(SGScene* s){
 
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
-	for(is = solids.begin(); is != solids.end(); is++){
-		convCalc.SetSolid(*is);
+	for(int i=0; i < solids.size(); i++){
+		convCalc.SetSolid(solids[i]);
 
 		//全ジオメトリについて･･･
 		for(ig = convCalc.solid->geometries.begin(); ig != convCalc.solid->geometries.end(); ig++){
@@ -652,6 +677,12 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.Ag = geo->frame->GetWorldPosture();
 			convCalc.Asg = convCalc.Asinv * convCalc.Ag;
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
+			convCalc.Awginv = convCalc.Awg.inv();
+			Vec3f meshVel = convCalc.Awginv.Rot() * (convCalc.solidVel - Vec3f(water->velocity.x, water->velocity.y, 0));
+			float meshVelNorm = meshVel.norm();
+			float meshVelPhi = atan2(meshVel.x, meshVel.z);	//	経度
+			float meshVelTheta = atan2(sqrt(Square(meshVel.x)+Square(meshVel.z)), meshVel.y);
+
 			//BBoxレベルでの接触チェック
 			//...
 
@@ -660,12 +691,20 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.tbuo.clear();
 
 			convCalc.depth.resize(geo->mesh->vertices.size());
+			convCalc.pressure.resize(geo->mesh->vertices.size());
 			convCalc.height.resize(geo->mesh->vertices.size());
 			convCalc.vtxs.resize(geo->mesh->vertices.size());
 			for(int i=0; i<geo->mesh->tvtxs.size(); ++i){
 				convCalc.vtxs[i] = convCalc.Awg * geo->mesh->vertices[i];	//	水座標系での頂点
 				convCalc.height[i] = water->LerpHeight(convCalc.vtxs[i].x, convCalc.vtxs[i].y);
 				convCalc.depth[i] = convCalc.height[i] - convCalc.vtxs[i].z;
+				//	Todo ここで，FRMから頂点での圧力補正を求める．
+				if (convCalc.depth[i] > 0){
+					Vec3f prs, fri;
+					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure(meshVelTheta, meshVelPhi, meshVelNorm);
+				}else{
+					convCalc.pressure[i] = 0;
+				}
 			}
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
@@ -725,8 +764,23 @@ DEF_REGISTER_BOTH(PHWaterContactEngine);
 SGOBJECTIMP(PHWaterRegistanceMap, SGObject);
 
 bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
-	if(DCAST(PHSolid, o)){
-		solid = DCAST(PHSolid, o);
+	if(DCAST(CDMesh, o)){
+		mesh = DCAST(CDMesh, o);
+		//	vtxHsrcMap を初期化
+		vtxHsrcMap.resize(mesh->vertices.size());
+		for(int i=0; i<mesh->vertices.size(); ++i){
+			float minDist = 1e10f;
+			int minId = -1;
+			for(int j=0; j<hsrc.size(); ++j){
+				Vec3f dist = mesh->vertices[i] - hsrc[i].GetPos();
+				float dist_n = dist.norm();
+				if (dist_n < minDist){
+					minDist = dist_n;
+					minId = i;
+				}
+			}
+			vtxHsrcMap[i] = &hsrc[minId];
+		}
 		return true;
 	}
 	return false;

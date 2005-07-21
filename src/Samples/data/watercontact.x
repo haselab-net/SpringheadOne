@@ -29,10 +29,11 @@ Scene {
 	}
 	WaterContactEngine{			#	水の接触エンジン
 		{water1}				#	水オブジェクトのの名前
-		{soBlock1}				#	剛体の名前
+		{soBlock1}				#	接触する剛体の名前
+
 		WaterRegistanceMap{
 			"canoe.ffm";
-			{soBlock1}
+			{Mesh_kayak}		#	適用するメッシュの名前．
 		}
 	}
 	Light8{						#	光源
