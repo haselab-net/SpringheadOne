@@ -33,6 +33,7 @@ public:
 	bool AddChildObject(SGObject* obj, SGScene* s);
 	virtual size_t NReferenceObjects(){ return frPosture ? 1 : 0;}
 	virtual SGObject* ReferenceObject(size_t i){ return i==0 ? (SGObject*)frPosture : (SGObject*)NULL; }
+	void UpdatePosture();
 };
 class GRCameras:public std::vector< UTRef<GRCamera> >{
 };

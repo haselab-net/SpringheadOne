@@ -54,7 +54,10 @@ void D3Render::InitTree(SGFrame* fr, SGScene* scene){
 }
 void D3Render::Render(SGScene* s){
 	//	視点行列の設定
-    if (camera) device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)& camera->data.view);
+    if (camera){
+		camera->UpdatePosture();
+		device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)& camera->data.view);
+	}
 	//	不透明部の描画
 	drawState = DRAW_OPAQUE;
 	RenderRecurse(s->GetWorld());
@@ -233,7 +236,7 @@ void D3Render::Setup(Vec2f screen){
 	//	射影行列の設定
 	Affinef projectionMatrix;
 	projectionMatrix = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
-		Vec2f(camera->data.size.X(), camera->data.size.Y() * screen.Y()/screen.X() ), camera->data.front, camera->data.back);
+		Vec2f(camera->data.size.X(), camera->data.size.Y()), camera->data.front, camera->data.back);
 	device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&projectionMatrix);
 	//	視点行列の設定
 	device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)& camera->data.view);

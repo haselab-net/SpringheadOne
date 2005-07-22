@@ -264,10 +264,10 @@ void init_projection_gl(TMatrixBase<DIMENC(4),DIMENC(4),D>& a,
 	size *= front / screen[2];
 	
 	TYPENAME D::element_type Q = back/(back-front);
-	a.item(0,0) = 2*front/size[0];	a.item(1,0) = 0;				a.item(2,0) = 0;			a.item(3,0) = 0;
-	a.item(0,1) = 0;				a.item(1,1) = 2*front/size[1];	a.item(2,1) = 0;			a.item(3,1) = 0;
-	a.item(0,2) = center[0];		a.item(1,2) = center[1];		a.item(2,2) = -2*Q+1;		a.item(3,2) = -1;
-	a.item(0,3) = 0;				a.item(1,3) = 0;				a.item(2,3) = -2*Q*front;	a.item(3,3) = 0;
+	a.item(0,0) = 2*front/size[0];		a.item(1,0) = 0;					a.item(2,0) = 0;			a.item(3,0) = 0;
+	a.item(0,1) = 0;					a.item(1,1) = 2*front/size[1];		a.item(2,1) = 0;			a.item(3,1) = 0;
+	a.item(0,2) = 2*center[0]/size[0];	a.item(1,2) = 2*center[1]/size[1];	a.item(2,2) = -2*Q+1;		a.item(3,2) = -1;
+	a.item(0,3) = 0;					a.item(1,3) = 0;					a.item(2,3) = -2*Q*front;	a.item(3,3) = 0;
 }
 template <class D, class SD, class ZD>
 void init_projection_d3d(TMatrixBase<DIMENC(4), DIMENC(4), D>& a,
@@ -288,10 +288,10 @@ void init_projection_d3d(TMatrixBase<DIMENC(4), DIMENC(4), D>& a,
 	size *= front / screen[2];
 
 	TYPENAME D::element_type Q = back/(back-front);
-	a.item(0,0) = 2*front/size[0];	a.item(1,0) = 0;				a.item(2,0) = 0;			a.item(3,0) = 0;
-	a.item(0,1) = 0;				a.item(1,1) = 2*front/size[1];	a.item(2,1) = 0;			a.item(3,1) = 0;
-	a.item(0,2) = center[0];		a.item(1,2) = center[1];		a.item(2,2) = Q;			a.item(3,2) = 1;
-	a.item(0,3) = 0;				a.item(1,3) = 0;				a.item(2,3) = -Q*front;		a.item(3,3) = 0;
+	a.item(0,0) = 2*front/size[0];		a.item(1,0) = 0;					a.item(2,0) = 0;			a.item(3,0) = 0;
+	a.item(0,1) = 0;					a.item(1,1) = 2*front/size[1];		a.item(2,1) = 0;			a.item(3,1) = 0;
+	a.item(0,2) = 2*center[0]/size[0];	a.item(1,2) = 2*center[1]/size[1];	a.item(2,2) = Q;			a.item(3,2) = 1;
+	a.item(0,3) = 0;					a.item(1,3) = 0;					a.item(2,3) = -Q*front;		a.item(3,3) = 0;
 }
 
 

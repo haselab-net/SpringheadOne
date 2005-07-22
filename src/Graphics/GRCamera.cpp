@@ -19,6 +19,11 @@ void GRCameraData::InitData(){
     view.LookAtGL(Vec3f(), Vec3f(0,1,0));
 	view = view.inv();
 }
+void GRCamera::UpdatePosture(){
+	if (frPosture){
+		data.view = frPosture->GetWorldPosture().inv();
+	}
+}
 
 bool GRCamera::AddChildObject(SGObject* obj, SGScene* s){
 	SGFrame* fr = DCAST(SGFrame, obj);
@@ -60,6 +65,7 @@ public:
 		cam->data.view.EzX() *= -1;
 		cam->data.view.EzY() *= -1;
 		cam->data.view.PosZ() *= -1;
+		cam->data.view = cam->data.view.inv();
 
 		ctx->scene->GetRenderers().Set(cam);
 		return true;
@@ -72,6 +78,7 @@ public:
 	virtual UTString GetType() const{ return "GRCamera"; }
 	virtual void SaveData(class FISaveScene* ctx, FIDocNodeBase* doc, GRCamera* cam){
 		GRCameraData data = cam->data;
+		data.view = data.view.inv();
 		///	‰EèŒn¨¶èŒn•ÏŠ·
 		data.view.ExZ() *= -1;
 		data.view.EyZ() *= -1;

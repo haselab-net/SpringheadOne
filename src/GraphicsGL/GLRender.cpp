@@ -129,6 +129,7 @@ void GLRender::Present(){
 void GLRender::Render(SGScene* s){
 	//	Ž‹“_s—ñ‚ÌÝ’è
     if (camera){
+		camera->UpdatePosture();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadMatrixf(camera->data.view);
 	}
@@ -183,7 +184,7 @@ void GLRender::Resize(Vec2f screen){
 	glViewport(0,0, (size_t)screen.X(), (size_t)screen.Y());
 	Affinef afProj;
 	afProj = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
-		Vec2f(camera->data.size.X(), camera->data.size.Y() * screen.Y()/screen.X() ), camera->data.front, camera->data.back);
+		Vec2f(camera->data.size.X(), camera->data.size.Y() ), camera->data.front, camera->data.back);
 	SetProjectionMatrix(afProj);
 }
 
