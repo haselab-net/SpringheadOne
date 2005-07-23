@@ -5,7 +5,12 @@
 
 static int winSockInitCount;
 WBSocket::WBSocket(int a, int t, int p){
+	sock=INVALID_SOCKET;
 	InitWinsock();
+	Init(a, t, p);
+}
+void WBSocket::Init(int a, int t, int p){
+	if (sock != INVALID_SOCKET){ closesocket(sock); }
 	sock = socket(a, t, p);
 }
 WBSocket::~WBSocket(){

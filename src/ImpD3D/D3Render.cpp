@@ -30,6 +30,7 @@ void D3Render::Loaded(SGScene* scene){
 	InitTree(scene->GetWorld(), scene);
 //	scene->GetWorld()->Print(DSTR);
 	if (!camera) camera = new GRCamera;
+	Setup(device.GetSurfaceSize());
 }
 void D3Render::InitTree(SGFrame* fr, SGScene* scene){
 	for(unsigned i=0; i<fr->contents.size(); ++i){
@@ -201,8 +202,8 @@ bool D3Render::Create(void* arg){
 }
 void D3Render::Fullscreen(){
 	device.Fullscreen();
-	SIZE sz = device.winMan.Size();
-	Setup( Vec2f(sz.cx, sz.cy) );
+	Vec2f sz = device.GetSurfaceSize();
+	Setup( sz );
 	device->ShowCursor(false);
 }
 void D3Render::Window(){

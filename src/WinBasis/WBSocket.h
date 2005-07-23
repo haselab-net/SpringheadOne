@@ -43,6 +43,7 @@ class SPR_DLL WBSocket{
 	void InitWinsock();
 public:
 	WBSocket(int af=AF_INET, int type=SOCK_DGRAM, int protocol=0);
+	void Init(int af=AF_INET, int type=SOCK_DGRAM, int protocol=0);
 	~WBSocket();
 	operator SOCKET(){ return sock; }
 	int SendTo(void* buf, size_t len, const WBSockAddr& a);

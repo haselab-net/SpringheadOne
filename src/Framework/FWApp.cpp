@@ -419,6 +419,10 @@ void FWApp::LoadList(){
 
 //	ファイルのロード
 void FWApp::Load(UTString fn){
+	if (!render){
+		initialLoadFile = fn;
+		return;
+	}
 	WBPath path;
 	path.Path(fn);
 	//	ファイルリストファイルの場合
