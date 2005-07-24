@@ -100,7 +100,7 @@ public:
 	friend class PHWaterContactEngine;
 	friend struct PHWConvexCalc;
 
-protected:
+//protected:
 	typedef VMatrixCol<double> matrix_type;
 	typedef VMatrixCol<Vec3d>	v3matrix_type;
 	typedef VVector<double> vector_type;

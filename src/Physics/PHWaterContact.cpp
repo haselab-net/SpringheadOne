@@ -247,72 +247,34 @@ struct PHWConvexCalc{
 			}
 		}
 	}
-	bool NextLineX(){
-		curY++;
-		left += dLeft;
-		right += dRight;
-		if (iLeft == iRight && curY > border[iLeft].y) return false;
-		while (border[iLeft].y < curY && iLeft!= iRight){
-			Vec2f last = border[iLeft]-Vec2f(0.5f, 0);
-			-- iLeft;
-			Vec2f delta = border[iLeft]-Vec2f(0.5f, 0) - last;
-			dLeft = delta.x / delta.y;
-			left = last.x + dLeft * (curY-last.y);
-		}
-		while (border[iRight].y < curY && iLeft!= iRight){
-			Vec2f last = border[iRight]-Vec2f(0.5f, 0);
-			++iRight;
-			Vec2f delta = border[iRight]-Vec2f(0.5f, 0) - last;
-			dRight = delta.x / delta.y;
-			right = last.x + dRight * (curY-last.y);
-		}
-		if (iLeft == iRight && curY > border[iLeft].y) return false;
-		return true;
+#define NEXTLINE(post, xoff, yoff)											\
+	bool NextLine##post(){													\
+		curY++;																\
+		if (curY>=water->my) return false;									\
+		left += dLeft;														\
+		right += dRight;													\
+		if (iLeft == iRight && curY > border[iLeft].y+yoff) return false;	\
+		while (border[iLeft].y+yoff < curY && iLeft!= iRight){				\
+			Vec2f last = border[iLeft]+Vec2f(xoff, yoff);					\
+			-- iLeft;														\
+			Vec2f delta = border[iLeft]+Vec2f(xoff, yoff) - last;			\
+			dLeft = delta.x / delta.y;										\
+			left = last.x + dLeft * (curY-last.y);							\
+		}																	\
+		while (border[iRight].y+yoff < curY && iLeft!= iRight){				\
+			Vec2f last = border[iRight]+Vec2f(xoff, yoff);					\
+			++iRight;														\
+			Vec2f delta = border[iRight]+Vec2f(xoff, yoff) - last;			\
+			dRight = delta.x / delta.y;										\
+			right = last.x + dRight * (curY-last.y);						\
+		}																	\
+		if (iLeft == iRight && curY > border[iLeft].y+yoff) return false;	\
+		return true;														\
 	}
-	bool NextLineY(){
-		curY++;
-		left += dLeft;
-		right += dRight;
-		if (iLeft == iRight && curY > border[iLeft].y-0.5f) return false;
-		while (border[iLeft].y-0.5f < curY && iLeft!= iRight){
-			Vec2f last = border[iLeft]-Vec2f(0,0.5f);
-			-- iLeft;
-			Vec2f delta = border[iLeft]-Vec2f(0,0.5f) - last;
-			dLeft = delta.x / delta.y;
-			left = last.x + dLeft * (curY-last.y);
-		}
-		while (border[iRight].y-0.5f < curY && iLeft!= iRight){
-			Vec2f last = border[iRight]-Vec2f(0,0.5f);
-			++iRight;
-			Vec2f delta = border[iRight]-Vec2f(0,0.5f) - last;
-			dRight = delta.x / delta.y;
-			right = last.x + dRight * (curY-last.y);
-		}
-		if (iLeft == iRight && curY > border[iLeft].y-0.5) return false;
-		return true;
-	}
-	bool NextLine(){
-		curY++;
-		left += dLeft;
-		right += dRight;
-		if (iLeft == iRight && curY > border[iLeft].y) return false;
-		while (border[iLeft].y < curY && iLeft!= iRight){
-			Vec2f last = border[iLeft];
-			-- iLeft;
-			Vec2f delta = border[iLeft] - last;
-			dLeft = delta.x / delta.y;
-			left = last.x + dLeft * (curY-last.y);
-		}
-		while (border[iRight].y < curY && iLeft!= iRight){
-			Vec2f last = border[iRight];
-			++iRight;
-			Vec2f delta = border[iRight] - last;
-			dRight = delta.x / delta.y;
-			right = last.x + dRight * (curY-last.y);
-		}
-		if (iLeft == iRight && curY > border[iLeft].y) return false;
-		return true;
-	}
+
+	NEXTLINE(X, -0.5f, 0.0f)
+	NEXTLINE(Y, 0.0f, -0.5f)
+	NEXTLINE(P, 0.0f, 0.0f)
 	//	内部を塗りつぶし，アンチエイリアスのふち付
 	void CalcBorder(){
 		border.clear();
@@ -397,7 +359,7 @@ struct PHWConvexCalc{
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
 		iRight = 0;
-		while(NextLine()){	//	onlineを含めて塗りつぶし
+		while(NextLineP()){	//	onlineを含めて塗りつぶし
 			int xStart, xEnd;
 			xStart = ceil(left);
 			xEnd = right;
@@ -458,23 +420,40 @@ struct PHWConvexCalc{
 			Vec2f delta = vtxs[id2] - vtxs[id1];					\
 			float k = delta.Y / delta.X;							\
 			int ix = ceil(vtxs[id1].X+XOFF);						\
+			if (ix < 0) ix = 0;										\
 			float y = vtxs[id1].Y+YOFF + k*(ix-(vtxs[id1].X+XOFF));	\
-			for(; ix < vtxs[id2].X+XOFF; ++ix){						\
-				for(int iy = y+yStart+1; iy < y+yEnd; ++iy){		\
+			int ixEnd = vtxs[id2].X+XOFF;							\
+			if (ixEnd > water->m##X-1) ixEnd = water->m##X-1;		\
+			for(; ix <= ixEnd; ++ix){								\
+				int iy = y+yStart+1;								\
+				if (iy < 0) iy = 0;									\
+				int iyEnd = y+yEnd;									\
+				if (iyEnd > water->m##Y-1) iyEnd = water->m##Y-1;	\
+				for(; iy <=iyEnd ; ++iy){							\
 					func(i##X, i##Y, 1-abs(iy-y)*lineWidthInv);		\
 				}													\
 				y += k;												\
 			}														\
 		}															
 		//	4隅の4角形の描画
-		#define DRAWRECT(vtx, XOFF, YOFF, xStart, xEnd, yStart, yEnd, func)				\
-		for(int ix = ceil(vtx.x+XOFF+xStart); ix < vtx.x+XOFF+xEnd; ++ix){		\
-			for(int iy = ceil(vtx.y+YOFF+yStart); iy < vtx.y+YOFF+yEnd; ++iy){	\
-				float dist = sqrt(Square(ix - (vtx.x+XOFF))						\
-									+ Square(iy - (vtx.y+YOFF)));				\
-				if (dist > lineWidth) dist = lineWidth;							\
-				func(ix, iy, 1-dist*lineWidthInv);								\
-			}																	\
+		#define DRAWRECT(vtx, XOFF, YOFF, xStart, xEnd, yStart, yEnd, func)	\
+		{																	\
+			int ix = ceil(vtx.x+XOFF+xStart);								\
+			if (ix<0) ix = 0;												\
+			int ixEnd = vtx.x+XOFF+xEnd;									\
+			if (ixEnd > water->mx-1) ixEnd = water->mx-1;					\
+			int iy = ceil(vtx.y+YOFF+yStart);								\
+			if (iy<0) iy = 0;												\
+			int iyEnd = vtx.y+YOFF+yEnd;									\
+			if (iyEnd > water->my-1) iyEnd = water->my-1;					\
+			for(; ix <= ixEnd; ++ix){										\
+				for(; iy <= iyEnd; ++iy){									\
+					float dist = sqrt(Square(ix - (vtx.x+XOFF))				\
+										+ Square(iy - (vtx.y+YOFF)));		\
+					if (dist > lineWidth) dist = lineWidth;					\
+					func(ix, iy, 1-dist*lineWidthInv);						\
+				}															\
+			}																\
 		}
 		//	流速の境界条件
 		DRAWRECT(line[0].back(), -0.5f, 0, 0, lineWidth, -lineWidth, 0, SetWaterVelocityU);

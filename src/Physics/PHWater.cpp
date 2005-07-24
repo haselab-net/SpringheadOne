@@ -642,7 +642,8 @@ void PHWater::Integrate(double dt){
 	}
     UPDATE_H(0, mx-1, 0, my-1);
 
-	const double pass = 300.0;
+//	const double pass = 300.0;
+	const double pass = 10.0;
 	C = loss / (pass + 16);
 
 #define LOWPASS(x0, x1, x2, y0, y1, y2)	\
@@ -651,22 +652,29 @@ void PHWater::Integrate(double dt){
 		2.0 * (htmp[x2][y0] + htmp[x1][y0] + htmp[x0][y2] + htmp[x0][y1]) +		\
 			   htmp[x2][y2] + htmp[x1][y2] + htmp[x2][y1] + htmp[x1][y1]);
 
-	//	ローパスフィルタ
-    for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
-		LOWPASS(i, i+1, i-1, j, j+1, j-1);
-    }
-	for(i = 1; i < mx - 1; i++){
-		LOWPASS(i, i+1, i-1, 0, 1, my-1);
-		LOWPASS(i, i+1, i-1, my-1, 0, my-2);
+	static int count = 0;
+	count ++;
+	if (count >= 3){
+		count = 0;
+		//	ローパスフィルタ
+		for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
+			LOWPASS(i, i+1, i-1, j, j+1, j-1);
+		}
+		for(i = 1; i < mx - 1; i++){
+			LOWPASS(i, i+1, i-1, 0, 1, my-1);
+			LOWPASS(i, i+1, i-1, my-1, 0, my-2);
+		}
+		for(j = 1; j < my - 1; j++){
+			LOWPASS(0, 1, mx-1, j, j+1, j-1);
+			LOWPASS(mx-1, 0, mx-2, j, j+1, j-1);
+		}
+		LOWPASS(0, 1, mx-1, 0, 1, my-1);
+		LOWPASS(mx-1, 0, mx-2, 0, 1, my-1);
+		LOWPASS(0, 1, mx-1, my-1, 0, my-2);
+		LOWPASS(mx-1, 0, mx-2, my-1, 0, my-2);
+	}else{
+		memcpy(&height[0][0], &htmp[0][0], sizeof(height[0][0])*mxy);
 	}
-	for(j = 1; j < my - 1; j++){
-		LOWPASS(0, 1, mx-1, j, j+1, j-1);
-		LOWPASS(mx-1, 0, mx-2, j, j+1, j-1);
-	}
-	LOWPASS(0, 1, mx-1, 0, 1, my-1);
-	LOWPASS(mx-1, 0, mx-2, 0, 1, my-1);
-	LOWPASS(0, 1, mx-1, my-1, 0, my-2);
-	LOWPASS(mx-1, 0, mx-2, my-1, 0, my-2);
 
     //u[i][j] = utmp[i][j] * loss;
     //v[i][j] = vtmp[i][j] * loss;
