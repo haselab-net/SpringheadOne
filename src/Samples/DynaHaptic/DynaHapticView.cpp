@@ -271,32 +271,6 @@ void CDynaHapticView::OnInitialUpdate()
 	drawTimerId = SetTimer(FWApp::TIMER_DRAW, 33, NULL);
 }
 
-//	タイマーに呼ばれる関数．シミュレーションと力覚提示を行う．
-void CDynaHapticView::Step(){
-	//	ここでシミュレーションのステップをすべて実行している．
-	//	SGBehaviorEngine の派生オブジェクトが順番に呼ばれてシミュレーションを実行する．
-	detectTime = 0;
-	analyzeTime = 0;
-	refTime = 0;
-	fricTime = 0;
-	totalTime = 0;
-	static WBPreciseTimer ptimer;
-	ptimer.CountUS();
-	app->Step();
-	totalTime = ptimer.CountUS();
-#if 0
-	if (app->scene){
-		PHJointEngine* e;
-		app->scene->GetBehaviors().Find(e);
-		if (e){
-			DWORD t = e->timer.Clear();
-			
-			DSTR << t << " " << e->timer.CPUFrequency() << std::endl;
-		}
-	}
-#endif
-}
-
 void CDynaHapticView::OnTimer(UINT nIDEvent){
 	if (nIDEvent == FWApp::TIMER_DRAW){
 		Invalidate();

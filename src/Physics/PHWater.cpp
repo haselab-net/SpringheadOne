@@ -523,42 +523,47 @@ void PHWater::Step(SGScene* s){
 	Vec3f velW = posture.Rot() * Vec3f(velocity.x, velocity.y, 0);
 	posture.Pos() += velW * dt;
 	
+    // set the boundary condition
+    Bound();
 	if (targets && targets->targets.size()){
 		SGFrame* target = targets->targets[0];
 		Affinef af = posture.inv() * target->GetWorldPosture();
 		Vec2f diff = af.Pos().sub_vector(0, Vec2f());
+		bool bMove = false;
 		if (diff.X() > dh){
 			posture.Pos() += posture.Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x+1) % mx;
 			texOffset.x ++;
+			bMove = true;
 		}
 		if (diff.X() < -dh){
 			posture.Pos() -= posture.Rot() * Vec3f(dh, 0, 0);
 			bound.x = (bound.x-1+mx) % mx;
 			texOffset.x --;
+			bMove = true;
 		}
 		if (diff.Y() > dh){
 			posture.Pos() += posture.Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y+1) % my;
 			texOffset.y ++;
+			bMove = true;
 		}
 		if (diff.Y() < -dh){
 			posture.Pos() -= posture.Rot() * Vec3f(0, dh, 0);
 			bound.y = (bound.y-1+my) % my;
 			texOffset.y --;
+			bMove = true;
+		}
+		if (bMove){
+			Bound();
 		}
 	}
 	frame->SetWorldPosture(posture);
 
-    // set the boundary condition
-    Bound();
     
 	// solve equation
 	Integrate(dt);
-    
-	// boundary condition
-    Bound();
-    
+        
 	//法線と屈折ベクトルを計算
 	for(j = 0; j < my - 1; j++)for(i = 0; i < mx - 1; i++){
 		vv1 = Vec3d(-dh, 0.0, height[i][j] - height[i + 1][j    ]);
@@ -657,16 +662,35 @@ void PHWater::Integrate(double dt){
 	if (count >= 3){
 		count = 0;
 		//	ローパスフィルタ
-		for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
+//		for(i = 1; i < mx - 1; i++)for(j = 1; j < my - 1; j++){
+//			LOWPASS(i, i+1, i-1, j, j+1, j-1);
+//		}
+
+		for(i = 1; i < bound.x-3 ; i++)for(j = 1; j < bound.y - 3; j++){
 			LOWPASS(i, i+1, i-1, j, j+1, j-1);
 		}
-		for(i = 1; i < mx - 1; i++){
-			LOWPASS(i, i+1, i-1, 0, 1, my-1);
-			LOWPASS(i, i+1, i-1, my-1, 0, my-2);
+		for(i = 1; i < bound.x-3 ; i++)for(j = bound.y+2; j < my - 1; j++){
+			LOWPASS(i, i+1, i-1, j, j+1, j-1);
 		}
-		for(j = 1; j < my - 1; j++){
-			LOWPASS(0, 1, mx-1, j, j+1, j-1);
-			LOWPASS(mx-1, 0, mx-2, j, j+1, j-1);
+
+		for(i = bound.x+2; i<mx-1; i++)for(j = 1; j < bound.y - 3; j++){
+			LOWPASS(i, i+1, i-1, j, j+1, j-1);
+		}
+		for(i = bound.x+2; i<mx-1; i++)for(j = bound.y+3; j < my - 1; j++){
+			LOWPASS(i, i+1, i-1, j, j+1, j-1);
+		}
+
+		if (2 < bound.y && bound.y < my-3){
+			for(i = 1; i < mx - 1; i++){
+				LOWPASS(i, i+1, i-1, 0, 1, my-1);
+				LOWPASS(i, i+1, i-1, my-1, 0, my-2);
+			}
+		}
+		if (2 < bound.x && bound.x < mx-3){
+			for(j = 1; j < my - 1; j++){
+				LOWPASS(0, 1, mx-1, j, j+1, j-1);
+				LOWPASS(mx-1, 0, mx-2, j, j+1, j-1);
+			}
 		}
 		LOWPASS(0, 1, mx-1, 0, 1, my-1);
 		LOWPASS(mx-1, 0, mx-2, 0, 1, my-1);
