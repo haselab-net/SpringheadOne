@@ -925,6 +925,7 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 		Vec3f p, normal;
 		std::vector<float> xprs(ndata), yprs(ndata), zprs(ndata), xfri(ndata), yfri(ndata), zfri(ndata);
         for(i = 0; i < nhsrc; i++) {
+			hsrc[i].frm = this;
             hsrc[i].dthe = dthe;
             hsrc[i].dphi = dphi;
             hsrc[i].nthe = nthe;
@@ -1148,18 +1149,27 @@ PHWHapticSource* PHWaterRegistanceMap::FindHsrc(Vec3f pos){
 }
 
 typedef UTString String;
+typedef float FLOAT;
+typedef Affinef Matrix4x4;
 DEF_RECORD(XWaterRegistanceMap, {
 	GUID Guid(){ return WBGuid("dbd4feca-a6ac-48f1-87c9-863162e13658"); } 
 	String filename;
+	Matrix4x4 posture;
+	FLOAT  pressureGain;
 });
 
 class PHWaterRegistanceMapLoader : public FIObjectLoader<PHWaterRegistanceMap>{
 public:
 	virtual bool LoadData(FILoadScene* ctx, PHWaterRegistanceMap* rm){
 		ctx->objects.Push(rm);
-		//FRM
+
+		FIDocNodeBase* doc = ctx->docs.Top();
+		//圧力ゲイン
+		doc->GetData(rm->pressureGain, "pressureGain");
+
+		//FRMファイル名
 		const char* fn = NULL;
-		ctx->docs.Top()->GetWholeData(fn);
+		doc->GetData(fn, "filename");
 		WBPath xFilePath;
 		xFilePath.Path(ctx->fileName);
 		xFilePath.Path(xFilePath.FullPath());
@@ -1168,6 +1178,17 @@ public:
 		FIString oldCwd = imPath.GetCwd();
 		imPath.SetCwd(xFilePath.Drive() + xFilePath.Dir());
 		rm->filename = imPath.FullPath();
+
+		//
+		Affinef af;
+		doc->GetData(af, "posture");
+		af.ExZ() *= -1;
+		af.EyZ() *= -1;
+		af.EzX() *= -1;
+		af.EzY() *= -1;
+		af.PosZ() *= -1;
+		rm->posture = af;
+
 		return true;
 	}
 	virtual void Loaded(FILoadScene* ctx){
@@ -1177,6 +1198,8 @@ public:
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
 		db->REG_FIELD(String);
+		db->REG_FIELD(FLOAT);
+		db->REG_FIELD(Matrix4x4);
 		db->REG_RECORD_PROTO(XWaterRegistanceMap);
 	}
 };
@@ -1303,7 +1326,11 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 }
 
 float PHWHapticSource::GetPressure(){
-	return pressure * 300;
+	return pressure * frm->pressureGain;
+}
+
+Vec3f PHWHapticSource::GetPos(){
+	return frm->posture * pos;
 }
 
 }
