@@ -850,12 +850,26 @@ void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
 	if(sym.y) vel.y = abs(vel.y);
 	if(sym.z) vel.z = abs(vel.z);
 
-	float l = Square(vel.x)+Square(vel.y);
+	float the, phi, e;
+	float d = vel.norm();
+	if(d > 1.0e-20) {
+        the = vel.z >= 1.0 ? 0.0 : acos(vel.z);
+        e = vel.x / d;
+		phi = e >= 1.0 ? 0.0 : acos(e);
+        if(vel.y < 0.0) phi = 2.0*M_PI - phi;
+        //if(no_rotation == TRUE) {
+        //    the = M_PI/2.; 
+        //    vo.z = vd.z = 0.0;
+        //}
+    }
+	else the = phi = 0.0f;
+	
+	/*float l = Square(vel.x)+Square(vel.y);
 	float th = 0.5f*M_PI - atan2(vel.z, l);
 	float phi = atan2(vel.y, vel.x);
-	float norm = vel.norm();
+	float norm = vel.norm();*/
 	for(int i=0; i<hsrc.size(); ++i){
-		hsrc[i].SetVelocity(th, phi, vel, t);
+		hsrc[i].SetVelocity(the, phi, vel, t);
 	}
 }
 void PHWaterRegistanceMap::Loaded(SGScene* scene){
