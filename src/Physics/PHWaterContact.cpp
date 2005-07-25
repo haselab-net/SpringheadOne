@@ -854,8 +854,11 @@ void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
 	if(sym.y) vel.y = abs(vel.y);
 	if(sym.z) vel.z = abs(vel.z);
 
-	float the, phi, e;
+	float the, phi;
+
+#ifdef WS_MODE
 	float d = vel.norm();
+	float e;
 	if(d > 1.0e-20) {
         the = vel.z >= 1.0 ? 0.0 : acos(vel.z);
         e = vel.x / d;
@@ -867,11 +870,12 @@ void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
         //}
     }
 	else the = phi = 0.0f;
-	
-	/*float l = Square(vel.x)+Square(vel.y);
-	float th = 0.5f*M_PI - atan2(vel.z, l);
-	float phi = atan2(vel.y, vel.x);
-	float norm = vel.norm();*/
+#else
+	float l = Square(vel.x)+Square(vel.y);
+	the = 0.5f*M_PI - atan2(vel.z, l);
+	phi = atan2(vel.y, vel.x);
+	//float norm = vel.norm();
+#endif
 	for(int i=0; i<hsrc.size(); ++i){
 		hsrc[i].SetVelocity(the, phi, vel, t);
 	}
