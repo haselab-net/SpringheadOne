@@ -306,7 +306,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			for(int i=0; i<2; ++i){
 				float pOut = -rx-edgeWidth;
 				float px = -rx;
-				int cy = (bound.y-i+my)%my;
+				int cy = (bound.y+1-i*3+my)%my;
 				float y1 = i? ry : -ry-edgeWidth;
 				float y2 = i? ry+edgeWidth : -ry;
 				for(int ix=0; ix<mx; ix++){
@@ -331,7 +331,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			for(int i=0; i<2; ++i){
 				float pOut = -ry-edgeWidth;
 				float py = -ry;
-				int cx = (bound.x-i+mx)%mx;
+				int cx = (bound.x+1-i*3+mx)%mx;
 				float x1 = i? rx : -rx-edgeWidth;
 				float x2 = i? rx+edgeWidth : -rx;
 				for(int iy=0; iy<my; iy++){
@@ -349,7 +349,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
 						+  buf[i].normal.y*nmul + 0.5f;
 				}
-				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (my-1)*2, buf, sizeof(buf[0]));
 			}
 			delete buf;
 			render->SetTexture(NULL);
