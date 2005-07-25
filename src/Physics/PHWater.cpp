@@ -5,6 +5,7 @@
 #include <ImpD3D/D3Render.h>
 #include <ImpD3D/D3Mesh.h>
 #include <ImpD3D/D3Material.h>
+#include <Graphics/GRCamera.h>
 #include <GraphicsGL/GLRender.h>
 #include <GraphicsGL/GLMesh.h>
 #include <Physics/PHSolid.h>
@@ -205,6 +206,7 @@ double PHWater::LerpHeight(double x, double y){
 void PHWater::Render(SGFrame* fr, GRRender* render){
 	//renderの種類を判定	
 	if (render->drawState&GRRender::DRAW_OPAQUE == 0) return;
+	CalcNormal();
 	if(DCAST(D3Render, render))
 		RenderD3(fr, DCAST(D3Render, render));
 	if(DCAST(GLRender, render))
@@ -212,8 +214,8 @@ void PHWater::Render(SGFrame* fr, GRRender* render){
 }
 
 DWORD PHWater::GetColor(float h){
-	float hMax = dh*2;
-	float hMin = -dh*2;
+	float hMax = 0.1f;
+	float hMin = -0.1f;
 	if (h>hMax) h = hMax;
 	if (h<hMin) h = hMin;
 	float n = h / ((hMax-hMin)/2);
@@ -239,6 +241,8 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
 		//	通常の描画
 		if (!render->bDrawDebug){
+			Vec3f viewPoint;
+			viewPoint = GetPosture().inv() * render->camera->data.view.inv().Pos();
 			// this function sets the texture
 			materialD3->Render(fr, render);
 			
@@ -279,10 +283,19 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 					px += dh;
 				}
 				for(int i=0; i<2*mx; ++i){
-					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*dxinv/4
-						+  buf[i].normal.x*nmul + 0.5f;
-					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*dyinv/4
-						+  buf[i].normal.y*nmul + 0.5f;
+/*					Vec3f dir = (buf[i].pos-viewPoint).unit();
+					dir -= 2*dir*buf[i].normal*buf[i].normal;
+					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
+						+  dir.x/dir.z*0.5f + 0.5f;
+					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
+						+  dir.y/dir.z*0.5f + 0.5f;
+*/
+					Vec3f dir = (buf[i].pos-viewPoint).unit();
+					dir -= 2*dir*buf[i].normal*buf[i].normal;
+					buf[i].tex.x = /*(buf[i].pos.x+texOffset.x*dh)*0.1f + */
+						dir.x*0.5f + 0.5f;
+					buf[i].tex.y = /*(buf[i].pos.y+texOffset.y*dh)*0.1f + */
+						dir.y*0.5f + 0.5f;
 				}
 				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 			}	
@@ -513,10 +526,6 @@ Vec3d PHWater::calRefracVec(Vec3d n, Vec3d v, double ra) {
     // refracted vectors, x-y velocities,
     // and height array by using integrate function 
 void PHWater::Step(SGScene* s){
-    static Vec3d vv1, vv2, vv;
-    static double dis;
-    int i,j;
-	
 	double dt = s->GetTimeStep();
 	Affinef posture = GetPosture();
 
@@ -563,34 +572,38 @@ void PHWater::Step(SGScene* s){
     
 	// solve equation
 	Integrate(dt);
-        
+}
+void PHWater::CalcNormal(){
 	//法線と屈折ベクトルを計算
+	int i,j;
+    static Vec3d vv1, vv2, vv;
+	float hmul = dh/0.05f;
 	for(j = 0; j < my - 1; j++)for(i = 0; i < mx - 1; i++){
-		vv1 = Vec3d(-dh, 0.0, height[i][j] - height[i + 1][j    ]);
-		vv2 = Vec3d(0.0, -dh, height[i][j] - height[i    ][j + 1]);
+		vv1 = Vec3d(-dh, 0.0, (height[i][j] - height[i + 1][j    ])*hmul);
+		vv2 = Vec3d(0.0, -dh, (height[i][j] - height[i    ][j + 1])*hmul);
 		normal[i][j] = (vv1 ^ vv2).unit();        
         // calculate refracted vectors
-		tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
+//		tvec[i][j] = calRefracVec(normal[i][j], vlight, 1.3333);
     }
 	for(j = 0; j < my - 1; j++){
-		vv1 = Vec3d(-dh, 0.0, height[mx-1][j] - height[0][j    ]);
-		vv2 = Vec3d(0.0, -dh, height[mx-1][j] - height[mx-1    ][j + 1]);
+		vv1 = Vec3d(-dh, 0.0, (height[mx-1][j] - height[0][j    ])*hmul);
+		vv2 = Vec3d(0.0, -dh, (height[mx-1][j] - height[mx-1    ][j + 1])*hmul);
 		normal[mx-1][j] = (vv1 ^ vv2).unit();        
         // calculate refracted vectors
-		tvec[mx-1][j] = calRefracVec(normal[mx-1][j], vlight, 1.3333);
+//		tvec[mx-1][j] = calRefracVec(normal[mx-1][j], vlight, 1.3333);
 	}
 	for(i = 0; i < mx - 1; i++){
-		vv1 = Vec3d(-dh, 0.0, height[i][my-1] - height[i + 1][my-1    ]);
-		vv2 = Vec3d(0.0, -dh, height[i][my-1] - height[i    ][0]);
+		vv1 = Vec3d(-dh, 0.0, (height[i][my-1] - height[i + 1][my-1    ])*hmul);
+		vv2 = Vec3d(0.0, -dh, (height[i][my-1] - height[i    ][0])*hmul);
 		normal[i][my-1] = (vv1 ^ vv2).unit();        
         // calculate refracted vectors
-		tvec[i][my-1] = calRefracVec(normal[i][my-1], vlight, 1.3333);
+//		tvec[i][my-1] = calRefracVec(normal[i][my-1], vlight, 1.3333);
 	}
-	vv1 = Vec3d(-dh, 0.0, height[mx-1][my-1] - height[0][my-1    ]);
-	vv2 = Vec3d(0.0, -dh, height[mx-1][my-1] - height[mx-1    ][0]);
+	vv1 = Vec3d(-dh, 0.0, (height[mx-1][my-1] - height[0][my-1    ])*hmul);
+	vv2 = Vec3d(0.0, -dh, (height[mx-1][my-1] - height[mx-1    ][0])*hmul);
 	normal[mx-1][my-1] = (vv1 ^ vv2).unit();        
     // calculate refracted vectors
-	tvec[mx-1][my-1] = calRefracVec(normal[mx-1][my-1], vlight, 1.3333);
+//	tvec[mx-1][my-1] = calRefracVec(normal[mx-1][my-1], vlight, 1.3333);
 }
 
     // this method calcualtes heights and x-y velocities

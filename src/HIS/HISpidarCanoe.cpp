@@ -63,9 +63,6 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	motor[7].lengthPerPulse *= -1;
 	*/
 
-	for(int i=0; i<8; ++i){
-		motor[i].lengthPerPulse *= -1;
-	}
 	Calib();
 	return true;
 }

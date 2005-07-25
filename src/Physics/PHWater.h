@@ -77,6 +77,7 @@ public:
 
 	///	レンダリング
 	virtual void Render(SGFrame* fr, GRRender* render);
+	void CalcNormal();
 
 	///力をクリアする
 	void ClearForce(){}

@@ -411,8 +411,8 @@ struct PHWConvexCalc{
 
 		//	“Ê•ï‚ÌŠO‘¤‚Ì‚Ú‚©‚µ
 		//	online‚Í‘‚©‚È‚¢D
-		const float lineWidth = 2.0f;	//	ü‚Ì•
-		const float lineWidthInv = 1/lineWidth;
+		float lineWidth = 0.2f/water->dh;	//	ü‚Ì•
+		float lineWidthInv = 1/lineWidth;
 		
 		//	ü‚Ì•`‰æ
 		#define DRAWLINE(vtxs, id1, id2, X, Y, XOFF, YOFF, yStart, yEnd, func)\
@@ -845,7 +845,7 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
 	float l = Square(vel.x)+Square(vel.y);
 	float th = 0.5f*M_PI - atan2(vel.z, l);
-	float phi = atan2(vel.y, vel.x);
+	float phi = atan2(vel.y, vel.x) + M_PI;
 	float norm = vel.norm();
 	for(int i=0; i<hsrc.size(); ++i){
 		hsrc[i].SetVelocity(th, phi, vel, t);
