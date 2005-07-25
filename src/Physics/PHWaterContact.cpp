@@ -845,6 +845,11 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 	return false;
 }
 void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
+	//シンメトリーフラグ処理
+	if(sym.x) vel.x = abs(vel.x);
+	if(sym.y) vel.y = abs(vel.y);
+	if(sym.z) vel.z = abs(vel.z);
+
 	float l = Square(vel.x)+Square(vel.y);
 	float th = 0.5f*M_PI - atan2(vel.z, l);
 	float phi = atan2(vel.y, vel.x);
@@ -904,7 +909,7 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
     FILE* fm = fopen(filename.c_str(), "rb");
     if(fm != NULL) {
         float dthe, dphi;
-		int nhsrc, ntex, ndata, rate, nthe, nphi, sym[3], n;
+		int nhsrc, ntex, ndata, rate, nthe, nphi, n;
 		fread(&dthe, sizeof(float), 1, fm);	//1.57
         fread(&dphi, sizeof(float), 1, fm);	//0.52
         fread(&nhsrc, sizeof(int), 1, fm);	//12
@@ -912,8 +917,10 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
         fread(&rate, sizeof(int), 1, fm);	//999
         fread(&nthe, sizeof(int), 1, fm);	//3
         fread(&nphi, sizeof(int), 1, fm);	//12
-        fread(sym, sizeof(int), 3, fm);
+        fread(&sym, sizeof(int), 3, fm);
         fread(&n, sizeof(int), 1, fm);		//12
+
+		DSTR << "symmetry flag: " << sym << std::endl;
 
 		ntex = (nthe - 2) * nphi + 2;		//14
         

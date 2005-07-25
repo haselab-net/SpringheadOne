@@ -77,6 +77,7 @@ public:
 	UTString		filename;
 	float			pressureGain;	//haptic sourceが計算した圧力に掛け合わせる定数．
 	Affinef			posture;		//meshに対する相対変換．
+	TVec3<int>		sym;			//シンメトリーフラグ
 	std::vector<PHWHapticSource> hsrc;
 	std::vector<PHWHapticSource*> vtxHsrcMap;
 	std::vector<PHWHapticSource*> dirHsrcMap;
