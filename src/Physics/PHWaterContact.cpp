@@ -534,8 +534,9 @@ struct PHWConvexCalc{
 		Vec3f a = p[1] - p[0];
 		Vec3f b = p[2] - p[0];
 		Vec3f normalS = -a^b;
-		Vec3f normal = normalS.unit();
-
+		float normalS_norm = normalS.norm();
+		if (normalS_norm < 1e-6f) return;
+		Vec3f normal = normalS / normalS_norm;
 		Vec3f vtxVel[3];
 		float vel[3];
 		float pres[3];
@@ -846,7 +847,7 @@ bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
 void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
 	float l = Square(vel.x)+Square(vel.y);
 	float th = 0.5f*M_PI - atan2(vel.z, l);
-	float phi = atan2(vel.y, vel.x) + M_PI;
+	float phi = atan2(vel.y, vel.x);
 	float norm = vel.norm();
 	for(int i=0; i<hsrc.size(); ++i){
 		hsrc[i].SetVelocity(th, phi, vel, t);
