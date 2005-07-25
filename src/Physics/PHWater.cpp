@@ -253,7 +253,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 				Vec2f tex;
 			};
 			const float hmul = 1.0f;
-			VtxFVF* buf= new VtxFVF[mx*2];
+			VtxFVF* buf= new VtxFVF[std::max(mx,my)*2];
 			float xo = -rx, yo = -ry;
 			float dxinv = 1/rx;
 			float dyinv = 1/ry;
@@ -283,22 +283,74 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 					px += dh;
 				}
 				for(int i=0; i<2*mx; ++i){
-/*					Vec3f dir = (buf[i].pos-viewPoint).unit();
-					dir -= 2*dir*buf[i].normal*buf[i].normal;
+#if 1
 					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
-						+  dir.x/dir.z*0.5f + 0.5f;
+						+  buf[i].normal.x*nmul + 0.5f;
 					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
-						+  dir.y/dir.z*0.5f + 0.5f;
-*/
+						+  buf[i].normal.y*nmul + 0.5f;
+#else
 					Vec3f dir = (buf[i].pos-viewPoint).unit();
 					dir -= 2*dir*buf[i].normal*buf[i].normal;
 					buf[i].tex.x = /*(buf[i].pos.x+texOffset.x*dh)*0.1f + */
 						dir.x*0.5f + 0.5f;
 					buf[i].tex.y = /*(buf[i].pos.y+texOffset.y*dh)*0.1f + */
 						dir.y*0.5f + 0.5f;
+#endif
 				}
 				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
-			}	
+			}
+			//	縁を付ける
+			const float edgeWidth = 20;
+			float dhOut = (rx+edgeWidth)*2 / (mx-1);
+			//	上側の縁を付ける．
+			for(int i=0; i<2; ++i){
+				float pOut = -rx-edgeWidth;
+				float px = -rx;
+				int cy = (bound.y-i+my)%my;
+				float y1 = i? ry : -ry-edgeWidth;
+				float y2 = i? ry+edgeWidth : -ry;
+				for(int ix=0; ix<mx; ix++){
+					int cx = (ix+bound.x) % mx;
+					buf[ix*2+1].pos		= Vec3f(i?px:pOut, y1, height[cx][cy]*hmul);
+					buf[ix*2+1].normal	= normal[cx][cy];
+					buf[ix*2].pos		= Vec3f(i?pOut:px, y2, height[cx][cy]*hmul);
+					buf[ix*2].normal	= normal[cx][cy];
+					px += dh;
+					pOut += dhOut;
+				}
+				for(int i=0; i<2*mx; ++i){
+					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
+						+  buf[i].normal.x*nmul + 0.5f;
+					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
+						+  buf[i].normal.y*nmul + 0.5f;
+				}
+				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+			}
+			dhOut = (ry+edgeWidth)*2 / (my-1);
+			//	左側の縁を付ける．
+			for(int i=0; i<2; ++i){
+				float pOut = -ry-edgeWidth;
+				float py = -ry;
+				int cx = (bound.x-i+mx)%mx;
+				float x1 = i? rx : -rx-edgeWidth;
+				float x2 = i? rx+edgeWidth : -rx;
+				for(int iy=0; iy<my; iy++){
+					int cy = (iy+bound.y) % my;
+					buf[iy*2].pos		= Vec3f(x1, i?py:pOut, height[cx][cy]*hmul);
+					buf[iy*2].normal	= normal[cx][cy];
+					buf[iy*2+1].pos		= Vec3f(x2, i?pOut:py, height[cx][cy]*hmul);
+					buf[iy*2+1].normal	= normal[cx][cy];
+					py += dh;
+					pOut += dhOut;
+				}
+				for(int i=0; i<2*my; ++i){
+					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
+						+  buf[i].normal.x*nmul + 0.5f;
+					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
+						+  buf[i].normal.y*nmul + 0.5f;
+				}
+				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
+			}
 			delete buf;
 			render->SetTexture(NULL);
 		}else{ //	色で圧力を表現
@@ -661,7 +713,7 @@ void PHWater::Integrate(double dt){
     UPDATE_H(0, mx-1, 0, my-1);
 
 //	const double pass = 300.0;
-	const double pass = 10.0;
+	const double pass = 100.0;
 	C = loss / (pass + 16);
 
 #define LOWPASS(x0, x1, x2, y0, y1, y2)	\

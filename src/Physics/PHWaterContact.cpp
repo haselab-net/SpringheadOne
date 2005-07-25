@@ -411,8 +411,9 @@ struct PHWConvexCalc{
 
 		//	“Ê•ï‚ÌŠO‘¤‚Ì‚Ú‚©‚µ
 		//	online‚Í‘‚©‚È‚¢D
-		float lineWidth = 0.2f/water->dh;	//	ü‚Ì•
-		float lineWidthInv = 1/lineWidth;
+//		float lineWidth = 0.2f/water->dh;	//	ü‚Ì•
+		const float lineWidth = 2;			//	ü‚Ì•
+		const float lineWidthInv = 1/lineWidth;
 		
 		//	ü‚Ì•`‰æ
 		#define DRAWLINE(vtxs, id1, id2, X, Y, XOFF, YOFF, yStart, yEnd, func)\
