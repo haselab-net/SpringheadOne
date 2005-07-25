@@ -93,11 +93,12 @@ public:
 
 		FITypeDesc* desc = db->Find("Mesh");
 		desc->Read(&ml->xmesh, doc);
-		DSTR << "Mesh:";
+/*		DSTR << "Mesh:";
 		for(int i=0; i<ml->xmesh.vertices.size(); ++i){
 			DSTR << ml->xmesh.vertices[i];
 		}
 		DSTR << std::endl;
+*/
 		ml->mesh->normals.resize(ml->xmesh.nVertices);
 		ml->mesh->vertices = ml->xmesh.vertices;
 		ml->nTri = 0;
