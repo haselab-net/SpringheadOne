@@ -24,6 +24,14 @@ void D3Material::Render(SGFrame* f, GRRender* renderBase){
 	}
 	if (texture){
 		WXCHECK(render->device->SetTexture(0, texture));
+		
+		// alpha blending to texture
+		// set arguments
+		render->device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		render->device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+		// process alpha blending
+		render->device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_BLENDTEXTUREALPHA);
 	}
 }
 void D3Material::SetXMaterial(D3Material::XMaterial xmat){
