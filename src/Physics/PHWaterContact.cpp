@@ -312,7 +312,7 @@ struct PHWConvexCalc{
 		//	境界条件の設定
 		//	できた凸包の内側のセルの速度を設定．凸包の中を塗りつぶし処理
 		engine->points.clear();
-
+#if 0
 		curY = border[0].y;
 		if (curY < -1) curY = -1;
 		iLeft = border.size()-1;
@@ -354,6 +354,7 @@ struct PHWConvexCalc{
 				water->v[cx][cy] = v.y;
 			}
 		}
+#endif
 		//	高さにFRMの補正を加える
 		curY = border[0].y;
 		if (curY < -1) curY = -1;
@@ -500,7 +501,9 @@ struct PHWConvexCalc{
 		float prs = hsrc->GetPressure();
 		water->height[cx][cy] += prs * alpha / (water->density*water->gravity);
 	}
+
 	void SetWaterVelocityU(int ix, int iy, float alpha){
+		return;
 		assert(-1e-5<=alpha && alpha<=1+1e-5);
 //		alpha = 1 - 1/(1+exp((alpha-0.5)*4));	//	シグモイド
 
@@ -514,6 +517,7 @@ struct PHWConvexCalc{
 		engine->points.push_back(engine->points.back() + Vec3f(v.x+water->velocity.x, v.y+water->velocity.y, 0) * 0.1f * alpha);
 	}
 	void SetWaterVelocityV(int ix, int iy, float alpha){
+		return;
 		assert(-1e-5<=alpha && alpha<=1+1e-5);
 //		alpha = 1 - 1/(1+exp((alpha-0.5)*4));	//	シグモイド
 
