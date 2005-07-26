@@ -527,7 +527,7 @@ struct PHWConvexCalc{
 		water->v[cx][cy] = alpha*v.y + (1-alpha)*water->v[cx][cy];
 	}
 	void CalcTriangle(Vec3f* p, float* depth, float* height, float* pressure){
-		const float B=0.1f;
+		const float B=0.02f;
 
 		assert(depth[0] >=0);
 		assert(depth[1] >=0);
