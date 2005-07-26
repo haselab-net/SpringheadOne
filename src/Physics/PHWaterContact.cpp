@@ -872,6 +872,7 @@ void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
 	float l = Square(vel.x)+Square(vel.y);
 	the = 0.5f*M_PI - atan2(vel.z, l);
 	phi = atan2(vel.y, vel.x);
+	if (phi<0) phi += 2*M_PI;
 	//float norm = vel.norm();
 #endif
 	for(int i=0; i<hsrc.size(); ++i){
@@ -950,7 +951,7 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 		hsrc.resize(nhsrc);
         //frc_set.resize(nhsrc);
         int i;
-		float frc_max;
+		float frc_max=0;
 		Vec3f p, normal;
 		std::vector<float> xprs(ndata), yprs(ndata), zprs(ndata), xfri(ndata), yfri(ndata), zfri(ndata);
         for(i = 0; i < nhsrc; i++) {
@@ -998,6 +999,9 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
 					hsrc[i].ftex[k].fri[ii].X() = xfri[ii];
 					hsrc[i].ftex[k].fri[ii].Y() = yfri[ii];
 					hsrc[i].ftex[k].fri[ii].Z() = zfri[ii];
+					if (!_finite(xprs[ii])) DSTR << "FRM X" << ii << " is invalid value." << std::endl;
+					if (!_finite(yprs[ii])) DSTR << "FRM Y" << ii << " is invalid value." << std::endl;
+					if (!_finite(zprs[ii])) DSTR << "FRM Z" << ii << " is invalid value." << std::endl;
 				}
                 /*hsrc[i].ftex[k].peri_prs.x =
                 hsrc[i].ftex[k].peri_prs.y =
@@ -1012,11 +1016,11 @@ void PHWaterRegistanceMap::Loaded(SGScene* scene){
                 hsrc[i].ftex[k].phas_fri.y =
                 hsrc[i].ftex[k].phas_fri.z = 0.0;*/
 
-                frc_max = 0.0;
                 for(int m = 0; m < ndata; m++)
 					frc_max = std::max(frc_max, std::max(hsrc[i].ftex[k].prs[m].norm(), hsrc[i].ftex[k].fri[m].norm()));
             }
         }
+		if (frc_max == 0) DSTR << "FRM frc_max = 0" << std::endl;
         for(i = 0; i < nhsrc; i++) {
             for(int j = 0; j < n; j++) {
                 //if(hsrc[i].ftex[j].rate > 0) {
@@ -1173,8 +1177,14 @@ PHWHapticSource* PHWaterRegistanceMap::FindHsrc(Vec3f pos){
 	float phi = atan2(pos.y, pos.x);
 	if (phi<0) phi += 2*M_PI;
 	int ith = th / dTheta;
+	ith = ith % NTHETA;
 	int iphi = phi / dPhi;
-	return dirHsrcMap[ith*NPHI+iphi];
+	iphi = iphi % NPHI;
+	int id = ith*NPHI+iphi;
+	if (id >= dirHsrcMap.size() || id < 0){
+		DSTR << "dirHsrcMap " << id << std::endl;
+	}
+	return dirHsrcMap[id];
 }
 
 typedef UTString String;
@@ -1264,9 +1274,9 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 	Vec3f uu, vv, ww;
 
 	vv = -v;
-	uu = Vec3f(vv.y, -vv.x, 0.0).unit();
-	//uun = uu.norm();
-    /*if(a < 0.000000001) {
+	uu = Vec3f(vv.y, -vv.x, 0.0);
+	float a = uu.square();
+    if(a < 0.000000001) {
         if(vv.z > 0.) {
 			uu = Vec3d(1.0, 0.0, 0.0);
 			ww = Vec3d(0.0, -1.0, 0.0);
@@ -1274,13 +1284,13 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 			uu = Vec3d(1.0, 0.0, 0.0);
 			ww = Vec3d(0.0, 1.0, 0.0);
         }
-    } else {*/
-    //a = sqrt(a);
-    //uu.x /= a; uu.y /=a;
-	ww = Vec3f( uu.y * vv.z,
+    } else {
+		a = sqrt(a);
+		uu.x /= a; uu.y /=a;
+		ww = Vec3f( uu.y * vv.z,
 			   -uu.x * vv.z,
 			    uu.x * vv.y - uu.y * vv.x).unit();
-    //}
+    }
 
 	//the, phi -> ïœà 
 	//dthe, dphi -> DBÇÃäiéqïù
