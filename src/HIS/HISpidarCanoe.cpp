@@ -40,13 +40,14 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	};
 #else	//	クロス
 	const float PX = 0.25f/2;		//	x方向の辺の長さ/2
+	const float PX2 = 0.061f/2;		//	x方向の辺の長さ/2
 	const float PY = 2.35f/2;		//	y方向の辺の長さ/2
 	const float PZ = 2.10f/2;		//	z方向の辺の長さ/2
 	Vec3f motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
-		{Vec3f(-PX,-PY, PZ), Vec3f( -GX, GY,  GZ)},
-		{Vec3f( PX,-PY, PZ), Vec3f(  GX, GY,  GZ)},
-		{Vec3f( PX,-PY,-PZ), Vec3f(  GX, GY, -GZ)},
-		{Vec3f(-PX,-PY,-PZ), Vec3f( -GX, GY, -GZ)},
+		{Vec3f(-PX2,-PY, PZ), Vec3f( -GX, GY,  GZ)},
+		{Vec3f( PX2,-PY, PZ), Vec3f(  GX, GY,  GZ)},
+		{Vec3f( PX2,-PY,-PZ), Vec3f(  GX, GY, -GZ)},
+		{Vec3f(-PX2,-PY,-PZ), Vec3f( -GX, GY, -GZ)},
 		{Vec3f(-PX, PY, PZ), Vec3f( -GX, GY,  GZ)},
 		{Vec3f( PX, PY, PZ), Vec3f(  GX, GY,  GZ)},
 		{Vec3f( PX, PY,-PZ), Vec3f(  GX, GY, -GZ)},

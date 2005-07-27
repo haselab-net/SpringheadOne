@@ -1,5 +1,6 @@
 #include "Collision.h"
 #pragma hdrstop
+#include <Graphics/GRMaterial.h>
 
 namespace Spr{;
 	
@@ -383,6 +384,36 @@ void CDCollisionEngine::SaveState(SGBehaviorStates& states) const{
 			state->framePairs.push_back(CDCollisionEngineState::TFramePairState());
 			state->framePairs.back().lastContactCount = pairs[i]->lastContactCount;
 		}
+	}
+}
+
+void RenderCDMesh(Affinef af, SGFrame* fr, GRRender* render){
+	for(int i=0; i<fr->contents.size(); ++i){
+		CDMesh* mesh = DCAST(CDMesh, fr->contents[i]);
+		if (mesh){
+			for(int i=0; i<mesh->conveces.size(); ++i){
+				CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces[i]);
+				if (poly){
+					render->SetModelMatrix(af);
+					for(int i=0; i<poly->faces.size(); ++i){
+						Vec3f vtx[3];
+						for(int j=0; j<3; ++j) vtx[j] = poly->base[poly->faces[i].vtxs[j]];
+						render->DrawDirect(GRRender::TRIANGLES, vtx, vtx+3);
+					}
+				}
+			}
+		}
+	}
+	for(int i=0; i<fr->Children().size(); ++i){
+		RenderCDMesh(af * fr->Children()[i]->GetPosture(), fr->Children()[i], render);
+	}
+}
+void CDCollisionEngine::Render(GRRender* render, SGScene* scene){
+	if (!render->bDrawDebug) return;
+	if ((render->drawState & GRRender::DRAW_OPAQUE) == 0) return;
+	render->SetMaterial(GRMaterialData(Vec4f(1,0,0,1), 2));
+	for(int i=0; i<frames.size(); ++i){	
+		RenderCDMesh(frames[i]->frame->GetWorldPosture(), frames[i]->frame, render);
 	}
 }
 

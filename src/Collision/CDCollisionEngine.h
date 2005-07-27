@@ -93,8 +93,7 @@ protected:
 	CDCollisionListeners listeners;
 	///	フレームとフレーム番号の対応表
 
-	
-	
+	void Render(GRRender* render, SGScene* scene);
 	
 	std::map<SGFrame*, int> frameMap;
 
