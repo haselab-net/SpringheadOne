@@ -1,4 +1,4 @@
-日付 : 2005.07.27 
+日付 : 2005.07.28 
  
 --- ビルドエラーのログ --- 
  
@@ -98,6 +98,26 @@ Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
     SGFrame.cpp(127): 構文解析対象：void SGFrame::EnumContents(SGObjects &,SGFrames &)
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++ 警告] CDCollisionEngine.cpp(393): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(396): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(410): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(419): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(427): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(423): 構文解析対象：void CDCollisionEngine::Render(GRRender *,SGScene *)
 [C++ エラー] PHJoint.h(126): E2094 * 演算子が使われたがクラス Matrix3d では SpSubVec3d 型のための定義が存在しない
   詳細な解析情報
     PHForceField.cpp(1): #include C:\SVNWork\Springhead\src\Physics\Physics.h

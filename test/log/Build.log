@@ -560,7 +560,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
     HIMouse.cpp(5): namespace Spr
     HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
 [C++] SGFrame.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++ 警告] SGFrame.cpp(129): W8012 符号付き値と符号なし値の比較
   詳細な解析情報
     SGFrame.cpp(6): namespace Spr
@@ -574,13 +573,11 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] SGEngine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] SGRegisterLoader.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] SGRenderEngine.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
 [C++] FITypeDesc.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocNode.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] FIFileDoc.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] FIDocScene.cpp(1): 
@@ -588,7 +585,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] CDGJK.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] CDSphere.cpp(1): 
@@ -607,6 +603,26 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] プリコンパイルヘッダの読み込み
 [C++] CDCollisionEngine.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
+[C++ 警告] CDCollisionEngine.cpp(393): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(396): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(410): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(419): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(392): 構文解析対象：void RenderCDMesh(Affinef,SGFrame *,GRRender *)
+[C++ 警告] CDCollisionEngine.cpp(427): W8012 符号付き値と符号なし値の比較
+  詳細な解析情報
+    CDCollisionEngine.cpp(5): namespace Spr
+    CDCollisionEngine.cpp(423): 構文解析対象：void CDCollisionEngine::Render(GRRender *,SGScene *)
 [C++] PHForceField.cpp(1): 
 [C++ エラー] PHJoint.h(126): E2094 * 演算子が使われたがクラス Matrix3d では SpSubVec3d 型のための定義が存在しない
   詳細な解析情報
