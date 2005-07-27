@@ -20,6 +20,16 @@ enum SOUNDID{
 	SAMPLE3 =3,
 	SAMPLE4 =4,
 	SAMPLE5 =5,
+    SAMPLE6 =6,
+    SAMPLE7 =7,
+    SAMPLE8 =8,
+    SAMPLE9 =9,
+    SAMPLE10=10,
+    SAMPLE11=11,
+    SAMPLE12=12,
+    SAMPLE13=13,
+    SAMPLE14=14,
+    SAMPLE15=15,
 };
 
 #define SOUNDBUFFER_MAX	100 //100à»â∫Ç≈ÇÀ
@@ -41,7 +51,11 @@ public: // ó’éûë[íu(ÅH) Ç‡Ç∆Ç‡Ç∆ÇÕprivateÇæÇ¡ÇΩÇÃÇæÇØÇ«
 	GRSound::~GRSound();
 
 public:
+    // this method equals to the constructor
+    // return value is instance
 	static GRSound* instance(){ return &inst; }
+
+    // called after the instance method
 	HRESULT initialize( HWND hwnd );
 	HRESULT	play( SOUNDID id );
 	HRESULT stop( SOUNDID id );
