@@ -84,6 +84,11 @@ public:
 
 	///格子中間の値を線形補完して返す
 	double LerpHeight(double x, double y);
+	double LerpVelocityU(double x, double y);
+	double LerpVelocityV(double x, double y);
+	Vec2f LerpVelocity(double x, double y){
+		return Vec2f(LerpVelocityU(x,y), LerpVelocityV(x,y));
+	}
 
 	//パラメータ
 	UTRef<SGFrame> frame;	//	親フレーム

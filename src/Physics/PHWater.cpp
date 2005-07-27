@@ -203,6 +203,48 @@ double PHWater::LerpHeight(double x, double y){
     return h0 * (1.0 - nx) + h1 * nx;
 }
 
+double PHWater::LerpVelocityU(double x, double y){
+	x += dh/2;
+	static double nx, ny, h0, h1;
+
+    if(x < -rx || x > rx || y < -ry || y > ry)
+		return 0.0;
+
+	//座標から格子インデックスを算出
+	nx = (x + rx) / dh;
+	ny = (y + ry) / dh;
+	int ix = floor(nx), iy = floor(ny);
+	nx -= (double)ix;
+	ny -= (double)iy;
+	ix = (ix+bound.x)%mx, iy = (iy+bound.y)%my;
+    
+    h0 = u[ix       ][iy] * (1.0 - ny) + u[ix       ][(iy+1)%my] * ny;
+    h1 = u[(ix+1)%mx][iy] * (1.0 - ny) + u[(ix+1)%mx][(iy+1)%my] * ny;
+
+    return h0 * (1.0 - nx) + h1 * nx;
+}
+double PHWater::LerpVelocityV(double x, double y){
+	y += dh/2;
+	static double nx, ny, h0, h1;
+
+    if(x < -rx || x > rx || y < -ry || y > ry)
+		return 0.0;
+
+	//座標から格子インデックスを算出
+	nx = (x + rx) / dh;
+	ny = (y + ry) / dh;
+	int ix = floor(nx), iy = floor(ny);
+	nx -= (double)ix;
+	ny -= (double)iy;
+	ix = (ix+bound.x)%mx, iy = (iy+bound.y)%my;
+    
+    h0 = v[ix       ][iy] * (1.0 - ny) + v[ix       ][(iy+1)%my] * ny;
+    h1 = v[(ix+1)%mx][iy] * (1.0 - ny) + v[(ix+1)%mx][(iy+1)%my] * ny;
+
+    return h0 * (1.0 - nx) + h1 * nx;
+}
+
+
 void PHWater::Render(SGFrame* fr, GRRender* render){
 	//renderの種類を判定	
 	if (render->drawState&GRRender::DRAW_OPAQUE == 0) return;

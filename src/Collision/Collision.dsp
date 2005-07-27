@@ -90,7 +90,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "MFCDebug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /Gi /GX /Zi /Od /Op /Ob2 /I "$(SPRINGHEAD)/src" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GX /Zi /Od /Op /Ob0 /I "$(SPRINGHEAD)/src" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
 # ADD RSC /l 0x411 /d "_DEBUG" /d "_AFXDLL"
 BSC32=bscmake.exe
@@ -113,7 +113,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "MFCRelease"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /G6 /Gr /MD /W3 /vd0 /GR- /GX /Zi /Ox /Ot /Og /Oi /Op /Ob2 /Gf /I "$(SPRINGHEAD)/src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
+# ADD CPP /nologo /G6 /Gr /MD /W3 /vd0 /GX /Zi /Ox /Ot /Og /Oi /Op /Ob2 /Gf /I "$(SPRINGHEAD)/src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "_AFXDLL" /YX /FD /c
 # SUBTRACT CPP /Oa /Ow /Gy /Fr
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
 # ADD RSC /l 0x411 /d "NDEBUG" /d "_AFXDLL"

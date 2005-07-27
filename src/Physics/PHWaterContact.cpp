@@ -40,6 +40,7 @@ PHWGeometry::PHWGeometry(){
 void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 	frame = f;
 	mesh = g;
+	mesh->CreateTree();
 	conveces.resize(g->conveces.size());
 	//	frm ‚ÌŠ„‚è“–‚Ä
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
@@ -527,7 +528,7 @@ struct PHWConvexCalc{
 		water->v[cx][cy] = alpha*v.y + (1-alpha)*water->v[cx][cy];
 	}
 	void CalcTriangle(Vec3f* p, float* depth, float* height, float* pressure){
-		const float B=0.02f;
+		const float B=0.01f;
 
 		assert(depth[0] >=0);
 		assert(depth[1] >=0);
@@ -561,90 +562,11 @@ struct PHWConvexCalc{
 				+	((1.0f/24.0f)*vel[0] + (1.0f/24.0f)*vel[1] + (1.0f/12.0f)*vel[2]) * p[2]
 			  ) ^ normalS;
 
-/*		‚Ù‚Æ‚ñ‚Ç‰e‹¿‚ª‚È‚¢‚Ì‚ÅC‚‘¬‰»‚Ì‚½‚ßÈ—ª
-		//	”g‚‚Ì•â³	ŽOŠpŒ`“à‚Ì…‚É‚Â‚¢‚ÄC”g‚‚ÉÕ“Ë‚É‚æ‚éˆ³—Í‚Ì‰e‹¿‚ð‰Á‚¦‚éD
-		float velH = - (vtxVel[0].z+vtxVel[1].z+vtxVel[2].z)/3 * B * water->dh*water->dh;
-		Vec2f vtx[3];
-		for(int i=0; i<3; ++i){
-			vtx[i].x = (p[i].x+water->rx)*water->dhinv;
-			vtx[i].y = (p[i].y+water->ry)*water->dhinv;
-		}
-		if (vtx[1].y > vtx[2].y){
-			std::swap(vtx[1], vtx[2]);
-			std::swap(height[1], height[2]);
-		}
-		if (vtx[0].y > vtx[1].y){
-			std::swap(vtx[0], vtx[1]);
-			std::swap(height[0], height[1]);
-		}
-		if (vtx[1].y > vtx[2].y){
-			std::swap(vtx[1], vtx[2]);
-			std::swap(height[1], height[2]);
-		}
-		int iy = ceil(vtx[0].y);
-		if (iy<0) iy = 0;
-		float dLeft = (vtx[1].x-vtx[0].x)/(vtx[1].y-vtx[0].y);
-		float left = vtx[0].x + (iy-vtx[0].y)*dLeft;
-		float dRight = (vtx[2].x-vtx[0].x)/(vtx[2].y-vtx[0].y);
-		float right = vtx[0].x + (iy-vtx[0].y)*dRight;
-		
-		a.sub_vector(0, Vec2f()) = vtx[1]-vtx[0];
-		b.sub_vector(0, Vec2f()) = vtx[2]-vtx[0];
-		a.z = height[1]-height[0];
-		b.z = height[2]-height[0];
-		Vec3f triNormal = (a^b).unit();
-		if (triNormal.z <0) triNormal *= -1;
-		Vec2f deltaHeight(-triNormal.x/triNormal.z, -triNormal.y/triNormal.z);
-		for(; iy < vtx[1].y; ++iy){
-			int xStart, xEnd;
-			if (left < right){
-				xStart = ceil(left); xEnd = right;
-			}else{
-				xStart = ceil(right); xEnd = left;
-			}
-			if (xStart < 0) xStart = 0;
-			if (xEnd > water->mx) xEnd = water->mx;
-			int cy = (iy+water->bound.y)%water->my;
-
-			float curHeight = height[0] + (xStart - vtx[0].x)*deltaHeight.x
-				+ (iy - vtx[0].y)*deltaHeight.x;
-			for(int ix = xStart; ix<=xEnd; ++ix){
-				int cx = (ix+water->bound.x)%water->mx;				
-				float heightError = water->height[cx][cy] - curHeight;
-				volume += heightError * water->dh * water->dh * normalS;
-				volumeMom += (heightError * water->dh * water->dh) * (Vec3f(ix*water->dh - water->rx, iy*water->dh - water->ry, curHeight) ^ normalS);
-				water->height[cx][cy] += velH;
-				curHeight += deltaHeight.x;
-			}
-			left += dLeft;
-			right += dRight;
-		}
-		dLeft = (vtx[2].x-vtx[1].x)/(vtx[2].y-vtx[1].y);
-		left = vtx[1].x + (iy-vtx[1].y)*dLeft;
-		for(; iy < vtx[2].y; ++iy){
-			int xStart, xEnd;
-			if (left < right){
-				xStart = ceil(left); xEnd = right;
-			}else{
-				xStart = ceil(right); xEnd = left;
-			}
-			if (xStart < 0) xStart = 0;
-			if (xEnd > water->mx) xEnd = water->mx;
-			int cy = (iy+water->bound.y)%water->my;
-			float curHeight = height[0] + (xStart - vtx[0].x)*deltaHeight.x
-				+ (iy - vtx[0].y)*deltaHeight.x;
-			for(int ix = xStart; ix<xEnd; ++ix){
-				int cx = (ix+water->bound.x)%water->mx;
-				float heightError = water->height[cx][cy] - curHeight;
-				volume += heightError * water->dh * water->dh * normalS;
-				volumeMom += (heightError * water->dh * water->dh) * (Vec3f(ix*water->dh - water->rx, iy*water->dh - water->ry, curHeight) ^ normalS);
-				water->height[cx][cy] += velH;
-			}
-			left += dLeft;
-			right += dRight;
-		}
-*/	
 		//	ˆ³—Í‚É‚æ‚é—Í‚ðŒvŽZDˆÀ’è‚³‚¹‚é‚½‚ßC”S«‚à“ü‚ê‚éD
+		const float hVelMul = 0.0f;
+		velInt.x *= hVelMul;
+		velInt.y *= hVelMul;
+		velIntMom.z *= hVelMul;
 		buo += (volume + B*velInt) * water->density * water->gravity;
 		tbuo += (volumeMom + B*velIntMom) * water->density * water->gravity;
 
@@ -1319,6 +1241,7 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
         k10 = iphi + 1;
 		k11 = (k10 < nphi) ? k10 + 1 : 1;
     }
+//	DSTR << "K00" << k00 << "k01" << k01 << "k10" << k10 << "k11" << k11 << std::endl;
 
     Vec3f prs00, prs01, prs10, prs11, fri00, fri01, fri10, fri11;
 	Vec3f prs0, prs1, fri0, fri1;

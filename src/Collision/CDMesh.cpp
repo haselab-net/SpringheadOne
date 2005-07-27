@@ -19,7 +19,9 @@ public:
 		for(unsigned i=0; i<mesh->vertices.size(); ++i){
 			mesh->vertices[i].Z() *= -1;
 		}
-		mesh->CreateTree();
+		if (mesh->vertices.size() < 1000){
+			mesh->CreateTree();
+		}
 		return true;
 	}
 };
@@ -57,6 +59,7 @@ void CDMesh::MergeVertices(){
 	}
 }
 void CDMesh::CreateTree(){
+	if (tvtxs.size() == vertices.size()) return;
 	MergeVertices();
 	tvtxs.resize(vertices.size());
 	CDPolyhedron* poly = new CDPolyhedron;
