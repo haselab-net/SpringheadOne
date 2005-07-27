@@ -544,7 +544,7 @@ struct PHWConvexCalc{
 		float vel[3];
 		float pres[3];
 		for(int i=0; i<3; ++i){
-			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter)) - water->velocity;
+			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 			vel[i] = -vtxVel[i] * normal;
 			pres[i] = pressure[i] / (water->density * water->gravity);
 		}
