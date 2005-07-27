@@ -74,15 +74,16 @@ int main(){
 	};
 	cout.flush();
 	spidar.Init(devMan, motorPos[0], 0.3776f, 2.924062107079e-5f, 0.5f, 20.0f);
-	spidar2.Init(devMan, motorPos[1], 0.3776f, -2.924062107079e-5f, 0.5f, 20.0f);
+	spidar2.Init(devMan, motorPos[1], 0.3776f, 2.924062107079e-5f, 0.5f, 20.0f);
 	cout.flush();
 	printf("Waiting...");
 	Sleep(1000);
 	printf("Calibration\n");
+/*
 	spidar.Motor()[0].lengthPerPulse *= -1;
 	spidar2.Motor()[0].lengthPerPulse *= -1;
 	spidar2.Motor()[2].lengthPerPulse *= -1;
-
+*/
 	spidar.Calib();
 	spidar2.Calib();
 	

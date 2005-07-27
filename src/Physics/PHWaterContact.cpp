@@ -563,7 +563,7 @@ struct PHWConvexCalc{
 			  ) ^ normalS;
 
 		//	圧力による力を計算．安定させるため，粘性も入れる．
-		const float hVelMul = 0.0f;
+		const float hVelMul = 0.2f;
 		velInt.x *= hVelMul;
 		velInt.y *= hVelMul;
 		velIntMom.z *= hVelMul;
@@ -708,8 +708,10 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.Calc(poly);
 			}
 			//	水から剛体フレームへ変換してAddForce
-			convCalc.solid->solid->AddForce(convCalc.Aw.Rot() * convCalc.buo, convCalc.Aw.Pos());
-			convCalc.solid->solid->AddTorque(convCalc.Aw.Rot() * convCalc.tbuo);
+			float fMul = 1.0f;
+			if (strcmp(convCalc.solid->solid->GetName(), "soPaddle") == 0) fMul = 3.0f;
+			convCalc.solid->solid->AddForce(fMul * (convCalc.Aw.Rot() * convCalc.buo), convCalc.Aw.Pos());
+			convCalc.solid->solid->AddTorque(fMul * (convCalc.Aw.Rot() * convCalc.tbuo));
 		}
 	}
 }

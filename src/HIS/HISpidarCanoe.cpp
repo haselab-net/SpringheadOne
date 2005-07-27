@@ -70,7 +70,7 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	for( int i=0; i<8; i++ ) motorPos[i][0] -= Vec3f( 0,-0.0675,0.095 );
 */
 	double lpp = 3.0824008138351983723296032553408e-5 * 500 /1024;
-	if( HISpidarG6::Init(dev, 8, motorPos, 0.3f, (float)lpp, 1.0f, 20.0f) == false ){
+	if( HISpidarG6::Init(dev, 8, motorPos, 0.3f, (float)lpp, 0.6f, 10.0f) == false ){
 		return false;
 	}
 	motor[1].lengthPerPulse *= -1;
