@@ -53,7 +53,7 @@ public:
 
 ///	SGBehaviorEngine‚Ì”z—ñ
 class SGBehaviorEngines: public SGEngines{
-protected:
+public:
 	iterator initializer;
 	iterator forceGenerator;
 	iterator dynamicalSystem;

@@ -265,6 +265,7 @@ WaterEngine{				#	水エンジン．水面を動かす
 }
 WaterContactEngine{			#	水の接触エンジン
 	{water1}				#	水オブジェクトのの名前
+	{Pointer1}
 	{soCube1}
 	{soCube2}
 	{soCube3}
@@ -282,8 +283,8 @@ Frame frWater{
 	}
 	Water water1{							#	水オブジェクト
 		100;									#	mx：X方向のセルの数
-		60;									#	my：Y方向のセルの数
-		0.2;								#	dh：セルの大きさ
+		70;									#	my：Y方向のセルの数
+		0.08;								#	dh：セルの大きさ
 		1.0;								#	depth：水の深さ
 		9.8;								#	gravity：重力
 		30.0;								#	density：密度
