@@ -217,7 +217,8 @@ void CDCollisionEngine::Step(SGScene* scene){
 	listeners.BeforeAll(scene);
 #if 1
 	//	両方の端を並べたリストを作り，ソートする．
-	Vec3f dir(1,0,0);
+//	Vec3f dir(1,0,0);
+	Vec3f dir(0,0,1);
 	typedef std::vector<CDFrameEdge> Edges;
 	Edges edges;
 	edges.resize(frames.size()*2);
