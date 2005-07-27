@@ -182,7 +182,6 @@ void PHWater::Init(SGScene* scene){
 	materialD3 = new D3Material;
 	*materialD3 = *material;
 }
-
 double PHWater::LerpHeight(double x, double y){
 	static double nx, ny, h0, h1;
 
@@ -202,6 +201,7 @@ double PHWater::LerpHeight(double x, double y){
 
     return h0 * (1.0 - nx) + h1 * nx;
 }
+#if 0
 
 double PHWater::LerpVelocityU(double x, double y){
 	x += dh/2;
@@ -244,6 +244,7 @@ double PHWater::LerpVelocityV(double x, double y){
     return h0 * (1.0 - nx) + h1 * nx;
 }
 
+#endif
 
 void PHWater::Render(SGFrame* fr, GRRender* render){
 	//renderの種類を判定	
@@ -436,7 +437,28 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			}	
 			render->device->SetRenderState(D3DRS_LIGHTING, true);
 			delete buf;
+			//	流速ベクトルを表示
+			render->SetLineWidth(2);
+			Vec3f vtx[2];
+			vtx[0] = Vec3f(0,0,0);
+			vtx[1] = Vec3f(rx,0,0);
+			render->SetMaterial(GRMaterialData(Vec4f(0.1f,0,0,1),2));
+			render->DrawDirect(GRRender::LINES, vtx, vtx+2);
+			vtx[0] = Vec3f(0,0,0);
+			vtx[1] = Vec3f(0,ry,0);
+			render->SetMaterial(GRMaterialData(Vec4f(0,0.1f,0,1),2));
+			render->DrawDirect(GRRender::LINES, vtx, vtx+2);
+			render->SetLineWidth(3);
+			vtx[0] = Vec3f(0,0,0);
+			vtx[1] = Vec3f(velocity.x,velocity.y,0);
+			render->SetMaterial(GRMaterialData(Vec4f(1,1,1,1),2));
+			render->DrawDirect(GRRender::LINES, vtx, vtx+2);
+			for(int i=0; i<2; ++i) vtx[i].x+=0.01f;
+			render->DrawDirect(GRRender::LINES, vtx, vtx+2);
+			for(int i=0; i<2; ++i) vtx[i].x+=0.01f;
+			render->DrawDirect(GRRender::LINES, vtx, vtx+2);
 		}
+#if 0
 		render->SetDepthTest(false);
 		GRMaterialData mate(Vec4f(1,0,0,1), 4);
 		render->SetMaterial(mate);
@@ -450,7 +472,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		lines.push_back(Vec3f(-rx, ry, 0));
 		lines.push_back(Vec3f(-rx, -ry, 0));
 		render->DrawDirect(GRRender::LINES, &*(lines.begin()), &*(lines.end()));
-		lines.resize(2);
+#endif
 		if (render->bDrawDebug){
 			render->device->SetRenderState(D3DRS_LIGHTING, false);
 			render->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
@@ -490,7 +512,6 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 			}
 			render->device->SetRenderState(D3DRS_LIGHTING, true);
 		}
-		
 		render->SetDepthTest(true);
 		//	テクスチャを戻す．
 		render->device->SetTexture(0,NULL);

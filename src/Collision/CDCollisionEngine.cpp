@@ -387,6 +387,7 @@ void CDCollisionEngine::SaveState(SGBehaviorStates& states) const{
 	}
 }
 
+static int count;
 void RenderCDMesh(Affinef af, SGFrame* fr, GRRender* render){
 	for(int i=0; i<fr->contents.size(); ++i){
 		CDMesh* mesh = DCAST(CDMesh, fr->contents[i]);
@@ -394,6 +395,16 @@ void RenderCDMesh(Affinef af, SGFrame* fr, GRRender* render){
 			for(int i=0; i<mesh->conveces.size(); ++i){
 				CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces[i]);
 				if (poly){
+					Vec4f color[] = {
+						Vec4f(1,0,0,1),
+						Vec4f(1,1,0,1),
+						Vec4f(0,1,0,1),
+						Vec4f(0,1,1,1),
+						Vec4f(0,0,1,1),
+						Vec4f(1,0,1,1),
+					};
+					render->SetMaterial(GRMaterialData(color[count%6], 2));
+					count ++;
 					render->SetModelMatrix(af);
 					for(int i=0; i<poly->faces.size(); ++i){
 						Vec3f vtx[3];
@@ -411,7 +422,7 @@ void RenderCDMesh(Affinef af, SGFrame* fr, GRRender* render){
 void CDCollisionEngine::Render(GRRender* render, SGScene* scene){
 	if (!render->bDrawDebug) return;
 	if ((render->drawState & GRRender::DRAW_OPAQUE) == 0) return;
-	render->SetMaterial(GRMaterialData(Vec4f(1,0,0,1), 2));
+	count = 0;
 	for(int i=0; i<frames.size(); ++i){	
 		RenderCDMesh(frames[i]->frame->GetWorldPosture(), frames[i]->frame, render);
 	}
