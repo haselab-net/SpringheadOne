@@ -553,7 +553,7 @@ struct PHWConvexCalc{
 		float vel[3];
 		float pres[3];
 		for(int i=0; i<3; ++i){
-			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter));// - Vec3f(water->velocity.x, water->velocity.y, 0);
+			vtxVel[i] = solidVel + (solidAngVel^(p[i]-solidCenter)) - Vec3f(water->velocity.x, water->velocity.y, 0);
 			vel[i] = -vtxVel[i] * normal;
 			pres[i] = pressure[i] / (water->density * water->gravity);
 		}
@@ -572,7 +572,7 @@ struct PHWConvexCalc{
 			  ) ^ normalS;
 
 		//	圧力による力を計算．安定させるため，粘性も入れる．
-		const float hVelMul = 0.1f;
+		const float hVelMul = 0.2f;
 		velInt.x *= hVelMul;
 		velInt.y *= hVelMul;
 		velIntMom.z *= hVelMul;
@@ -739,14 +739,10 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.Calc(poly);
 			}
 			//	水から剛体フレームへ変換してAddForce
-			if (strcmp(convCalc.solid->solid->GetName(), "soPaddle") == 0){
-				const float fMul = 3;
-				convCalc.buo.X() *= fMul;
-				convCalc.buo.Y() *= fMul;
-				convCalc.tbuo.Z() *= fMul;
-			}
-			convCalc.solid->solid->AddForce((convCalc.Aw.Rot() * convCalc.buo), convCalc.Aw.Pos());
-			convCalc.solid->solid->AddTorque((convCalc.Aw.Rot() * convCalc.tbuo));
+			float fMul = 1.0f;
+			if (strcmp(convCalc.solid->solid->GetName(), "soPaddle") == 0) fMul = 3.0f;
+			convCalc.solid->solid->AddForce(fMul * (convCalc.Aw.Rot() * convCalc.buo), convCalc.Aw.Pos());
+			convCalc.solid->solid->AddTorque(fMul * (convCalc.Aw.Rot() * convCalc.tbuo));
 		}
 	}
 }
@@ -1333,4 +1329,5 @@ Vec3f PHWHapticSource::GetPos(){
 }
 
 }
+
 
