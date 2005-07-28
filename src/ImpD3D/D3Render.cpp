@@ -3,6 +3,8 @@
 #include <Graphics/GRCamera.h>
 #include <Graphics/GRLight.h>
 #include <Graphics/GRSphere.h>
+#include <gl/gl.h>
+#include <gl/glu.h>
 namespace Spr {;
 //----------------------------------------------------------------------------
 //	D3TextureManager
@@ -241,6 +243,36 @@ void D3Render::Setup(Vec2f screen){
 	Affinef projectionMatrix;
 	projectionMatrix = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
 		Vec2f(camera->data.size.X(), camera->data.size.Y()), camera->data.front, camera->data.back);
+
+	/*	プロジェクション行列のチェック
+	DSTR << projectionMatrix;
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glFrustum(camera->data.center.X() - camera->data.size.x/2,
+		camera->data.center.X() + camera->data.size.x/2,
+		camera->data.center.Y() - camera->data.size.y/2,
+		camera->data.center.Y() + camera->data.size.y/2,
+		camera->data.front,
+		camera->data.back);
+	glGetFloatv(GL_PROJECTION_MATRIX, projectionMatrix);
+	DSTR << projectionMatrix;
+
+	
+	projectionMatrix = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
+		Vec2f(camera->data.size.X(), camera->data.size.Y()), camera->data.front, camera->data.back);
+	DSTR << projectionMatrix;
+
+	D3DXMatrixPerspectiveOffCenterRH((D3DXMATRIX*)&projectionMatrix, 
+		camera->data.center.X() - camera->data.size.x/2,
+		camera->data.center.X() + camera->data.size.x/2,
+		camera->data.center.Y() - camera->data.size.y/2,
+		camera->data.center.Y() + camera->data.size.y/2,
+		camera->data.front,
+		camera->data.back);
+	DSTR << projectionMatrix;
+*/
+
 	device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&projectionMatrix);
 	//	視点行列の設定
 	device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)& camera->data.view);

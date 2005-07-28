@@ -298,8 +298,8 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		|| (!materialD3->bOpaque && render->drawState & GRRender::DRAW_TRANSPARENT) ){
 		//	’Êí‚Ì•`‰æ
 		if (!render->bDrawDebug){
-			Vec3f viewPoint;
-			viewPoint = GetPosture().inv() * render->camera->data.view.inv().Pos();
+//			Vec3f viewPoint;
+//			viewPoint = GetPosture().inv() * render->camera->data_hase.view.inv().Pos();
 			// this function sets the texture
 			materialD3->Render(fr, render);
 			

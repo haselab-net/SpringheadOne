@@ -25,8 +25,8 @@ public:
 /// カメラの実装
 class GRCamera:public SGObject{
 public:
-	SGOBJECTDEF(GRCamera);
 	GRCameraData data;
+	SGOBJECTDEF(GRCamera);
 	///	カメラ位置を示すフレーム
 	UTRef<SGFrame> frPosture;
 	///	参照フレームの追加

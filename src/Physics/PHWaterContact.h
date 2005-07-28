@@ -113,6 +113,7 @@ class PHWater;
 class PHWaterContactEngine : public SGBehaviorEngine{
 public:
 	SGOBJECTDEF(PHWaterContactEngine);
+	bool bUseFrm;
 
 	UTRef<PHWater>	water;			///…
 	PHWSolids		solids;			///…‚ÉÚG‚·‚é„‘Ì

@@ -43,8 +43,9 @@ bool CDFramePair::Detect(int ct){
 	intersections.clear();
 	bool rv = false;
 //	9.14	BBoxIntersectionは，中心から外れているときに，うまく動作しないようだ．
-//	if (BBoxIntersection(frame[0]->frame->GetPosture(), frame[0]->frame->bbox.GetBBoxCenter(), frame[0]->frame->bbox.GetBBoxExtent(),
-//		frame[1]->frame->GetPosture(), frame[1]->frame->bbox.GetBBoxCenter(), frame[1]->frame->bbox.GetBBoxExtent()) ){
+//	2005.7.28直ったかも．
+	if (BBoxIntersection(frame[0]->frame->GetPosture(), frame[0]->frame->bbox.GetBBoxCenter(), frame[0]->frame->bbox.GetBBoxExtent(),
+		frame[1]->frame->GetPosture(), frame[1]->frame->bbox.GetBBoxCenter(), frame[1]->frame->bbox.GetBBoxExtent()) ){
 		for(CDGeometryPairs::iterator it = geometryPairs.begin(); it != geometryPairs.end(); ++it){
 			CDGeometryPair& gp = **it;
 			SGFrame* fr[2];
@@ -78,7 +79,7 @@ bool CDFramePair::Detect(int ct){
 				}
 			}
 		}
-//	}
+	}
 	if (rv) lastContactCount = ct;
 	return rv;
 }

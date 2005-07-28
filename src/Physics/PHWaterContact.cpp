@@ -60,7 +60,7 @@ void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 SGOBJECTIMP(PHWaterContactEngine, SGBehaviorEngine);
 
 PHWaterContactEngine::PHWaterContactEngine(){
-
+	bUseFrm = true;
 }
 void PHWaterContactEngine::LoadState(const SGBehaviorStates& states){
 }
@@ -70,6 +70,15 @@ void PHWaterContactEngine::SaveState(SGBehaviorStates& states) const{
 bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 	if(DCAST(PHWater, o)){
 		water = DCAST(PHWater, o);
+		return true;
+	}
+	if(DCAST(SGFrame, o)){
+		solids.push_back(new PHWSolid);	//	
+		solids.back()->solid = new PHSolid;
+		solids.back()->solid->SetMass(FLT_MAX);
+        Matrix3d in = Matrix3d::Unit();
+		solids.back()->solid->SetInertia(in * 1e200);
+		solids.back()->solid->SetFrame((SGFrame*)o);
 		return true;
 	}
 	if(DCAST(PHSolid, o)){
@@ -582,6 +591,9 @@ struct PHWCE_VtxFVF{
 	DWORD color;
 };
 void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
+	if (!bUseFrm){
+		render->DrawText(Vec2f(), "FRM Off", GRFont());
+	}
 	//	描画
 	if (!render->bDrawDebug) return;
 	if (!render || !render->CanDraw()) return;
@@ -691,7 +703,7 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			convCalc.Awginv = convCalc.Awg.inv();
 			Vec3f meshVel = convCalc.Awginv.Rot() * (convCalc.solidVel - Vec3f(water->velocity.x, water->velocity.y, 0));
-			if (geo->frm) geo->frm->SetVelocity(meshVel, s->GetTimeStep() * s->GetCount() / 10.0);
+			if (bUseFrm && geo->frm) geo->frm->SetVelocity(meshVel, s->GetTimeStep() * s->GetCount() / 10.0);
 
 			//BBoxレベルでの接触チェック
 			//...
@@ -709,14 +721,15 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.height[i] = water->LerpHeight(convCalc.vtxs[i].x, convCalc.vtxs[i].y);
 				convCalc.depth[i] = convCalc.height[i] - convCalc.vtxs[i].z;
 				//	FRMから頂点での圧力補正を求める．
-				if (convCalc.depth[i] > 0 && geo->frm){
+				if (convCalc.depth[i] > 0 && geo->frm && bUseFrm){
 					Vec3f prs, fri;
 					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure();
 				}else{
 					convCalc.pressure[i] = 0;
 				}
 			}
-			convCalc.frm = geo->frm;
+			if (bUseFrm) convCalc.frm = geo->frm;
+			else convCalc.frm = NULL;
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
 				if(!poly)continue;

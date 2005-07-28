@@ -21,7 +21,19 @@ void GRCameraData::InitData(){
 }
 void GRCamera::UpdatePosture(){
 	if (frPosture){
-		data.view = frPosture->GetWorldPosture().inv();
+		Affinef target = frPosture->GetWorldPosture();
+		Affinef now = data.view.inv();
+		now.Pos() = target.Pos();
+		const float alpha = 0.94f;
+		Vec3f ex = alpha * now.Ex() + (1-alpha) * target.Ex();
+		Vec3f ez = alpha * now.Ez() + (1-alpha) * target.Ez();
+		ex.unitize();
+		ez = ez - (ez*ex)*ex;
+		ez.unitize();
+		now.Ex() = ex;
+		now.Ey() = ez^ex;
+		now.Ez() = ez;
+		data.view = now.inv();
 	}
 }
 
@@ -66,7 +78,6 @@ public:
 		cam->data.view.EzY() *= -1;
 		cam->data.view.PosZ() *= -1;
 		cam->data.view = cam->data.view.inv();
-
 		ctx->scene->GetRenderers().Set(cam);
 		return true;
 	}

@@ -31,7 +31,8 @@ FWApp::FWApp(){
 	bPause = false;
 	defaultTimeStep = 0.005f;
 	InitDevice();
-	simuTimerPeriod = 0.033f;
+//	simuTimerPeriod = 0.033f;
+	simuTimerPeriod = 0.02f;
 }
 FWApp::~FWApp(){
 	timer.Release();
@@ -304,7 +305,7 @@ bool FWApp::PreviewMessage(MSG* pMsg){
 			}
 		}
 		// カメラをマウスの基準座標軸に更新
-		if (render && render->camera) render->camera->data.view = mouse->GetAxis();
+		if (render && render->camera && !render->camera->frPosture) render->camera->data.view = mouse->GetAxis();
 	}
 	if (pMsg->message == WM_KEYDOWN){
 		int nVirtKey = (int) pMsg->wParam;
