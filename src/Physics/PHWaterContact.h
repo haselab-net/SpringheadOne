@@ -22,7 +22,6 @@ class PHWGeometry : public UTRefCount{
 public:
 	PHWGeometry();
 	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
-	Vec3f			bbmin, bbmax;	//このジオメトリのBBOX
 	CDMesh*			mesh;
 	PHWaterRegistanceMap* frm;		///
 	CDGeometries	conveces;		//このジオメトリを構成する凸多面体
@@ -99,7 +98,7 @@ public:
 	UTRef<PHSolid>		solid;		//剛体
 	UTRef<SGFrame>		frame;		//剛体フレーム
 	//UTRef<PHWRegistanceMap> frm;
-	Affinef				posture;	//剛体フレームのワールドフレームに対するposture
+//	Affinef				posture;	//剛体フレームのワールドフレームに対するposture
 	PHWGeometries		geometries;	//剛体のフレームの形状データ
 	void Init(PHWaterContactEngine* e);
 	void EnumGeometries(SGFrame*, PHWaterContactEngine* e);

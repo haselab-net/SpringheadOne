@@ -6,6 +6,7 @@
 #include <SceneGraph/SGScene.h>
 #include <Graphics/GRVisual.h>
 #include <Physics/PHSolid.h>
+#include <Collision/CDGeometry.h>
 
 using namespace PTM;
 namespace Spr{;
@@ -145,6 +146,13 @@ public:
 	void RenderD3(SGFrame* fr, D3Render* render);
 	void RenderGL(SGFrame* fr, GLRender* render);
 	DWORD GetColor(float h);
+};
+class CDWater: public CDGeometry{
+public:
+	SGOBJECTDEF(CDWater);
+	UTRef<PHWater> water;
+	virtual void CalcBBox(Vec3f& bbMin, Vec3f& bbMax);
+	virtual int GeometryID();
 };
 
 typedef UTRefArray<PHWater> PHWaters;

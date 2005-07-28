@@ -10,9 +10,11 @@ namespace Spr {;
 WXINTFV(Direct3DTexture) D3TextureManager::Get(UTString filename){
 	WXINTFV(Direct3DTexture) tex = textures[filename];
 	if (!tex){
-		DSTR << "Loading texture : " << filename << std::endl;
-		D3DXCreateTextureFromFileEx(render->device, filename.c_str(), D3DX_DEFAULT, D3DX_DEFAULT,
+		if (filename.length()){
+			DSTR << "Loading texture : " << filename << std::endl;
+			D3DXCreateTextureFromFileEx(render->device, filename.c_str(), D3DX_DEFAULT, D3DX_DEFAULT,
 				D3DX_DEFAULT, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_FILTER_BOX, 0, NULL, NULL, &tex.Intf());
+		}
 		textures[filename] = tex;
 	}
 	return tex;

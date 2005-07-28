@@ -223,13 +223,13 @@ void CDContactAnalysis::Draw(CDConvexPair& cp, Affinef afw, SGScene* s){
 }
 
 //-----------------------------------------------------------------------------
-//	接触判定関数
+//	接触判定関数，center, extent はローカル(フレームの)座標系で指定
 //
 #define ABS(x) ((x)>0 ? (x) : -(x))
 bool BBoxIntersection(Affinef postureA, Vec3f centerA, Vec3f extentA,
 					  Affinef postureB, Vec3f centerB, Vec3f extentB){ 
     // compute difference of box centers, D = C1-C0
-    Vec3f kD = centerA - centerB;
+    Vec3f kD = postureA*centerA - postureB*centerB;
 
     float aafC[3][3];     // matrix C = A^T B, c_{ij} = Dot(A_i,B_j)
     float aafAbsC[3][3];  // |c_{ij}|

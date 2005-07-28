@@ -64,6 +64,20 @@ void PHWaterEngine::Loaded(SGScene* scene){
 	}
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////
+// CDWater
+SGOBJECTIMP(CDWater, CDGeometry);
+
+int CDWater::GeometryID(){
+	return WATER;
+}
+
+void CDWater::CalcBBox(Vec3f& bbMin, Vec3f& bbMax){
+	bbMin.element_min(Vec3f(-water->rx, -water->ry, -water->dh*10));
+	bbMax.element_max(Vec3f(water->rx, water->ry, water->dh*10));
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 // PHWater
 
@@ -993,6 +1007,9 @@ public:
 		water->velocity.y = data.vy;
 		water->frame = DCAST(SGFrame, ctx->objects.Top());
 		
+		UTRef<CDWater> cw = new CDWater;
+		cw->water = water;
+		water->frame->AddChildObject(cw, ctx->scene);		
 		return true;
 	}
 	PHWaterLoader(){

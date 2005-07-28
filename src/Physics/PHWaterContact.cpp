@@ -153,9 +153,9 @@ struct PHWConvexCalc{
 		engine = e;
 		water = e->water;
 	}
-	void SetSolid(PHWSolid* s){
+	void SetSolid(PHWSolid* s, Affinef posture){
 		solid = s;
-		As = solid->solid->GetFrame()->GetWorldPosture();
+		As = posture;
 		Asinv = As.inv();
 		Aws = Awinv * As;
 		solidCenter = Aws * solid->solid->GetCenter();
@@ -660,15 +660,33 @@ void PHWaterContactEngine::Step(SGScene* s){
 	convCalc.Aw = water->GetPosture();
 	convCalc.Awinv = convCalc.Aw.inv();
 
+	Vec3f waterCenter = water->frame->bbox.GetBBoxCenter();
+	Vec3f waterExtent = water->frame->bbox.GetBBoxExtent();
+	
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(int i=0; i < solids.size(); i++){
-		convCalc.SetSolid(solids[i]);
+		SGFrame* fr = solids[i]->frame;
+		Affinef posture = fr->GetWorldPosture();
+		//	まずBBoxで判定
+		if (!BBoxIntersection(convCalc.Aw, waterCenter, waterExtent,
+			posture, fr->bbox.GetBBoxCenter(), fr->bbox.GetBBoxExtent())){
+			//	DSTR << "Cull " << fr->GetName() << " in water contact." << std::endl;
+			continue;
+		}
+		convCalc.SetSolid(solids[i], posture);
 
 		//全ジオメトリについて･･･
 		for(ig = convCalc.solid->geometries.begin(); ig != convCalc.solid->geometries.end(); ig++){
 			geo = *ig;
+			SGFrame* fr = geo->frame;
 			convCalc.Ag = geo->frame->GetWorldPosture();
+			//	まずBBoxで判定
+			if (!BBoxIntersection(convCalc.Aw, waterCenter, waterExtent,
+				convCalc.Ag, fr->bbox.GetBBoxCenter(), fr->bbox.GetBBoxExtent())){
+				//	DSTR << "Cull " << fr->GetName() << " in water contact." << std::endl;
+				continue;
+			}			
 			convCalc.Asg = convCalc.Asinv * convCalc.Ag;
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			convCalc.Awginv = convCalc.Awg.inv();

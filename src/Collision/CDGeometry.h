@@ -13,7 +13,8 @@ enum CDGeometryID{
 	GEOMETRY=0,
 	MESH,
 	CONVEX,
-	NGEOMETRYID
+	WATER,
+	NGEOMETRYID,
 };
 
 class CDPhysicalMaterial;
