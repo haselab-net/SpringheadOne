@@ -43,7 +43,7 @@ HRESULT GRSound::initialize( HWND hwnd )
     if( FAILED( hr = pDS->SetCooperativeLevel( hwnd, DSSCL_PRIORITY ) ) ) { //念のため優先協調レベルに
 	    if( FAILED( hr = pDS->SetCooperativeLevel( hwnd, DSSCL_NORMAL ) ) ) { 
 			DSTR << __FILE__ << "(" << __LINE__ << ") : " << "協調レベルが設定できません～(" << hr << ")\n";
-			return E_FAIL;
+            return E_FAIL;
 		}
 	}
 
@@ -107,6 +107,75 @@ HRESULT GRSound::stop( SOUNDID id )
 	return hr;
 }
 
+HRESULT GRSound::SetVolume(SOUNDID id, long volume)
+{
+	HRESULT hr;
+	if (pDsbPrimary==NULL) return CO_E_NOTINITIALIZED;
+	if (pDsb[id]==NULL) return CO_E_NOTINITIALIZED;
+    
+    DWORD status = 0;
+    // get the status of the specific buffer
+    pDsb[id]->GetStatus(&status);
+    
+    // and check whether it is on playing state
+    // if it is, stop playing
+    if(status == DSBSTATUS_PLAYING)
+        {
+            pDsb[id]->Stop();
+            hr = pDsb[id]->SetCurrentPosition(0);
+        }
+    
+    // coordinate the range of volume 
+    if(volume > DSBVOLUME_MAX)
+        volume = (long)DSBVOLUME_MAX ;
+    else if(volume < DSBVOLUME_MIN)
+        volume = (long)DSBVOLUME_MIN;
+
+    // set volume
+    hr = pDsb[id]->SetVolume(volume);
+    return hr;
+}
+
+HRESULT GRSound::GetVolume(SOUNDID id, long *volume)
+{
+    HRESULT hr;
+	if (pDsbPrimary==NULL) return CO_E_NOTINITIALIZED;
+	if (pDsb[id]==NULL) return CO_E_NOTINITIALIZED;
+    
+    DWORD status = 0;
+    // get the status of the specific buffer
+    pDsb[id]->GetStatus(&status);
+    
+    // and check whether it is on playing state
+    // if it is, stop playing
+    if(status == DSBSTATUS_PLAYING)
+        {
+            pDsb[id]->Stop();
+            hr = pDsb[id]->SetCurrentPosition(0);
+        }
+    
+    // Get volume
+    hr = pDsb[id]->GetVolume(volume);
+	return hr;
+}
+
+// this method retrives the volume of all pDsp variables
+// this method must be called
+// before the termination of the progarm
+HRESULT GRSound::RetriveVolumes()
+{
+    HRESULT hr;
+    
+    for(int i = 0; i < SOUNDBUFFER_MAX; i++)
+        {
+            if(hr = SetVolume((SOUNDID)i, 0) != DS_OK)
+                {
+                    return hr;
+                }
+        }
+    return DS_OK;
+}
+
 //-----------------------------------------------------------------------------
 // セカンダリバッファを作成
 //-----------------------------------------------------------------------------
@@ -129,7 +198,7 @@ HRESULT GRSound::createSoundBuffer( LPDIRECTSOUNDBUFFER8* ppDsb8 )
   // DSBUFFERDESC 構造体をセットアップする。
   memset( &dsbdesc, 0, sizeof(DSBUFFERDESC) ); 
   dsbdesc.dwSize = sizeof(DSBUFFERDESC); 
-  dsbdesc.dwFlags = DSBCAPS_CTRL3D; //DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY; //
+  dsbdesc.dwFlags = DSBCAPS_CTRL3D | DSBCAPS_CTRLVOLUME; //DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY; //
   dsbdesc.dwBufferBytes = 3 * wfx.nAvgBytesPerSec; 
   dsbdesc.lpwfxFormat = &wfx; 
  
@@ -158,7 +227,7 @@ HRESULT GRSound::getListener( LPDIRECTSOUND3DLISTENER* ppListener )
     // Obtain primary buffer, asking it for 3D control
     ZeroMemory( &dsbdesc, sizeof(DSBUFFERDESC) );
     dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-    dsbdesc.dwFlags = DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER;
+    dsbdesc.dwFlags = DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME;
 
     if( FAILED( hr = pDS->CreateSoundBuffer( &dsbdesc, &pDsbPrimary, NULL ) ) ) return E_FAIL;
 
