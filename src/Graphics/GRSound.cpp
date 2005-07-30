@@ -91,6 +91,7 @@ HRESULT	GRSound::volume( SOUNDID id , long vol){
 	HRESULT hr;
 	if (pDsbPrimary==NULL) return CO_E_NOTINITIALIZED;
 	if (pDsb[id]==NULL) return CO_E_NOTINITIALIZED;
+	if (vol > 0) vol = 0;
 	hr = pDsb[id]->SetVolume(vol);
 	return hr;
 	

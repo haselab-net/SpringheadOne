@@ -38,7 +38,8 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 		{Vec3f( PX,-PY,-PZ), Vec3f(  GX, GY, -GZ)},//右下奥
 		{Vec3f(-PX,-PY, PZ), Vec3f( -GX, GY,  GZ)} //左下前
 	};
-#else	//	クロス
+#endif
+#if 0	//	工作室
 	const float PX = 0.25f/2;		//	x方向の辺の長さ/2
 	const float PX2 = 0.061f/2;		//	x方向の辺の長さ/2
 	const float PY = 2.35f/2;		//	y方向の辺の長さ/2
@@ -48,6 +49,23 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 		{Vec3f( PX2,-PY, PZ), Vec3f(  GX, GY,  GZ)},
 		{Vec3f( PX2,-PY,-PZ), Vec3f(  GX, GY, -GZ)},
 		{Vec3f(-PX2,-PY,-PZ), Vec3f( -GX, GY, -GZ)},
+		{Vec3f(-PX, PY, PZ), Vec3f( -GX, GY,  GZ)},
+		{Vec3f( PX, PY, PZ), Vec3f(  GX, GY,  GZ)},
+		{Vec3f( PX, PY,-PZ), Vec3f(  GX, GY, -GZ)},
+		{Vec3f(-PX, PY,-PZ), Vec3f( -GX, GY, -GZ)},
+	};
+#endif
+#if 1	//	Etech
+	const float In = 0.0254f;
+	const float PX = 2.5	*In/2;		//	x方向の辺の長さ/2
+	const float PY = 101	*In/2;		//	y方向の辺の長さ/2
+	const float PZ = 109	*In/2;		//	z方向の辺の長さ/2
+	const float PZ2 = 85*In	-PZ;		//	
+	Vec3f motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
+		{Vec3f(-PX,-PY, PZ), Vec3f( -GX, GY,  GZ)},
+		{Vec3f( PX,-PY, PZ), Vec3f(  GX, GY,  GZ)},
+		{Vec3f( PX,-PY,-PZ2), Vec3f(  GX, GY, -GZ)},
+		{Vec3f(-PX,-PY,-PZ2), Vec3f( -GX, GY, -GZ)},
 		{Vec3f(-PX, PY, PZ), Vec3f( -GX, GY,  GZ)},
 		{Vec3f( PX, PY, PZ), Vec3f(  GX, GY,  GZ)},
 		{Vec3f( PX, PY,-PZ), Vec3f(  GX, GY, -GZ)},
@@ -76,14 +94,8 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	}
 	motor[1].lengthPerPulse *= -1;
 	motor[3].lengthPerPulse *= -1;
-	motor[4].lengthPerPulse *= -1;
-	motor[6].lengthPerPulse *= -1;
-	/*
-	motor[4].lengthPerPulse *= -1;
 	motor[5].lengthPerPulse *= -1;
-	motor[6].lengthPerPulse *= -1;
 	motor[7].lengthPerPulse *= -1;
-	*/
 
 	Calib();
 	return true;
