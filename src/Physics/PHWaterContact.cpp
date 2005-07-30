@@ -1254,8 +1254,8 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 	//ft, fp -> ˆê”Ô‹ß‚¢ŠiŽq‚©‚ç‚Ì•ÏˆÊ[0, 1]
     float	fthe = the / dthe;
     float	fphi = phi / dphi;
-    int		ithe = (int)fthe;
-    int		iphi = (int)fphi;
+    int		ithe = (int)fthe % (nthe-1);
+    int		iphi = (int)fphi % nphi;
     float	ft = fthe - ithe;
     float	fp = fphi - iphi;
 
@@ -1265,9 +1265,6 @@ void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
 		k01 = (iphi + 1 < nphi) ? k00 + 1 : k00 - iphi;
 		k10 = std::min(k00 + nphi, ntex - 1);
 		k11 = std::min(k10 + 1, ntex - 1);
-		//
-        //if(k10 >= ntex) k10 = ntex - 1;
-        //if(k11 >= ntex) k11 = ntex - 1;
     } else {
         k00 = 0;
         k01 = 0;

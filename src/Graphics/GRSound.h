@@ -37,8 +37,8 @@ enum SOUNDID{
 #define SAFE_DELETE(p)  { if(p) { delete (p);     (p)=NULL; } }
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
-class GRSound
-{
+
+class GRSound{
 protected:
     IDirectSound8* pDS;
 	LPDIRECTSOUNDBUFFER      pDsbPrimary;
@@ -56,6 +56,7 @@ public:
 
     // called after the instance method
 	HRESULT initialize( HWND hwnd );
+	HRESULT	volume( SOUNDID id , long volume);
 	HRESULT	play( SOUNDID id );
 	HRESULT stop( SOUNDID id );
     HRESULT SetVolume(SOUNDID id, long volume);

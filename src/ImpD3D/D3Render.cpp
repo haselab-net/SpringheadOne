@@ -41,6 +41,13 @@ void D3Render::InitTree(SGFrame* fr, SGScene* scene){
 	for(unsigned i=0; i<fr->contents.size(); ++i){
 		GRMesh* gmesh = DCAST(GRMesh, fr->contents[i]);
 		if (gmesh){
+			bool bDraw = false;
+			for(int i=0; i<gmesh->materials.size(); ++i){
+				if (gmesh->materials[i]->diffuse[3] != 0) bDraw = true;
+			}
+			if (!bDraw){
+				continue;
+			}
 			UTRef<D3Mesh> mesh = new D3Mesh;
 			fr->contents.Push(mesh);
 			mesh->Set(gmesh, scene);
