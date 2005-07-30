@@ -44,7 +44,6 @@ protected:
 	LPDIRECTSOUNDBUFFER      pDsbPrimary;
 	LPDIRECTSOUNDBUFFER8     pDsb[SOUNDBUFFER_MAX];
 	LPDIRECTSOUND3DLISTENER	 pListener;
-
 private:
 	GRSound::GRSound();
 public: // ó’éûë[íu(ÅH) Ç‡Ç∆Ç‡Ç∆ÇÕprivateÇæÇ¡ÇΩÇÃÇæÇØÇ«
@@ -59,6 +58,9 @@ public:
 	HRESULT initialize( HWND hwnd );
 	HRESULT	play( SOUNDID id );
 	HRESULT stop( SOUNDID id );
+    HRESULT SetVolume(SOUNDID id, long volume);
+    HRESULT GetVolume(SOUNDID id, long *volume);
+    HRESULT RetriveVolumes();
 private:
 	HRESULT createSoundBuffer( LPDIRECTSOUNDBUFFER8* ppDsb8 );
 	HRESULT getListener( LPDIRECTSOUND3DLISTENER* ppListener );
