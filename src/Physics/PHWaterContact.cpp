@@ -575,9 +575,8 @@ struct PHWConvexCalc{
 
 		//	ˆ³—Í‚É‚æ‚é—Í‚ðŒvŽZDˆÀ’è‚³‚¹‚é‚½‚ßC”S«‚à“ü‚ê‚éD
 		const float hVelMul = 0.2f;
-		velInt.x *= hVelMul;
-		velInt.y *= hVelMul;
-		velIntMom.z *= hVelMul;
+		velInt *= hVelMul;
+		velIntMom *= hVelMul;
 		if (bNoBuo){
 			buo += (B*velInt) * water->density * water->gravity;
 			tbuo += (B*velIntMom) * water->density * water->gravity;
