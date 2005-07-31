@@ -111,7 +111,12 @@ typedef std::vector<UTRef<PHWSolid> >		PHWSolids;
  */
 class PHWater;
 class PHWaterContactEngine : public SGBehaviorEngine{
+public:
 	PHSolid* soPaddle;
+	Vec3f paddleForceK;
+	Vec3f paddleForceB;
+	Vec3f paddleTorqueK;
+	Vec3f paddleTorqueB;
 public:
 	SGOBJECTDEF(PHWaterContactEngine);
 	bool bUseFrm;

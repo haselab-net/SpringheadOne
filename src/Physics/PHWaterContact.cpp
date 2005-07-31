@@ -578,8 +578,10 @@ struct PHWConvexCalc{
 		velInt *= hVelMul;
 		velIntMom *= hVelMul;
 		if (bNoBuo){
-			buo += (B*velInt) * water->density * water->gravity;
-			tbuo += (B*velIntMom) * water->density * water->gravity;
+			engine->paddleForceK += volume * water->density * water->gravity;
+			engine->paddleForceB += (B*velInt) * water->density * water->gravity;
+			engine->paddleTorqueK += volumeMom * water->density * water->gravity;
+			engine->paddleTorqueB += (B*velIntMom) * water->density * water->gravity;
 		}else{
 			buo += (volume + B*velInt) * water->density * water->gravity;
 			tbuo += (volumeMom + B*velIntMom) * water->density * water->gravity;
@@ -681,6 +683,10 @@ void PHWaterContactEngine::Step(SGScene* s){
 	Vec3f waterCenter = water->frame->bbox.GetBBoxCenter();
 	Vec3f waterExtent = water->frame->bbox.GetBBoxExtent();
 	
+	paddleForceK.clear();
+	paddleForceB.clear();
+	paddleTorqueK.clear();
+	paddleTorqueB.clear();
 	//剛体に加わる浮力を計算する
 	//全剛体について･･･
 	for(int i=0; i < solids.size(); i++){
@@ -750,12 +756,21 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.Calc(poly);
 			}
 			//	水から剛体フレームへ変換してAddForce
-			float fMul = 1.0f;
-			if (strcmp(convCalc.solid->solid->GetName(), "soPaddle") == 0) fMul = 3.0f;
-			convCalc.solid->solid->AddForce(fMul * (convCalc.Aw.Rot() * convCalc.buo), convCalc.Aw.Pos());
-			convCalc.solid->solid->AddTorque(fMul * (convCalc.Aw.Rot() * convCalc.tbuo));
+			convCalc.solid->solid->AddForce((convCalc.Aw.Rot() * convCalc.buo), convCalc.Aw.Pos());
+			convCalc.solid->solid->AddTorque((convCalc.Aw.Rot() * convCalc.tbuo));
 		}
 	}
+	//	paddleForceの座標変換(絶対系へ)
+	paddleTorqueK = convCalc.Aw.Rot() * paddleTorqueK;
+	paddleTorqueB = convCalc.Aw.Rot() * paddleTorqueB;
+
+	Vec3f f = convCalc.Aw.Rot() * paddleForceK;
+	paddleTorqueK += convCalc.Aw.Pos() ^ f;
+	paddleForceK = f;
+	
+	f = convCalc.Aw.Rot() * paddleForceB;
+	paddleTorqueB += convCalc.Aw.Pos() ^ f;
+	paddleForceB = f;
 }
 //----------------------------------------------------------------------------
 //	PHWaterContactEngineLoader
