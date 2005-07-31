@@ -11,7 +11,7 @@ HIForceDevice3D::HIForceDevice3D(){
 }
 
 HIOBJECTIMPABST(HIForceDevice6D, HIHapticDevice);
-HIForceDevice6D::HIForceDevice6D():alpha(0.98f){
+HIForceDevice6D::HIForceDevice6D():alpha(0.8f){
 }
 void HIForceDevice6D::Update(float dt){
 	HIHapticDevice::Update(dt);
@@ -19,9 +19,9 @@ void HIForceDevice6D::Update(float dt){
 	Vec3f pos = GetPos();
 	Quaternionf ori = GetOri();
 	Vec3f v = (pos - lastPos) / dt;
-//	if (v.norm() > 5.0f) v = v.unit() * 5.0f;
+	if (v.norm() > 6.0f) v = v.unit() * 6.0f;
 	Vec3f av = (ori * lastOri.inv()).rotation() / dt;
-//	if (av.norm() > 6*M_PI) av = av.unit() * 6*M_PI;
+	if (av.norm() > 8*M_PI) av = av.unit() * 8*M_PI;
 #if 1
 	vel = alpha*vel + (1-alpha)*v;
 	angVel = alpha*angVel + (1-alpha)*av;
