@@ -281,9 +281,9 @@ DWORD PHWater::GetColor(float h){
 	int a = n*255;
 	int b = (1-n)*255;
 	if (bPlus){
-		return D3DCOLOR_ARGB(0xFF,a,b,0);
+		return D3DCOLOR_ARGB(0xa0,a,b,0);
 	}
-	return D3DCOLOR_ARGB(0xFF,0,b,a);
+	return D3DCOLOR_ARGB(0xa0,0,b,a);
 }
 // draw by Direct3D
 const float nmul = 1.0;

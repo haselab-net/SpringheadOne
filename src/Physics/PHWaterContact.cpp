@@ -103,6 +103,7 @@ void PHWaterContactEngine::Loaded(SGScene* scene){
 	Init(scene);
 	for(int i = 0; i < frms.size(); i++)
 		frms[i]->Loaded(scene);
+	scene->FindObject(soPaddle, "soPaddle");
 }
 
 void PHWaterContactEngine::Init(SGScene* scene){
@@ -122,6 +123,7 @@ struct QH2DVertex: public Vec3f{
 	‚Ì2‚Â‚ðs‚¤D	*/
 SGScene* scene;
 struct PHWConvexCalc{
+	bool bNoBuo;
 	PHWaterContactEngine* engine;
 	PHWater* water;
 	Affinef	Aw, Awinv;	//water-coord to world-coord transformation
@@ -576,8 +578,13 @@ struct PHWConvexCalc{
 		velInt.x *= hVelMul;
 		velInt.y *= hVelMul;
 		velIntMom.z *= hVelMul;
-		buo += (volume + B*velInt) * water->density * water->gravity;
-		tbuo += (volumeMom + B*velIntMom) * water->density * water->gravity;
+		if (bNoBuo){
+			buo += (B*velInt) * water->density * water->gravity;
+			tbuo += (B*velIntMom) * water->density * water->gravity;
+		}else{
+			buo += (volume + B*velInt) * water->density * water->gravity;
+			tbuo += (volumeMom + B*velIntMom) * water->density * water->gravity;
+		}
 
 		engine->tris.push_back(p[0]);
 		engine->tris.push_back(p[1]);
@@ -685,6 +692,11 @@ void PHWaterContactEngine::Step(SGScene* s){
 			posture, fr->bbox.GetBBoxCenter(), fr->bbox.GetBBoxExtent())){
 			//	DSTR << "Cull " << fr->GetName() << " in water contact." << std::endl;
 			continue;
+		}
+		if (soPaddle == solids[i]->solid){
+			convCalc.bNoBuo = true;
+		}else{
+			convCalc.bNoBuo = false;
 		}
 		convCalc.SetSolid(solids[i], posture);
 

@@ -11,7 +11,7 @@ HIForceDevice3D::HIForceDevice3D(){
 }
 
 HIOBJECTIMPABST(HIForceDevice6D, HIHapticDevice);
-HIForceDevice6D::HIForceDevice6D():alpha(0.90f){
+HIForceDevice6D::HIForceDevice6D():alpha(0.80f){
 }
 void HIForceDevice6D::Update(float dt){
 	HIHapticDevice::Update(dt);
