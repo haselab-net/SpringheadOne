@@ -27,9 +27,9 @@ void init_rot(TMatrixBase<DIMENC(2), DIMENC(2), MD>& m,
 				char axis){
 	int	x, y;
 	getAxisMap2D(x, y, axis);
-	col(x) = a.unit();
-	col(y)[0] = -col(x)[1];
-	col(y)[1] =  col(x)[0];
+	m.col(x) = a.unit();
+	m.col(y)[0] = -m.col(x)[1];
+	m.col(y)[1] =  m.col(x)[0];
 }
 
 ///	2~2s—ñ‚ğ‰ñ“]s—ñ‚É‰Šú‰»
@@ -59,7 +59,7 @@ inline void getAxisMap3D(int& x, int& y, int& z, int axis){
 }
 ///	axis², axis++²‚ğw’è‚µ‚Ä3~3s—ñ‚ğ‰ñ“]s—ñ‚É‰Šú‰»
 template <class MD, class AD, class BD>
-void init_direct(TMatrixBase<DIMENC(3), DIMENC(3), MD>& m,
+void init_rot(TMatrixBase<DIMENC(3), DIMENC(3), MD>& m,
 				const TVectorBase<DIMENC(3), AD>& a,
 				const TVectorBase<DIMENC(3), BD>& b,
 				char axis){

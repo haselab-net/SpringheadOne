@@ -1,6 +1,7 @@
 #include <Base/TMatrix.h>
 #include <Base/TMatrixUtility.h>
 #include <Base/TinyVec.h>
+#include <Base/TinyMat.h>
 #include <iostream>
 
 
@@ -152,6 +153,12 @@ int main3(){
 }
 
 int main(){
+	Matrix3f rot;
+	rot = Matrix3f::Rot(Vec3f(1,0,0), Vec3f(0,1,0), 'y');
+	Matrix2f rot2;
+	rot2 = Matrix2f::Rot(Vec2f(1,0), 'y');
+
+	
 	main3();
 	const float p[]={
 		0.0f, 0.0f, 1.0f,
