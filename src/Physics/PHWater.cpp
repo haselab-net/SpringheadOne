@@ -357,7 +357,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 			}
 			//	‰‚ğ•t‚¯‚é
-#if 0
+#if 1
 			const float edgeWidth = 20;
 			float dhOut = (rx+edgeWidth)*2 / (mx-1);
 			//	ã‘¤‚Ì‰‚ğ•t‚¯‚éD
