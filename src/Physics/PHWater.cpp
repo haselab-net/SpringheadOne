@@ -271,8 +271,8 @@ void PHWater::Render(SGFrame* fr, GRRender* render){
 }
 
 DWORD PHWater::GetColor(float h){
-	float hMax = 0.1f;
-	float hMin = -0.1f;
+	float hMax = 0.05f;
+	float hMin = -0.05f;
 	if (h>hMax) h = hMax;
 	if (h<hMin) h = hMin;
 	float n = h / ((hMax-hMin)/2);
@@ -357,6 +357,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 			}
 			//	縁を付ける
+#if 0
 			const float edgeWidth = 20;
 			float dhOut = (rx+edgeWidth)*2 / (mx-1);
 			//	上側の縁を付ける．
@@ -408,6 +409,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 				}
 				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (my-1)*2, buf, sizeof(buf[0]));
 			}
+#endif
 			delete buf;
 			render->SetTexture(NULL);
 		}else{ //	色で圧力を表現
@@ -624,10 +626,15 @@ void PHWater::Bound(){
 	v.col(by2) = v.col(by2_);
 
     // update the height of the wave
-	height.row(bx1) = height.row(bx1_);
+/*	height.row(bx1) = height.row(bx1_);
 	height.row(bx2) = height.row(bx2_);
 	height.col(by1) = height.col(by1_);
 	height.col(by2) = height.col(by2_);
+	*/
+	height.row(bx1).clear();
+	height.row(bx2).clear();
+	height.col(by1).clear();
+	height.col(by2).clear();
 }
 
     // calculate refracted vectors

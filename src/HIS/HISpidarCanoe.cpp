@@ -16,7 +16,24 @@ HISpidarCanoe::HISpidarCanoe() : HISpidarG6() {
 #define GX 0.065f/2
 #define GY 0.065f/2
 */
+void HISpidarCanoe::Update(){
+	ori = Quaternionf();
+	nRepeat = 4;
+	HISpidarCalc6Dof::Update();
+}
+void HISpidarCanoe::Update(float dt){
+	HIForceDevice6D::Update(dt);
+	if (ori.theta() > M_PI*0.7){
+//		ori.conjugate();
+//		ori = Quaternionf::Rot('Z', Rad(180)) * ori;
+		ori.x*=-1;
+	}
 
+	HISpidarCalc6Dof::Update();
+	for(unsigned int i=0; i<motor.size(); ++i){
+		motor[i].SetForce(Tension()[i]);
+	}
+}
 bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	//	糸のグリップへの取り付け位置
 	const float GX = 1.27f/2.0f;		//	x方向の辺の長さ/2
@@ -89,7 +106,7 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	for( int i=0; i<8; i++ ) motorPos[i][0] -= Vec3f( 0,-0.0675,0.095 );
 */
 	double lpp = 3.0824008138351983723296032553408e-5 * 500 /1024;
-	if( HISpidarG6::Init(dev, 8, motorPos, 0.3f, (float)lpp, 0.6f, 10.0f) == false ){
+	if( HISpidarG6::Init(dev, 8, motorPos, 0.3f, (float)lpp, 0.8f, 12.0f) == false ){
 		return false;
 	}
 	motor[1].lengthPerPulse *= -1;

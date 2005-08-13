@@ -27,7 +27,7 @@ WBMMTimer::~WBMMTimer()
 bool WBMMTimer::Create()
 	{
 	heavy = 0;
-	tick = GetTickCount();
+	tick = timeGetTime();
 	if (bCreated) return true;
 	if (bThread) Release();
 	if (count == 0) BeginPeriod();
@@ -46,7 +46,7 @@ bool WBMMTimer::Thread()
 	hThread = CreateThread(NULL, 0x1000, ThreadCallback, this, 0, &id);
 	if (hThread){
 		bRun = true;
-		SetThreadPriority(hThread, THREAD_PRIORITY_ABOVE_NORMAL);
+		SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);//THREAD_PRIORITY_ABOVE_NORMAL);
 	}
 	else bThread = false;
 	return bThread;
@@ -92,7 +92,7 @@ void CALLBACK WBMMTimer::TimerCallback(UINT uID, UINT, DWORD dwUser, DWORD, DWOR
 	{
 	WBMMTimer& mmtimer = *(WBMMTimer*)dwUser;
 #if 0
-    int tick = GetTickCount();
+    int tick = timeGetTime();
 	int delta = tick - mmtimer.tick;
 	if (delta > mmtimer.interval+1) mmtimer.heavy ++;
 	mmtimer.tick = tick;
@@ -104,9 +104,9 @@ void CALLBACK WBMMTimer::TimerCallback(UINT uID, UINT, DWORD dwUser, DWORD, DWOR
 DWORD WINAPI WBMMTimer::ThreadCallback(void* arg){
 	WBMMTimer& mmtimer = *(WBMMTimer*)arg;
 
-	DWORD lastCall = GetTickCount();
+	DWORD lastCall = timeGetTime();
 	while(mmtimer.bThread){
-		DWORD now = GetTickCount();
+		DWORD now = timeGetTime();
 		DWORD nextCall = lastCall + mmtimer.interval;
 		if (int(nextCall - now) > 0){
 			Sleep(nextCall - now);

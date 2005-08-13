@@ -650,7 +650,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	}
 	//	hsrc‚Ì•`‰æ
 	render->SetMaterial(GRMaterialData(Vec4f(1,1,0,1),2));
-	render->SetLineWidth(10);
+	render->SetLineWidth(3);
 	for(int i=0; i<solids.size(); ++i){
 		for(int j=0; j<solids[i]->geometries.size(); ++j){
 			SGFrame* frame =  solids[i]->geometries[j]->frame;

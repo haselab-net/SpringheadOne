@@ -24,7 +24,7 @@ void GRCamera::UpdatePosture(){
 		Affinef target = frPosture->GetWorldPosture();
 		Affinef now = data.view.inv();
 		now.Pos() = target.Pos();
-		const float alpha = 0.94f;
+		const float alpha = 0.9f;
 		Vec3f ex = alpha * now.Ex() + (1-alpha) * target.Ex();
 		Vec3f ez = alpha * now.Ez() + (1-alpha) * target.Ez();
 		ex.unitize();

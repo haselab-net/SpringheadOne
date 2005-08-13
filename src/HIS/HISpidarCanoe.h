@@ -14,6 +14,8 @@ public:
 
 	HISpidarCanoe();
 	bool Init(DVDeviceManager& dev);
+	void Update(float dt);
+	void Update();
 
 //	virtual ~HISpidarCanoe();
 };
