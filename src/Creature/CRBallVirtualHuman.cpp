@@ -318,10 +318,15 @@ void CRBallVirtualHuman::OffSpring(){
 }
 
 void CRBallVirtualHuman::SetJointSpring(float dt){
-	//const float SAFETYRATE = 0.001f;	// Hinge Human —p
-	const float SAFETYRATE = 0.0007f;
+/*	//const float SAFETYRATE = 0.001f;	// Hinge Human —p
+	const float SAFETYRATE = 0.0003f;
 	float k = 0.2f * SAFETYRATE;
 	float b = 0.6f*10 * SAFETYRATE;
+*/
+	const float SAFETYRATE = 0.015f;
+	float k = 0.6f * SAFETYRATE;
+	float b = 0.8f * SAFETYRATE;
+	dt = 0.006f;
 
 	for(int i=0; i<joints.size(); ++i){
 		if(jointPids[i] != NULL){
@@ -333,8 +338,8 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 		}
 		else if(jointBallPids[i] != NULL){
 			float mass = GetChildMass(joints[i]);
-			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt) * 1.5f;
-			jointBallPids[i]->differential = b * mass / dt * 1.0f;
+			jointBallPids[i]->proportional = k * 2 * mass / (dt*dt);
+			jointBallPids[i]->differential = b * mass / dt;
 			jointBallPids[i]->integral = k * 2 * mass / (dt*dt) / 5000.0f;
 			//DSTR << i << " " << jointBallPids[i]->proportional << ", " << jointBallPids[i]->differential << ", " << jointBallPids[i]->integral << std::endl;
 		}
@@ -352,10 +357,10 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 	//@•G‚ð_‚ç‚©‚­‚·‚é
 	//JointPIDMul(jointPids[10], 0.1f, 0.8f);
 	//JointPIDMul(jointPids[14], 0.1f, 0.8f);
-	// ˜‚ðd‚­‚·‚é
-//	if(jointBallPids[0] != NULL){
-//		JointBallPIDMul(jointBallPids[0], 1.0f, 2.0f);
-//	}
+	// ˜‚ð_‚ç‚©‚­‚·‚é
+	//if(jointBallPids[0] != NULL){
+	//	JointBallPIDMul(jointBallPids[0], 0.1f, 0.8f);
+	//}
 /*	// Žñ‚ðd‚­‚·‚é
 	if(jointBallPids[2] != NULL){
 		JointBallPIDMul(jointBallPids[2], 1.0f, 2.0f);
@@ -397,7 +402,7 @@ void CRBallVirtualHuman::SetJointSpring(float dt){
 }
 
 void CRBallVirtualHuman::SetJointInitAngle(){
-	CRBallHuman::SetJointInitAngle();
+	//CRBallHuman::SetJointInitAngle();
 
 	float angle = Rad(5);
 
