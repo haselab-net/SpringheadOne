@@ -65,5 +65,9 @@ SOURCE=..\..\TMatrix.h
 
 SOURCE=..\..\TMatrixUtility.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\BaseD.lib
+# End Source File
 # End Target
 # End Project

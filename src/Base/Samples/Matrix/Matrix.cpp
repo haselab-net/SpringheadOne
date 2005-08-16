@@ -158,6 +158,12 @@ int main(){
 	Matrix2f rot2;
 	rot2 = Matrix2f::Rot(Vec2f(1,0), 'y');
 
+	TMatrixCol<2,2,Matrix2f> vm1, vm2;
+	vm1.clear();vm2.clear();
+	vm1=Matrix2f(2);
+	vm2=Matrix2f(4);
+	DSTR << vm1*vm2 << std::endl;
+
 	
 	main3();
 	const float p[]={

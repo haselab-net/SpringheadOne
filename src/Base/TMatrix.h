@@ -844,6 +844,10 @@ protected:
 	/*  s—ñ b ‚É‚æ‚é‰Šú‰»		*/											\
 	template <class B>														\
 	THIS(const PTM::MatrixImp<B>& b){init_buffer(); assign(b);}				\
+	/*  ’è”b ‚É‚æ‚é‰Šú‰»		*/											\
+	THIS(element_type b){init_buffer(); clear();							\
+		assert(height()==width());											\
+		for(int i=0; i<height();++i) (*this)[i][i]=b; }						\
 
 
 //----------------------------------------------------------------------------
