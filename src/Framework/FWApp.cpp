@@ -31,8 +31,7 @@ FWApp::FWApp(){
 	bPause = false;
 	defaultTimeStep = 0.005f;
 	InitDevice();
-//	simuTimerPeriod = 0.033f;
-	simuTimerPeriod = 0.02f;
+	simuTimerPeriod = 0.033f;
 }
 FWApp::~FWApp(){
 	timer.Release();
