@@ -3,6 +3,7 @@
 
 #include <Graphics/GRRender.h>
 #include <WinBasis/WBUtility.h>
+#include <WinBasis/WBCriticalSection.h>
 #include <WinDx/D3D/WXD3D.h>
 
 

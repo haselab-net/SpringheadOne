@@ -407,11 +407,13 @@ void RenderCDMesh(Affinef af, SGFrame* fr, GRRender* render){
 					render->SetMaterial(GRMaterialData(color[count%6], 2));
 					count ++;
 					render->SetModelMatrix(af);
+					render->cr.Enter();
 					for(int i=0; i<poly->faces.size(); ++i){
 						Vec3f vtx[3];
 						for(int j=0; j<3; ++j) vtx[j] = poly->base[poly->faces[i].vtxs[j]];
 						render->DrawDirect(GRRender::TRIANGLES, vtx, vtx+3);
 					}
+					render->cr.Leave();
 				}
 			}
 		}

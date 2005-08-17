@@ -98,7 +98,7 @@ void CDGeometryPair::Set(CDFramePair* fp, CDGeometry* g1, SGFrame* f1, CDGeometr
 	for(int i=0; i<2; ++i){
 		CDMesh* mesh = DCAST(CDMesh, geometry[i]);
 		if (mesh){
-			mesh->CreateTree();
+//			mesh->CreateTree();
 			conveces[i] = mesh->conveces;
 			continue;
 		}

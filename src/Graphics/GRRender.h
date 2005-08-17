@@ -1,6 +1,7 @@
 #ifndef GRRENDER_H
 #define GRRENDER_H
 #include <SceneGraph/SGEngine.h>
+#include <WinBasis/WBCriticalSection.h>
 
 namespace Spr{;
 
@@ -26,6 +27,8 @@ public:
 class SPR_DLL GRRender:public SGEngine{
 public:
 	SGOBJECTDEFABST(GRRender);
+	WBCriticalSection cr;
+
 	bool bDrawDebug;
 
 	UTRef<GRCamera> camera;

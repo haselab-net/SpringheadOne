@@ -289,6 +289,7 @@ DWORD PHWater::GetColor(float h){
 const float nmul = 1.0;
 
 void PHWater::RenderD3(SGFrame* fr, D3Render* render){
+	render->cr.Enter();
     // copy the head address of the varialbe height array to pheight
 	double* pheight = &height[0][0];
     // copy the head address of the variable normal array to pnormal
@@ -532,6 +533,7 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 		//	テクスチャを戻す．
 		render->device->SetTexture(0,NULL);
 	}
+	render->cr.Leave();
 }
 
 // draw objects by OpenGL

@@ -449,11 +449,14 @@ void FWApp::Load(UTString fn){
 	//	普通のシーンファイルの場合
 	}else{
 		if (scene) scene->SetTimeStep(defaultTimeStep);
+		bool bTimer = timer.IsCreated();
+		timer.Release();
 		LoadImp(fn);
 		if (scene){
 			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK));
 			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK));
 		}
+		if (bTimer) timer.Create();
 	}
 }
 void FWApp::Save(UTString fn){

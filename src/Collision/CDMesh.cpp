@@ -19,9 +19,9 @@ public:
 		for(unsigned i=0; i<mesh->vertices.size(); ++i){
 			mesh->vertices[i].Z() *= -1;
 		}
-		if (mesh->vertices.size() < 1000){
+//		if (mesh->vertices.size() < 1000){
 			mesh->CreateTree();
-		}
+//		}
 		return true;
 	}
 };

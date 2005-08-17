@@ -144,6 +144,7 @@ void PHContactEngine::Render(GRRender* render, SGScene* scene){
 	if (!render->bDrawDebug) return;
 	if (collisionEngine->NFrame() < 2) return;
 	if ((render->drawState & GRRender::DRAW_OPAQUE) == 0) return;
+	render->cr.Enter();
 	render->SetDepthTest(false);
 	SGFrame* baseFrame = NULL;
 	if ((int) collisionEngine->GetFramePair(0, 1)->frame[0]->records.size() > frameRecordPos){
@@ -183,6 +184,7 @@ void PHContactEngine::Render(GRRender* render, SGScene* scene){
 		}
 	}
 	render->SetDepthTest(true);
+	render->cr.Leave();
 }
 void PHContactEngine::DrawForce(CDConvexPair& cp, PHContactEngine::ConvexPairRecord& cpr, Affinef afw, GRRender* render, SGScene* scene){  
 	static float forceScale = 10000.0f;

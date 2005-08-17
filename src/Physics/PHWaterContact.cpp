@@ -598,7 +598,7 @@ struct PHWCE_VtxFVF{
 	Vec3f pos;
 	DWORD color;
 };
-void PHWaterContactEngine::Render(GRRender* render, SGScene* s){	
+void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	if (!bUseFrm){
 		render->DrawText(Vec2f(), "FRM Off", GRFont());
 	}
@@ -608,6 +608,9 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	render->SetModelMatrix(water->GetPosture());
 	render->SetDepthTest(false);
 	
+	D3Render* d3r = DCAST(D3Render, render);
+	if (d3r) d3r->cr.Enter();
+
 	//	‹«ŠEü‚Ì•`‰æ
 	GRMaterialData mat(Vec4f(0, 0, 1, 0.5f), 2);
 	render->SetMaterial(mat);
@@ -635,7 +638,6 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		}
 	}
 	//	‹«ŠEðŒ‚Ì‘¬“x‚Ì•\Ž¦
-	D3Render* d3r = DCAST(D3Render, render);
 	if (d3r){
 		d3r->device->SetRenderState(D3DRS_LIGHTING, false);
 		d3r->device->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE);
@@ -667,6 +669,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 	}
 
 	render->SetDepthTest(true);
+	if (d3r) d3r->cr.Leave();
 }
 void PHWaterContactEngine::Step(SGScene* s){
 	tris.clear();
