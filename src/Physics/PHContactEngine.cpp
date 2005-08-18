@@ -5,11 +5,11 @@
 namespace Spr{;
 extern bool bUseContactVolume;
 
-const float SPRING = 0.1f;
-const float DAMPER = 0.3f;
+float SPRING = 0.1f;
+float DAMPER = 0.3f;
 
-const float STATIC_FRICTION = 0.6f;
-const float DYNAMIC_FRICTION = 0.3f;
+float STATIC_FRICTION = 0.6f;
+float DYNAMIC_FRICTION = 0.3f;
 
 
 
