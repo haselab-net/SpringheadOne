@@ -20,7 +20,7 @@ public:
 			mesh->vertices[i].Z() *= -1;
 		}
 //		if (mesh->vertices.size() < 1000){
-			mesh->CreateTree();
+//			mesh->CreateTree();
 //		}
 		return true;
 	}

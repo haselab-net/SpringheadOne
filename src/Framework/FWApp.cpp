@@ -339,8 +339,8 @@ bool FWApp::OnKeyDown(unsigned int nChar){
 		SetTimer(hWnd, TIMER_SIMU, UINT(simuTimerPeriod*1000), (TIMERPROC)WMTimerProc);
 	}else if (nChar == 'M'){		//	multi media timer		
 		if (scene){
-			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK));
-			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK));
+			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK + 0.5f));
+			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK + 0.5f));
 		}
 		timer.Create();				//	マルチメディアタイマー
 		KillTimer(hWnd, simuTimerId);
@@ -453,8 +453,8 @@ void FWApp::Load(UTString fn){
 		timer.Release();
 		LoadImp(fn);
 		if (scene){
-			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK));
-			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK));
+			timer.Resolution(UINT(scene->GetTimeStep()*TIMERTICK + 0.5f));
+			timer.Interval(UINT(scene->GetTimeStep()*TIMERTICK + 0.5f));
 		}
 		if (bTimer) timer.Create();
 	}

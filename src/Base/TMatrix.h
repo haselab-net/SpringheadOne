@@ -838,17 +838,12 @@ protected:
 	}																		\
 
 #define DEF_MATRIX_BASIC_MEMBER(THIS)										\
-	DEF_MATRIXD_BASIC_MEMBER(THIS)										\
+	DEF_MATRIXD_BASIC_MEMBER(THIS)											\
 	/*	デフォルトコンストラクタ	*/										\
 	THIS(){ init_buffer(); set_default();} 									\
 	/*  行列 b による初期化		*/											\
 	template <class B>														\
 	THIS(const PTM::MatrixImp<B>& b){init_buffer(); assign(b);}				\
-	/*  定数b による初期化		*/											\
-	THIS(element_type b){init_buffer(); clear();							\
-		assert(height()==width());											\
-		for(int i=0; i<height();++i) (*this)[i][i]=b; }						\
-
 
 //----------------------------------------------------------------------------
 //	次元をテンプレートで持つベクトル	T???Matrix
