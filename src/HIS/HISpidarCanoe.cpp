@@ -20,7 +20,14 @@ void HISpidarCanoe::MakeWireVec(){
 	//	É∆Ç[-ÉŒ,ÉŒ]Ç…ã≠êß
 	if (ori.W() < 0) ori *= -1;
 	if (ori.theta() > M_PI*0.7){
-		ori.x *= -1;
+//		ori.x *= -1;
+/*		Matrix3f mat;
+		ori.to_matrix(mat);
+		mat.Ex() *= -1;
+		mat.Ey() *= -1;
+		ori.from_matrix(mat);
+*/
+		ori = Quaternionf::Rot(Rad(180), 'z') * ori;
 		pos.x *= -1;
 		DSTR << ori << std::endl;
 	}
