@@ -206,6 +206,8 @@ CRActionPlanner.cpp
 CRBalance.cpp
 CRBalanceMultiLeg.cpp
 CRBalanceQuadPR.cpp
+CRBallBalance.cpp
+CRBallBalanceQuadPR.cpp
 CRBallHuman.cpp
 CRBallVirtualHuman.cpp
 CRBeetle.cpp
