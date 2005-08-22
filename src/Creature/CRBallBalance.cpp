@@ -109,17 +109,17 @@ void CRBallBalance::ControlBody(CRBallHuman* crHuman){
 
 	//　姿勢に応じてトルクをかける方法
 	//足首の制御
-	if(crHuman->joints[27] != NULL){	//右足首
+	if(crHuman->joints[11] != NULL){	//右足首
 		Vec3f rightTorque = (crHuman->solids[11]->GetRotation()*balanceTorque)/2;	//足首の座標へ変換
-		crHuman->joints[27]->SetJointTorque(-rightTorque.x, 0);
-		crHuman->joints[28]->SetJointTorque(-rightTorque.z, 0);
-		crHuman->joints[29]->SetJointTorque(-rightTorque.y, 0);
+		crHuman->joints[11]->SetJointTorque(-rightTorque.x, 0);
+		crHuman->joints[11]->SetJointTorque(-rightTorque.y, 1);
+		crHuman->joints[11]->SetJointTorque(-rightTorque.z, 2);
 	}
-	if(crHuman->joints[35] != NULL){	//左足首
+	if(crHuman->joints[15] != NULL){	//左足首
 		Vec3f leftTorque = (crHuman->solids[15]->GetRotation()*balanceTorque)/2;
-		crHuman->joints[35]->SetJointTorque(-leftTorque.x, 0);
-		crHuman->joints[36]->SetJointTorque(leftTorque.z, 0);
-		crHuman->joints[37]->SetJointTorque(leftTorque.y, 0);
+		crHuman->joints[15]->SetJointTorque(-leftTorque.x, 0);
+		crHuman->joints[15]->SetJointTorque(leftTorque.y, 1);
+		crHuman->joints[15]->SetJointTorque(leftTorque.z, 2);
 	}
 }
 

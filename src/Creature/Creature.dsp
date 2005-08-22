@@ -168,6 +168,22 @@ SOURCE=.\CRBalanceQuadPR.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRBallBalance.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallBalance.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallBalanceQuadPR.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBallBalanceQuadPR.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRBallHuman.cpp
 # End Source File
 # Begin Source File
