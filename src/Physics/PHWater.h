@@ -75,6 +75,7 @@ public:
 	void		Loaded(SGScene* scene);					///< ロード終了時の初期化
 	void		Step(SGScene* s);						///< 時刻を進める．
 	Affinef		GetPosture(){ return frame->GetWorldPosture(); }
+	float edgeWidth;									///< 描画時に付けるふちの幅
 
 	///	レンダリング
 	virtual void Render(SGFrame* fr, GRRender* render);

@@ -91,6 +91,7 @@ PHWater::PHWater(){
 	loss = 0.99;
 	bound.x = 3;
 	bound.y = 3;
+	edgeWidth = 0.0f;
 }
 
     // this function adds new child data to the end of the vector
@@ -358,59 +359,58 @@ void PHWater::RenderD3(SGFrame* fr, D3Render* render){
 				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 			}
 			//	縁を付ける
-#if 1
-			const float edgeWidth = 20;
-			float dhOut = (rx+edgeWidth)*2 / (mx-1);
-			//	上側の縁を付ける．
-			for(int i=0; i<2; ++i){
-				float pOut = -rx-edgeWidth;
-				float px = -rx;
-				int cy = (bound.y+1-i*3+my)%my;
-				float y1 = i? ry : -ry-edgeWidth;
-				float y2 = i? ry+edgeWidth : -ry;
-				for(int ix=0; ix<mx; ix++){
-					int cx = (ix+bound.x) % mx;
-					buf[ix*2+1].pos		= Vec3f(i?px:pOut, y1, height[cx][cy]*hmul);
-					buf[ix*2+1].normal	= normal[cx][cy];
-					buf[ix*2].pos		= Vec3f(i?pOut:px, y2, height[cx][cy]*hmul);
-					buf[ix*2].normal	= normal[cx][cy];
-					px += dh;
-					pOut += dhOut;
+			if (edgeWidth){
+				float dhOut = (rx+edgeWidth)*2 / (mx-1);
+				//	上側の縁を付ける．
+				for(int i=0; i<2; ++i){
+					float pOut = -rx-edgeWidth;
+					float px = -rx;
+					int cy = (bound.y+1-i*3+my)%my;
+					float y1 = i? ry : -ry-edgeWidth;
+					float y2 = i? ry+edgeWidth : -ry;
+					for(int ix=0; ix<mx; ix++){
+						int cx = (ix+bound.x) % mx;
+						buf[ix*2+1].pos		= Vec3f(i?px:pOut, y1, height[cx][cy]*hmul);
+						buf[ix*2+1].normal	= normal[cx][cy];
+						buf[ix*2].pos		= Vec3f(i?pOut:px, y2, height[cx][cy]*hmul);
+						buf[ix*2].normal	= normal[cx][cy];
+						px += dh;
+						pOut += dhOut;
+					}
+					for(int i=0; i<2*mx; ++i){
+						buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
+							+  buf[i].normal.x*nmul + 0.5f;
+						buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
+							+  buf[i].normal.y*nmul + 0.5f;
+					}
+					render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 				}
-				for(int i=0; i<2*mx; ++i){
-					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
-						+  buf[i].normal.x*nmul + 0.5f;
-					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
-						+  buf[i].normal.y*nmul + 0.5f;
+				dhOut = (ry+edgeWidth)*2 / (my-1);
+				//	左側の縁を付ける．
+				for(int i=0; i<2; ++i){
+					float pOut = -ry-edgeWidth;
+					float py = -ry;
+					int cx = (bound.x+1-i*3+mx)%mx;
+					float x1 = i? rx : -rx-edgeWidth;
+					float x2 = i? rx+edgeWidth : -rx;
+					for(int iy=0; iy<my; iy++){
+						int cy = (iy+bound.y) % my;
+						buf[iy*2].pos		= Vec3f(x1, i?py:pOut, height[cx][cy]*hmul);
+						buf[iy*2].normal	= normal[cx][cy];
+						buf[iy*2+1].pos		= Vec3f(x2, i?pOut:py, height[cx][cy]*hmul);
+						buf[iy*2+1].normal	= normal[cx][cy];
+						py += dh;
+						pOut += dhOut;
+					}
+					for(int i=0; i<2*my; ++i){
+						buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
+							+  buf[i].normal.x*nmul + 0.5f;
+						buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
+							+  buf[i].normal.y*nmul + 0.5f;
+					}
+					render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (my-1)*2, buf, sizeof(buf[0]));
 				}
-				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (mx-1)*2, buf, sizeof(buf[0]));
 			}
-			dhOut = (ry+edgeWidth)*2 / (my-1);
-			//	左側の縁を付ける．
-			for(int i=0; i<2; ++i){
-				float pOut = -ry-edgeWidth;
-				float py = -ry;
-				int cx = (bound.x+1-i*3+mx)%mx;
-				float x1 = i? rx : -rx-edgeWidth;
-				float x2 = i? rx+edgeWidth : -rx;
-				for(int iy=0; iy<my; iy++){
-					int cy = (iy+bound.y) % my;
-					buf[iy*2].pos		= Vec3f(x1, i?py:pOut, height[cx][cy]*hmul);
-					buf[iy*2].normal	= normal[cx][cy];
-					buf[iy*2+1].pos		= Vec3f(x2, i?pOut:py, height[cx][cy]*hmul);
-					buf[iy*2+1].normal	= normal[cx][cy];
-					py += dh;
-					pOut += dhOut;
-				}
-				for(int i=0; i<2*my; ++i){
-					buf[i].tex.x = (buf[i].pos.x+texOffset.x*dh)*0.1f
-						+  buf[i].normal.x*nmul + 0.5f;
-					buf[i].tex.y = (buf[i].pos.y+texOffset.y*dh)*0.1f
-						+  buf[i].normal.y*nmul + 0.5f;
-				}
-				render->device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, (my-1)*2, buf, sizeof(buf[0]));
-			}
-#endif
 			delete buf;
 			render->SetTexture(NULL);
 		}else{ //	色で圧力を表現
@@ -949,6 +949,7 @@ DEF_RECORD(XWater, {
 	FLOAT loss;
 	FLOAT vx;
 	FLOAT vy;
+	FLOAT edgeWidth;		//	描画時に付けるふちの幅
  });
 
 DEF_RECORD(XWaterTrackTarget, {
@@ -1014,6 +1015,7 @@ public:
 		water->loss = data.loss;
 		water->velocity.x = data.vx;
 		water->velocity.y = data.vy;
+		water->edgeWidth = data.edgeWidth;
 		water->frame = DCAST(SGFrame, ctx->objects.Top());
 		
 		UTRef<CDWater> cw = new CDWater;
@@ -1046,6 +1048,7 @@ class PHWaterSaver:public FIBaseSaver{
 		data.loss = (FLOAT)water->loss;
 		data.vx = water->velocity.x;
 		data.vy = water->velocity.y;
+		data.edgeWidth = water->edgeWidth;
 		doc->SetWholeData(data);
 	}
 };
