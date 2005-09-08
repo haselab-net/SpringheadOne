@@ -41,7 +41,7 @@ bool HISpidarG6X::Init(DVDeviceManager& dev){
 	for( int i=0; i<8; i++ ) motorPos[i][0] -= Vec3f( 0,-0.0675,0.095 );
 */
 
-	if( HISpidarG6::Init(dev, 8, motorPos, 0.3f, (float)2.924062107079e-5, 0.5f, 20.0f) == false ){
+	if( HISpidarG6::Init(dev, 8, motorPos, 0.12f, (float)2.924062107079e-5, 1.0f, 20.0f) == false ){
 		return false;
 	}
 	motor[0].lengthPerPulse *= -1;
