@@ -35,10 +35,6 @@ public:
 	GLRender();
 	///
 	virtual ~GLRender();
-	///	レンダリング(視点を含む)
-	virtual void Render(SGScene* s);
-	///	レンダリング(再帰部分)
-	virtual void RenderRecurse(SGFrame* n);
 	///	バッファクリア
 	virtual void ClearBuffer();
 
@@ -52,7 +48,10 @@ public:
 	virtual void Resize(Vec2f screen);
 
 	//	描画
-	virtual void SetModelMatrix(const Affinef& afm);
+	virtual void MultModelMatrix(const Affinef& afw);
+	virtual void PushModelMatrix();
+	virtual void PopModelMatrix();
+	virtual void SetModelMatrix(const Affinef& afw);
 	virtual void SetViewMatrix(const Affinef& afv);
 	virtual void SetProjectionMatrix(const Affinef& afp);
 	virtual void DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end);
@@ -65,6 +64,8 @@ public:
 	virtual void SetLineWidth(float w);
 	virtual void SetDepthTest(bool b);
 	virtual void SetDepthFunc(TDepthFunc f);
+	virtual void SetDepthWrite(bool b);
+	virtual void SetAlphaMode(TBlendFunc src, TBlendFunc dest);
 	virtual bool CanDraw();
 
 	virtual Vec3f getPointUnderPixel(int x, int y, bool& found, SGScene* scene);

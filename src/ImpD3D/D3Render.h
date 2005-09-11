@@ -36,7 +36,7 @@ public:
 	///	テクスチャ管理
 	D3TextureManager textureManager;
 	///	行列スタック
-	std::vector<Affinef> worldMatrixStack;
+	UTStack<Affinef> modelMatrixStack;
 	/// 光源の数
 	int nLights;
 
@@ -47,10 +47,6 @@ public:
 	///	ロード後の初期化，GRMeshなどからD3Meshなどを生成する．
 	void Loaded(SGScene* scene);
 
-	///	レンダリング(視点を含む)
-	virtual void Render(SGScene* s);
-	///	レンダリング(再帰部分)
-	virtual void RenderRecurse(SGFrame* n);
 	///	バッファクリア
 	virtual void ClearBuffer();
 
@@ -82,7 +78,10 @@ public:
 	///
 	HRESULT SetFVF(DWORD fvf);
 	//	描画
-	void SetModelMatrix(const Affinef& afw);
+	virtual void MultModelMatrix(const Affinef& afw);
+	virtual void PushModelMatrix();
+	virtual void PopModelMatrix();
+	virtual void SetModelMatrix(const Affinef& afw);
 	virtual void DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end);
 	virtual void DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f* vtx);
 	virtual void DrawText(Vec2f pos, FIString str, const GRFont& font);
@@ -93,7 +92,9 @@ public:
 	virtual void PopLight();
 	virtual void SetLineWidth(float w);
 	virtual void SetDepthTest(bool b);
+	virtual void SetDepthWrite(bool b);
 	virtual void SetDepthFunc(TDepthFunc f);
+	virtual void SetAlphaMode(TBlendFunc src, TBlendFunc dest);
 	virtual bool CanDraw();
 	void InitTree(SGFrame* fr, SGScene* scene);
 

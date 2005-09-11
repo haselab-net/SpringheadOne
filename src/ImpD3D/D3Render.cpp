@@ -28,7 +28,7 @@ SGOBJECTIMP(D3Render, GRRender);
 
 D3Render::D3Render(){
 	textureManager.render = this;
-	worldMatrixStack.push_back(Affinef());
+	modelMatrixStack.push_back(Affinef());
 	nLights = 0;
 }
 void D3Render::Loaded(SGScene* scene){
@@ -65,40 +65,8 @@ void D3Render::InitTree(SGFrame* fr, SGScene* scene){
 		InitTree(fr->Children()[i], scene);
 	}
 }
-void D3Render::Render(SGScene* s){
-	//	視点行列の設定
-    if (camera){
-		camera->UpdatePosture();
-		device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)& camera->data.view);
-	}
-	//	不透明部の描画
-	drawState = DRAW_OPAQUE;
-	RenderRecurse(s->GetWorld());
-	s->GetBehaviors().Render(this, s);
-
-	//	半透明部の描画
-	drawState = DRAW_TRANSPARENT;
-	WXCHECK(device->SetRenderState(D3DRS_ZWRITEENABLE, false));
-	WXCHECK(device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA));
-	WXCHECK(device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA));
-	RenderRecurse(s->GetWorld());
-	s->GetBehaviors().Render(this, s);
-	device->SetRenderState(D3DRS_ZWRITEENABLE, true);
-	drawState = DRAW_BOTH;
-}
-void D3Render::RenderRecurse(SGFrame* n){
-	//	World行列の設定
-	worldMatrixStack.push_back(worldMatrixStack.back() * n->GetPosture());
-	device->SetTransform(D3DTS_WORLD, (const D3DMATRIX*)&worldMatrixStack.back());
-	//	Visualと子フレームの描画
-	GRRender::RenderRecurse(n);
-	//	World行列を戻す
-	worldMatrixStack.pop_back();
-}
 void D3Render::BeginScene(){
 	device.BeginScene();
-
-
 }
 
 void D3Render::EndScene(){
@@ -248,8 +216,10 @@ void D3Render::Setup(Vec2f screen){
 
 	//	射影行列の設定
 	Affinef projectionMatrix;
+//	projectionMatrix = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
+//		Vec2f(camera->data.size.X(), camera->data.size.Y()), camera->data.front, camera->data.back);
 	projectionMatrix = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
-		Vec2f(camera->data.size.X(), camera->data.size.Y()), camera->data.front, camera->data.back);
+		Vec2f(camera->data.size.X(), camera->data.size.X()*screen.Y()/screen.X()), camera->data.front, camera->data.back);
 
 	/*	プロジェクション行列のチェック
 	DSTR << projectionMatrix;
@@ -297,7 +267,22 @@ HRESULT D3Render::SetFVF(DWORD fvf){
 #endif
 }
 void D3Render::SetModelMatrix(const Affinef& afw){
-	device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&afw);
+	modelMatrixStack.Top() = afw;
+	device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&modelMatrixStack.Top());
+}
+void D3Render::MultModelMatrix(const Affinef& afw){
+	modelMatrixStack.Top() = modelMatrixStack.Top() * afw;
+	device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&modelMatrixStack.Top());
+}
+void D3Render::PushModelMatrix(){
+	modelMatrixStack.Push(modelMatrixStack.Top());
+}
+void D3Render::PopModelMatrix(){
+	modelMatrixStack.Pop();
+}
+
+void D3Render::SetDepthWrite(bool b){
+	WXCHECK(device->SetRenderState(D3DRS_ZWRITEENABLE, b));
 }
 void D3Render::SetDepthTest(bool b){
 	device->SetRenderState(D3DRS_ZENABLE, b ? D3DZB_TRUE : D3DZB_FALSE);
@@ -314,8 +299,13 @@ void D3Render::SetDepthFunc(TDepthFunc f){
 	case DF_GEQUAL:		d3f = D3DCMP_GREATEREQUAL; break;
 	case DF_ALWAYS:		d3f = D3DCMP_ALWAYS; break;
 	}
-	device->SetRenderState(D3DRS_ZFUNC, d3f);
+	WXCHECK(device->SetRenderState(D3DRS_ZFUNC, d3f));
 }
+void D3Render::SetAlphaMode(TBlendFunc src, TBlendFunc dest){
+	WXCHECK(device->SetRenderState(D3DRS_SRCBLEND, src));
+	WXCHECK(device->SetRenderState(D3DRS_DESTBLEND, dest));
+}
+
 void D3Render::DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end){
 	if (end <= begin) return;
 	D3DPRIMITIVETYPE type;

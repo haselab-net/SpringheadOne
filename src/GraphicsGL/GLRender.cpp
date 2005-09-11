@@ -125,42 +125,6 @@ void GLRender::Present(){
 }
 
 
-///	レンダリング(視点を含む)
-void GLRender::Render(SGScene* s){
-	//	視点行列の設定
-    if (camera){
-		camera->UpdatePosture();
-		glMatrixMode(GL_MODELVIEW);
-		glLoadMatrixf(camera->data.view);
-	}
-	//	不透明部の描画
-	drawState = DRAW_OPAQUE;
-	//glDepthMask(GL_TRUE);
-	glBlendFunc(GL_ONE, GL_ZERO);
-	RenderRecurse(s->GetWorld());
-	s->GetBehaviors().Render(this, s);
-
-	//	半透明部の描画
-	drawState = DRAW_TRANSPARENT;
-	glDepthMask(GL_FALSE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	RenderRecurse(s->GetWorld());
-	s->GetBehaviors().Render(this, s);
-	
-	glDepthMask(GL_TRUE);
-	drawState = DRAW_BOTH;
-	glBlendFunc(GL_ONE, GL_ZERO);
-}
-///	レンダリング(再帰部分)
-void GLRender::RenderRecurse(SGFrame* n){
-	//	World行列の設定
-	glPushMatrix();
-	glMultMatrixf(n->GetPosture());
-	//	Visualと子フレームの描画
-	GRRender::RenderRecurse(n);
-	//	World行列を戻す
-	glPopMatrix();
-}
 ///	バッファクリア
 void GLRender::ClearBuffer(){
 	glClearColor(0,0,0,1.0f);
@@ -183,8 +147,10 @@ void GLRender::EndScene(){
 void GLRender::Resize(Vec2f screen){
 	glViewport(0,0, (size_t)screen.X(), (size_t)screen.Y());
 	Affinef afProj;
+//	afProj = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
+//		Vec2f(camera->data.size.X(), camera->data.size.Y() ), camera->data.front, camera->data.back);
 	afProj = Affinef::ProjectionGL(Vec3f(camera->data.center.X(), camera->data.center.Y(), camera->data.front),
-		Vec2f(camera->data.size.X(), camera->data.size.Y() ), camera->data.front, camera->data.back);
+		Vec2f(camera->data.size.X(), camera->data.size.X()*screen.Y()/screen.X() ), camera->data.front, camera->data.back);
 	SetProjectionMatrix(afProj);
 }
 
@@ -192,6 +158,18 @@ void GLRender::SetViewMatrix(const Affinef& afv){
 	if (camera) camera->data.view = afv;
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(camera->data.view * afModel);
+}
+void GLRender::MultModelMatrix(const Affinef& afw){
+	glMatrixMode(GL_MODELVIEW);
+	glMultMatrixf(afw);
+}
+void GLRender::PushModelMatrix(){
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+}
+void GLRender::PopModelMatrix(){
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 void GLRender::SetModelMatrix(const Affinef& afw){
 	afModel = afw;
@@ -345,6 +323,9 @@ void GLRender::SetDepthTest(bool b){
 	if (b) glEnable(GL_DEPTH_TEST);
 	else glDisable(GL_DEPTH_TEST);
 }
+void GLRender::SetDepthWrite(bool b){
+	glDepthMask(b);
+}
 void GLRender::SetDepthFunc(TDepthFunc f){
 	DWORD glf;
 	switch(f){
@@ -358,6 +339,29 @@ void GLRender::SetDepthFunc(TDepthFunc f){
 	case DF_ALWAYS:		glf = GL_ALWAYS; break;
 	}
 	glDepthFunc(glf);
+}
+
+inline DWORD GetGLBlendFunc(GLRender::TBlendFunc f){
+	switch(f){
+	case GLRender::BF_ZERO: return GL_ZERO;
+	case GLRender::BF_ONE: return GL_ONE;
+	case GLRender::BF_SRCCOLOR: return GL_SRC_COLOR;
+	case GLRender::BF_INVSRCCOLOR: return GL_ONE_MINUS_SRC_COLOR;
+	case GLRender::BF_SRCALPHA: return GL_SRC_ALPHA;
+	case GLRender::BF_INVSRCALPHA: return GL_ONE_MINUS_SRC_ALPHA;
+	case GLRender::BF_DESTALPHA: return GL_DST_ALPHA;
+	case GLRender::BF_INVDESTALPHA: return GL_ONE_MINUS_DST_ALPHA;
+	case GLRender::BF_DESTCOLOR: return GL_DST_COLOR;
+	case GLRender::BF_INVDESTCOLOR: return GL_ONE_MINUS_DST_COLOR;
+	case GLRender::BF_SRCALPHASAT: return GL_SRC_ALPHA_SATURATE;
+	case GLRender::BF_BOTHSRCALPHA: return 0;
+	case GLRender::BF_BOTHINVSRCALPHA: return 0;
+	case GLRender::BF_BLENDFACTOR: return 0;
+	case GLRender::BF_INVBLENDFACTOR: return 0;
+	}
+}
+void GLRender::SetAlphaMode(TBlendFunc src, TBlendFunc dest){
+	glBlendFunc(GetGLBlendFunc(src), GetGLBlendFunc(dest));
 }
 bool GLRender::CanDraw(){
 	return true;

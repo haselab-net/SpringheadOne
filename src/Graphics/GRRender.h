@@ -27,11 +27,12 @@ public:
 class SPR_DLL GRRender:public SGEngine{
 public:
 	SGOBJECTDEFABST(GRRender);
-	WBCriticalSection cr;
-
-	bool bDrawDebug;
-
-	UTRef<GRCamera> camera;
+	WBCriticalSection cr;			///<	レンダリングAPIのロック用
+	bool bDrawDebug;				///<	デバッグ情報を描画するか？
+	UTRef<GRCamera> camera;			///<	使用するカメラ
+	SGScene* scene;					///<	描画対象のScene
+	UTStack<SGFrame*> frames;		///<	描画用のフレームのスタック
+	
 	enum TDrawState{
 		DRAW_OPAQUE=1,
 		DRAW_TRANSPARENT=2,
@@ -62,9 +63,9 @@ public:
 	///	レンダリングの開始前に呼ぶ関数
 	virtual void BeginScene(){}
 	///	シーンのレンダリング(視点の設定を含む)
-	virtual void Render(SGScene* s) = 0;
+	virtual void Render(SGScene* s);
 	///	フレームのレンダリング(再帰部)
-	virtual void RenderRecurse(SGFrame* n);
+	virtual void RenderRecurse();
 	///	レンダリングの終了後に呼ぶ関数
 	virtual void EndScene(){}
 	///	バックバッファの表示
@@ -81,6 +82,9 @@ public:
 		TRIANGLESTRIP,
 		TRIANGLEFAN
 	};
+	virtual void MultModelMatrix(const Affinef& afw){}
+	virtual void PushModelMatrix(){}
+	virtual void PopModelMatrix(){}
 	virtual void SetModelMatrix(const Affinef& afw){}
 	virtual void SetViewMatrix(const Affinef& afv){}
 	virtual void SetProjectionMatrix(const Affinef& afp){}
@@ -94,10 +98,30 @@ public:
 	virtual void PopLight(){}
 	virtual void SetLineWidth(float w){}
 	virtual void SetDepthTest(bool b){}
+	virtual void SetDepthWrite(bool b){}
 	enum TDepthFunc{
-		DF_NEVER, DF_LESS, DF_EQUAL, DF_LEQUAL, DF_GREATER, DF_NOTEQUAL, DF_GEQUAL, DF_ALWAYS
+		DF_NEVER, DF_LESS, DF_EQUAL, DF_LEQUAL, DF_GREATER, DF_NOTEQUAL, 
+		DF_GEQUAL, DF_ALWAYS
 	};
 	virtual void SetDepthFunc(TDepthFunc f){}
+	enum TBlendFunc{
+		BF_ZERO = 1,
+		BF_ONE = 2,
+		BF_SRCCOLOR = 3,
+		BF_INVSRCCOLOR = 4,
+		BF_SRCALPHA = 5,
+		BF_INVSRCALPHA = 6,
+		BF_DESTALPHA = 7,
+		BF_INVDESTALPHA = 8,
+		BF_DESTCOLOR = 9,
+		BF_INVDESTCOLOR = 10,
+		BF_SRCALPHASAT = 11,
+		BF_BOTHSRCALPHA = 12,
+		BF_BOTHINVSRCALPHA = 13,
+		BF_BLENDFACTOR = 14,
+		BF_INVBLENDFACTOR = 15
+	};
+	virtual void SetAlphaMode(TBlendFunc src, TBlendFunc dest){}
 	virtual bool CanDraw(){return true;}
 	//@}
 	///	カメラの設定

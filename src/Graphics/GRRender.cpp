@@ -29,6 +29,7 @@ GRRender::GRRender(){
 	camera = new GRCamera;
 	drawState = DRAW_BOTH;
 	bDrawDebug = false;
+	scene = NULL;
 }
 GRRender::~GRRender(){
 }
@@ -41,18 +42,54 @@ void GRRender::Set(SGObject* obj){
 void GRRender::Clear(SGScene* s){
 	camera = new GRCamera;
 }
-void GRRender::RenderRecurse(SGFrame* n){
+void GRRender::Render(SGScene* s){
+	scene = s;
+	//	Ž‹“_s—ñ‚ÌÝ’è
+    if (camera){
+		camera->UpdatePosture();
+		SetViewMatrix(camera->data.view);
+	}
+	//	•s“§–¾•”‚Ì•`‰æ
+	drawState = DRAW_OPAQUE;
+	frames.Push(s->GetWorld());
+	RenderRecurse();
+	frames.Pop();
+	s->GetBehaviors().Render(this, s);
+
+	//	”¼“§–¾•”‚Ì•`‰æ
+	drawState = DRAW_TRANSPARENT;
+	SetDepthWrite(false);
+	SetAlphaMode(BF_SRCALPHA, BF_INVSRCALPHA);
+	frames.Push(s->GetWorld());
+	RenderRecurse();
+	frames.Pop();
+	s->GetBehaviors().Render(this, s);
+	SetDepthWrite(true);
+	
+	//	•’i‚ÍBOTH‚É‚µ‚Ä‚¨‚­
+	drawState = DRAW_BOTH;
+
+	scene = NULL;
+}
+
+void GRRender::RenderRecurse(){
+	SGFrame* n = frames.Top();
+	PushModelMatrix();
+	MultModelMatrix(n->GetPosture());
 	for(SGObjects::iterator it=n->contents.begin(); it != n->contents.end(); ++it){
 		GRVisual* vis = DCAST(GRVisual, *it);
 		if (vis) vis->Render(n, this);
 	}
 	for(SGFrames::const_iterator it=n->Children().begin(); it != n->Children().end(); ++it){
-		RenderRecurse(*it);
+		frames.Push(*it);
+		RenderRecurse();
+		frames.Pop();
 	}
 	for(SGObjects::reverse_iterator it=n->contents.rbegin(); it != n->contents.rend(); ++it){
 		GRVisual* vis = DCAST(GRVisual, *it);
 		if (vis) vis->Rendered(n, this);
 	}
+	PopModelMatrix();
 }
 
 }
