@@ -49,6 +49,7 @@ void GRRender::Render(SGScene* s){
 		camera->UpdatePosture();
 		SetViewMatrix(camera->data.view);
 	}
+
 	//	•s“§–¾•”‚Ì•`‰æ
 	drawState = DRAW_OPAQUE;
 	frames.Push(s->GetWorld());
@@ -64,10 +65,11 @@ void GRRender::Render(SGScene* s){
 	RenderRecurse();
 	frames.Pop();
 	s->GetBehaviors().Render(this, s);
-	SetDepthWrite(true);
 	
 	//	•’i‚ÍBOTH‚É‚µ‚Ä‚¨‚­
 	drawState = DRAW_BOTH;
+	SetDepthWrite(true);
+	SetAlphaMode(BF_ONE, BF_ZERO);
 
 	scene = NULL;
 }

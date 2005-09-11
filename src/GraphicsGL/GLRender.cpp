@@ -32,6 +32,7 @@ int GLTextureManager::Get(const UTString& fn){
 		tx = LoadBmpGetWidth(h);
 		ty = LoadBmpGetHeight(h);
 		nc = LoadBmpGetBytePerPixel(h);
+		DSTR << "Loading GL texture file: " << tx <<"x"<< ty << " " << fn << std::endl;
 		texbuf = new char[tx*ty*nc];
 		LoadBmpGetBmp(h, texbuf);
 		LoadBmpRelease(h);
@@ -45,7 +46,10 @@ int GLTextureManager::Get(const UTString& fn){
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-		gluBuild2DMipmaps(GL_TEXTURE_2D, nc, tx, ty, pxfm[nc - 1], GL_UNSIGNED_BYTE, texbuf);
+		int rv = gluBuild2DMipmaps(GL_TEXTURE_2D, nc, tx, ty, pxfm[nc - 1], GL_UNSIGNED_BYTE, texbuf);
+		if (rv){
+			DSTR << gluErrorString(rv) << std::endl;
+		}
 		delete texbuf;
 		texs[fn] = texId;
 		return texId;

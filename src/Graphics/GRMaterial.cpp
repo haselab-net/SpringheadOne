@@ -10,7 +10,7 @@ void GRMaterial::Render(SGFrame* f, GRRender* render){
 	render->SetMaterial(*this);
 
     // set the texture to the render
-    if(textureFilename.c_str() != ""){
+    if(textureFilename.length()){
         render->SetTexture(textureFilename.c_str());
 	}
 }
