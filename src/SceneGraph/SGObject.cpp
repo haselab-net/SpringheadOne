@@ -11,7 +11,7 @@ SGOBJECTIMPBASE(SGObject);
 void SGObject::SetName(const char* n, SGScene* s){
 	if (name.compare(n) == 0) return;
 	assert(s);
-	s->names.Del(this);
+	if (name.length()) s->names.Del(this);
 	name = n;
 	s->names.Add(this);
 }
@@ -34,32 +34,6 @@ const UTTypeInfo** SGObject::ChildCandidates(){
 	return rv;
 }
 
-bool SGObjectNames::Add(SGObject* obj){
-	if (!obj->GetName() || !strlen(obj->GetName())) return false;
-	std::pair<iterator, bool> rv = insert(obj);
-	if (rv.second){
-		return true;
-	}else if (*rv.first == obj){
-		return false;
-	}
-	UTString base = obj->name;
-	int i=1;
-	do{
-		std::ostringstream ss;
-		ss << "_" << i << '\0';
-		obj->name = base + ss.str();
-		rv = insert(obj);
-		i++;
-	} while(!rv.second);
-	nameMap[base] = obj->name;
-	return true;
-}
-void SGObjectNames::Print(std::ostream& os) const{
-	for(const_iterator it = begin(); it != end(); ++it){
-		os << (*it)->GetName() << " : " << (*it)->GetTypeInfo()->ClassName();
-		os << std::endl;
-	}
-}
 
 }
 

@@ -22,9 +22,9 @@ class SGScene;
 
 /**	シーングラフのオブジェクト型．
 	クラス名を返す関数を持つ．	*/
-class SPR_DLL SGObject:public UTRefCount{
-	///	名前
-	UTString name;
+class SPR_DLL SGObject:public UTRefCount, UTTypeInfoBase{
+	UTString name;			///<	名前
+	UTString nameSpace;		///<	名前空間＝ファイル名
 protected:
 	friend class SGObjectNames;
 public:
@@ -42,6 +42,8 @@ public:
 
 	///	名前の取得
 	const char* GetName() const { return name.c_str(); }
+	///	名前空間の取得
+	const char* GetNameSpace() const { return nameSpace.c_str(); }
 	///	名前の設定
 	void SetName(const char* n, SGScene* s);
 	///	関連付けられたドキュメントノードを開放

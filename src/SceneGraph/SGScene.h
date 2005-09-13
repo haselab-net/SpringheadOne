@@ -12,9 +12,7 @@ class SGScene;
 
 class SGObjectNamesLess{
 public:
-	bool operator () (SGObject* o1, SGObject* o2) const {
-		return strcmp(o1->GetName(), o2->GetName()) < 0;
-	}
+	bool operator () (SGObject* o1, SGObject* o2) const;
 };
 /**	名前とシーングラフのオブジェクトの対応表
 	名前をキーにしたセットを用意し，名前の一意性の保証とオブジェクトの
@@ -22,36 +20,46 @@ public:
 class SGObjectNames:public std::set<UTRef<SGObject>, SGObjectNamesLess >{
 public:
 	typedef std::map<UTString, UTString> TNameMap;
+	class SGObjectKey:public SGObject{
+	public:
+		SGObjectKey();
+		~SGObjectKey();
+		DEF_UTTYPEINFODEF(SGObjectKey);
+	};
 	TNameMap nameMap;
+	static SGObjectKey key;
 	void Print(std::ostream& os) const;
+
 	///	名前からオブジェクトを取得
-	SGObject* Find(UTString name) const {
-		SGObject key;
+	typedef std::pair<iterator, iterator> range_type;
+	SGObject* Find(UTString name, UTString ns="", UTString cn="") const {
 		key.name = name;
-		key.AddRef();
-		const_iterator it = find(&key);
-		key.DelRef();
-		if (it != end()) return *it;
-		return NULL;
+		key.nameSpace = ns;
+		UTString className = cn;
+		key.typeInfo.className = className.c_str();
+		const_iterator lb = lower_bound(&key);
+		if (lb==end()) return NULL;
+		SGObjectNamesLess less;
+		if (less(*lb, &key)) return NULL;		//	等しいものがない場合
+		const_iterator it = lb;
+		++it;
+		if (it == end()) return *lb;
+		if(less(&key, *it)) return *lb;		//	等しいものは1つ
+		return NULL;						//	等しいものが複数有る場合
 	}
-	std::pair<iterator, iterator> Range(UTString name){
-		std::pair<iterator, iterator> rv;
-		SGObject key;
+	range_type Range(UTString name, UTString ns="", UTString cn=""){
 		key.name = name;
-		key.AddRef();
-		rv.first = find(&key);
-		key.DelRef();
-		if (rv.first == end()){
-			rv.second = end();
-		}else{
-			rv.second = rv.first;
-			++rv.second;
-			for(; rv.second!=end(); ++rv.second){
-				if (rv.second == end()) break;
-				if (name.compare(0, name.length(), (*rv.second)->GetName())!=0) break;
-			}
+		key.nameSpace = ns;
+		UTString className = cn;
+		key.typeInfo.className = className.c_str();
+		iterator lb = lower_bound(&key);
+		if (lb==end()) return range_type(end(), end());
+		SGObjectNamesLess less;
+		iterator it = lb;
+		while(it != end() && !less(*it, &key)){
+			++it;
 		}
-		return rv;
+		return range_type(lb, it);
 	}
 	/**	オブジェクトの追加，
 		名前のないオブジェクトは追加できない．この場合 false を返す．
@@ -121,15 +129,16 @@ public:
 	///	トップフレームを返す．
 	SGFrame* GetWorld(){ return world; }
 	///	名前からオブジェクトを取得
-	SGObject* FindObject(UTString name){ return names.Find(name); }
+	SGObject* FindObject(UTString name, UTString ns=""){ return names.Find(name, ns); }
 	///	型と名前からオブジェクトを取得
-	template <class T> void FindObject(UTRef<T>& t, UTString name){
+	template <class T> void FindObject(UTRef<T>& t, UTString name, UTString ns=""){
 		T* p;
-		FindObject(p, name);
+		FindObject(p, name, ns);
 		t = p;
 	}
-	template <class T> void FindObject(T*& t, UTString name){
-		t = DCAST(T, FindObject(name));
+	template <class T> void FindObject(T*& t, UTString name, UTString ns=""){
+		SGObject* p = names.Find(name, ns, GETCLASSNAMES(T));
+		t = DCAST(T, p);
 	}
 	typedef SGObjectNames::iterator SetIt;
 	typedef std::pair<SetIt, SetIt> SetRange;

@@ -59,6 +59,9 @@ void FILoadScene::Load(SGScene* s, SGObject* obj, FIDocNodes& docsIn){
 		docs.Pop();
 	}
 	adders.Push(adderStack.Pop());
+
+	s->Print(DSTR);
+
 	SolveReferences();
 	AddObjects();
 	s->Loaded(s);
