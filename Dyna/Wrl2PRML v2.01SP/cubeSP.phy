@@ -1,0 +1,4 @@
+floor {
+	mass 1.#INF
+	
+}

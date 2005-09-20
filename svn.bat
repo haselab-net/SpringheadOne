@@ -1,0 +1,1 @@
+svn checkout svn+ssh://sprsvn/export/spr/svn/repository/Springhead/trunk ./Springhead

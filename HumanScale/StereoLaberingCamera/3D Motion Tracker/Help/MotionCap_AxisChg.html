@@ -1,0 +1,152 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=shift_jis">
+		<meta name="generator" content="Adobe GoLive 4">
+		<title>3D Motion Tracker ヘルプ</title>
+	</head>
+
+	<body bgcolor="white">
+		<a name="#PAGE_TOP"></a>
+		<p>
+		<table width="100%" border="0" bordercolor="#003366" bgcolor="#003366">
+			<tr height="28">
+				
+    <td height="28" width="85%"><font size="4" color="white"><b>　座標系変換</b></font></td>
+				<td height="28" bgcolor="#003366" bordercolor="#003366" width="15%">
+					<div align="right">
+						<a href="index.html"><img src="IMG/ButToIdx.gif" width="82" height="22" border="0"></a></div>
+				</td>
+			</tr>
+		</table>
+		
+<p><a name="WHAT"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　座標系変換とは</font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <p>座標系の変換を行わない場合、ステレオラベリングカメラから生成される三次元座標系は、カメラから見た世界のものになります。つまり、カメラが斜めに傾いていれば認識される座標系も斜めに傾いたものになります。</p>
+  <p align="center"> <img src="IMG/AxisChg_Ill1.gif" width="477" height="206"> 
+  </p>
+  <p>従って、 カメラを求める座標系に合わせて正しく設置することが可能であれば座標系の変換は必要ありません。</p>
+  <p>しかし、実際にモーションキャプチャを行う場合、外乱やマーカ隠れ（オクルージョン）を避けてカメラを設置するので、位置や向きは様々になります。求める座標系にカメラの位置や向きを合わせることができない場合がほとんどです。</p>
+  <p align="center"><img src="IMG/AxisChg_Ill2.gif" width="287" height="227"></p>
+  <p>そこで、<font color="#FF0000">カメラをどのような位置、向きに設置しても、求める座標系に変える処理（座標系変換）が必要</font>になります。</p>
+  <p align="center"><img src="IMG/AxisChg_Ill3.gif" width="709" height="200"></p>
+  </blockquote>
+<p>　</p>
+<p><a name="HOW"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%" bgcolor="#add8e6"> 
+      <div align="left"><font color="#000000">　座標系変換を行うために</font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <p>求める座標系をカメラ（システム）に教える必要があります。</p>
+  <p>本ソフトでは2種類の方法を用意しています。</p>
+  <table width="75%" border="0" vspace="0">
+    <tr> 
+      <td width="21%" height="14"> 
+        <div align="left"><b><a href="#HOW_CROSS">1.直交</a></b></div>
+      </td>
+      <td width="79%" height="14"><font color="#666666">XYZ座標のうち、いずれか２軸を見せる方法</font></td>
+    </tr>
+    <tr> 
+      <td width="21%"> 
+        <div align="left"><b><a href="#HOW_KNOWN3">2.既知３点</a></b></div>
+      </td>
+      <td width="79%"><font color="#666666">あらかじめ座標値のわかっている３点を見せる方法</font></td>
+    </tr>
+  </table>
+  <p>　</p>
+  <p><a name="HOW_CROSS"></a> </p>
+  <table width="90%" height="15">
+    <tr bgcolor="#EFD6A5"> 
+      <td height="2">　【１】直交</td>
+    </tr>
+  </table>
+  <blockquote> 
+    <p>カメラには<font color="#FF0000">左手系座標系</font>のXYZ軸のうちの２つの座標軸を教えます。左手系座標系とは以下のような座標系です。</p>
+  </blockquote>
+  <p align="center"><img src="IMG/AxisChg_Ill4.gif" width="210" height="176"></p>
+  <blockquote> 
+    <p>３点のマーカを使ってXYZのうちの２軸を構成するように配置します。便宜上これを<font color="#FF0000">基準マーカ</font>と呼びます。基準マーカはできる限り</p>
+    <ul>
+      <li> ２軸は直角に保ち</li>
+      <li>マーカ間の距離をとり</li>
+      <li>求める座標系に合うように</li>
+      <li>カメラの画角内に収まるように </li>
+    </ul>
+    <p>設置してください。また、以下の点に注意してください。<font color="#FF0000"> </font></p>
+    <ul>
+      <li><font color="#FF0000">３つの基準マーカ以外にはマーカが認識されないようにしてください。</font></li>
+      <li><font color="#FF0000">設置のしかたによっては３Ｄモニターフォーム上のマーカ色が安定しない場合（赤と青が頻繁に入れ替わる 
+        etc.）があります。その場合はカメラの設置や基準マーカの設置を調整してください。</font> </li>
+    </ul>
+    <p>基準マーカとその設置例を以下に示します。</p>
+  </blockquote>
+  <p align="center"><img src="IMG/AxisChg_Img1.gif" width="298" height="259"><img src="IMG/AxisChg_Img2.jpg" width="287" height="259"></p>
+  <blockquote> 
+    <p>カメラの設置位置が決まったら基準マーカを設置し、アプリケーション上で座標系変換設定ダイアログを使って座標系変換設定を行います。</p>
+    <p><a href="MainFrm.html#FORM_CONFIG">設定フォーム</a>で「座標系変換－設定」ボタンを押し、 <a href="Dlg_AxisChgCfg.html#SELDLG">座標変換手法選択ダイアログ</a>で「直交」を選択すると<a href="Dlg_AxisChgCfg.html#DIALOG">座標系変換設定ダイアログ【直交】</a>が開きます。</p>
+    </blockquote>
+</blockquote>
+<p>　</p>
+<blockquote> 
+  <p><a name="HOW_KNOWN3"></a> </p>
+  <table width="90%" height="15">
+    <tr bgcolor="#EFD6A5"> 
+      <td height="2">　【２】既知３点</td>
+    </tr>
+  </table>
+  <blockquote> 
+    <p>カメラには、<font color="#FF0000">左手系座標系</font>にある座標値があらかじめわかっている３点を見せます。</p>
+    <p>この３点のマーカを便宜上<font color="#FF0000">基準マーカ</font>と呼びます。基準マーカはできる限り</p>
+    <ul>
+      <li> マーカ間の距離をとり</li>
+      <li>３点が１直線上に並ばないように</li>
+      <li>カメラの画角内に収まるように </li>
+    </ul>
+    <p>設置してください。また、以下の点に注意してください。<font color="#FF0000"> </font></p>
+    <ul>
+      <li><font color="#FF0000">３つの基準マーカ以外にはマーカが認識されないようにしてください。</font></li>
+      <li><font color="#FF0000">設置のしかたによっては３Ｄモニターフォーム上のマーカ色が安定しない場合（赤と青が頻繁に入れ替わる 
+        etc.）があります。その場合はカメラの設置や基準マーカの設置を調整してください。</font> </li>
+    </ul>
+    <p>基準マーカとその設置例を以下に示します。</p>
+    <p align="center"><img src="IMG/AxisChgK3_Img1.jpg" width="264" height="240"><img src="IMG/AxisChgK3_Img2.jpg" width="300" height="240"></p>
+    <p>カメラの設置位置が決まったら基準マーカを設置し、アプリケーション上で座標系変換設定ダイアログを使って座標系変換設定を行います。</p>
+    <p><a href="MainFrm.html#FORM_CONFIG">設定フォーム</a>で「座標系変換－設定」ボタンを押し、 <a href="Dlg_AxisChgCfg.html#SELDLG">座標変換手法選択ダイアログ</a>で「直交」を選択すると<a href="Dlg_AxisChgCfg.html#DIALOG_K3">座標系変換設定ダイアログ【既知３点】</a>が開きます。</p>
+  </blockquote>
+</blockquote>
+<p>　</p>
+<blockquote>
+<p align="center"></p>
+</blockquote>
+<table width="100%" border="0" bgcolor="#003366" bordercolor="#003366">
+			<tr bgcolor="#003366" height="13">
+				<td height="13" width="40%">
+					<div align="left">
+						<a href="index.html"><font color="white"><img src="IMG/ButToIdx.gif" width="82" height="22" border="0"></font></a><font color="white"> </font></div>
+				</td>
+				<td height="13" width="60%">
+					<div align="right">
+						<font color="white" size="2">Copyright (C) 2001 CyVerse Corp. </font></div>
+				</td>
+			</tr>
+		</table>
+		</body>
+
+</html>

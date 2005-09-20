@@ -1,0 +1,96 @@
+;
+; Copyright (c) 1999,2000 by Sigma Itec Inc.
+;
+; Tokin 3D Motion Sensor Driver
+;
+
+[Version]
+Signature="$CHICAGO$"
+Class=MEDIA
+ClassGuid = {4d36e96c-e325-11ce-bfc1-08002be10318} 
+Provider=%MfgName%
+DriverVer=07/18/2000
+;LayoutFile=layout.inf
+CatalogFile=Tk3dUsbm.cat
+
+
+[SourceDisksNames]
+1="Tokin 3D Motion Sensor Driver",,,
+
+[SourceDisksFiles]
+;Tk3dSns.inf = 1
+Tk3dusbm.sys = 1
+Tk3dMou.vxd = 1
+TkInput.dll = 1
+
+[Manufacturer]
+%MfgName%=Tokin.Section
+
+
+;[ClassInstall]
+;Addreg=Class.AddReg
+
+;[Class.AddReg]
+;HKR,,,,%MediaClassName%
+;HKR,,Icon,,"-1"
+;HKR,,Installer,,mmci.dll
+
+[Tokin.Section]
+%USB\VID_079e&PID_0263.DeviceDesc%=Tk3dSnsm.Dev, USB\VID_079e&PID_0263
+
+[ControlFlags]
+ExcludeFromSelect.nt=USB\VID_079e&PID_0263
+
+[DestinationDirs]
+Tk3dSnsm.Files.Ext = 10,System32\Drivers
+;Tk3dSnsm.Files.Inf = 10,INF
+Tk3dSnsm.Files.Vxd = 11
+Tk3dSnsm.Files.Dll = 11
+
+[Tk3dSnsm.Dev]
+;CopyFiles=Tk3dSnsm.Files.Ext, Tk3dSnsm.Files.Vxd,Tk3dSnsm.Files.Inf,Tk3dSnsm.Files.Dll
+CopyFiles=Tk3dSnsm.Files.Ext, Tk3dSnsm.Files.Vxd,Tk3dSnsm.Files.Dll
+AddReg=Tk3dSnsm.AddReg, COMInstall.AddReg
+
+[Tk3dSnsm.Dev.NT]
+;CopyFiles=Tk3dSnsm.Files.Ext,Tk3dSnsm.Files.Inf,Tk3dSnsm.Files.Dll
+CopyFiles=Tk3dSnsm.Files.Ext,Tk3dSnsm.Files.Dll
+AddReg=Tk3dSnsm.AddReg, COMInstall.AddReg
+
+[Tk3dSnsm.Dev.NT.Services]
+Addservice = Tk3dSnsm, 0x00000002, Tk3dSnsm.AddService
+
+[Tk3dSnsm.AddService]
+DisplayName    = %Tk3dSnsm.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\Tk3dUsbm.sys
+LoadOrderGroup = Base
+
+[Tk3dSnsm.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,Tk3dUsbm.sys
+HKLM,"Software\Tokin\Tk3dSnsm\%VERSION%","HeaderStrings",,%HEADER_STRINGS%
+
+[Tk3dSnsm.Files.Ext]
+Tk3dUsbm.sys
+
+;[Tk3dSnsm.Files.Inf]
+;Tk3dSns.inf
+
+[Tk3dSnsm.Files.Vxd]
+Tk3dMou.vxd
+
+[Tk3dSnsm.Files.Dll]
+TkInput.dll
+
+[COMInstall.AddReg]
+HKLM,%SMWCV%\RunOnce,"Install TkInput.dll",,"%11%\regsvr32 /s %11%\TkInput.dll"
+
+[Strings]
+SMWCV = "Software\Microsoft\Windows\CurrentVersion"
+MfgName="Tokin Corporation"
+MediaClassName = "サウンド、ビデオ、およびゲームのコントローラ"
+Tk3dSnsm.SvcDesc="Tokin 3D Motion Senser Driver"
+USB\VID_079e&PID_0263.DeviceDesc = "Tokin 3D Motion Senser "

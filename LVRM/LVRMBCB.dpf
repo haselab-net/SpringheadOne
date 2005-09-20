@@ -1,0 +1,15 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+USELIB("Base\BaseBCB.lib");
+USELIB("Device\DeviceBCB.lib");
+USELIB("HIS\HISBCB.lib");
+USELIB("Render\RenderBCB.lib");
+USELIB("WinCmp\WinCmpBCB.lib");
+//---------------------------------------------------------------------------
+#define Library
+
+// ライブラリにファイルを追加するには［プロジェクト｜プロジェクトに追加］を
+// 選択してください。
+

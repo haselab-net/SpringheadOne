@@ -1,0 +1,9 @@
+SCC = This is a Source Code Control file
+
+[Action.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/HumanScale/ActionWalk", FSXAAAAA
+
+[ActionWalk.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/HumanScale/ActionWalk", FSXAAAAA

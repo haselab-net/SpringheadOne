@@ -1,0 +1,17 @@
+// Cg language source code (Fragment Shader)
+
+struct C2E2f_Output { // struct for output
+  float4 color : COLOR;
+};
+
+C2E2f_Output Cg_fs(float2 texCoord : TEXCOORD0,
+							   float4 iColor : COLOR,
+							   //uniform sampler2D decal
+							   uniform texobj2D SrcTex0 : texunit0
+							   )
+{
+  C2E2f_Output OUT;
+  OUT.color = tex2D(SrcTex0, texCoord)/2;
+  return OUT;
+}
+

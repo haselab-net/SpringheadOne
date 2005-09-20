@@ -1,0 +1,17 @@
+SCC = This is a Source Code Control file
+
+[decomposer_c.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/SWIFT++/decomposer", MBMAAAAA
+
+[decomposer_g.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/SWIFT++/decomposer", MBMAAAAA
+
+[RAPIDdecomp.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/SWIFT++/decomposer", MBMAAAAA
+
+[swiftppdecomp.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/SWIFT++/decomposer", MBMAAAAA

@@ -1,0 +1,17 @@
+// Pass 3 (smoothie EDGE): fragment program.
+void main (half zLinear     : TEXCOORD0,
+           float4 wpos      : WPOS,
+           out half4 aRemap : COLOR,
+           uniform half3 v,     // silhouette vertex
+           uniform half3 n,     // silhouette normal
+           uniform half invT,   // 1/t (smoothie size)
+           uniform samplerRECT shadowMap)
+{
+    // Compute linear alpha in screen space.
+    half alpha = dot(wpos.xyz - v, n) * invT;
+    // Compute ratio f = b/r to remap alpha values.
+    // If b/r > 1, smoothie pixel is occluded.
+    // Otherwise, remap alpha and clamp to [0,1].
+    half f = zLinear / texRECT(shadowMap, wpos.xy).x;
+    aRemap = (f > 1) ? 1 : saturate(alpha / (1 - f));
+}

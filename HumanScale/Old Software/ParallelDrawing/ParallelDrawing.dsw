@@ -1,0 +1,103 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# åxçê: Ç±ÇÃ‹∞∏ΩÕﬂ∞Ω Ãß≤Ÿ Çï“èWÇ‹ÇΩÇÕçÌèúÇµÇ»Ç¢Ç≈Ç≠ÇæÇ≥Ç¢!
+
+###############################################################################
+
+Project: "Base"=..\..\LVRM\Base\Base.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ParallelDrawing"=.\ParallelDrawing.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Render
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SceneGraph
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinBasis
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Render"=..\..\LVRM\Render\Render.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SceneGraph"=..\..\LVRM\SceneGraph\SceneGraph.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/SceneGraph", DRKAAAAA
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "WinBasis"=..\..\LVRM\WinBasis\WinBasis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/WinBasis", JVKAAAAA
+    ..\..\lvrm\winbasis
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

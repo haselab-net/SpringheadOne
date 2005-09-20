@@ -1,0 +1,10 @@
+floor {
+	mass 1.#INF
+	
+}
+Cylinder01 {
+	angularMomentum (0.0 0.0 3.0)
+	inertia ((0.01 0 0)
+			 (0 0.01 0)
+             (0 0 0.01))
+}

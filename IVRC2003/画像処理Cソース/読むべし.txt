@@ -1,0 +1,5 @@
+C言語による画像処理入門http://www.ari-web.com/books/tech/img-4785631244.htm
+という本の中で紹介されているソース一覧
+
+make_dif.c　といのが背景差分の為のCソース
+

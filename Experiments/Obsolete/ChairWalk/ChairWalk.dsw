@@ -1,0 +1,208 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# åxçê: Ç±ÇÃ‹∞∏ΩÕﬂ∞Ω Ãß≤Ÿ Çï“èWÇ‹ÇΩÇÕçÌèúÇµÇ»Ç¢Ç≈Ç≠ÇæÇ≥Ç¢!
+
+###############################################################################
+
+Project: "Base"=..\..\Springhead\src\Base\Base.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/Base", XPUAAAAA
+    ..\..\springhead\src\base
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ChairWalk"=.\ChairWalk.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Experiments/ChairWalk", OQBBAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SceneGraph
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinBasis
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinDX8
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FileIO
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ImpD3D
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Collision
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Physics
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Collision"=..\..\Springhead\src\Collision\Collision.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/Collision", XLXAAAAA
+    ..\..\springhead\src\collision
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "FileIO"=..\..\Springhead\src\FileIO\FileIO.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/FileIO", QUUAAAAA
+    ..\..\springhead\src\fileio
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ImpD3D"=..\..\Springhead\src\ImpD3D\ImpD3D.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/ImpD3D", RUUAAAAA
+    ..\..\springhead\src\impd3d
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FileIO
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Physics"=..\..\Springhead\src\Physics\Physics.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/Physics", OOXAAAAA
+    ..\..\springhead\src\physics
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SceneGraph"=..\..\Springhead\src\SceneGraph\SceneGraph.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/SceneGraph", DTUAAAAA
+    ..\..\springhead\src\scenegraph
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Springhead"=..\..\Springhead\src\Springhead.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src", WPUAAAAA
+    ..\..\springhead\src
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "WinBasis"=..\..\Springhead\src\WinBasis\WinBasis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/WinBasis", WQUAAAAA
+    ..\..\springhead\src\winbasis
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "WinDX8"=..\..\Springhead\src\WinDX\WinDX8.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Springhead/src/WinDX", ASUAAAAA
+    ..\..\springhead\src\windx
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Experiments/ChairWalk", OQBBAAAA
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

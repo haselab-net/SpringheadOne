@@ -1,0 +1,13 @@
+SCC = This is a Source Code Control file
+
+[defs.mak]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/ihc/src", SFCCAAAA
+
+[lib.mak]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/ihc/src", SFCCAAAA
+
+[rammot.mak]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/ihc/src", SFCCAAAA

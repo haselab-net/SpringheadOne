@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[ws.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/Water/ws", ROICAAAA

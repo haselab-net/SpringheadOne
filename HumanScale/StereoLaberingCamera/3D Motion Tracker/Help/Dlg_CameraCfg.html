@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>3D Motion Tracker ヘルプ</title>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+</head>
+
+<body bgcolor="#FFFFFF">
+<a name="#PAGE_TOP"></a>
+<table width="100%" border="0" bordercolor="#003366" bgcolor="#003366">
+  <tr> 
+    <td height="28" width="85%"> <font size="+1" color="#FFFFFF"><b>　ダイアログ　（カメラ設定関連）</b></font></td>
+    <td height="28" bgcolor="#003366" bordercolor="#003366" width="15%"> 
+      <div align="right"><a href="index.html"><img src="IMG/ButToIdx.gif" width="82" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<p><a name="CAMERA_CFG"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　カメラ設定ダイアログ </font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <p><img src="IMG/Dlg_CameraCfg.gif" width="402" height="438" usemap="#Map" border="0"><map name="Map"><area shape="rect" coords="136,48,160,73" href="#CAMERA_CFG_1"><area shape="rect" coords="86,77,109,100" href="#CAMERA_CFG_2"><area shape="rect" coords="11,198,37,224" href="#CAMERA_CFG_3"><area shape="rect" coords="304,319,330,344" href="#CAMERA_CFG_4"></map></p>
+  <p><font color="#000000">ステレオラベリングカメラに対する設定を行います。 <br>
+    左カメラと右カメラに別々に設定します。 </font></p>
+  <p>　</p>
+  <p><a name="CAMERA_CFG_1"></a>【１】しきい値</p>
+  <blockquote> 
+    <p>ステレオラベリングカメラがマーカを抽出する際の明るさの「しきい値」を設定します。<br>
+      設定した値よりも輝度の高いエリアのみを抽出し、マーカとして認識します。０～２５５の値を設定可能です。</p>
+    <p><a href="#CAMERA_CFG_4">「適用」ボタン</a>を押すと設定が有効になりますので、<a href="Dlg_2DView.html">２Ｄイメージダイアログ</a>または<a href="#VIDEOOUT_CFG_IMG">ビデオ出力画面</a>を見ながら左右の撮影状況が同じになるように設定してください。</p>
+    </blockquote>
+  <p>　</p>
+  <p><a name="CAMERA_CFG_2"></a>【２】有効矩形</p>
+  <blockquote> 
+    <p>マーカを抽出するエリアを設定する矩形の左上と右下の座標値を表示します。</p>
+    <ul>
+      <li>４つの矩形を組み合わせて有効エリアとします。 </li>
+      <li> １～４の矩形設定のＯＲ（論理和）が有効なエリアとなります。 </li>
+      <li>それぞれの矩形の座標値入力は<a href="#CAMERA_CFG_3">有効矩形設定シート</a>で行います。 </li>
+    </ul>
+  </blockquote>
+  <p>　</p>
+  <p><a name="CAMERA_CFG_3"></a>【３】有効矩形設定シート</p>
+  <blockquote> 
+    <p>それぞれの矩形の座標値設定を行います。<br>
+      座標値は左上端が（0,0）、右下端が（639,479）です。</p>
+    <table width="87%" border="0">
+      <tr> 
+        <td width="42%"><img src="IMG/Dlg_CameraCfg_RectCfg.gif" width="295" height="229"></td>
+        <td width="58%"> 
+          <table width="99%" border="1" bordercolor="#999999" bordercolorlight="#999999" bordercolordark="#999999">
+            <tr> 
+              <td width="5%" bgcolor="#CCCCCC">Ａ</td>
+              <td width="25%" bgcolor="#CCCCCC"> 
+                <p>矩形選択 </p>
+              </td>
+              <td width="70%">設定を行う矩形を選択します。Ｂには選択した矩形の設定内容が反映されます。</td>
+            </tr>
+            <tr> 
+              <td width="5%" bgcolor="#CCCCCC">Ｂ</td>
+              <td width="25%" bgcolor="#CCCCCC">座標値入力</td>
+              <td width="70%">座標値を入力します。Ｘは０～６３９、Ｙは０～４７９の範囲で入力可能です。</td>
+            </tr>
+            <tr> 
+              <td width="5%" bgcolor="#CCCCCC">Ｃ</td>
+              <td width="25%" bgcolor="#CCCCCC">全体選択</td>
+              <td width="70%">選択中の矩形が全画面有効（左上 = 0,639 、右下 = 0,479）になるように座標値を自動変更します。</td>
+            </tr>
+            <tr> 
+              <td width="5%" bgcolor="#CCCCCC">Ｄ</td>
+              <td width="25%" bgcolor="#CCCCCC">全体非選択</td>
+              <td width="70%">選択中の矩形が全画面無効（左上 = 0,0 、右下 = 0,0）になるように座標値を自動変更します。</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p>　</p>
+  </blockquote>
+  <p><a name="CAMERA_CFG_4"></a>【４】適用</p>
+  <blockquote> 
+    <p>現在設定している内容をステレオラベリングカメラに送ります。</p>
+    <p> <a href="Dlg_2DView.html">２Ｄイメージダイアログ</a>または<a href="#VIDEOOUT_CFG_IMG">ビデオ出力画面</a>を見ながら設定内容を確認してください。</p>
+  </blockquote>
+</blockquote>
+<p>　</p>
+<p><a name="VIDEOOUT_CFG"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　ビデオ出力設定ダイアログ </font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <p><img src="IMG/Dlg_VideoOutCfg.gif" width="260" height="165"> </p>
+  <p> ステレオラベリングカメラのビデオ出力端子をテレビモニター等に接続して、実際にカメラが処理している映像を確認することができます。このダイアログではその映像の内容を変更することができます。</p>
+  <p>「適用」ボタンを押すと、現在の設定をステレオラベリングカメラに転送されて、ビデオ出力映像が変更されます。</p>
+  <p><a name="VIDEOOUT_CFG_IMG"></a>「内容」および「左右選択」の設定とビデオ出力映像は下表のように対応します。</p>
+  <table width="75%" border="1">
+    <tr bgcolor="#CCCCCC"> 
+      <td width="39%" bgcolor="#CCCCCC"> 
+        <div align="center"></div>
+      </td>
+      <td width="22%"> 
+        <div align="center">左右選択 ： 左のみ</div>
+      </td>
+      <td width="39%"> 
+        <div align="center">左右選択 ： 左右</div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="39%" bgcolor="#CCCCCC"> 
+        <p>内容 ： スルー</p>
+        <p><font size="-1">画像処理をしていない映像</font> </p>
+      </td>
+      <td width="22%"><img src="IMG/VideoOut_L_Thr.gif" width="216" height="144"></td>
+      <td width="39%"><img src="IMG/VideoOut_LR_Thr.gif" width="216" height="144"></td>
+    </tr>
+    <tr> 
+      <td width="39%" bgcolor="#CCCCCC"> 
+        <p>内容 ： 二値化</p>
+        <p><font size="-1">しきい値により二値化した映像</font></p>
+      </td>
+      <td width="22%"><img src="IMG/VideoOut_L_2V.gif" width="216" height="144"></td>
+      <td width="39%"><img src="IMG/VideoOut_LR_2V.gif" width="216" height="144"></td>
+    </tr>
+    <tr> 
+      <td width="39%" bgcolor="#CCCCCC"> 
+        <p>内容 ： ラベリング</p>
+        <p><font size="-1">しきい値によりラベリングしエリアを識別した映像<br>
+          <br>
+          ※色は３Ｄモニターの表示と対応していません。 </font></p>
+      </td>
+      <td width="22%"><img src="IMG/VideoOut_L_Lab.gif" width="216" height="144"></td>
+      <td width="39%"><img src="IMG/VideoOut_LR_Lab.gif" width="216" height="144"></td>
+    </tr>
+  </table>
+  <p>　</p>
+  <p>　</p>
+</blockquote>
+<blockquote> 
+  <p></p>
+</blockquote>
+<table width="100%" border="0" bgcolor="#003366" bordercolor="#003366">
+  <tr bgcolor="#003366"> 
+    <td height="13" width="40%"> 
+      <div align="left"><font color="#FFFFFF"><a href="index.html"><img src="IMG/ButToIdx.gif" width="82" height="22" border="0"></a> 
+        </font></div>
+    </td>
+    <td height="13" width="60%"> 
+      <div align="right"><font color="#FFFFFF" size="-1">Copyright (C) 2001 CyVerse 
+        Corp. </font></div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

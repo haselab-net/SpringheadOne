@@ -1,0 +1,147 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# åxçê: Ç±ÇÃ‹∞∏ΩÕﬂ∞Ω Ãß≤Ÿ Çï“èWÇ‹ÇΩÇÕçÌèúÇµÇ»Ç¢Ç≈Ç≠ÇæÇ≥Ç¢!
+
+###############################################################################
+
+Project: "Base"=..\..\..\Project\LVRM\Base\Base.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Device"=..\..\..\Project\LVRM\Device\Device.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PenguinHockey"=.\PenguinHockey.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Osaka/PenguinHockey", QDEAAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Device
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Haptic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libWrl2view
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Render
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinCmp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libJpeg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SceneGraph
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinBasis
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HIS
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "HIS"=..\..\..\Project\LVRM\HIS\HIS.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Render"=..\..\LVRM\Render\Render.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/Render", JOKAAAAA
+    ..\..\lvrm\render
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SceneGraph"=..\..\LVRM\SceneGraph\SceneGraph.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/SceneGraph", DRKAAAAA
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "WinBasis"=..\..\LVRM\WinBasis\WinBasis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/WinBasis", JVKAAAAA
+    ..\..\lvrm\winbasis
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

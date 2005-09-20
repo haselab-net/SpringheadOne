@@ -1,0 +1,82 @@
+; INF file for RexUsb10.sys
+; Copyright (c) 1999, RATOC Systems, Inc.
+[Version]
+Signature="$Windows NT$"
+Class=DataAcquisition
+ClassGUID={55466604-25BD-11D3-9D9A-0008C76B2933}
+Provider=%RexUsb10.Provider%
+DriverVer=02/24/2000,1.00.0000.0
+
+[Manufacturer]
+%RexUsb10.Manufacturer%=RexUsb10
+      
+[ClassInstall32]
+AddReg=RexUsb10.AddClassReg
+
+[RexUsb10]
+%RexUsb10.DeviceDescDef%=RexUsb10.INSTALL, USB\VID_0584&PID_A000
+%RexUsb10.DeviceDesc%=RexUsb10.INSTALL, USB\VID_0584&PID_A010
+
+[SourceDisksNames]
+1=%RexUsb10.DriverDiskName%,"",1
+
+[SourceDisksFiles]
+RexUsb10.sys=1
+UsbDio32.dll=1
+MsgUsb10.ocx=1
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+RexUsb10.CopyFiles = 10,system32\drivers ; WINDOWS\SYSTEM32\DRIVERS
+;UsbDio32.CopyFiles = 11									 ; WINDOWS\SYSTEM32  Windows2000ÇÃèÍçá
+;MsgUsb10.CopyFiles = 11									 ; WINDOWS\SYSTEM32  Windows2000ÇÃèÍçá
+UsbDio32.CopyFiles = 10,system					 ; WINDOWS\SYSTEM    Windows2000ÇÃèÍçá
+MsgUsb10.CopyFiles = 10,system					 ; WINDOWS\SYSTEMÅ@  Windows2000ÇÃèÍçá
+
+[RexUsb10.INSTALL]
+CopyFiles=RexUsb10.CopyFiles,UsbDio32.CopyFiles,MsgUsb10.CopyFiles
+AddReg=RexUsb10.AddRegLoader
+
+[RexUsb10.AddClassReg]
+HKR,,,,%RexUsb10.ClassName%
+
+[RexUsb10.AddRegLoader]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,RexUsb10.sys
+
+[RexUsb10.INSTALL.NT]
+CopyFiles=RexUsb10.CopyFiles,UsbDio32.CopyFiles,MsgUsb10.CopyFiles
+
+[RexUsb10.INSTALL.NT.Services]
+AddService = RexUsb10,0x00000002,RexUsb10_Service_Inst
+
+[RexUsb10.AddClassReg.NT]
+HKR,,,,%RexUsb10.ClassName%
+
+[RexUsb10_Service_Inst]
+ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
+StartType       = 3 ;%SERVICE_AUTO_START%
+ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
+ServiceBinary   = %12%\RexUsb10.sys
+DisplayName     = %RexUsb10.DeviceDesc%
+DisplayName     = %RexUsb10.DeviceDescDef%
+
+[RexUsb10.CopyFiles]
+RexUsb10.sys
+
+[UsbDio32.CopyFiles]
+UsbDio32.dll
+
+[MsgUsb10.CopyFiles]
+MsgUsb10.ocx
+
+[Strings]
+RexUsb10.Provider="RATOC Systems,Inc."
+RexUsb10.Manufacturer="RATOC Systems,Inc."
+RexUsb10.DeviceDescDef="I&L USB Data Acquisition System"
+RexUsb10.DeviceDesc="32bit DIO USB Data Acquisition System"
+RexUsb10.ClassName="DataAcquisition"
+;RexUsb10.DriverDiskName="RexUsb10 Installation Diskette" 
+RexUsb10.DriverDiskName="" 

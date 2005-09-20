@@ -1,0 +1,735 @@
+#VRML V2.0 utf8
+#
+# This model is created by Shade, Copyright(C) 1997-2001 ExpressionTools, Inc. All rights reserved.
+# http://www.ex-tools.co.jp
+#
+NavigationInfo {
+type ["EXAMINE","ANY"]
+}
+Background {
+groundColor 0.000000 0.000000 0.000000
+skyColor 0.000000 0.000000 0.000000
+}
+DirectionalLight {
+intensity 1.000000
+ambientIntensity 0.200000
+color 1.000000 1.000000 1.000000
+direction -0.691714 -0.691714 -0.207514
+}
+Viewpoint {
+position 2.000000 2.000000 3.000000
+orientation -0.637495 0.745885 -0.193018 0.771213
+description "current camera"
+}
+DEF test_0 Transform {
+translation 0 0 0
+rotation 0 0 1 0
+scale 0.001000 0.001000 0.001000
+children [
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-12142.857422 0.000000 -8500.000000,-12142.857422 0.000000 8500.000000,12142.857422 0.000000 8500.000000,12142.857422 0.000000 -8500.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2500.000000 0.000000 -5050.000000,-2500.000000 0.000000 -4550.000000,-2000.000000 0.000000 -4550.000000,-2000.000000 0.000000 -5050.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2500.000000 1500.000000 -5050.000000,-2500.000000 1500.000000 -4550.000000,-2000.000000 1500.000000 -4550.000000,-2000.000000 1500.000000 -5050.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2000.000000 1500.000000 -5050.000000,-2000.000000 0.000000 -5050.000000,-2000.000000 1500.000000 -4550.000000,-2000.000000 0.000000 -4550.000000,-2000.000000 1500.000000 -4550.000000,-2000.000000 0.000000 -4550.000000,-2500.000000 1500.000000 -4550.000000,-2500.000000 0.000000 -4550.000000,-2500.000000 1500.000000 -4550.000000,-2500.000000 0.000000 -4550.000000,-2500.000000 1500.000000 -5050.000000,
+-2500.000000 0.000000 -5050.000000,-2500.000000 1500.000000 -5050.000000,-2500.000000 0.000000 -5050.000000,-2000.000000 1500.000000 -5050.000000,-2000.000000 0.000000 -5050.000000,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 6, 7, 5, 4, -1, 10, 11, 9, 8, -1, 14, 15, 13, 12, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2973.359131 0.000000 4214.701172,-3050.000000 0.000000 4100.000000,-3164.700928 0.000000 4023.359375,-3300.000000 0.000000 3996.446533,-3435.298828 0.000000 4023.359131,-3550.000000 0.000000 4100.000000,-3626.640625 0.000000 4214.700684,-3653.553467 0.000000 4350.000000,-3626.640869 0.000000 4485.298828,-3550.000244 0.000000 4600.000000,-3435.299316 0.000000 4676.640625,
+-3300.000244 0.000000 4703.553223,-3164.701172 0.000000 4676.640625,-3050.000000 0.000000 4600.000000,-2973.359131 0.000000 4485.298828,-2946.446533 0.000000 4350.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 15, 0, -1, 15, 2, 3, -1, 3, 14, 15, -1, 14, 3, 4, -1, 4, 13, 14, -1, 13, 4, 5, -1, 5, 12, 13, -1, 12, 5, 6, -1, 6, 11, 12, -1, 11, 6, 7, -1, 
+7, 10, 11, -1, 10, 7, 8, -1, 8, 9, 10, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2723.359131 1500.000000 4214.701172,-2800.000000 1500.000000 4100.000000,-2914.700928 1500.000000 4023.359375,-3050.000000 1500.000000 3996.446533,-3185.298828 1500.000000 4023.359131,-3300.000000 1500.000000 4100.000000,-3376.640625 1500.000000 4214.700684,-3403.553467 1500.000000 4350.000000,-3376.640869 1500.000000 4485.298828,-3300.000244 1500.000000 4600.000000,-3185.299316 1500.000000 4676.640625,
+-3050.000244 1500.000000 4703.553223,-2914.701172 1500.000000 4676.640625,-2800.000000 1500.000000 4600.000000,-2723.359131 1500.000000 4485.298828,-2696.446533 1500.000000 4350.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 15, 0, -1, 15, 2, 3, -1, 3, 14, 15, -1, 14, 3, 4, -1, 4, 13, 14, -1, 13, 4, 5, -1, 5, 12, 13, -1, 12, 5, 6, -1, 6, 11, 12, -1, 11, 6, 7, -1, 
+7, 10, 11, -1, 10, 7, 8, -1, 8, 9, 10, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2696.446533 1500.000000 4350.000000,-2946.446533 0.000000 4350.000000,-2723.359131 1500.000000 4485.298828,-2973.359131 0.000000 4485.298828,-2800.000000 1500.000000 4600.000000,-3050.000000 0.000000 4600.000000,-2914.701172 1500.000000 4676.640625,-3164.701172 0.000000 4676.640625,-3050.000244 1500.000000 4703.553223,-3300.000244 0.000000 4703.553223,-3185.299316 1500.000000 4676.640625,
+-3435.299316 0.000000 4676.640625,-3300.000244 1500.000000 4600.000000,-3550.000244 0.000000 4600.000000,-3376.640869 1500.000000 4485.298828,-3626.640869 0.000000 4485.298828,-3403.553467 1500.000000 4350.000000,-3653.553467 0.000000 4350.000000,-3376.640625 1500.000000 4214.700684,-3626.640625 0.000000 4214.700684,-3300.000000 1500.000000 4100.000000,
+-3550.000000 0.000000 4100.000000,-3185.298828 1500.000000 4023.359131,-3435.298828 0.000000 4023.359131,-3050.000000 1500.000000 3996.446533,-3300.000000 0.000000 3996.446533,-2914.700928 1500.000000 4023.359375,-3164.700928 0.000000 4023.359375,-2800.000000 1500.000000 4100.000000,-3050.000000 0.000000 4100.000000,-2723.359131 1500.000000 4214.701172,
+-2973.359131 0.000000 4214.701172,-2696.446533 1500.000000 4350.000000,-2946.446533 0.000000 4350.000000,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 4, 5, 3, 2, -1, 6, 7, 5, 4, -1, 8, 9, 7, 6, -1, 10, 11, 9, 8, -1, 12, 13, 11, 10, -1, 14, 15, 13, 12, -1, 16, 17, 15, 14, -1, 18, 19, 17, 16, -1, 20, 21, 19, 18, -1, 22, 23, 21, 20, -1, 
+24, 25, 23, 22, -1, 26, 27, 25, 24, -1, 28, 29, 27, 26, -1, 30, 31, 29, 28, -1, 32, 33, 31, 30, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Transform {
+translation -3650.000000 2750.000000 0.000000
+rotation 0.000000 0.000000 1.000000 0.000000
+scale 559.016968 559.016968 559.016968
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry Sphere {
+radius 1
+}
+}
+]
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+2500.000000 0.000000 2500.000000,1500.000000 0.000000 2250.000000,2000.000000 0.000000 1750.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+2250.000000 2250.000000 2500.000000,1250.000000 2250.000000 2250.000000,1750.000000 2250.000000 1750.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+1750.000000 2250.000000 1750.000000,2000.000000 0.000000 1750.000000,1250.000000 2250.000000 2250.000000,1500.000000 0.000000 2250.000000,1250.000000 2250.000000 2250.000000,1500.000000 0.000000 2250.000000,2250.000000 2250.000000 2500.000000,2500.000000 0.000000 2500.000000,2250.000000 2250.000000 2500.000000,2500.000000 0.000000 2500.000000,1750.000000 2250.000000 1750.000000,
+2000.000000 0.000000 1750.000000,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 6, 7, 5, 4, -1, 10, 11, 9, 8, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Transform {
+translation 1250.000000 3000.000000 -6000.000000
+rotation 0.000000 0.000000 1.000000 0.000000
+scale 1346.291260 1346.291260 1346.291260
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 1.000000 1.000000 1.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry Sphere {
+radius 1
+}
+}
+]
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.000000 0.000000 0.000000
+ambientIntensity 0
+transparency 0.900000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2050.000000 340.848572 700.894226,-2050.000000 -49.389904 -900.059570,-2050.000000 -49.389904 3099.940430,-2050.000000 350.610107 1499.940430,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.000000 0.000000 0.000000
+ambientIntensity 0
+transparency 0.900000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-50.000000 340.848572 700.894226,-50.000000 -49.389904 -900.059570,-50.000000 -49.389904 3099.940430,-50.000000 350.610107 1499.940430,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.000000 0.000000 0.000000
+ambientIntensity 0
+transparency 0.900000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-50.000000 350.610107 1499.940430,-2050.000000 350.610107 1499.940430,-50.000000 -49.389904 3099.940430,-2050.000000 -49.389904 3099.940430,-50.000000 -49.389904 3099.940430,-2050.000000 -49.389904 3099.940430,-50.000000 -49.389904 -900.059570,-2050.000000 -49.389904 -900.059570,-50.000000 -49.389904 -900.059570,-2050.000000 -49.389904 -900.059570,-50.000000 340.848572 700.894226,
+-2050.000000 340.848572 700.894226,-50.000000 340.848572 700.894226,-2050.000000 340.848572 700.894226,-50.000000 350.610107 1499.940430,-2050.000000 350.610107 1499.940430,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 6, 7, 5, 4, -1, 10, 11, 9, 8, -1, 14, 15, 13, 12, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.501961 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+1950.000000 20.000000 1010.000000,1950.000000 520.000000 -990.000000,1950.000000 500.000000 -1000.000000,1950.000000 0.000000 1000.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.501961 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+950.000000 20.000000 1010.000000,950.000000 520.000000 -990.000000,950.000000 500.000000 -1000.000000,950.000000 0.000000 1000.000000,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.501961 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+950.000000 0.000000 1000.000000,1950.000000 0.000000 1000.000000,950.000000 500.000000 -1000.000000,1950.000000 500.000000 -1000.000000,950.000000 500.000000 -1000.000000,1950.000000 500.000000 -1000.000000,950.000000 520.000000 -990.000000,1950.000000 520.000000 -990.000000,950.000000 520.000000 -990.000000,1950.000000 520.000000 -990.000000,950.000000 20.000000 1010.000000,
+1950.000000 20.000000 1010.000000,950.000000 20.000000 1010.000000,1950.000000 20.000000 1010.000000,950.000000 0.000000 1000.000000,1950.000000 0.000000 1000.000000,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 6, 7, 5, 4, -1, 10, 11, 9, 8, -1, 14, 15, 13, 12, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.250980 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2250.000000 -49.389904 999.940430,-2250.000000 -49.389904 1199.940430,-2050.000000 -49.389904 1199.940430,-2050.000000 -49.389904 999.940430,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.250980 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2250.000000 500.610107 999.940430,-2250.000000 500.610107 1199.940430,-2050.000000 500.610107 1199.940430,-2050.000000 500.610107 999.940430,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.250980 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-2050.000000 500.610107 999.940430,-2050.000000 -49.389904 999.940430,-2050.000000 500.610107 1199.940430,-2050.000000 -49.389904 1199.940430,-2050.000000 500.610107 1199.940430,-2050.000000 -49.389904 1199.940430,-2250.000000 500.610107 1199.940430,-2250.000000 -49.389904 1199.940430,-2250.000000 500.610107 1199.940430,-2250.000000 -49.389904 1199.940430,-2250.000000 500.610107 999.940430,
+-2250.000000 -49.389904 999.940430,-2250.000000 500.610107 999.940430,-2250.000000 -49.389904 999.940430,-2050.000000 500.610107 999.940430,-2050.000000 -49.389904 999.940430,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 6, 7, 5, 4, -1, 10, 11, 9, 8, -1, 14, 15, 13, 12, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.250980 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-50.000000 -49.389904 999.940430,-50.000000 -49.389904 1199.940430,150.000000 -49.389904 1199.940430,150.000000 -49.389904 999.940430,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.250980 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+-50.000000 500.610107 999.940430,-50.000000 500.610107 1199.940430,150.000000 500.610107 1199.940430,150.000000 500.610107 999.940430,
+]
+}
+coordIndex [
+0, 1, 2, -1, 2, 3, 0, -1, 
+]
+}
+}
+]
+}
+Transform {
+children [
+Shape {
+appearance Appearance {
+material Material {
+specularColor 1 1 1
+diffuseColor 0.250980 0.000000 0.000000
+ambientIntensity 0
+transparency 0.000000
+shininess 0.200000
+emissiveColor 0 0 0
+}
+}
+geometry IndexedFaceSet {
+ccw FALSE
+solid FALSE
+creaseAngle 3.14
+coord Coordinate {
+point [
+150.000000 500.610107 999.940430,150.000000 -49.389904 999.940430,150.000000 500.610107 1199.940430,150.000000 -49.389904 1199.940430,150.000000 500.610107 1199.940430,150.000000 -49.389904 1199.940430,-50.000000 500.610107 1199.940430,-50.000000 -49.389904 1199.940430,-50.000000 500.610107 1199.940430,-50.000000 -49.389904 1199.940430,-50.000000 500.610107 999.940430,
+-50.000000 -49.389904 999.940430,-50.000000 500.610107 999.940430,-50.000000 -49.389904 999.940430,150.000000 500.610107 999.940430,150.000000 -49.389904 999.940430,
+]
+}
+coordIndex [
+2, 3, 1, 0, -1, 6, 7, 5, 4, -1, 10, 11, 9, 8, -1, 14, 15, 13, 12, -1, 
+]
+}
+}
+]
+}
+]
+}
+# End of the file

@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[Project1.vbp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/LVRM/bin/Drivers/TUSB_ADAPIO/V2_6/DEV/VB6", ZOYBAAAA

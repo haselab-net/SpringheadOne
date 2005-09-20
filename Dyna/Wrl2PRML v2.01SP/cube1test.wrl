@@ -1,0 +1,120 @@
+#VRML V2.0 utf8
+
+Background {
+	skyColor 0 0 1
+}
+
+Viewpoint { position 0 1 10 orientation 0 0 -1 0 description "Default" }
+
+DEF li Transform {
+children [
+
+#DirectionalLight { direction 0 -10.74485 -0.57932 color 1 1 1 intensity 1 on TRUE }
+#DirectionalLight { direction -0.33104 -0.74485 -0.57932 color 1 1 1 intensity 1 on TRUE }
+DirectionalLight { direction 0 -1 -1 color 1 1 1 intensity 1 on TRUE }
+DirectionalLight { direction 0 1 -1 color 1 1 1 intensity 1 on TRUE }
+#DirectionalLight { direction 0 0 -1 color 1 1 1 intensity 1 on TRUE }
+DirectionalLight { direction 1 0 -1 color 1 1 1 intensity 1 on TRUE }
+DirectionalLight { direction -1 0 -1 color 1 1 1 intensity 1 on TRUE }
+]
+}
+
+DEF floor Transform {
+	translation 1.89 -1.45 -1.23
+	rotation 0 0 -1 0
+	scale 5 0.1 5
+	children [
+		Shape {
+appearance Appearance {
+										material Material {
+											specularColor 0.3 0.3 0.3
+											#diffuseColor 0 0.19216 0.02353
+											diffuseColor 0.3 0.3 0.3
+											#ambientIntensity 0
+											ambientIntensity 0.7
+											transparency 0
+											shininess 0.2
+										}
+}
+			geometry IndexedFaceSet {
+#				ccw FALSE
+				creaseAngle 1
+				coord Coordinate {
+					point [
+						-1	1	1
+						-1	-1	1
+						1	-1	1
+						1	1	1
+						-1	1	-1
+						-1	-1	-1
+						1	-1	-1
+						1	1	-1
+					]
+				}
+				coordIndex [
+					0 1 2 3 -1
+					1 5 6 2 -1
+					5 4 7 6 -1
+					0 3 7 4 -1
+					4 5 1 0 -1
+					7 3 2 6 -1
+				]
+			}
+		}
+	]
+}
+
+DEF cube1 Transform {
+	translation -0.11 1.5 0.23753
+#0.23453
+
+#	rotation 0 0 1 0.78539816339744830961566084581988
+#	rotation 0 0 1 0.39269908169872415480783042290994
+#	rotation 0.7 0 0.7 0.79
+	rotation 0 0 1 0.1
+
+	scale 1 1 1
+	children [
+	Transform {
+	children[
+		Shape {
+appearance Appearance {
+										material Material {
+											specularColor 0.6 1 0.6
+											#diffuseColor 0 0.19216 0.02353
+											diffuseColor 0.4 0.9 0.4
+											#ambientIntensity 0
+											ambientIntensity 0.4
+											transparency 0
+											shininess 0.2
+										}
+									}			geometry IndexedFaceSet {
+#				ccw FALSE
+				creaseAngle 1
+				coord Coordinate {
+					point [
+						-1	1	1
+						-1	-1	1
+						1	-1	1
+						1	1	1
+						-1	1	-1
+						-1	-1	-1
+						1	-1	-1
+						1	1	-1
+					]
+				}
+				coordIndex [
+					0 1 2 3 -1
+					1 5 6 2 -1
+					5 4 7 6 -1
+					0 3 7 4 -1
+					4 5 1 0 -1
+					7 3 2 6 -1
+				]
+			}
+		}
+	]
+	}
+	]
+}
+

@@ -1,0 +1,33 @@
+# Microsoft Developer Studio Generated Dependency File, included by Render.mak
+
+.\glaux\RDGlauxView.cpp : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\Base\AffineB.h"\
+	"..\Base\AffineF.h"\
+	"..\Base\AffinefDef.h"\
+	"..\Base\Debug.h"\
+	"..\Base\Env.h"\
+	".\glaux\RDGlauxView.h"\
+	".\RDView.h"\
+	
+
+.\glut\RDGlutView.cpp : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\Base\AffineB.h"\
+	"..\Base\AffineF.h"\
+	"..\Base\AffinefDef.h"\
+	"..\Base\Debug.h"\
+	"..\Base\Env.h"\
+	"..\gl\glut.h"\
+	".\glut\RDGlutView.h"\
+	".\RDView.h"\
+	
+
+.\RDView.cpp : \
+	"..\Base\AffineB.h"\
+	"..\Base\AffineF.h"\
+	"..\Base\AffinefDef.h"\
+	"..\Base\Debug.h"\
+	"..\Base\Env.h"\
+	".\RDView.h"\
+	

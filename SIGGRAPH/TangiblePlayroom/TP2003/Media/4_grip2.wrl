@@ -1,0 +1,93 @@
+#VRML V2.0 utf8
+
+#4_grip2
+DEF sprite4 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "4_grip2J.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}
+DEF sprite40 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "4_grip2J.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}
+DEF sprite41 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "4_grip2E.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}
+DEF sprite42 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "4_grip2S.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}
+DEF sprite43 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "4_grip2K.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}
+DEF sprite44 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "4_grip2H.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}

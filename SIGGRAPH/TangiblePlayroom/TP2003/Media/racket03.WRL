@@ -1,0 +1,25 @@
+#VRML V2.0 utf8
+
+# Produced by 3D Studio MAX VRML97 exporter, Version 4.02, Revision 0.85
+# MAX File: new_rachet.max, Date: Thu Jul 17 17:10:51 2003
+
+DEF Sphere01 Transform {
+  translation 0 0 0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.5882 0.5882 0.5882
+          ambientIntensity 1.0
+          specularColor 0 0 0
+          shininess 0.145
+          transparency 0
+        }
+        texture ImageTexture {
+          url "TUTASHS.JPG"
+        }
+      }
+      geometry Sphere { radius 0.049 }
+    }
+  ]
+}

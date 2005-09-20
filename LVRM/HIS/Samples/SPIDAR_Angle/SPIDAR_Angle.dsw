@@ -1,0 +1,124 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# åxçê: Ç±ÇÃ‹∞∏ΩÕﬂ∞Ω Ãß≤Ÿ Çï“èWÇ‹ÇΩÇÕçÌèúÇµÇ»Ç¢Ç≈Ç≠ÇæÇ≥Ç¢!
+
+###############################################################################
+
+Project: "Base"=..\..\..\Base\Base.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/HIS/Samples/SPIDAR_Angle", CCABAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Device"=..\..\..\Device\Device.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/HIS/Samples/SPIDAR_Angle", CCABAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "HIS"=..\..\HIS.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/HIS/Samples/SPIDAR_Angle", CCABAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Render"=..\..\..\Render\Render.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SPIDAR_Angle"=.\SPIDAR_Angle.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/HIS/Samples/SPIDAR_Angle", CCABAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Device
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HIS
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinBasis
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Render
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "WinBasis"=..\..\..\WinBasis\WinBasis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/HIS/Samples/SPIDAR_Angle", CCABAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

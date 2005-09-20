@@ -1,0 +1,124 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# åxçê: Ç±ÇÃ‹∞∏ΩÕﬂ∞Ω Ãß≤Ÿ Çï“èWÇ‹ÇΩÇÕçÌèúÇµÇ»Ç¢Ç≈Ç≠ÇæÇ≥Ç¢!
+
+###############################################################################
+
+Project: "Base"=..\..\..\LVRM\Base\Base.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/VR", BAAAAAAA
+    ..\..\vr
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CmpCtrl"=.\CmpCtrl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/Grasp/CmpCtrl", ZCEAAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Base
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Device
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HIS
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Render
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name WinBasis
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Device"=..\..\..\LVRM\Device\Device.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/VR", BAAAAAAA
+    ..\..\vr
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "HIS"=..\..\..\LVRM\HIS\HIS.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Render"=..\..\..\LVRM\Render\Render.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/VR", BAAAAAAA
+    ..\..\vr
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "WinBasis"=..\..\..\LVRM\WinBasis\WinBasis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Project/LVRM/WinBasis", JVKAAAAA
+    ..\..\lmvr\winbasis
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

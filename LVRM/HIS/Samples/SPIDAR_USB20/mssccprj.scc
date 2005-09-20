@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[Spidar_usb20.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/LVRM/HIS/Samples/SPIDAR_USB20", RAFBAAAA

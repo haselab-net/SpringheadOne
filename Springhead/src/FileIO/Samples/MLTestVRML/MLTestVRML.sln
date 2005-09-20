@@ -1,0 +1,114 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "..\..\..\Base\Base.vcproj", "{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileIO", "..\..\FileIO.vcproj", "{790762BB-842C-46A3-881A-0A66BD669630}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImpD3D", "..\..\..\ImpD3D\ImpD3D.vcproj", "{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MLTestVRML", "MLTestVRML.vcproj", "{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneGraph", "..\..\..\SceneGraph\SceneGraph.vcproj", "{ED7123EB-4F0B-4D36-93BC-199897671283}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinBasis", "..\..\..\WinBasis\WinBasis.vcproj", "{A8161515-AF05-4DAC-B6BE-75D243E60340}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 7
+		SccProjectUniqueName0 = ..\\..\\..\\Base\\Base.vcproj
+		SccProjectName0 = \u0022$/Project/Springhead/src/Base\u0022,\u0020XPUAAAAA
+		SccLocalPath0 = ..\\..\\..\\Base
+		CanCheckoutShared = false
+		SccProjectUniqueName1 = ..\\..\\FileIO.vcproj
+		SccProjectName1 = \u0022$/Project/Springhead/src/FileIO\u0022,\u0020WPUAAAAA
+		SccLocalPath1 = ..\\..
+		CanCheckoutShared = false
+		SccProjectUniqueName2 = ..\\..\\..\\ImpD3D\\ImpD3D.vcproj
+		SccProjectName2 = \u0022$/Project/Springhead/src/ImpD3D\u0022,\u0020RUUAAAAA
+		SccLocalPath2 = ..\\..\\..\\ImpD3D
+		CanCheckoutShared = false
+		SccProjectUniqueName3 = MLTestVRML.vcproj
+		SccLocalPath3 = ..\\..\\..
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection3 = FileIO\\Samples\\MLTestVRML\\
+		SccProjectUniqueName4 = ..\\..\\..\\SceneGraph\\SceneGraph.vcproj
+		SccProjectName4 = \u0022$/Project/Springhead/src/SceneGraph\u0022,\u0020DTUAAAAA
+		SccLocalPath4 = ..\\..\\..\\SceneGraph
+		CanCheckoutShared = false
+		SccProjectUniqueName5 = ..\\..\\..\\WinBasis\\WinBasis.vcproj
+		SccProjectName5 = \u0022$/Project/Springhead/src/WinBasis\u0022,\u0020WQUAAAAA
+		SccLocalPath5 = ..\\..\\..\\WinBasis
+		CanCheckoutShared = false
+		SccProjectName6 = \u0022$/Project/Springhead/src/FileIO/Samples/MLTestVRML\u0022,\u0020VPBBAAAA
+		SccLocalPath6 = .
+		SccProvider6 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = false
+		SolutionUniqueID = {A6517266-BBC0-4F09-8DCA-FC61E57868FF}
+	EndGlobalSection
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = MFC Debug
+		ConfigName.2 = MFC Release
+		ConfigName.3 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.0 = {ED7123EB-4F0B-4D36-93BC-199897671283}
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.1 = {790762BB-842C-46A3-881A-0A66BD669630}
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.2 = {A8161515-AF05-4DAC-B6BE-75D243E60340}
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.3 = {0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.4 = {1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.Debug.ActiveCfg = Debug|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.Debug.Build.0 = Debug|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.MFC Debug.Build.0 = MFC Debug|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.MFC Release.ActiveCfg = MFC Release|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.MFC Release.Build.0 = MFC Release|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.Release.ActiveCfg = Release|Win32
+		{1F4CDEAF-D1B6-4085-961D-9E4DAB3F3488}.Release.Build.0 = Release|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.Debug.ActiveCfg = Debug|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.Debug.Build.0 = Debug|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.MFC Debug.Build.0 = MFC Debug|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.MFC Release.ActiveCfg = MFC Release|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.MFC Release.Build.0 = MFC Release|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.Release.ActiveCfg = Release|Win32
+		{790762BB-842C-46A3-881A-0A66BD669630}.Release.Build.0 = Release|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.Debug.ActiveCfg = Debug|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.Debug.Build.0 = Debug|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.MFC Debug.Build.0 = MFC Debug|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.MFC Release.ActiveCfg = MFC Release|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.MFC Release.Build.0 = MFC Release|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.Release.ActiveCfg = Release|Win32
+		{0D2B2E0D-8F3B-4E59-8230-9E7E0C87378D}.Release.Build.0 = Release|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.Debug.ActiveCfg = Debug|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.Debug.Build.0 = Debug|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.MFC Debug.ActiveCfg = Debug|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.MFC Debug.Build.0 = Debug|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.MFC Release.ActiveCfg = Release|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.MFC Release.Build.0 = Release|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.Release.ActiveCfg = Release|Win32
+		{D9924F9D-71E4-4A15-9A7D-6D21AB34427A}.Release.Build.0 = Release|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.Debug.ActiveCfg = Debug|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.Debug.Build.0 = Debug|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.MFC Debug.Build.0 = MFC Debug|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.MFC Release.ActiveCfg = MFC Release|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.MFC Release.Build.0 = MFC Release|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.Release.ActiveCfg = Release|Win32
+		{ED7123EB-4F0B-4D36-93BC-199897671283}.Release.Build.0 = Release|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.Debug.ActiveCfg = Debug|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.Debug.Build.0 = Debug|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.MFC Debug.Build.0 = MFC Debug|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.MFC Release.ActiveCfg = MFC Release|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.MFC Release.Build.0 = MFC Release|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.Release.ActiveCfg = Release|Win32
+		{A8161515-AF05-4DAC-B6BE-75D243E60340}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

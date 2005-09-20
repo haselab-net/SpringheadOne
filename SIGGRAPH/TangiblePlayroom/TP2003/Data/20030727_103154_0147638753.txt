@@ -1,0 +1,6 @@
+milisec,RacketX,RacketY,RacketZ,forceX,forceX,forceX,ForceRatio,FriendPoint,EnemyPoint,haptics,scene
+147657960,0,0,0,0,0,0,0,0,0,0,0,
+147658110,0,0,0,0,0,0,0,0,0,0,0,
+147658180,0,0,0,0,0,0,0,0,0,0,0,
+147658281,0,0,0,0,0,0,0,0,0,0,0,
+147658521,0,0,0,0,0,0,0,0,0,0,0,

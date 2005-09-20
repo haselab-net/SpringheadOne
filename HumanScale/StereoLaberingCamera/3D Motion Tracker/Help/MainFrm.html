@@ -1,0 +1,397 @@
+<html>
+<head>
+<title>3D Motion Tracker ヘルプ</title>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+</head>
+
+<body bgcolor="#FFFFFF">
+<a name="#PAGE_TOP"></a>
+<table width="100%" border="0" bordercolor="#003366" bgcolor="#003366">
+  <tr> 
+    <td height="28" width="85%"> <font size="+1" color="#FFFFFF"><b>　メイン画面</b></font></td>
+    <td height="28" bgcolor="#003366" bordercolor="#003366" width="15%"> 
+      <div align="right"><a href="index.html"><img src="IMG/ButToIdx.gif" width="82" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<p>全体イメージ</p>
+<p><img src="IMG/MainFrm.jpg" usemap="#MapMap" border="0"><map name="MapMap"><area shape="rect" coords="2,11,143,23" href="#MENU"><area shape="rect" coords="2,23,67,36" href="#TOOLBAR"><area shape="rect" coords="4,37,144,348" href="#FORM_CONFIG"><area shape="rect" coords="143,37,597,220" href="#FORM_3DMONITOR"><area shape="rect" coords="147,222,597,345" href="#FORM_INFO"></map></p>
+<blockquote> 
+  <p><a href="#MENU">メニュー</a><br>
+    <a href="#TOOLBAR">ツールバー</a><br>
+    <a href="#FORM_CONFIG">設定フォーム</a><br>
+    <a href="#FORM_3DMONITOR">３Ｄモニターフォーム</a><br>
+    <a href="#FORM_INFO">インフォメーションフォーム</a> </p>
+</blockquote>
+<p>　</p>
+<p><a name="MENU"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　メニュー </font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <table width="90%" border="1">
+    <tr bgcolor="#CCCCCC"> 
+      <td><b>プログラム</b></td>
+    </tr>
+  </table>
+  <table width="90%" border="1">
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">キャプチャ開始</td>
+      <td colspan="3"><font size="-1">キャプチャを開始します。<a href="#FORM_CONFIG">設定フォーム</a>のRECボタンを押した場合と同じ動作をします。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">キャプチャ終了</td>
+      <td colspan="3"><font size="-1">キャプチャを開始します。<a href="#FORM_CONFIG">設定フォーム</a>のSTOPボタンを押した場合と同じ動作をします。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">再生</td>
+      <td colspan="3"><font size="-1">直前にキャプチャした内容を再生します。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">アプリケーションの終了</td>
+      <td colspan="3"><font size="-1">アプリケーションを終了します。</font></td>
+    </tr>
+  </table>
+  <p>　</p>
+</blockquote>
+<blockquote> 
+  <table width="90%" border="1">
+    <tr bgcolor="#CCCCCC"> 
+      <td><b>設定</b></td>
+    </tr>
+  </table>
+  <table width="90%" border="1">
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC" height="22">３Ｄ表示設定</td>
+      <td colspan="3" height="22"><font size="-1">キャプチャを開始します。<a href="#FORM_CONFIG">設定フォーム</a>のRECボタンを押した場合と同じ動作をします。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">座標系変換設定</td>
+      <td colspan="3"><font size="-1">キャプチャを開始します。<a href="#FORM_CONFIG">設定フォーム</a>のSTOPボタンを押した場合と同じ動作をします。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">設定フォームに移動</td>
+      <td colspan="3"><font size="-1">アプリケーションを終了します。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">カメラ設定</td>
+      <td colspan="3"><font size="-1">ステレオラベリングカメラの<a href="Dlg_CameraCfg.html#CAMERA_CFG">カメラ設定ダイアログ</a>が開きます。</font></td>
+    </tr>
+    <tr> 
+      <td width="27%" bgcolor="#CCCCCC">ビデオ出力設定</td>
+      <td colspan="3"><font size="-1">ステレオラベリングカメラの<a href="Dlg_CameraCfg.html#VIDEOOUT_CFG">ビデオ出力設定ダイアログ</a>が開きます。</font></td>
+    </tr>
+  </table>
+</blockquote>
+<blockquote>
+<table width="90%" border="1">
+    <tr bgcolor="#CCCCCC"> 
+      <td><b>表示</b></td>
+    </tr>
+  </table>
+  <table width="90%" border="1">
+    <tr> 
+      <td width="28%" bgcolor="#CCCCCC" height="22">２Ｄイメージダイアログ</td>
+      <td colspan="3" height="22" width="72%"><font size="-1">ステレオラベリングカメラで取得したラベリングイメージを出力する<a href="Dlg_2DView.html">２Ｄイメージダイアログ</a>の表示、非表示。</font></td>
+    </tr>
+    <tr> 
+      <td width="28%" bgcolor="#CCCCCC">ツールバー</td>
+      <td colspan="3" width="72%"><font size="-1">ツールバーの表示、非表示。</font></td>
+    </tr>
+    <tr> 
+      <td width="28%" bgcolor="#CCCCCC">ステータスバー</td>
+      <td colspan="3" width="72%"><font size="-1">ステータスバーの表示、非表示。</font></td>
+    </tr>
+  </table>
+</blockquote>
+<blockquote>
+  <table width="90%" border="1">
+    <tr bgcolor="#CCCCCC"> 
+      <td><b>ヘルプ</b></td>
+    </tr>
+  </table>
+  <table width="90%" border="1">
+    <tr> 
+      <td width="28%" bgcolor="#CCCCCC" height="22">目次</td>
+      <td colspan="3" height="22" width="72%"><font size="-1">ヘルプファイル（ＨＴＭＬ）の表示。</font></td>
+    </tr>
+    <tr> 
+      <td width="28%" bgcolor="#CCCCCC">　</td>
+      <td colspan="3" width="72%"><font size="-1">バージョン情報の表示。</font></td>
+    </tr>
+  </table>
+</blockquote>
+<p>　</p>
+<p><a name="TOOLBAR"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　ツールバー </font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <table width="90%" border="1">
+    <tr> 
+      <td width="53%" bgcolor="#CCCCCC"><img src="IMG/ToolB_But_LR.gif" width="44" height="40" align="middle">　２Ｄイメージダイアログ</td>
+      <td width="47%"><font size="-1">ステレオラベリングカメラで取得したラベリングイメージを出力する<a href="Dlg_2DView.html">２Ｄイメージダイアログ</a>の表示、非表示。</font></td>
+    </tr>
+    <tr> 
+      <td width="53%" bgcolor="#CCCCCC"><img src="IMG/ToolB_But_Cam.gif" width="44" height="40" align="middle">　カメラ設定</td>
+      <td width="47%"><font size="-1">ステレオラベリングカメラの<a href="Dlg_CameraCfg.html#CAMERA_CFG">カメラ設定ダイアログ</a>が開きます。</font></td>
+    </tr>
+    <tr> 
+      <td width="53%" bgcolor="#CCCCCC"><img src="IMG/ToolB_But_Vid.gif" width="44" height="40" align="middle">　ビデオ出力設定</td>
+      <td width="47%"><font size="-1">ステレオラベリングカメラの<a href="Dlg_CameraCfg.html#VIDEOOUT_CFG">ビデオ出力設定ダイアログ</a>が開きます。</font></td>
+    </tr>
+    <tr> 
+      <td width="53%" bgcolor="#CCCCCC"><img src="IMG/ToolB_But_Ver.gif" width="44" height="40" align="middle">　3DMotionTracker 
+        のバージョン情報</td>
+      <td width="47%"><font size="-1">バージョン情報の表示。</font></td>
+    </tr>
+  </table>
+</blockquote>
+<p>　</p>
+<p><a name="FORM_CONFIG"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　設定フォーム </font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <table width="87%" border="0">
+    <tr> 
+      <td width="37%"><img src="IMG/FormConfig.gif" usemap="#Map2Map" border="0"><map name="Map2Map"><area shape="rect" coords="90,488,116,513" href="#FORM_CONFIG_7"><area shape="rect" coords="207,368,233,393" href="#FORM_CONFIG_8"><area shape="rect" coords="140,6,168,31" href="#FORM_CONFIG_1"><area shape="rect" coords="142,39,168,65" href="#FORM_CONFIG_2"><area shape="rect" coords="216,127,240,150" href="#FORM_CONFIG_3"><area shape="rect" coords="205,284,229,309" href="#FORM_CONFIG_4"><area shape="rect" coords="83,416,109,442" href="#FORM_CONFIG_5"><area shape="rect" coords="170,417,196,442" href="#FORM_CONFIG_6"></map><map name="Map2"><area shape="rect" coords="140,13,168,38" href="#FORM_CONFIG_1"><area shape="rect" coords="142,44,168,70" href="#FORM_CONFIG_2"><area shape="rect" coords="216,133,240,156" href="#FORM_CONFIG_3"><area shape="rect" coords="221,324,245,349" href="#FORM_CONFIG_4"><area shape="rect" coords="88,425,114,451" href="#FORM_CONFIG_5"><area shape="rect" coords="180,425,206,450" href="#FORM_CONFIG_6"></map></td>
+      <td width="63%" valign="top"> 
+        <p>　</p>
+        <p>キャプチャ実行前の設定や、キャプチャ開始、中止の操作を行います。</p>
+      </td>
+    </tr>
+  </table>
+  <p>　</p>
+  <p><a name="FORM_CONFIG_1"></a>【１】記録時間</p>
+  <blockquote> 
+    <p>秒単位で記録時間を設定します。１～１００秒の範囲で設定可能です。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_CONFIG_2"></a>【２】マーカ数</p>
+  <blockquote> 
+    <p>キャプチャするマーカの個数を設定します。１～１０個の範囲で設定可能です。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_CONFIG_3"></a>【３】マーカ対応</p>
+  <blockquote> 
+    <p>表にはマーカの色、ＩＤ、名前、順番が表示されます。</p>
+    <table width="86%" border="0" height="100">
+      <tr> 
+        <td width="37%" rowspan="4"> 
+          <p><img src="IMG/FormConfig_MkList.gif" width="215" height="139"></p>
+        </td>
+        <td colspan="2" height="114" rowspan="4"> 
+          <table width="85%" border="1">
+            <tr> 
+              <td width="19%" bgcolor="#CCCCCC"> 
+                <div align="center"><font size="-1">№</font></div>
+              </td>
+              <td width="81%"><font size="-1">順番を任意に設定できます。　<a href="#FORM_CONFIG_3_2">２）</a>　<a href="#FORM_CONFIG_3_3">３）</a></font></td>
+            </tr>
+            <tr> 
+              <td width="19%" bgcolor="#CCCCCC"> 
+                <div align="center"><font size="-1">色</font></div>
+              </td>
+              <td width="81%"><font size="-1">３Ｄモニターに表示されるマーカ色に対応。ユーザによる変更はできません。</font></td>
+            </tr>
+            <tr> 
+              <td width="19%" bgcolor="#CCCCCC"> 
+                <div align="center"><font size="-1">ＩＤ</font></div>
+              </td>
+              <td width="81%"><font size="-1">ユーザによる変更はできません。</font></td>
+            </tr>
+            <tr> 
+              <td width="19%" bgcolor="#CCCCCC"> 
+                <div align="center"><font size="-1">名前</font></div>
+              </td>
+              <td width="81%"><font size="-1">任意に名称を設定できます。　<a href="#FORM_CONFIG_3_1">１）</a></font></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr> </tr>
+      <tr> </tr>
+      <tr> </tr>
+    </table>
+    <p><a name="FORM_CONFIG_3_1"></a>１） マーカ名を入力</p>
+    <ul>
+      <li>名前を変更する行（マーカ）をダブルクリックしてください。</li>
+      <li>マーカ名設定ダイアログが表示されます。名前を変更してＯＫボタンを押してください。 
+        <p><img src="IMG/Dlg_MknameChg.jpg" width="268" height="104"></p>
+      </li>
+    </ul>
+    <p><a name="FORM_CONFIG_3_2"></a>２）順番の設定</p>
+    <ul>
+      <li>順番を変更する行（マーカ）を選択してください。</li>
+      <li><img src="IMG/FormConfig_MkUpDwn.gif" width="60" height="30" align="middle">ボタンで順番を上下に変更してください。</li>
+      <li>ここで設定する順番はファイル出力に反映されます。</li>
+    </ul>
+    <blockquote>　</blockquote>
+    <p><a name="FORM_CONFIG_3_3"></a>３）順番をＩＤ順に戻す</p>
+    <ul>
+      <li>元の順（ＩＤ順）に戻す場合は<img src="IMG/FormConfig_MkIdSort.gif" width="81" height="31" align="middle">ボタンを押してください。</li>
+    </ul>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_CONFIG_4"></a>【４】座標系変換</p>
+  <blockquote> 
+    <p></p>
+    <p>「設定」ボタンを押すと<a href="Dlg_AxisChgCfg.html">座標系変換手法選択ダイアログ</a>が表示されます。</p>
+    <p>「座標変換を有効にする」チェックボックスのチェックを付けると上記で設定した座標系に変換されます。チェックをはずすとカメラから見た視点での座標系となります。</p>
+    <p>詳細は<a href="MotionCap_AxisChg.html">座標系変換</a>を参照してください。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_CONFIG_5"></a>【５】キャプチャ開始</p>
+  <blockquote> 
+    <p></p>
+    <p>「REC」ボタンを押すとキャプチャを開始します。</p>
+    <p>　</p>
+  </blockquote>
+</blockquote>
+<p></p>
+    
+<blockquote> 
+  <p><a name="FORM_CONFIG_6"></a>【６】キャプチャ中止</p>
+  <blockquote> 
+    <p></p>
+    <p>キャプチャ中の時に「STOP」ボタンを押すとキャプチャを中止します。</p>
+  </blockquote>
+</blockquote>
+<p>　</p>
+<blockquote> 
+  <p><a name="FORM_CONFIG_7"></a>【７】再生</p>
+  <blockquote> 
+    <p></p>
+    <p>直前にキャプチャした内容を再生します。詳細は<a href="Replay.html">キャプチャしたモーションデータの再生</a>を参照してください。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_CONFIG_8"></a>【８】トラッキング設定</p>
+  <blockquote> 
+    <p><font color="#009933">「マーカを追跡する」チェックボックスを<u>チェック</u></font></p>
+    <blockquote>
+      <p>キャプチャ時にマーカのトラッキング（追跡）を行います。マーカ設置部位（手、肘、肩…etc.）を識別してキャプチャを行いたい場合にはトラッキングが必要です。ただし、マーカが隠れたり、重なったりした場合にはキャプチャは中止されます。</p>
+    </blockquote>
+    <p><font color="#009933">「マーカを追跡する」チェックボックスを<u>チェックしない</u></font></p>
+    <blockquote> 
+      <p>キャプチャ時にマーカのトラッキングを行いません。マーカ設置部位を識別せずにキャプチャしますので<u>マーカ№（ＩＤ）はカメラの都合で入れ替わることがあります</u>。ただし、マーカが隠れたり、重なったりした場合でもキャプチャは中止されません。<br>
+        後で、設置部位の認識処理を行う場合に適しています。 </p>
+    </blockquote>
+    <p>　</p>
+  </blockquote>
+</blockquote>
+<p><a name="FORM_3DMONITOR"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　３Ｄモニターフォーム</font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <p>　</p>
+  <p><font color="#FF3366"><img src="IMG/Form3DMoni.gif" width="598" height="231" usemap="#Map3Map" border="0"><map name="Map3Map"><area shape="rect" coords="431,7,452,28" href="#FORM_3DMONITOR_4"><area shape="rect" coords="239,7,260,28" href="#FORM_3DMONITOR_3"><area shape="rect" coords="46,8,68,29" href="#FORM_3DMONITOR_2"><area shape="rect" coords="2,46,24,67" href="#FORM_3DMONITOR_1"></map></font></p>
+  <p>３次元化されたマーカの位置をリアタイムに表示しています。</p>
+  <p>マーカの表示形態は、カメラが認識した順番に下記の色および形状を採用します。</p>
+  <p> <img src="IMG/MarkerColor.gif" width="572" height="53"></p>
+  <p>白い十字は原点（0,0,0）を表します。</p>
+  <p>　</p>
+  <p><a name="FORM_3DMONITOR_1"></a>【１】３Ｄ表示設定</p>
+  <blockquote> 
+    <p><a href="Dlg_3DViewCfg.html">３Ｄ表示設定ダイアログ</a>を表示します。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_3DMONITOR_2"></a>【２】ＸＺ平面表示</p>
+  <blockquote> 
+    <p>ＸＺ座標系のみの表示を行います。上または下から見たイメージです。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_3DMONITOR_3"></a>【３】ＸＹ平面表示</p>
+  <blockquote> 
+    <p>ＸＹ座標系のみの表示を行います。前からまたは後ろから見たイメージです。</p>
+  </blockquote>
+  <p>　</p>
+  <p><a name="FORM_3DMONITOR_4"></a>【４】ＺＹ平面表示</p>
+  <blockquote> 
+    <p>ＺＹ座標系のみの表示を行います。左または右から見たイメージです。</p>
+    <p>　</p>
+  </blockquote>
+  </blockquote>
+<p><a name="FORM_INFO"></a></p>
+<table width="100%" border="0" bgcolor="#add8e6" bordercolor="#add8e6">
+  <tr bgcolor="#add8e6"> 
+    <td height="13" width="82%"> 
+      <div align="left"><font color="#000000">　インフォメーションフォーム </font></div>
+    </td>
+    <td height="13" width="18%"> 
+      <div align="right"><a href="#PAGE_TOP"><img src="IMG/ButToPtop.gif" width="94" height="22" border="0"></a></div>
+    </td>
+  </tr>
+</table>
+<blockquote> 
+  <p><img src="IMG/FormInfo.gif" width="585" height="201" usemap="#Map4" border="0"><map name="Map4"><area shape="rect" coords="81,4,105,26" href="#FORM_INFO_1"><area shape="rect" coords="80,32,103,54" href="#FORM_INFO_2"><area shape="rect" coords="248,5,270,28" href="#FORM_INFO_3"><area shape="rect" coords="449,5,472,27" href="#FORM_INFO_4"></map></p>
+  <p>現在の状況を文字で知らせます。</p>
+  <p>　</p>
+  <p><a name="FORM_INFO_1"></a>【１】フレーム／秒</p>
+  <blockquote> 
+    <p>秒間のフレーム数を表示します。<br>
+      ３０未満の状態が続く場合は、他に起動しているアプリケーションの負荷が大きすぎる可能性があります。該当するアプリケーションを終了してください。</p>
+    <p>　</p>
+  </blockquote>
+  <p><a name="FORM_INFO_2"></a>【２】マーカ数</p>
+  <blockquote> 
+    <p>現在認識しているマーカの個数を表示します。 </p>
+  </blockquote>
+  <p>　</p>
+  <p><a name="FORM_INFO_3"></a>【３】座標値</p>
+  <blockquote> 
+    <p>現在認識しているマーカの座標値を表示します。 <br>
+      マーカIDと対応するXYZ座標値をマーカの個数分だけ表示します。 </p>
+    <p>単位はmm（ミリメートル）です。</p>
+  </blockquote>
+  <p><a name="FORM_INFO_4"></a>【４】キャプチャログ</p>
+  <blockquote> 
+    <p>モーションキャプチャのログを表示します。 <br>
+      実行した時刻（時分秒）と実行した内容、エラーメッセージ、保存したファイルのパスなどを表示します。 </p>
+  </blockquote>
+  <p>　</p>
+</blockquote>
+<p>　</p>
+<table width="100%" border="0" bgcolor="#003366" bordercolor="#003366">
+  <tr bgcolor="#003366"> 
+    <td height="13" width="40%"> 
+      <div align="left"><font color="#FFFFFF"><a href="index.html"><img src="IMG/ButToIdx.gif" width="82" height="22" border="0"></a> 
+        </font></div>
+    </td>
+    <td height="13" width="60%"> 
+      <div align="right"><font color="#FFFFFF" size="-1">Copyright (C) 2001 CyVerse 
+        Corp. </font></div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

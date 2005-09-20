@@ -1,0 +1,82 @@
+; INF file for SlcDrv.sys
+; Portions Copyright (c) 1996-2000, BlueWater Systems, Inc.
+
+[Version]
+Signature="$Windows NT$"
+Class=USB
+ClassGUID={5CEB35B3-5073-4694-ADC9-6544C7A2D815}
+Provider=%SlcDrv.Provider%
+      
+[Manufacturer]
+%SlcDrv.Manufacturer%=SlcDrv
+      
+[ClassInstall32]
+AddReg=SlcDrv.AddClassReg
+
+[SlcDrv]
+%SlcDrv.DeviceDesc%=SlcDrv.INSTALL, USB\VID_0CEC&PID_0101
+
+; TODO:  Add an optional Tag File to ensure that the end user
+;        has specified the correct path to the diskette, CD-ROM,
+;        or network drive.  See the INF File Reference in the
+;        DDK documentation for more information on SourceDisksNames
+;        sections.
+[SourceDisksNames]
+1=%SlcDrv.DriverDiskName%,"",1
+
+[SourceDisksFiles]
+SlcDrv.sys=1
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+      
+[DestinationDirs]
+SlcDrv.CopyFiles = 10,system32\drivers ; WINDOWS\SYSTEM32\DRIVERS
+      
+[SlcDrv.INSTALL]
+CopyFiles=SlcDrv.CopyFiles
+AddReg=SlcDrv.AddRegLoader
+      
+[SlcDrv.AddClassReg]
+HKR,,,,%SlcDrv.ClassName%
+
+[SlcDrv.AddRegLoader]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,SlcDrv.sys
+
+[SlcDrv.INSTALL.NT]
+CopyFiles=SlcDrv.CopyFiles
+
+[SlcDrv.INSTALL.NT.Services]
+AddService = SlcDrv,0x00000002,SlcDrv_Service_Inst
+
+[SlcDrv_Service_Inst]
+ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
+StartType       = 3 ;%SERVICE_AUTO_START%
+ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
+ServiceBinary   = %12%\SlcDrv.sys
+DisplayName     = %SlcDrv.DeviceDesc%
+
+      
+[SlcDrv.CopyFiles]
+SlcDrv.sys
+
+
+;---------------------------------------------------------------;
+      
+[Strings]
+; TODO:  Replace the following string with the name of the driver
+;        provider.
+SlcDrv.Provider="CyVerse Corp."
+; TODO:  Replace the following string with the name of the driver
+;        or hardware manufacturer.  
+SlcDrv.Manufacturer="CyVerse Corp."
+; TODO:  Replace the following with an appropriate description
+;        of this actual device.
+SlcDrv.DeviceDesc="Stereo Labeling Camera"
+; TODO:  Replace the following with an appropriate class name
+;        for this class of device.  
+SlcDrv.ClassName="USB(Universal Serial Bus)ÉRÉìÉgÉçÅ[Éâ"
+; TODO:  If not installing from a diskette, change the following string
+;        to indicate the source location.
+SlcDrv.DriverDiskName="SlcDrv Installation Diskette" 

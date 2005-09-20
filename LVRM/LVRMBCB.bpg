@@ -1,0 +1,37 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = BaseBCB.lib DeviceBCB.lib HapticBCB.lib RenderBCB.lib WinBasisBCB.lib
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+DeviceBCB.lib: Device\DeviceBCB.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+HapticBCB.lib: HIS\HISBCB.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+RenderBCB.lib: Render\RenderBCB.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+BaseBCB.lib: Base\BaseBCB.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+WinBasisBCB.lib: WinBasis\WinBasisBCB.bpr
+  $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+

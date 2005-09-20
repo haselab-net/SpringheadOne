@@ -1,0 +1,98 @@
+
+                      ****************************
+                      *                          *
+                      *          QUADPR          *
+                      *                          *
+                      ****************************
+
+
+0.  DISCLAIMER
+
+This package of routines has been made available by the Division of
+Information Technology (DoIT) at the University of Wisconsin - Madison.
+The routines are being distributed on an "as they are" basis.
+No upgrades are planned.  The routines have been successfully compiled
+with MicroSoft Fortran Version 5.1 and tested in the MS-DOS environment
+on a wide variety of problems.  Nevertheless, you must use them at your
+risk because DoIT cannot accept any responsibility for errors in these
+routines.
+
+
+1.  INTRODUCTION
+
+QUADPR is a Fortran-callable subroutine for solving small to medium
+sized quadratic programming problems where the objective function is
+quadratic and the constraints are linear.  The objective function must 
+also be convex for minimization problems or concave for maximization 
+problems.   
+
+QUADPR was developed at DoIT at the University of Wisconsin - Madison.
+It uses the principal pivoting method.
+
+
+2.  SUMMARY OF ROUTINES
+
+This package contains the routine QUADPR and all necessary
+second level routines that are called by QUADPR.
+
+
+3.  CONTENTS OF PACKAGE
+
+This package contains the source code for QUADPR.
+
+The files are named as follows:
+
+  README.1st  - - - - - -  This File
+  QUADPR.use  - - - - - -  Text file describing QUADPR Calling Sequence
+       *.f    - - - - - -  Fortran Source Code Files
+
+
+QUADPR                                                            Page 2
+________________________________________________________________________
+
+
+4.  PORTABILITY
+
+The routines in this package are coded in standard Fortran 77.
+However, a few unavoidable system dependencies in some of the routines
+may have to be changed before the package can be properly installed on
+some systems.
+
+Logical Unit Numbers:
+
+It is assumed that the logical unit number for standard output is 6
+and that logical unit number 92 is suitable for assigning to a file.
+The logical unit numbers used by QUADPR for standard output
+and a possibly referenced file are stored in the variables
+LUPRNT and LUFILE in the routine QUADPR.  The values are set in
+line #117 of QUADPR.FOR with the statement
+
+      DATA LUPRNT, LUFILE / 6, 92 /
+
+If necessary, change this statement to set new logical unit numbers
+for standard output or for assigning to a file and re-compile.
+
+
+5.  USING QUADPR
+
+To use QUADPR, you need a Fortran comipler and linker.
+
+
+Step 1:  Writing a Program that Calls QUADPR.
+
+Compose a Fortran program that calls QUADPR.
+
+Step 2:  Compiling Your Program
+
+Compile your source file(s) with the Fortran compiler.
+
+Step 3:  Linking Your Program
+
+Your object files must be linked with the QUADPR files (or object
+library file if you created one) and the Fortran library.
+
+
+6.  CALLING SEQUENCE INSTRUCTIONS
+
+See the file named QUADPR.use included in this package.
+

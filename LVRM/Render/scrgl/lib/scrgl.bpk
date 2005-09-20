@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="scrgl.bpl"/>
+    <OBJFILES value="scrgl.obj"/>
+    <RESFILES value="scrgl.res ScrGL.dcr"/>
+    <IDLFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib vcl.lib vclx.lib"/>
+    <PACKAGES value="rtl.bpi vcl.bpi vclx.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="scrgl.cpp"/>
+    <INCLUDEPATH value="$(BCB)\projects;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\projects;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par -w-8027 -w-8026"/>
+    <WARNOPTSTR value=""/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-Od -H=c:\PROGRA~1\borland\CBUILD~1\lib\vcl60.csm -Hc -Vx -Ve -Tkh30000 
+      -X- -r- -a8 -b- -k -y -v -vi- -c -tWM"/>
+    <PFLAGS value="-$YD -$W -$O- -$A8 -v -M -JPHNE"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-D&quot;OpenGL component for ScrPlus&quot; -aa -Tpp -x -Gn -Gl -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="scrgl.cpp" FORMNAME="" UNITNAME="scrgl" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="scrgl.res" FORMNAME="" UNITNAME="scrgl" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ScrGL.dcr" FORMNAME="" UNITNAME="ScrGL" CONTAINERID="DcrTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=5
+Item0=$(BCB)\projects;$(BCB)\include;$(BCB)\include\vcl
+Item1=.;$(BCB)\projects;$(BCB)\include;$(BCB)\include\vcl
+Item2=.;$(BCB)\projects;$(BCB)\include;$(BCB)\include\vcl;d:\timer\lib
+Item3=$(BCB)\projects;$(BCB)\include;$(BCB)\include\vcl;d:\timer\lib
+Item4=$(BCB)\projects;$(BCB)\include;$(BCB)\include\vcl;d:\timer\source
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=$(BCB)\projects;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\lib;$(BCB)\projects;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\..\scrb13\lib;$(BCB)\projects;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=2
+Item0=USEPACKAGES
+Item1=_RTLDLL;USEPACKAGES
+
+[HistoryLists\hlFinalOutputDir]
+Count=2
+Item0=.Item1=.[HistoryLists\hIBPIOutputDir]
+Item1=
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=.[Debugging]
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=1
+LinkCGLIB=0
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

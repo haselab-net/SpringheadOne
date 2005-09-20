@@ -1,0 +1,9 @@
+floor {
+	mass 1.#INF
+}
+cube1 {
+	angularMomentum (0 0 0)
+	mass 1
+	inertia ((0.6666 0 0) (0 0.6666 0) (0 0 0.6666))
+	center (0 0 0)
+}

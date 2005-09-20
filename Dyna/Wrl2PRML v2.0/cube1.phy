@@ -1,0 +1,8 @@
+floor {
+	mass 1.#INF
+	
+}
+cube1 {
+	momentum (3.0 10.0 0.0)
+#	angularMomentum (0.0 0.0 3.0)
+}

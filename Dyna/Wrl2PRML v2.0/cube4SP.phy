@@ -1,0 +1,7 @@
+floor {
+	mass 1.#INF
+	
+}
+spidar {
+	mass 0.4
+}

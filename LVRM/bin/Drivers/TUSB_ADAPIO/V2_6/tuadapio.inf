@@ -1,0 +1,108 @@
+[Version]
+Signature="$Windows NT$"
+Class = TURTLE
+ClassGuid={11673685-92D1-4982-BC9F-F65B93D7EF09}
+Provider=%TURTLE%
+DriverVer=4/2/2003,2.5.0
+
+[ClassInstall32]
+AddReg=TurtleAddReg
+CopyFiles=TurtleclassCopyFiles
+
+[TurtleAddReg]
+HKR,,,,"Turtle TUSB Series"
+
+[TurtleclassCopyFiles]
+
+[SourceDisksNames]
+1="TUSB Installation Disk",,0
+
+[SourceDisksFiles]
+windrvr.sys = 1
+TUADAPIO.inf = 1
+TUADAPIO.dll = 1
+wd_virtual.inf = 1
+
+[Manufacturer]
+%TUADAPIO.Manufacture%=TUADAPIO
+
+[TUADAPIO]
+; The Vendor ID is 0ba0, and the Product ID is 0001
+TUADAPIO=TUADAPIO.Dev, USB\VID_0ba0&PID_0001
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+[DestinationDirs]
+TUADAPIO.Files.Ext = 10,System32\Drivers
+TUADAPIO.Files.Inf = 10,INF
+TUADAPIO.Files.Inf.NT = 10,INF
+TUADAPIO.Files.Dll = 10,SYSTEM
+
+[TUADAPIO.Dev]
+CopyFiles=TUADAPIO.Files.Ext, TUADAPIO.Files.Inf, TUADAPIO.Files.Dll
+AddReg=TUADAPIO.AddReg
+Reboot
+
+[TUADAPIO.Dev.NT]
+CopyFiles=TUADAPIO.Files.Ext, TUADAPIO.Files.Inf.NT, TUADAPIO.Files.Dll
+AddReg=TUADAPIO.AddReg.NT
+Reboot
+
+[TUADAPIO.Dev.NT.Services]
+Addservice=WinDriver, 0x00000002, TUADAPIO.AddService
+
+[TUADAPIO.AddService]
+DisplayName    = %TUADAPIO.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; 
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\windrvr.sys
+
+[TUADAPIO.AddReg]
+HKR,,,,Jungo
+HKR,,Icon,,-5
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,windrvr.sys
+HKLM,%subkey1%,Start,1,02,00,00,00
+HKLM,%subkey1%,Type,1,01,00,00,00
+HKLM,%subkey1%,ErrorControl,1,01,00,00,00
+HKLM,%subkey1%,ImagePath,0x20000,"\SystemRoot\System32\drivers\windrvr.sys"
+HKLM,%subkey1%,DisplayName,,"WinDriver"
+
+[TUADAPIO.AddReg.NT]
+HKR,,,,Jungo
+HKR,,Icon,,-5
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,windrvr.sys
+HKLM,%subkey1%,,, 
+HKLM,%subkey1%,"Start",0x10001,0x02 ;2= on boot, 3= on demand 
+HKLM,%subkey1%,"Type",0x10001,0x01 
+HKLM,%subkey1%,"ErrorControl",0x10001,0x01 
+HKLM,%subkey1%,"ImagePath",0x20000,"\SystemRoot\System32\drivers\windrvr.sys" 
+HKLM,%subkey1%,"DisplayName",,WinDriver 
+
+
+[TUADAPIO.Files.Ext]
+;Remove the remarks for installation on a target computer
+windrvr.sys,,,0x40  ; 0x40 == COPYFLG_OVERWRITE_OLDER_ONLY
+
+[TUADAPIO.Files.Inf]
+;TUADAPIO.Inf,,,0x40  ; 0x40 == COPYFLG_OVERWRITE_OLDER_ONLY
+wd_virtu.inf,,,0x40  ; 0x40 == COPYFLG_OVERWRITE_OLDER_ONLY
+
+[TUADAPIO.Files.Inf.NT]
+;TUADAPIO.Inf,,,0x40  ; 0x40 == COPYFLG_OVERWRITE_OLDER_ONLY
+wd_virtual.inf,,,0x40  ; 0x40 == COPYFLG_OVERWRITE_OLDER_ONLY
+
+[TUADAPIO.Files.Dll]
+TUADAPIO.Dll,,,0x40  ; 0x40 == COPYFLG_OVERWRITE_OLDER_ONLY
+
+;---------------------------------------------------------------;
+
+[Strings]
+TURTLE="TURTLE"
+TUADAPIO.Manufacture="Turtle Industry Co.,Ltd."
+TUADAPIO.SvcDesc="windrvr.Sys WinDriver USB client V3"
+subkey1="System\CurrentControlSet\Services\WinDriver"
+

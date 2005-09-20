@@ -1,0 +1,197 @@
+# ---------------------------------------------------------------------------
+!if !$d(BCB)
+BCB = $(MAKEDIR)\..
+!endif
+
+# ---------------------------------------------------------------------------
+# IDE SECTION
+# ---------------------------------------------------------------------------
+# The following section of the project makefile is managed by the BCB IDE.
+# It is recommended to use the IDE to change any of the values in this
+# section.
+# ---------------------------------------------------------------------------
+
+VERSION = BCB.04.04
+# ---------------------------------------------------------------------------
+PROJECT = PixelFormats.exe
+OBJFILES = PixelFormats.obj fmain.obj
+RESFILES = PixelFormats.res
+DEFFILE =
+RESDEPEN = $(RESFILES) fmain.dfm
+LIBFILES =
+LIBRARIES = 
+SPARELIBS = vcl40.lib
+PACKAGES = vclx40.bpi vcl40.bpi
+# ---------------------------------------------------------------------------
+PATHCPP = .;
+PATHASM = .;
+PATHPAS = .;
+PATHRC = .;
+DEBUGLIBPATH = $(BCB)\lib\debug
+RELEASELIBPATH = $(BCB)\lib\release
+SYSDEFINES = NO_STRICT;USEPACKAGES
+USERDEFINES =
+# ---------------------------------------------------------------------------
+CFLAG1 = -I..\..\..\scrb3\lib;$(BCB)\include;$(BCB)\include\vcl -Od -Hc \
+  -H=$(BCB)\lib\vcl40.csm -w -Ve -Tkh30000 -r- -a8 -k -y -v -vi- \
+  -D$(SYSDEFINES);$(USERDEFINES) -c -b- -w-par -w-inl -Vx -tW -tWM
+CFLAG2 =
+CFLAG3 =
+PFLAGS = -U..\..\..\scrb3\lib;$(BCB)\lib\obj;$(BCB)\lib;$(RELEASELIBPATH) \
+  -I..\..\..\scrb3\lib;$(BCB)\include;$(BCB)\include\vcl -$YD -$W -$O- -v -M -JPHNE
+RFLAGS = -i..\..\..\scrb3\lib;$(BCB)\include;$(BCB)\include\vcl
+AFLAGS = /i..\..\..\scrb3\lib /i$(BCB)\include /i$(BCB)\include\vcl /mx /w2 /zd \
+  /dUSEPACKAGES
+LFLAGS = -L..\..\..\scrb3\lib;$(BCB)\lib\obj;$(BCB)\lib;$(RELEASELIBPATH) -aa -Tpe -x \
+  -Gn -v
+IFLAGS =
+# ---------------------------------------------------------------------------
+ALLOBJ = c0w32.obj $(PACKAGES) sysinit.obj $(OBJFILES)
+ALLRES = $(RESFILES)
+ALLLIB = $(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib
+# ---------------------------------------------------------------------------
+!ifdef IDEOPTIONS
+
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[Excluded Packages]
+C:\Comp\SCRB3\Lib\ScrGL.bpl=OpenGL component for ScrPlus
+C:\Comp\SCRB3\Lib\scrb3.bpl=ScrPlus3 runtime -- screen saver creation
+C:\Comp\SCRB3\Lib\D_scrb3.bpl=ScrPlus3 design-time -- screen saver creation
+C:\Program Files\Borland\CBuilder3\Bin\jpegpkg.bpl=Borland JPEG Component
+C:\Comp\ttrayicon\lib\Howetray.bpl=Howe TTrayIcon Demo Package
+C:\Comp\SCRB3\Lib\bs_cm.bpl=ColorMemo components
+
+[HistoryLists\hlIncludePath]
+Count=2
+Item0=..\..\..\scrb3\lib;$(BCB)\include;$(BCB)\include\vcl
+Item1=c:\comp\scrb3\lib;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=2
+Item0=..\..\..\scrb3\lib;$(BCB)\lib\obj;$(BCB)\lib
+Item1=c:\comp\scrb3\lib;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_RTLDLL;USEPACKAGES
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+InMemoryExe=0
+ShowInfoMsgs=0
+
+!endif
+
+# ---------------------------------------------------------------------------
+# MAKE SECTION
+# ---------------------------------------------------------------------------
+# This section of the project file is not used by the BCB IDE.  It is for
+# the benefit of building from the command-line using the MAKE utility.
+# ---------------------------------------------------------------------------
+
+.autodepend
+# ---------------------------------------------------------------------------
+!if !$d(BCC32)
+BCC32 = bcc32
+!endif
+
+!if !$d(DCC32)
+DCC32 = dcc32
+!endif
+
+!if !$d(TASM32)
+TASM32 = tasm32
+!endif
+
+!if !$d(LINKER)
+LINKER = ilink32
+!endif
+
+!if !$d(BRCC32)
+BRCC32 = brcc32
+!endif
+# ---------------------------------------------------------------------------
+!if $d(PATHCPP)
+.PATH.CPP = $(PATHCPP)
+.PATH.C   = $(PATHCPP)
+!endif
+
+!if $d(PATHPAS)
+.PATH.PAS = $(PATHPAS)
+!endif
+
+!if $d(PATHASM)
+.PATH.ASM = $(PATHASM)
+!endif
+
+!if $d(PATHRC)
+.PATH.RC  = $(PATHRC)
+!endif
+# ---------------------------------------------------------------------------
+$(PROJECT): $(OBJFILES) $(RESDEPEN) $(DEFFILE)
+    $(BCB)\BIN\$(LINKER) @&&!
+    $(LFLAGS) +
+    $(ALLOBJ), +
+    $(PROJECT),, +
+    $(ALLLIB), +
+    $(DEFFILE), +
+    $(ALLRES)
+!
+# ---------------------------------------------------------------------------
+.pas.hpp:
+    $(BCB)\BIN\$(DCC32) $(PFLAGS) {$< }
+
+.pas.obj:
+    $(BCB)\BIN\$(DCC32) $(PFLAGS) {$< }
+
+.cpp.obj:
+    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(CFLAG2) $(CFLAG3) -n$(@D) {$< }
+
+.c.obj:
+    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(CFLAG2) $(CFLAG3) -n$(@D) {$< }
+
+.asm.obj:
+    $(BCB)\BIN\$(TASM32) $(AFLAGS) $<, $@
+
+.rc.res:
+    $(BCB)\BIN\$(BRCC32) $(RFLAGS) -fo$@ $<
+# ---------------------------------------------------------------------------

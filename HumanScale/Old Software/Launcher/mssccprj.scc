@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[Launcher.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/HumanScale/Old Software/Launcher", IJLAAAAA

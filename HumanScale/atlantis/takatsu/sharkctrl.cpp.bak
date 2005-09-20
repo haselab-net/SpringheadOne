@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <GL/glut.h>
+#include "atlantis.h"
+
+//Žè‚ÌˆÊ’u
+static float te_x=1000.0;
+static float te_y=0.0;
+static float te_z=0.0;
+
+//float ttheta;
+
+int FindShark(void){
+	int i,lmin;
+	float r,rmin;
+	rmin=10000000000.;
+	for(i=0;i<NUM_SHARKS;i++){
+		r=sqrt((te_x-sharks[i].x)*(te_x-sharks[i].x)+(te_y-sharks[i].y)*(te_y-sharks[i].y)
+			+(te_z-sharks[i].z)*(te_z-sharks[i].z));
+		if(r<rmin){
+			rmin=r;
+			lmin=i;
+		}
+	}
+	printf("%f,%f,%f\n",sharks[lmin].x,sharks[lmin].y,sharks[lmin].z);
+	printf("%f\n",r);
+	printf("%d\n",lmin);
+	return lmin;
+}
+
+void MoveShark(fishRec * fish){
+	float X,Y,Z,r,ttheta;
+
+	X=te_x-fish->x;
+	Y=te_y-fish->y;
+	Z=te_z-fish->z;
+	r=sqrt(X*X+Y*Y+Z*Z);
+
+//	if(abs(fish->x)>abs(te_x)+3000.0||abs(fish->y)>abs(te_y)+3000.0||abs(fish->z)>abs(te_z)+3000.0){
+	ttheta=fish->theta;	
+//	fish->theta = RAD * atan(Z/(sqrt(X*X+Y*Y)));
+	fish->theta=RAD*atan2(Z,sqrt(X*X+Y*Y));
+	fish->dtheta=fish->theta-ttheta;
+//	if()
+//		fish->theta=ttheta;
+	fish->dtheta = 0.0;
+	fish->psi = RAD * atan2(Y,X);
+	fish->phi = 0.0;
+	if(abs(fish->x)>abs(te_x)+6000.0||abs(fish->y)>abs(te_y)+6000.0||abs(fish->z)>abs(te_z)+6000.0){
+//	if(abs(fish->x)>abs(te_x)+3000.0)
+		fish->x += SHARKSPEED * fish->v *5* cos(fish->psi / RAD) * cos(fish->theta / RAD);
+//	if(abs(fish->y)>abs(te_y)+3000.0)
+		fish->y += SHARKSPEED * fish->v *5* sin(fish->psi / RAD) * cos(fish->theta / RAD);
+//	if(abs(fish->z)>abs(te_z)+1500.0)
+		fish->z += SHARKSPEED * fish->v *5* sin(fish->theta / RAD);
+
+	}
+/*	else{
+		fish->theta=0.0;
+		fish->dtheta=0.0;
+		fish->psi=0.0;
+		fish->phi=0.0;
+	}
+*/
+}
+
+void SharkMiss2(int i)
+{
+    int j;
+    float avoid, thetal;
+    float X, Y, Z, R;
+
+    for (j = 0; j < NUM_SHARKS; j++) {
+        if (j != i) {
+            X = sharks[j].x - sharks[i].x;
+            Y = sharks[j].y - sharks[i].y;
+            Z = sharks[j].z - sharks[i].z;
+
+            R = sqrt(X * X + Y * Y + Z * Z);
+
+            avoid = 1.0;
+            thetal = sharks[i].theta;
+
+            if (R < SHARKSIZE+6000.0) {
+                if (Z > 0.0) {
+                    sharks[i].theta -= avoid;
+                } else {
+                    sharks[i].theta += avoid;
+                }
+            }
+            sharks[i].dtheta += (sharks[i].theta - thetal);
+        }
+    }
+}

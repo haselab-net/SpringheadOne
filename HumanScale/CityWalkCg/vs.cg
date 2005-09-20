@@ -1,0 +1,20 @@
+// Cg language source code (Vertex Shader)
+
+void Cg_vs(float4 Position : POSITION,
+			float2 texCoord : TEXCOORD0,
+			float4 iColor : COLOR,
+			        out float2 otexCoord : TEXCOORD0,
+					out float4 oPosition : POSITION,
+					out float4 oColor : COLOR,
+			uniform float4x4 localMatrix,//各ノードがもつ姿勢の行列
+			uniform float4x4 modelViewProj
+					)
+{
+	//まずノードがもつ姿勢行列をかけてからmodelviewprojをかける
+	//TGeoNodeのソースコードを参照してください
+	oPosition = mul(localMatrix, Position);
+	oPosition = mul(modelViewProj, oPosition);	
+
+	oColor = iColor;
+	otexCoord = texCoord;
+}

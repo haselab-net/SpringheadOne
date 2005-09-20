@@ -1,0 +1,18 @@
+#VRML V2.0 utf8
+
+DEF Field Transform {
+	translation 0 -100 0
+	scale 1 1 1
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "field2.jpg"
+				}
+			}
+			geometry Box {size 105 0 68}
+		}
+	]
+}
+

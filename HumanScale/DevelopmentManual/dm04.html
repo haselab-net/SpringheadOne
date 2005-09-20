@@ -1,0 +1,189 @@
+<!doctype html public "-//w3c//dtd html 4.01//en" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+	<title>Development Manual</title>
+	<link rel="stylesheet" type="text/css" href="manual.css">
+	<link rel="next" href="dm05.html">
+	<link rel="prev" href="dm03.html">
+	<link rel="start" href="dm01.html">
+	<link rel="contents" href="manual.html">
+</head>
+<body>
+<div class="background">
+<h1>ソースファイルの書き換え</h1>
+	<h2>■&nbsp;&nbsp;必要なファイルの組み込み</h2>
+		<p>設定ファイルは、自分の作ったプログラムが存在するディレクトリの中に置き、communication.h, communication.cppは、自分の作ったプログラムのプロジェクトファイルに組み込んで下さい。</p>
+	<h2>■&nbsp;&nbsp;ソースファイルの書き換え</h2>
+	<p>サンプルファイルを参照しながら、以下に示すクラスや、関数を自分のプログラムに書き加えてください。</p>
+	<h3>□&nbsp;&nbsp;LoadSettings関数(GLView.cpp)</h3>
+		<p>設定ファイルを読み込む部分です。</p>
+		<div class="source">
+		<pre>bool TGLView::LoadSettings(){
+	char* cname = getenv("COMPUTERNAME");
+	char* p = cname;
+	while(*p &amp;&amp; !isdigit(*p)) p++;
+	int cpNum = -1;
+	if (strlen(p)) cpNum = atoi(p);
+	if (cpNum == -1) return false;
+	std::map&lt;int,int&gt; cpProj;
+
+	cpProj[0]=0;
+	cpProj[1]=1;
+	cpProj[2]=2;
+	cpProj[3]=3;
+	cpProj[4]=0;
+	cpProj[5]=1;
+	cpProj[6]=2;
+	cpProj[7]=3;
+
+	cpProj[11]=8;
+	cpProj[20]=9;
+	cpProj[21]=10;
+	cpProj[15]=11;
+	cpProj[10]=12;
+	cpProj[14]=13;
+	cpProj[13]=14;
+	cpProj[17]=15;
+	
+	cpProj[12]=16;
+	cpProj[30]=17;
+	cpProj[31]=18;
+	cpProj[16]=19;
+	cpProj[22]=9;
+	cpProj[23]=10;
+	cpProj[32]=17;
+	cpProj[33]=18;
+
+	int projNum = cpProj[cpNum];
+	char filename[1024];
+	ostrstream ostrfn(filename, sizeof(filename));
+	ostrfn &lt;&lt; "sf" &lt;&lt; projNum &lt;&lt; '\0';
+
+	FILE *fp;
+	int number;
+	int set = 0;
+	char ch[128];
+
+	if((fp = fopen(filename, "r")) == NULL){
+		cout &lt;&lt; "Can not read or find file sf1"
+		&lt;&lt; endl;
+		return false;
+	}
+	fgets(ch,sizeof(ch),fp);
+	std::istrstream cStrStrm(ch, sizeof(ch));
+
+	cStrStrm &gt;&gt; number
+	&gt;&gt; setting[0] &gt;&gt; setting[1]
+	&gt;&gt; setting[2] &gt;&gt; setting[3]
+	&gt;&gt; setting[4] &gt;&gt; setting[5]
+	&gt;&gt; setting[6];
+   	fclose(fp);
+   	return true;
+}</pre>
+</div>
+	<h3>□&nbsp;&nbsp;CmdEyeクラス(GLView.cpp)</h3>
+	<p>視点のAffine行列を、コマンドとして送信できるようにしたり、コマンドとして受け取った視点を、Affine行列に変換します。</p>
+		<div class="source">
+		<pre>class CmdEye:public Command{
+	public:
+		TGLView* view;
+		CmdEye(TGLView* v):view(v),Command(&amp;(v-&gt;cmdSocket)){}
+		int Id()const{ return 1; }
+		int Receive(char* data){
+			Affinef&amp; af = *(Affinef*)data;
+			view-&gt;afBody = af;
+			view-&gt;Invalidate();
+			return sizeof(af);
+		}
+		void Send(){
+			SendId();
+			SendData(&amp;view-&gt;afBody, sizeof(view-&gt;afBody));
+			cmdSocket-&gt;Flush();
+		}
+	};</pre></div>
+	<h3>□&nbsp;&nbsp;TGLViewのコンストラクタ(GLView.cpp)</h3>
+	<p>カメラパラメータの設定と、視点コマンドをSocketに登録します。</p>
+	<div class="source">
+	<pre>TGLView::TGLView(){
+	radius = 0.5f;
+	afBody = Affinef(0, 0, 10);
+	afBody.LookAtGL(Vec3f(0, 0, 0), Vec3f(0,1,0));
+	if (LoadSettings()) SetParam();
+	cmdSocket.Register(new CmdEye(this));
+}</pre></div>
+	<h3>□&nbsp;&nbsp;SetParam関数</h3>
+	<p>視点の回転行列Rを設定します。</p>
+	<div class="source">
+	<pre>void TGLView::SetParam(){
+	double angleA,angleB,angleC;
+	angleB = asin(setting[1]);
+	angleA = asin(setting[0]/cos(angleB));
+	angleC = setting[5]/180 * M_PI;
+	Affinef Rzx,Rzy,Rxy;
+	Rzx.Ex() = Vec3f(cos(angleA),0,-sin(angleA));
+	Rzx.Ey() = Vec3f(0,1,0);
+	Rzx.Ez() = Vec3f(sin(angleA),0,cos(angleA));
+	Rzy.Ex() = Vec3f(1,0,0);
+	Rzy.Ey() = Vec3f(0,cos(angleB),-sin(angleB));
+	Rzy.Ez() = Vec3f(0,sin(angleB),cos(angleB));
+	Rxy.Ex() = Vec3f(cos(angleC),sin(angleC),0);
+	Rxy.Ey() = Vec3f(-sin(angleC),cos(angleC),0);
+	Rxy.Ez() = Vec3f(0,0,1);
+	R = Rzx*Rzy*Rxy;
+	fov_v = setting[3] * 2;
+}</pre></div>
+	<h3>□&nbsp;&nbsp;TGLViewクラス(GLView.h)</h3>
+	<p>初期設定や、操作に必要な関数が宣言されています。</p>
+	<div class="source">
+	<pre>class TGLView: public RDGlutView{
+	int mouseX, mouseY;
+	int spinX, spinY;
+	Button mouseButton;
+	double setting[6];
+	Affinef R;
+	double fov_v;
+
+	//	アバターの属性
+	Affinef afEye;				//	アバターから見た目の位置
+	Vec3f vel;					//	アバターの速度
+	Vec3f dvel;					//	アバターの速度の変化
+	
+public:
+	Affinef afBody;				//	アバターの位置\begin{abstract}\end{abstract}
+	float aspect_x,aspect_y;
+	Vec3f clearColor;			//	空の色
+	bool bSender;
+	CmdSocket cmdSocket;
+
+	TGLView();
+	void OnDraw();
+	void OnSize(int width, int height);
+	void OnKeyboard(int key, int x, int y);
+	void OnMouse(Button button, bool on, int x, int y);
+	void OnMouseMove(bool on, int x, int y);
+	void OnOpen();
+	bool OnTimer();
+	void Step();
+	void SetParam();
+	bool LoadSettings();
+};</pre></div>
+	<h3>□&nbsp;&nbsp;main関数</h3>
+	<p>引数の取り込み、初期設定(Window生成など)を行います。</p>
+	<div class="source">
+	<pre>int main(int argc, char *argv[]){
+	TGLView view;
+	view.Init("D-Vision");	//	GLの初期化を先にするひつようあり
+	view.bSender = argc &gt; 1;
+	view.Run();
+	return 0;
+}</pre></div>
+<hr>
+<p>
+	Next: <a href="dm05.html" rel="next">バッチファイルの作成</a>
+	Prev: <a href="dm03.html" rel="prev">必要なファイルの準備</a>
+	Up: <a href="manual.html" rel="contents">目次</a>
+</p>
+</div>
+</body>
+</html>

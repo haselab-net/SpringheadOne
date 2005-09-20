@@ -1,0 +1,91 @@
+%% bcb - the bcb installation directory
+%% dst - where to put the stuff
+%% title - title of the thing
+%% src - defined in here, for where to get the files from
+req(app,BCB root directory)
+req(dst,Scrgl directory)
+req(win,Windows directory)
+req(sys,Windows system directory)
+def(title,Scrgl - OpenGL components)
+def(src,c:\comp\scrb4)
+def(srcbcb,c:\program files\borland\cbuilder4)
+def(sugg,c:\scrgl)
+def(readme, <dst>\scrgl.txt)
+def(reqappname,"BCB4 directory:")
+def(reqappsugg,"C:\Program Files\Borland\CBuilder4")
+def(reqappsuggkey,"HKEY_LOCAL_MACHINE\Software\Borland\C++Builder\4.0\\RootDir")
+def(reqappsuggfile,"bin\bcb.exe")
+
+
+dir(<dst>)
+dir(<dst>\lib)
+dir(<dst>\Help)
+dir(<dst>\Examples)
+dir(<dst>\Examples\GLEnum)
+dir(<dst>\Examples\GLModes)
+dir(<dst>\Examples\GLPixelFormats)
+
+
+%% Readme and help
+file(<src>\scrgl.txt, <dst>\scrgl.txt)
+file(<src>\help\scrgl.html, <dst>\help\scrgl.html)
+
+
+%% add the components
+dir(<app>\lib)
+dir(<app>\bin)
+dir(<app>\include)
+file(<srcbcb>\projects\lib\scrgl.bpi,<app>\lib\scrgl.bpi)
+file(<srcbcb>\projects\lib\scrgl.lib,<app>\lib\scrgl.lib)
+file(<srcbcb>\projects\bpl\scrgl.bpl,<app>\bin\scrgl.bpl)
+file(<src>\lib\scrgl.h,<app>\include\scrgl.h)
+key(HKEY_CURRENT_USER\Software\Borland\C++Builder\4.0\Known Packages)
+val("HKEY_CURRENT_USER\Software\Borland\C++Builder\4.0\Known Packages\\$(BCB)\Bin\scrgl.bpl","OpenGL component for ScrPlus")
+
+
+%% other LIB components
+file(<src>\Lib\scrgl.bpk, <dst>\Lib\scrgl.bpk)
+file(<src>\Lib\scrgl.cpp, <dst>\Lib\scrgl.cpp)
+file(<src>\Lib\scrgl.dcr, <dst>\Lib\scrgl.dcr)
+file(<src>\Lib\scrgl.h, <dst>\Lib\scrgl.h)
+file(<src>\Lib\ScrGL.res, <dst>\Lib\ScrGL.res)
+file(<src>\Lib\scrgl.gen, <dst>\lib\scrgl.gen)
+
+
+
+file(<src>\Examples\GLEnum\GLEnum.bpr, <dst>\Examples\GLEnum\GLEnum.bpr)
+file(<src>\Examples\GLEnum\GLEnum.cpp, <dst>\Examples\GLEnum\GLEnum.cpp)
+file(<src>\Examples\GLEnum\GLEnum.res, <dst>\Examples\GLEnum\GLEnum.res)
+file(<src>\Examples\GLEnum\main.cpp, <dst>\Examples\GLEnum\main.cpp)
+file(<src>\Examples\GLEnum\main.dfm, <dst>\Examples\GLEnum\main.dfm)
+file(<src>\Examples\GLEnum\main.h, <dst>\Examples\GLEnum\main.h)
+file(<src>\Examples\GLEnum\prof.cpp, <dst>\Examples\GLEnum\prof.cpp)
+file(<src>\Examples\GLEnum\prof.dfm, <dst>\Examples\GLEnum\prof.dfm)
+file(<src>\Examples\GLEnum\prof.h, <dst>\Examples\GLEnum\prof.h)
+file(<src>\Examples\GLEnum\readme.txt, <dst>\Examples\GLEnum\readme.txt)
+file(<src>\Examples\GLEnum\results.txt, <dst>\Examples\GLEnum\results.txt)
+
+file(<src>\Examples\GLModes\main.cpp, <dst>\Examples\GLModes\main.cpp)
+file(<src>\Examples\GLModes\main.dfm, <dst>\Examples\GLModes\main.dfm)
+file(<src>\Examples\GLModes\main.h, <dst>\Examples\GLModes\main.h)
+file(<src>\Examples\GLModes\Modes.bpr, <dst>\Examples\GLModes\Modes.bpr)
+file(<src>\Examples\GLModes\Modes.cpp, <dst>\Examples\GLModes\Modes.cpp)
+file(<src>\Examples\GLModes\Modes.mps, <dst>\Examples\GLModes\Modes.mps)
+file(<src>\Examples\GLModes\Modes.res, <dst>\Examples\GLModes\Modes.res)
+
+file(<src>\Examples\GLPixelFormats\fmain.cpp, <dst>\Examples\GLPixelFormats\fmain.cpp)
+file(<src>\Examples\GLPixelFormats\fmain.dfm, <dst>\Examples\GLPixelFormats\fmain.dfm)
+file(<src>\Examples\GLPixelFormats\fmain.h, <dst>\Examples\GLPixelFormats\fmain.h)
+file(<src>\Examples\GLPixelFormats\PixelFormats.bpr, <dst>\Examples\GLPixelFormats\PixelFormats.bpr)
+file(<src>\Examples\GLPixelFormats\PixelFormats.cpp, <dst>\Examples\GLPixelFormats\PixelFormats.cpp)
+file(<src>\Examples\GLPixelFormats\PixelFormats.mps, <dst>\Examples\GLPixelFormats\PixelFormats.mps)
+file(<src>\Examples\GLPixelFormats\PixelFormats.res, <dst>\Examples\GLPixelFormats\PixelFormats.res)
+file(<src>\Examples\GLPixelFormats\readme.txt, <dst>\Examples\GLPixelFormats\readme.txt
+
+
+
+
+
+
+
+

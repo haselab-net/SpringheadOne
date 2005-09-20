@@ -1,0 +1,89 @@
+#VRML V2.0 utf8
+
+DEF sprite0 Transform {
+	rotation 0 0 1 1.57
+#	translation -0.5 0 -1.2
+#	translation -0.45 0.0 0.3
+	translation -0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "title.jpg"
+				}
+			}
+			geometry Box {size 0.800 1.066 0.01}
+		}
+	]
+}
+
+DEF sprite1 Transform {
+	rotation 0 0 1 1.57
+#	translation -0.5 0 -1.2
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {
+				}
+				texture ImageTexture {
+					url "language.jpg"
+				}
+			}
+			geometry Box {size 0.800 1.066 0.01}
+		}
+	]
+}
+
+Inline{url "2_grasp.wrl"}
+
+DEF sprite3 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "gripJ.jpg"
+				}
+			}
+			geometry Box {size 0.200 0.200 0.01}
+		}
+	]
+}
+
+Inline{url "4_grip2.wrl"}
+
+DEF sprite5 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "trace1J.jpg"
+				}
+			}
+			geometry Box {size 1.000 1.333 0.01}
+		}
+	]
+}
+
+DEF sprite6 Transform {
+	rotation 0 0 1 1.57
+	translation 0.0 0.0 0.0
+	children [
+		Shape {
+			appearance Appearance {
+				material Material {}
+				texture ImageTexture {
+					url "trace2J.jpg"
+				}
+			}
+			geometry Box {size 1.000 1.333 0.01}
+		}
+	]
+}

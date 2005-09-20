@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[Hull.dsp]
+SCC_Aux_Path = "\\Samba\VSS\"
+SCC_Project_Name = "$/Project/Experiments/Obsolete/DynaClockTest/Collision/hull", XLSBAAAA

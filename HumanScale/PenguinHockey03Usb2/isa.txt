@@ -1,0 +1,6 @@
+0
+kutaragi
+UseSound
+UseGraphics
+ISA_BIG_SPIDAR
+1.20 1.12 0.99

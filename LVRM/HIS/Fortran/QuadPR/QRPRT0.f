@@ -1,0 +1,422 @@
+      SUBROUTINE QRPRT0 (A,LDA,KT,RHS,COST,QUAD,LDQ,OBJ,X,RC,DUAL,SLK)
+C
+C     OUTPUT REPORT ROUTINE FOR QUADPR  
+C
+C     QRPRT1 OUTPUTS PROBLEM PARAMETERS    
+C     QRPRT2 OUTPUTS PROBLEM DATA
+C     QRPRT3 OUTPUTS HEADER FOR INTERMEDIATE (PIVOT) OUTPUT  
+C     QRPRT4 OUTPUTS INFORMATION AFTER A PIVOT 
+C     QRPRT5 OUTPUTS INFORMATION AFTER A COMPLETE PRINICPAL PIVOT
+C     QRPRT6 OUTPUTS SOLUTION REPORT 
+C
+C     QRPRT0 IS A DUMMY ENTRY TO DEFINE ALL POSSIBLE PARAMETERS
+C
+      DIMENSION  A(LDA,1),KT(1),RHS(1),COST(1),QUAD(LDQ,1),
+     1   X(1),RC(1),DUAL(1),SLK(1)
+C
+      INTEGER  ROW,COL,INDX,P,P1,PSQ 
+      COMMON /QPRCBI/ INPUTS(14),IOUTS(2),ROW,COL,INDX,MORE,P,P1,PSQ,
+     1   NCALL,LENREQ,IO1,IO2,IO3
+      EQUIVALENCE (INPUTS(1),ML), (INPUTS(2),NL), (INPUTS(3),MO),
+     1   (INPUTS(4),NO), (INPUTS(5),MINMAX), (INPUTS(6),LENWS),
+     2   (INPUTS(7),MAXIT), (INPUTS(8),KOBJ), (INPUTS(9),JIT),        
+     3   (INPUTS(10),JDATA), (INPUTS(11),JPIVOT), (INPUTS(12),JSOL),
+     4   (INPUTS(13),JOUT), (INPUTS(14),JWIDTH),
+     5   (IOUTS(1),IERR), (IOUTS(2),ITCNT)
+C
+      COMMON /QPRCBR/ TOLS(2)
+      EQUIVALENCE (TOLS(1),TZERO), (TOLS(2),TPIV)
+C
+      DOUBLE PRECISION  PIVOT
+      COMMON /QPRCBD/ PIVOT
+C
+      CHARACTER*64  TITLES, PFILES  
+      COMMON /QPRCBC/ TITLES, PFILES
+C
+      DIMENSION  RBUFF(8),IBUFF(16)
+      DIMENSION  RBUFF1(4),RBUFF2(4),IBUFF1(8),IBUFF2(8)
+      EQUIVALENCE  (IBUFF(1),IBUFF1(1)),(IBUFF(9),IBUFF2(1)),
+     1   (RBUFF(1),RBUFF1(1)),(RBUFF(5),RBUFF2(1))
+      CHARACTER*56 BLANK
+      CHARACTER*24 STATUS(6)
+      CHARACTER*64 IAM
+      CHARACTER*52 TXTINP(17)
+      CHARACTER*28 TXTTOL(2)
+      CHARACTER*1  CONTYP(3)
+      CHARACTER*3  OPTTYP(2)
+      CHARACTER*24 RCV
+      CHARACTER*24 IV
+      CHARACTER*40 HEDING(4)
+C                                                                      
+      DATA IAM  /                                                    
+     1'MADISON ACADEMIC COMPUTING CENTER - QUADPR VERSION 92.05        '
+     2   /
+      DATA BLANK  /
+     1'                                                        ' /
+      DATA HEDING /  '  P R O B L E M    P A R A M E T E R S  ',
+     1               '        P R O B L E M    D A T A        ',
+     2               ' I N T E R M E D I A T E    O U T P U T ', 
+     3               '     S O L U T I O N    R E P O R T     ' /
+      DATA (TXTINP(I),I=1,17) /
+     1   'ROW DIMENSION OF A                                  ',
+     2   'ROW DIMENSION OF QUAD                               ',
+     3   'NUMBER OF CONSTRAINTS                               ',
+     4   'NUMBER OF VARIABLES                                 ', 
+     5   '0 IMPLIES MINIMIZE, 1 IMPLIES MAXIMIZE              ',  
+     6   'SIZE OF WORKSPACE ARRAY                             ',
+     7   'ITERATION LIMIT                                     ',
+     8   '0 IMPLIES DO NOT COMPUTE OBJECTIVE VALUE            ',  
+     9   '1 IMPLIES OUTPUT PROBLEM PARAMETERS                 ',
+     A   '1 IMPLIES OUTPUT PROB DATA-A AND QUAD IN DENSE FORM ',
+     B   '1 IMPLIES OUTPUT PIVOT INFORMATION                  ',
+     C   '1 IMPLIES OUTPUT SOLUTION REPORT WITHOUT RC,DUAL,SLK',
+     D   '1 IMPLIES ALL OUTPUT BUT PROB PAR AND SOL REP FILED ',
+     E   'MAXIMUM OUTPUT COLUMN WIDTH                         ', 
+     F   '2 IMPLIES OUTPUT PROB DATA-A AND QUAD IN SPARSE FORM',
+     G   '2 IMPLIES OUTPUT SOLUTION REPORT WITH RC,DUAL,SLK   ',
+     H   '2 IMPLIES ALL OUTPUT FILED                          ' /
+      DATA (TXTTOL(I),I=1,2) /
+     1   'ROUND-OFF OR ZERO TOLERANCE ',
+     2   'PIVOT TOLERANCE             ' /
+      DATA IV  / '     INDEX     VALUE    ' /
+      DATA RCV / '  ROW  COL     VALUE    ' /
+      DATA (STATUS(I),I=1,6) /
+     1   'SOLUTION IS OPTIMAL     ',
+     2   'NO SOLUTION             ',
+     3   'PIVOT LIMIT REACHED     ',
+     4   'INVALID QUAD MATRIX     ',   
+     5   'PROBLEM DATA ERROR      ',      
+     6   'ALGORITHM ERROR         ' /
+C
+      DATA CONTYP /  'G', 'E' ,'L' /
+      DATA OPTTYP /  'MIN', 'MAX' /
+C
+C.......................................................................
+C
+      ENTRY QRPRT1
+C
+C     OUTPUT PROBLEM PARAMETERS
+C
+C     OUTPUT HEADING
+  100 CONTINUE
+      MARGIN = JWIDTH/2 - 35
+      WRITE (IO2,101) BLANK(1:MARGIN),IAM,NCALL,BLANK(1:MARGIN),TITLES
+      WRITE (IO2,102) BLANK(1:MARGIN),HEDING(1) 
+  101 FORMAT ( / 1H1 // A,A64,'CALL',I4 / A,'TITLE - ',A64)
+  102 FORMAT ( // A,16X,A40 / )
+C
+C     OUTPUT INPUT ARRAY VALUES
+      WRITE (IO2,105) BLANK(1:MARGIN)
+  105 FORMAT ( / A,'INPUT VALUES')
+      DO 110 I = 1, 10
+         WRITE (IO2,111) BLANK(1:MARGIN),I,INPUTS(I),TXTINP(I)
+  110 CONTINUE
+  111 FORMAT (A,'INPUT(',I2,') =',I6,3X,A52)
+      WRITE (IO2,112) BLANK(1:MARGIN),TXTINP(15)
+  112 FORMAT (A,20X,A52)
+      DO 120 I = 11, 12
+         WRITE (IO2,111) BLANK(1:MARGIN),I,INPUTS(I),TXTINP(I)
+  120 CONTINUE
+      WRITE (IO2,112) BLANK(1:MARGIN),TXTINP(16)
+      I = 13
+      WRITE (IO2,111) BLANK(1:MARGIN),I,INPUTS(I),TXTINP(I)
+      WRITE (IO2,112) BLANK(1:MARGIN),TXTINP(17)
+      I = 14
+      WRITE (IO2,111) BLANK(1:MARGIN),I,INPUTS(I),TXTINP(I)
+      WRITE (IO2,140) BLANK(1:MARGIN)
+  140 FORMAT ( / A,'TOL VALUES')
+      DO 150 I = 1, 2
+         WRITE (IO2,151) BLANK(1:MARGIN),I,TOLS(I),TXTTOL(I)
+  150 CONTINUE
+  151 FORMAT (A,'TOL(',I1,') =',1PE14.5,3X,A28)
+      WRITE (IO2,155)
+  155 FORMAT ( / )
+C
+      RETURN 
+C
+C.......................................................................
+C
+      ENTRY QRPRT2 (A,LDA,KT,RHS,COST,QUAD,LDQ)  
+C
+C     OUTPUT PROBLEM DATA
+C
+C     OUTPUT HEADING
+  200 CONTINUE
+      MARGIN = JWIDTH/2 - 35
+      WRITE (IO3,101) BLANK(1:MARGIN),IAM,NCALL,BLANK(1:MARGIN),TITLES 
+      WRITE (IO3,102) BLANK(1:MARGIN),HEDING(2)
+C
+C     OUTPUT OPTIMIZATION
+      WRITE (IO3,202) OPTTYP(MINMAX+1)
+  202 FORMAT ( / 1X,A3,'IMIZATION')
+C
+C     OUTPUT VARIABLES HEADER
+      WRITE (IO3,203)
+  203 FORMAT ( // 1X,'VARIABLES')
+      ITEMS = JWIDTH / 14 
+      DO 207 J = 1, NO, ITEMS
+         JMAX = MIN0(NO,J+ITEMS-1)
+         WRITE (IO3,208) (I,I=J,JMAX)
+  207 CONTINUE
+  208 FORMAT (1X,9(I10,4X))
+C
+C     OUTPUT LINEAR COSTS
+  215 WRITE (IO3,216)
+  216 FORMAT ( / 1X,'COST')
+      DO 217 J = 1, NO, ITEMS
+         JMAX = MIN0(NO,J+ITEMS-1)
+         WRITE (IO3,220) (COST(I),I=J,JMAX)
+  217 CONTINUE
+  220 FORMAT (1X,1P9E14.5E2)
+C 
+C     OUTPUT QUAD-MATRIX
+      WRITE (IO3,230)
+  230 FORMAT ( // 1X,'QUAD-MATRIX')
+      IF (JDATA .EQ. 2) GO TO 240
+C     DENSE FORM 
+      WRITE (IO3,232) 
+  232 FORMAT ( / 1X,'COLUMNS')
+      DO 234 J = 1, NO, ITEMS
+         JMAX = MIN0(NO,J+ITEMS-1)
+         WRITE (IO3,208) (I,I=J,JMAX)
+  234 CONTINUE
+  235 FORMAT (1X,'ROW',I4)
+      DO 238 L1 = 1, NO
+         WRITE (IO3,235) L1
+         DO 237 J = 1, NO, ITEMS
+            JMAX = MIN0(NO,J+ITEMS-1)
+            WRITE (IO3,220) (QUAD(L1,I),I=J,JMAX)
+  237    CONTINUE    
+  238 CONTINUE
+      GO TO 250
+C     SPARSE FORM
+  240 WRITE (IO3,241)
+  241 FORMAT ( / 1X,'NON-ZERO ELEMENTS' / )
+      ITEMS2 = JWIDTH  / 24
+      WRITE (IO3,242) (RCV,I=1,ITEMS2)
+  242 FORMAT (1X,5A24)
+      I1 = 0
+      DO 248 L1 = 1, NO
+         DO 247 J = 1, NO 
+            IF (ABS(QUAD(L1,J)) .LT. TZERO) GO TO 247
+            I1 = I1 + 1
+            IBUFF1(I1) = L1
+            IBUFF2(I1) = J
+            RBUFF(I1) = QUAD(L1,J)
+            IF (I1 .LT. ITEMS2) GO TO 247
+            WRITE (IO3,245) (IBUFF1(I),IBUFF2(I),RBUFF(I),I=1,ITEMS2)
+  245       FORMAT (1X,5(0P2I5,1PE14.5E2))
+            I1 = 0
+  247    CONTINUE
+  248 CONTINUE
+      IF (I1 .GT. 0)
+     1    WRITE (IO3,245) (IBUFF1(I),IBUFF2(I),RBUFF(I),I=1,I1)     
+C
+  250 CONTINUE
+      IF (MO .EQ. 0) GO TO 290
+C     OUTPUT CONSTRAINT TYPES
+      WRITE (IO3,252)
+  252 FORMAT ( // 1X,'CONSTRAINTS')
+      DO 257 J = 1, MO, ITEMS
+         JMAX = MIN0(MO,J+ITEMS-1)
+         WRITE (IO3,258) (I,CONTYP(KT(I)+2),I=J,JMAX)
+  257 CONTINUE
+  258 FORMAT (1X, 9(I6,'  ( ',A1,' ) '))
+C
+C     OUTPUT RIGHT-HAND-SIDE
+      WRITE (IO3,260)
+  260 FORMAT ( / 1X,'RHS')
+      DO 261 J = 1, MO, ITEMS
+         JMAX = MIN0(MO,J+ITEMS-1)
+         WRITE (IO3,220) (RHS(I),I=J,JMAX)
+  261 CONTINUE
+C 
+C     OUTPUT A-MATRIX
+      WRITE (IO3,270)
+  270 FORMAT ( // 1X,'A-MATRIX')
+      IF (JDATA .EQ. 2) GO TO 280
+C     DENSE FORM 
+      WRITE (IO3,232) 
+      DO 274 J = 1, NO, ITEMS
+         JMAX = MIN0(NO,J+ITEMS-1)
+         WRITE (IO3,208) (I,I=J,JMAX)
+  274 CONTINUE
+      DO 278 L1 = 1, MO 
+         WRITE (IO3,235) L1
+         DO 277 J = 1, NO, ITEMS
+            JMAX = MIN0(NO,J+ITEMS-1)
+            WRITE (IO3,220) (A(L1,I),I=J,JMAX)
+  277    CONTINUE    
+  278 CONTINUE
+      GO TO 290
+C     SPARSE FORM
+  280 WRITE (IO3,241)
+      WRITE (IO3,242) (RCV,I=1,ITEMS2)
+      I1 = 0
+      DO 288 L1 = 1, MO
+         DO 287 J = 1, NO 
+            IF (ABS(A(L1,J)) .LT. TZERO) GO TO 287
+            I1 = I1 + 1
+            IBUFF1(I1) = L1
+            IBUFF2(I1) = J
+            RBUFF(I1) = A(L1,J)
+            IF (I1 .LT. ITEMS2) GO TO 287
+            WRITE (IO3,245) (IBUFF1(I),IBUFF2(I),RBUFF(I),I=1,ITEMS2)
+            I1 = 0
+  287    CONTINUE
+  288 CONTINUE
+      IF (I1 .GT. 0)
+     1    WRITE (IO3,245) (IBUFF1(I),IBUFF2(I),RBUFF(I),I=1,I1)     
+C
+  290 WRITE (IO3,155)
+C
+      RETURN
+C
+C.......................................................................
+C
+      ENTRY QRPRT3  
+C
+C     OUTPUT HEADER FOR INTERMEDIATE OUTPUT
+C
+C     OUTPUT HEADING
+  300 CONTINUE
+      MARGIN = JWIDTH/2 - 35
+      WRITE (IO3,101) BLANK(1:MARGIN),IAM,NCALL,BLANK(1:MARGIN),TITLES 
+      WRITE (IO3,102) BLANK(1:MARGIN),HEDING(3) 
+      IT2PRT = 0
+C
+      RETURN
+C
+C.......................................................................
+C
+      ENTRY QRPRT4 
+C
+C     OUTPUT INFORMATION AFTER A PIVOT 
+C
+  400 CONTINUE
+      IF (IT2PRT .GT. 0) GO TO 420
+      WRITE (IO3,410)
+  410 FORMAT ( / 6X,'PIVOT',5X,'INDEX',5X,'PIVOT ROW',3X,'PIVOT COLUMN',        
+     1   7X,'PIVOT VALUE')
+      IT2PRT = 19
+      GO TO 430
+  420 IT2PRT = IT2PRT - 1 
+  430 WRITE (IO3,440) ITCNT,INDX,ROW,COL,PIVOT
+  440 FORMAT (1X,2I10,3X,I10,5X,I10,1PE19.5E2)
+C
+      RETURN
+C
+C.......................................................................
+C
+      ENTRY QRPRT5 
+C
+C     OUTPUT INFORMATION AFTER A PRINCIPAL PIVOT 
+C
+  500 CONTINUE
+      IT2PRT = IT2PRT - 1 
+      WRITE (IO3,510) ITCNT,INDX
+  510 FORMAT (1X,2I10,5X,'PRINCIPAL PIVOT COMPLETED')
+C
+      RETURN
+C
+C.......................................................................
+C
+      ENTRY QRPRT6 (X,RC,DUAL,SLK,OBJ)
+C
+C     OUTPUT SOLUTION REPORT
+C
+C     OUTPUT HEADING
+  600 CONTINUE
+      MARGIN = JWIDTH/2 - 35
+      WRITE (IO2,101) BLANK(1:MARGIN),IAM,NCALL,BLANK(1:MARGIN),TITLES 
+      WRITE (IO2,102) BLANK(1:MARGIN),HEDING(4)
+C
+C     OUTPUT STATUS
+      WRITE (IO2,605) BLANK(1:MARGIN),STATUS(IERR)
+  605 FORMAT ( / A,18X,A24)
+C
+C     OUTPUT OBJECTIVE VALUE ONLY IF APPROPRIATE
+      IF (IERR .EQ. 1 .AND. KOBJ .EQ. 1)
+     *   WRITE (IO2,610) BLANK(1:MARGIN),OPTTYP(MINMAX+1),OBJ
+  610 FORMAT (A,18X,A3,'IMUM OBJECTIVE VALUE',2X,1PE15.6E2)
+C
+C     OUTPUT NO. PIVOTS
+      WRITE (IO2,615) BLANK(1:MARGIN),ITCNT
+  615 FORMAT (A,18X,'NUMBER OF PIVOTS',5X,I8)  
+C
+C     OUTPUT SOLUTION VECTOR
+      WRITE (IO2,620) BLANK(1:MARGIN)
+  620 FORMAT ( /// A,28X,'SOLUTION VECTOR')
+      ITEMS = MIN0(NO,JWIDTH/24)
+      INDENT = (JWIDTH-24*ITEMS)/2 + 1
+      WRITE (IO2,622) BLANK(1:INDENT), (IV,I=1,ITEMS)
+  622 FORMAT ( / A,5A24)
+      DO 626 J = 1, NO, ITEMS
+         JMAX = MIN0(NO,J+ITEMS-1)
+         I1 = 0
+         DO 624 L1 = J, JMAX
+            I1 = I1 + 1
+            IBUFF(I1) = L1
+            RBUFF(I1) = X(L1)
+  624    CONTINUE
+         WRITE (IO2,628) BLANK(1:INDENT), (IBUFF(I),RBUFF(I),I=1,I1)
+  626 CONTINUE
+  628 FORMAT (A,5(2X,0PI8,1PE14.5E2))
+C     OUTPUT REMAINDER ONLY IF REQUESTED
+      IF (JSOL .EQ. 1) GO TO 690
+C
+C     OUTPUT REDUCED COSTS VECTOR
+      WRITE (IO2,630) BLANK(1:MARGIN)
+  630 FORMAT ( // A,25X,'REDUCED COSTS VECTOR')
+      WRITE (IO2,622) BLANK(1:INDENT), (IV,I=1,ITEMS)
+      DO 636 J = 1, NO, ITEMS
+         JMAX = MIN0(NO,J+ITEMS-1)
+         I1 = 0
+         DO 634 L1 = J, JMAX
+            I1 = I1 + 1
+            IBUFF(I1) = L1
+            RBUFF(I1) = RC(L1)
+  634    CONTINUE
+         WRITE (IO2,628) BLANK(1:INDENT), (IBUFF(I),RBUFF(I),I=1,I1)
+  636 CONTINUE
+      IF (MO .EQ. 0) GO TO 690 
+C
+C     OUTPUT DUAL SOLUTION VECTOR
+      WRITE (IO2,640) BLANK(1:MARGIN)
+  640 FORMAT ( // A,25X,'DUAL SOLUTION VECTOR')
+      ITEMS = MIN0(MO,JWIDTH/24)
+      INDENT = (JWIDTH-24*ITEMS)/2 + 1
+      WRITE (IO2,622) BLANK(1:INDENT), (IV,I=1,ITEMS)
+      DO 646 J = 1, MO, ITEMS
+         JMAX = MIN0(MO,J+ITEMS-1)
+         I1 = 0
+         DO 644 L1 = J, JMAX
+            I1 = I1 + 1
+            IBUFF(I1) = L1
+            RBUFF(I1) = DUAL(L1)
+  644    CONTINUE
+         WRITE (IO2,628) BLANK(1:INDENT), (IBUFF(I),RBUFF(I),I=1,I1)
+  646 CONTINUE
+C
+C     OUTPUT SLACK VARIABLES VECTOR
+      WRITE (IO2,650) BLANK(1:MARGIN)
+  650 FORMAT ( // A,24X,'SLACK VARIABLES VECTOR')
+      WRITE (IO2,622) BLANK(1:INDENT), (IV,I=1,ITEMS)
+      DO 656 J = 1, MO, ITEMS
+         JMAX = MIN0(MO,J+ITEMS-1)
+         I1 = 0
+         DO 654 L1 = J, JMAX
+            I1 = I1 + 1
+            IBUFF(I1) = L1
+            RBUFF(I1) = SLK(L1)
+  654    CONTINUE
+         WRITE (IO2,628) BLANK(1:INDENT), (IBUFF(I),RBUFF(I),I=1,I1)
+  656 CONTINUE
+C
+  690 CONTINUE 
+      WRITE (IO2,695) 
+  695 FORMAT (//) 
+C
+      RETURN
+C
+      END

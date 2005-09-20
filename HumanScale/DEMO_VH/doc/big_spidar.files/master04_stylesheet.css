@@ -1,0 +1,570 @@
+body
+	{width:534px;
+	height:400px;}
+.TB
+	{mso-special-format:nobullet\2022;}
+.T
+	{text-align:center;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Book Antiqua";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Book Antiqua";
+	font-weight:bold;
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:3;
+	font-size:190%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.BB
+	{mso-special-format:bulletn;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:75%;}
+.B
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:152%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.B1B
+	{mso-special-format:bulletu;
+	color:#676767;
+	mso-color-index:7;
+	font-family:Wingdings;
+	font-size:70%;}
+.B1
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:133%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.B2B
+	{mso-special-format:bulletl;
+	color:#919191;
+	mso-color-index:5;
+	font-family:Wingdings;
+	font-size:80%;}
+.B2
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.B3B
+	{mso-special-format:bulletp;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:60%;}
+.B3
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.B4B
+	{mso-special-format:bullet\00FC;
+	color:black;
+	mso-color-index:1;
+	font-family:Wingdings;
+	font-size:50%;}
+.B4
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.N
+	{font-family:"‚l‚r ‚o–¾’©";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚o–¾’©";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.N1
+	{font-family:"‚l‚r ‚o–¾’©";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚o–¾’©";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.N2
+	{font-family:"‚l‚r ‚o–¾’©";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚o–¾’©";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.N3
+	{font-family:"‚l‚r ‚o–¾’©";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚o–¾’©";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.N4
+	{font-family:"‚l‚r ‚o–¾’©";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚o–¾’©";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.OB
+	{mso-special-format:nobullet\2022;}
+.O
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.O1
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.O2
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.O3
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.O4
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:Arial;
+	layout-flow:vertical;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.CBB
+	{mso-special-format:nobulletn;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:75%;}
+.CB
+	{text-align:center;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:1;
+	font-size:152%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.CB1B
+	{mso-special-format:nobulletu;
+	color:#676767;
+	mso-color-index:7;
+	font-family:Wingdings;
+	font-size:70%;}
+.CB1
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.CB2B
+	{mso-special-format:nobulletl;
+	color:#919191;
+	mso-color-index:5;
+	font-family:Wingdings;
+	font-size:80%;}
+.CB2
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.CB3B
+	{mso-special-format:nobulletp;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:60%;}
+.CB3
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.CB4B
+	{mso-special-format:nobullet\00FC;
+	color:black;
+	mso-color-index:1;
+	font-family:Wingdings;
+	font-size:50%;}
+.CB4
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:114%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.CTB
+	{mso-special-format:nobullet\2022;}
+.CT
+	{text-align:center;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Book Antiqua";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Book Antiqua";
+	font-weight:bold;
+	text-shadow:auto;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:3;
+	font-size:190%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.HBB
+	{mso-special-format:bulletn;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:75%;}
+.HB
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.HB1B
+	{mso-special-format:bulletu;
+	color:#676767;
+	mso-color-index:7;
+	font-family:Wingdings;
+	font-size:70%;}
+.HB1
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.HB2B
+	{mso-special-format:bulletl;
+	color:#919191;
+	mso-color-index:5;
+	font-family:Wingdings;
+	font-size:80%;}
+.HB2
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.HB3B
+	{mso-special-format:bulletp;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:60%;}
+.HB3
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:95%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.HB4B
+	{mso-special-format:bullet\00FC;
+	color:black;
+	mso-color-index:1;
+	font-family:Wingdings;
+	font-size:50%;}
+.HB4
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:95%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.QBB
+	{mso-special-format:bulletn;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:75%;}
+.QB
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.QB1B
+	{mso-special-format:bulletu;
+	color:#676767;
+	mso-color-index:7;
+	font-family:Wingdings;
+	font-size:70%;}
+.QB1
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.QB2B
+	{mso-special-format:bulletl;
+	color:#919191;
+	mso-color-index:5;
+	font-family:Wingdings;
+	font-size:80%;}
+.QB2
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.QB3B
+	{mso-special-format:bulletp;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:60%;}
+.QB3
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:85%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.QB4B
+	{mso-special-format:bullet\00FC;
+	color:black;
+	mso-color-index:1;
+	font-family:Wingdings;
+	font-size:50%;}
+.QB4
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:85%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.TblB
+	{mso-special-format:nobulletn;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:75%;}
+.Tbl
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.Tbl1B
+	{mso-special-format:nobulletu;
+	color:#676767;
+	mso-color-index:7;
+	font-family:Wingdings;
+	font-size:70%;}
+.Tbl1
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.Tbl2B
+	{mso-special-format:nobulletl;
+	color:#919191;
+	mso-color-index:5;
+	font-family:Wingdings;
+	font-size:80%;}
+.Tbl2
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.Tbl3B
+	{mso-special-format:nobulletp;
+	color:black;
+	mso-color-index:3;
+	font-family:Wingdings;
+	font-size:60%;}
+.Tbl3
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:95%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.Tbl4B
+	{mso-special-format:nobullet\00FC;
+	color:black;
+	mso-color-index:1;
+	font-family:Wingdings;
+	font-size:50%;}
+.Tbl4
+	{font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"Times New Roman";
+	text-shadow:auto;
+	layout-flow:vertical;
+	font-size:95%;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;}
+.defaultB
+	{mso-special-format:bulletn;
+	color:black;
+	mso-color-index:3;
+	font-family:"Monotype Sorts";
+	font-size:75%;}
+.default
+	{text-align:left;
+	font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-ascii-font-family:"Times New Roman";
+	mso-fareast-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	mso-hansi-font-family:"‚l‚r ‚oƒSƒVƒbƒN";
+	font-weight:bold;
+	font-style:normal;
+	text-decoration:none;
+	text-shadow:auto;
+	text-effect:none;
+	mso-fareast-hint:no;
+	layout-flow:vertical;
+	color:black;
+	mso-color-index:3;
+	font-size:171%;
+	mso-text-raise:0%;
+	mso-line-spacing:"100 50 0";
+	mso-margin-left-alt:216;
+	mso-text-indent-alt:0;
+	mso-char-wrap:1;
+	mso-kinsoku-overflow:1;
+	direction:ltr;
+	mso-word-wrap:1;
+	mso-vertical-align-special:baseline;
+	mso-ansi-language:EN-US;}
+a:link
+	{color:#DADADA !important;}
+a:active
+	{color:#919191 !important;}
+a:visited
+	{color:#676767 !important;}

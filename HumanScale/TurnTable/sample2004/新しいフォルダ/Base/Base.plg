@@ -1,0 +1,21 @@
+<html>
+<body>
+<pre>
+<h1>ﾋﾞﾙﾄﾞのﾛｸﾞ</h1>
+<h3>
+--------------------構成: Base - Win32 Release--------------------
+</h3>
+<h3>ｺﾏﾝﾄﾞ ﾗｲﾝ</h3>
+ｺﾏﾝﾄﾞ ﾗｲﾝ "link.exe -lib /nologo /out:"Base.lib"  .\Release\Debug.obj .\Release\Matrix.obj .\Release\StrbufBase.obj .\Release\utilities.obj " の作成中
+<h3>ｱｳﾄﾌﾟｯﾄ ｳｨﾝﾄﾞｳ</h3>
+ﾗｲﾌﾞﾗﾘを作成中...
+LINK : fatal error LNK1104: ﾌｧｲﾙ "Base.lib" を開けません。
+link.exe の実行ｴﾗｰ
+
+
+
+<h3>結果</h3>
+Base.lib - ｴﾗｰ 1、警告 0
+</pre>
+</body>
+</html>

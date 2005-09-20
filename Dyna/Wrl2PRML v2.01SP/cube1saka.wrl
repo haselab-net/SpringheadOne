@@ -1,0 +1,85 @@
+#VRML V2.0 utf8
+
+DEF back Background {
+	skyColor 0 0 1
+}
+
+DEF cam Viewpoint { position 0 1 10 orientation 0 0 -1 0 description "Default" }
+
+DEF light DirectionalLight { direction -0.33104 -0.74485 -0.57932 color 1 1 1 intensity 1 on TRUE }
+
+DEF floor Transform {
+	translation 0 -2 0
+	rotation 0 0 -1 0.2
+	scale 50 0.5 50
+	children [
+		Shape {
+			geometry IndexedFaceSet {
+#				ccw FALSE
+				creaseAngle 1
+				coord Coordinate {
+					point [
+						-1	1	1
+						-1	-1	1
+						1	-1	1
+						1	1	1
+						-1	1	-1
+						-1	-1	-1
+						1	-1	-1
+						1	1	-1
+					]
+				}
+				coordIndex [
+					0 1 2 3 -1
+					1 5 6 2 -1
+					5 4 7 6 -1
+					0 3 7 4 -1
+					4 5 1 0 -1
+					7 3 2 6 -1
+				]
+			}
+		}
+	]
+}
+
+DEF cube1 Transform {
+	translation 0 0 0
+
+#	rotation 0 0 1 0.78539816339744830961566084581988
+#	rotation 0 0 1 0.39269908169872415480783042290994
+#	rotation 0.7 0 0.7 0.79
+
+	scale 1 0.25 1
+	children [
+	Transform {
+	children[
+		Shape {
+			geometry IndexedFaceSet {
+#				ccw FALSE
+				creaseAngle 1
+				coord Coordinate {
+					point [
+						-1	1	1
+						-1	-1	1
+						1	-1	1
+						1	1	1
+						-1	1	-1
+						-1	-1	-1
+						1	-1	-1
+						1	1	-1
+					]
+				}
+				coordIndex [
+					0 1 2 3 -1
+					1 5 6 2 -1
+					5 4 7 6 -1
+					0 3 7 4 -1
+					4 5 1 0 -1
+					7 3 2 6 -1
+				]
+			}
+		}
+	]
+	}
+	]
+}

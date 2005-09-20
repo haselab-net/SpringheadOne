@@ -1,0 +1,15 @@
+フォルダ
+	VHModel:その名のとおり様々なVHのモデルが入ってます。
+		基本モデルVirtualHuman.x
+		それに様々なオプションが付く
+		Big				：足が大きい
+		Color			：前面に明るい色がついてる
+		ContactInactive	：VHの体同士の接触はなし
+		Transparent		：体が半透明
+		
+	
+	VHModel/StickVHuman:過去使用していたモデル（ジースポート）
+	
+	VHModel/BodyDataBase:VHモデルを作成する際に利用した人体のデータ
+	
+	ExperimentDataFiles:部分的なモデル、Springheadの機能を確認するためのモデル

@@ -1,0 +1,82 @@
+; INF file for Spidar.sys
+; Portions Copyright (c) 1996-2000, BlueWater Systems, Inc.
+
+[Version]
+Signature="$Windows NT$"
+Class=USB
+ClassGUID={B886ADE3-72FD-4903-9D3E-14F60F4F9DA6}
+Provider=%Spidar.Provider%
+      
+[Manufacturer]
+%Spidar.Manufacturer%=Spidar
+      
+[ClassInstall32]
+AddReg=Spidar.AddClassReg
+
+[Spidar]
+%Spidar.DeviceDesc%=Spidar.INSTALL, USB\VID_0CEC&PID_0201
+
+; TODO:  Add an optional Tag File to ensure that the end user
+;        has specified the correct path to the diskette, CD-ROM,
+;        or network drive.  See the INF File Reference in the
+;        DDK documentation for more information on SourceDisksNames
+;        sections.
+[SourceDisksNames]
+1=%Spidar.DriverDiskName%,"",1
+
+[SourceDisksFiles]
+Spidar.sys=1
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+      
+[DestinationDirs]
+Spidar.CopyFiles = 10,system32\drivers ; WINDOWS\SYSTEM32\DRIVERS
+      
+[Spidar.INSTALL]
+CopyFiles=Spidar.CopyFiles
+AddReg=Spidar.AddRegLoader
+      
+[Spidar.AddClassReg]
+HKR,,,,%Spidar.ClassName%
+
+[Spidar.AddRegLoader]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,Spidar.sys
+
+[Spidar.INSTALL.NT]
+CopyFiles=Spidar.CopyFiles
+
+[Spidar.INSTALL.NT.Services]
+AddService = Spidar,0x00000002,Spidar_Service_Inst
+
+[Spidar_Service_Inst]
+ServiceType     = 1 ;%SERVICE_KERNEL_DRIVER%
+StartType       = 3 ;%SERVICE_AUTO_START%
+ErrorControl    = 1 ;%SERVICE_ERROR_NORMAL%
+ServiceBinary   = %12%\Spidar.sys
+DisplayName     = %Spidar.DeviceDesc%
+
+      
+[Spidar.CopyFiles]
+Spidar.sys
+
+
+;---------------------------------------------------------------;
+      
+[Strings]
+; TODO:  Replace the following string with the name of the driver
+;        provider.
+Spidar.Provider="BlueWater Systems Inc."
+; TODO:  Replace the following string with the name of the driver
+;        or hardware manufacturer.  
+Spidar.Manufacturer="BlueWater Systems Inc."
+; TODO:  Replace the following with an appropriate description
+;        of this actual device.
+Spidar.DeviceDesc="Spidar Device"
+; TODO:  Replace the following with an appropriate class name
+;        for this class of device.  
+Spidar.ClassName="Spidar Device"
+; TODO:  If not installing from a diskette, change the following string
+;        to indicate the source location.
+Spidar.DriverDiskName="Spidar Installation Diskette" 
