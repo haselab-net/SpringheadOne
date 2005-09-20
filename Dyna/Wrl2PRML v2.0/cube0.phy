@@ -1,7 +1,0 @@
-floor {
-	mass 1.#INF
-	
-}
-cube1 {
-	angularMomentum (0.0 0.0 0.1)
-}

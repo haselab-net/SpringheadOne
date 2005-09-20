@@ -1,1 +1,0 @@
-Release\LabyrinthWalk maze.wrl

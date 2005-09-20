@@ -1,6 +1,0 @@
-1
-control
-UseSound
-UseGraphics
-MOUSE
-0.265 0.265 0.265

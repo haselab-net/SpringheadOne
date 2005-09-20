@@ -1,1 +1,0 @@
-LabyrinthWalk.exe maze.wrl

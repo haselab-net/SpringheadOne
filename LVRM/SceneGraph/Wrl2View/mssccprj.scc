@@ -1,5 +1,0 @@
-SCC = This is a Source Code Control file
-
-[YaccLex.mak]
-SCC_Aux_Path = "\\Samba\VSS\"
-SCC_Project_Name = "$/Project/LVRM/SceneGraph/Wrl2View", QSNAAAAA

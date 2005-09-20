@@ -1,5 +1,0 @@
-1
-kutaragi
-UseSound
-UseGraphics
-BIG4

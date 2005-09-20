@@ -1,1 +1,0 @@
-mpirun config-full.txt

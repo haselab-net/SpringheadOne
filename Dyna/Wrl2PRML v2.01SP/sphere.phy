@@ -1,8 +1,0 @@
-floor {
-	mass 1.#INF
-	
-}
-Sphere01 {
-	angularMomentum (0.0 0.0 0.0)
-	inertia ((0.0001 0 0) (0 0.0001 0) (0 0 0.0001))
-}
