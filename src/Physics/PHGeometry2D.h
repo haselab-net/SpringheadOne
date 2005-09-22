@@ -62,7 +62,7 @@ enum PHG2_DOF{
 };
 
 //S‘©‚Ìí—Ş
-enum PHG2ConstraintType{
+enum PHConstraint2DType{
 	PHG2_POINT_TO_POINT,	//“_|“_S‘©F‚Q“_‚ğˆê’v‚³‚¹‚é
 	PHG2_POINT_TO_LINE,		//“_|üS‘©F“_‚ğüã‚ÉS‘©‚·‚é
 	PHG2_POINT_TO_ARC,
@@ -75,7 +75,7 @@ enum PHG2ConstraintType{
 	PHG2_FIX,				//ŒÅ’èS‘©F
 };
 
-//PHG2Constraint::Solve‚Ì–ß‚è’l
+//PHConstraint2D::Solve‚Ì–ß‚è’l
 enum PHG2Result{
 	PHG2_AGAIN,		//‚à‚¤ˆê“x•]‰¿Šó–]
 	PHG2_SOLVED,	//‰ğ‚¯‚½
@@ -138,31 +138,35 @@ public:
 };
 
 //S‘©ƒNƒ‰ƒX
-class PHG2ConstraintList;
-class PHG2Constraint : public SGObject{
+class PHConstraintList2D;
+class PHConstraint2D : public SGObject{
 public:		
-	SGOBJECTDEF(PHG2Constraint);
-	PHG2ConstraintType	type;	//S‘©‚Ìí—Ş
+	SGOBJECTDEFABST(PHConstraint2D);
+
+	virtual bool AddChildObject(SGObject* o, SGScene* s);
+	virtual bool DelChildObject(SGObject* o, SGScene* s);
+
+	PHConstraint2DType	type;	//S‘©‚Ìí—Ş
 	UTRef<PHG2Frame> lhs, rhs;	//S‘©‘ÎÛ
 
 	//•¡»‚ğì¬
-	virtual PHG2Constraint* dup(){return 0;}
+	virtual PHConstraint2D* dup(){return 0;}
 	//S‘©‚ğ‰ğ‚­
-	virtual PHG2Result Solve(PHG2ConstraintList& newcon){return PHG2_ERROR;}
+	virtual PHG2Result Solve(PHConstraintList2D& newcon){return PHG2_ERROR;}
 
-	PHG2Constraint(){}
-	PHG2Constraint(PHG2ConstraintType _type, SGFrame* _lhs, SGFrame* _rhs){
+	PHConstraint2D(){}
+	PHConstraint2D(PHConstraint2DType _type, SGFrame* _lhs, SGFrame* _rhs){
 		type = _type;
 		lhs = new PHG2Frame(_lhs);
 		rhs = new PHG2Frame(_rhs);
 	}
-	virtual ~PHG2Constraint(){}
+	virtual ~PHConstraint2D(){}
 };
 
 //S‘©‚ÌƒŠƒXƒg
-class PHG2ConstraintList : public std::list<UTRef<PHG2Constraint> >{
+class PHConstraintList2D : public std::list<UTRef<PHConstraint2D> >{
 public:
-	PHG2ConstraintList& operator=(const PHG2ConstraintList& src){
+	PHConstraintList2D& operator=(const PHConstraintList2D& src){
 		resize(src.size());
 		iterator it0;
 		const_iterator it1;
@@ -173,8 +177,8 @@ public:
 		}
 		return *this;
 	}
-	PHG2ConstraintList(){}
-	PHG2ConstraintList(const PHG2ConstraintList& src){*this = src;}
+	PHConstraintList2D(){}
+	PHConstraintList2D(const PHConstraintList2D& src){*this = src;}
 };
 		
 //–{‘Ì
@@ -182,30 +186,36 @@ class PHGeometry2DEngine : public SGBehaviorEngine{
 public:		
 	SGOBJECTDEF(PHGeometry2DEngine);
 
-	bool AddChildObject(SGObject* o, SGScene* s);
-	bool DelChildObject(SGObject* o, SGScene* s);
-	int GetPriority() const {return SGBP_GEOMETRYENGINE;}
+	virtual bool AddChildObject(SGObject* o, SGScene* s);
+	virtual bool DelChildObject(SGObject* o, SGScene* s);
+	virtual int GetPriority() const {return SGBP_GEOMETRYENGINE;}
 	virtual void Step(SGScene* s);
 	virtual void Loaded(SGScene* scene);
 	virtual void Clear(SGScene* s);
 	virtual size_t NChildObjects(){ return frames.size(); }
 	virtual SGObject* ChildObject(size_t i){ return (SGObject*)&*(frames[i]); }
 
-	//S‘©‚ğ’Ç‰ÁEíœ‚·‚é
-	PHG2Constraint*		Add(PHG2Constraint* con);
-	void				Remove(PHG2Constraint*);
+	///S‘©‚ğ’Ç‰Á‚·‚é
+	PHConstraint2D*		Add(PHConstraint2D* con);
 
-	//‘SƒNƒŠƒA
+	///S‘©‚ğíœ‚·‚é
+	void				Remove(PHConstraint2D*);
+
+	///S‘©ƒŠƒXƒg‚Ìæ“¾
+	const PHConstraintList2D& Constraints()const{return cons;}
+
+	///‘SƒNƒŠƒA
 	void Clear();
 
-	//S‘©‚ğ‰ğŒˆ‚·‚é
+	///S‘©‚ğ‰ğŒˆ‚·‚é
 	void Solve();
 
 	PHGeometry2DEngine(){}
 	~PHGeometry2DEngine(){}
 protected:
+	UTRef<SGFrame>		plane;
 	PHG2FrameList		frames;
-	PHG2ConstraintList	cons, cons_tmp;
+	PHConstraintList2D	cons, cons_tmp;
 	
 	void		_Preprocess();
 	void		_Postprocess();
@@ -216,20 +226,38 @@ protected:
 
 //Vector2‚ÆFloatŒ^–¼‚ğŒöŠJ‚µ‚½‚­‚È‚¢‚Ì‚Å“à•”namespace
 namespace PHG2{
-	typedef Vec2f Vector2;
 	typedef float Float;
+	typedef Vec2f Vector2;
+	/*class Vector2 : public SGObject, public Vec2f{
+	public:
+		SGOBJECTDEF(Vector2);
+		Vector2& operator=(const Vec2f& v){
+			*(Vec2f*)this = v;
+			return *this;
+		}
+	};*/
+	
+	DEF_RECORD(XVector2, {
+		GUID Guid(){return WBGuid("ec045bba-b265-4511-973d-500656055f40");}
+		Float x;
+		Float y;
+	});
 
+//#define array
+
+	//qƒm[ƒhF
+	//Frame x 1D‚±‚ÌFrame‚Ìxy•½–Ê‚ª“®ì–Ê‚Æ‚È‚éD–¢w’è‚È‚çƒOƒ[ƒoƒ‹ƒtƒŒ[ƒ€
+	//S‘© x N > 0D
 	DEF_RECORD(XGeometry2DEngine, {
 		GUID Guid(){ return WBGuid("a59cd5af-d032-421f-a3ce-24920fd84222"); }
-		//qƒm[ƒhF
-		//Frame x 1D‚±‚ÌFrame‚Ìxy•½–Ê‚ª“®ì–Ê‚Æ‚È‚éD–¢w’è‚È‚çƒOƒ[ƒoƒ‹ƒtƒŒ[ƒ€
-		//S‘© x N > 0D
 	});
 
 	DEF_RECORD(XPointToPoint2D, {
 		GUID Guid(){ return WBGuid("e4fa6c65-eddb-473c-96e9-9300d63875b0"); }
 		Vector2	p;
 		Vector2 q;
+		//array Float p[2];
+		//array Float q[2];
 	});
 
 	DEF_RECORD(XPointToLine2D, {
@@ -237,12 +265,17 @@ namespace PHG2{
 		Vector2	p;
 		Vector2 q0;
 		Vector2 q1;
+		//array Float p[2];
+		//array Float q0[2];
+		//array Float q1[2];
 	});
 
 	DEF_RECORD(XPointToArc2D, {
 		GUID Guid(){ return WBGuid("6669a0c5-6ad0-4f58-84e5-98673b2cd03d"); }
 		Vector2	p;
 		Vector2 c;
+		//array Float p[2];
+		//array Float c[2];
 		Float	r;
 		Float	s0;
 		Float	s1;
@@ -250,6 +283,10 @@ namespace PHG2{
 
 	DEF_RECORD(XLineToLine2D, {
 		GUID Guid(){ return WBGuid("2e675bc7-c8a2-42bd-9d18-02e60e8f8b6a"); }
+		//array Float p0[2];
+		//array Float p1[2];
+		//array Float q0[2];
+		//array Float q1[2];
 		Vector2	p0;
 		Vector2 p1;
 		Vector2 q0;
@@ -261,6 +298,9 @@ namespace PHG2{
 		Vector2 p0;
 		Vector2 p1;
 		Vector2 c;
+		//array Float p0[2];
+		//array Float p1[2];
+		//array Float c[2];
 		Float	r;
 		Float	s0;
 		Float	s1;
@@ -270,6 +310,8 @@ namespace PHG2{
 		GUID Guid(){ return WBGuid("41bc8040-7536-4bf2-b66d-da3f5a8f2ffc"); }
 		Vector2 c0;
 		Vector2 c1;
+		//array Float c0[2];
+		//array Float c1[2];
 		Float	r0;
 		Float	r1;
 		Float	s00;
@@ -294,130 +336,138 @@ namespace PHG2{
 	DEF_RECORD(XFix2D, {
 		GUID Guid(){ return WBGuid("8a3c63cf-639e-408f-8075-44c35f78c539"); }
 		Vector2	p;
+		//array Float p0[2];
 		Float	theta;
 	});
 }
 	
 //“_|“_S‘©
-class PHG2PointToPoint : public PHG2Constraint, public PHG2::XPointToPoint2D{
+class PHPointToPoint2D : public PHConstraint2D, public PHG2::XPointToPoint2D{
 public:
-	PHG2PointToPoint(){}
-	PHG2PointToPoint(
+	SGOBJECTDEF(PHPointToPoint2D);
+	PHPointToPoint2D(){}
+	PHPointToPoint2D(
 		SGFrame* _lhs, const Vec2f& _p,
 		SGFrame* _rhs, const Vec2f& _q):
-		PHG2Constraint(PHG2_POINT_TO_POINT, _lhs, _rhs)
+		PHConstraint2D(PHG2_POINT_TO_POINT, _lhs, _rhs)
 		{p = _p; q = _q;}
-	PHG2Constraint* dup(){return new PHG2PointToPoint(lhs->frame, p, rhs->frame, q);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHPointToPoint2D(lhs->frame, p, rhs->frame, q);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //“_|üS‘©
-class PHG2PointToLine : public PHG2Constraint, public PHG2::XPointToLine2D{
+class PHPointToLine2D : public PHConstraint2D, public PHG2::XPointToLine2D{
 public:
-	PHG2PointToLine(){}
-	PHG2PointToLine(
+	SGOBJECTDEF(PHPointToLine2D);
+	PHPointToLine2D(){}
+	PHPointToLine2D(
 		SGFrame* _lhs, const Vec2f& _p,
 		SGFrame* _rhs, const Vec2f& _q0, const Vec2f& _q1):
-		PHG2Constraint(PHG2_POINT_TO_LINE, _lhs, _rhs)
+		PHConstraint2D(PHG2_POINT_TO_LINE, _lhs, _rhs)
 		{p = _p; q0 = _q0; q1 = _q1;}
-	PHG2Constraint* dup(){return new PHG2PointToLine(lhs->frame, p, rhs->frame, q0, q1);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHPointToLine2D(lhs->frame, p, rhs->frame, q0, q1);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //“_|‰~S‘©
-class PHG2PointToArc : public PHG2Constraint, public PHG2::XPointToArc2D{
+class PHPointToArc2D : public PHConstraint2D, public PHG2::XPointToArc2D{
 public:
-	PHG2PointToArc(){}
-	PHG2PointToArc(
+	SGOBJECTDEF(PHPointToArc2D);
+	PHPointToArc2D(){}
+	PHPointToArc2D(
 		SGFrame* _lhs, const Vec2f& _p,
 		SGFrame* _rhs, const Vec2f& _c, float _r, float _s0, float _s1):
-		PHG2Constraint(PHG2_POINT_TO_ARC, _lhs, _rhs)
+		PHConstraint2D(PHG2_POINT_TO_ARC, _lhs, _rhs)
 		{p = _p; c = _c; r = _r; s0 = _s0; s1 = _s1;}
-	PHG2Constraint* dup(){return new PHG2PointToArc(lhs->frame, p, rhs->frame, c, r, s0, s1);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHPointToArc2D(lhs->frame, p, rhs->frame, c, r, s0, s1);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //ü|ü
-class PHG2LineToLine : public PHG2Constraint, public PHG2::XLineToLine2D{
+class PHLineToLine2D : public PHConstraint2D, public PHG2::XLineToLine2D{
 public:
-	PHG2LineToLine(){}
-	PHG2LineToLine(
+	SGOBJECTDEF(PHLineToLine2D);
+	PHLineToLine2D(){}
+	PHLineToLine2D(
 		SGFrame* _lhs, const Vec2f& _p0, const Vec2f& _p1,
 		SGFrame* _rhs, const Vec2f& _q0, const Vec2f& _q1):
-		PHG2Constraint(PHG2_LINE_TO_LINE, _lhs, _rhs)
+		PHConstraint2D(PHG2_LINE_TO_LINE, _lhs, _rhs)
 		{p0 = _p0; p1 = _p1; q0 = _q0; q1 = _q1;}
-	PHG2Constraint* dup(){return new PHG2LineToLine(lhs->frame, p0, p1, rhs->frame, q0, q1);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHLineToLine2D(lhs->frame, p0, p1, rhs->frame, q0, q1);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //ü|‰~S‘©
-class PHG2LineToArc : public PHG2Constraint, public PHG2::XLineToArc2D{
+class PHLineToArc2D : public PHConstraint2D, public PHG2::XLineToArc2D{
 public:
-	PHG2LineToArc(){}
-	PHG2LineToArc(
+	SGOBJECTDEF(PHLineToArc2D);
+	PHLineToArc2D(){}
+	PHLineToArc2D(
 		SGFrame* _lhs, const Vec2f& _p0, const Vec2f& _p1,
 		SGFrame* _rhs, const Vec2f& _c, float _r, float _s0, float _s1):
-		PHG2Constraint(PHG2_LINE_TO_ARC, _lhs, _rhs)
+		PHConstraint2D(PHG2_LINE_TO_ARC, _lhs, _rhs)
 		{p0 = _p0; p1 = _p1; c = _c; r = _r; s0 = _s0; s1 = _s1;}
-	PHG2Constraint* dup(){return new PHG2LineToArc(lhs->frame, p0, p1, rhs->frame, c, r, s0, s1);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHLineToArc2D(lhs->frame, p0, p1, rhs->frame, c, r, s0, s1);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //‰~|‰~S‘©
-class PHG2ArcToArc : public PHG2Constraint, public PHG2::XArcToArc2D{
+class PHArcToArc2D : public PHConstraint2D, public PHG2::XArcToArc2D{
 public:
-	PHG2ArcToArc(){}
-	PHG2ArcToArc(
-		SGFrame* _lhs, const Vec2d& _c0, double _r0, double _s00, double _s01,
-		SGFrame* _rhs, const Vec2d& _c1, double _r1, double _s10, double _s11):
-		PHG2Constraint(PHG2_ARC_TO_ARC, _lhs, _rhs){
+	SGOBJECTDEF(PHArcToArc2D);
+	PHArcToArc2D(){}
+	PHArcToArc2D(
+		SGFrame* _lhs, const Vec2f& _c0, float _r0, float _s00, float _s01,
+		SGFrame* _rhs, const Vec2f& _c1, float _r1, float _s10, float _s11):
+		PHConstraint2D(PHG2_ARC_TO_ARC, _lhs, _rhs){
 		c0 = _c0; r0 = _r0; s00 = _s00; s01 = _s01;
 		c1 = _c1; r1 = _r1; s10 = _s10; s11 = _s11;
 	}
-	PHG2Constraint* dup(){return new PHG2ArcToArc(lhs->frame, c0, r0, s00, s01, rhs->frame, c1, r1, s10, s11);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHArcToArc2D(lhs->frame, c0, r0, s00, s01, rhs->frame, c1, r1, s10, s11);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //•½sS‘©
-class PHG2Parallel : public PHG2Constraint, public PHG2::XParallel2D{
+class PHParallel2D : public PHConstraint2D, public PHG2::XParallel2D{
 public:
-	PHG2Parallel(){}
-	PHG2Parallel(
-		SGFrame* _lhs, double _theta0,
-		SGFrame* _rhs, double _theta1):
-		PHG2Constraint(PHG2_PARALLEL, _lhs, _rhs)
+	SGOBJECTDEF(PHParallel2D);
+	PHParallel2D(){}
+	PHParallel2D(
+		SGFrame* _lhs, float _theta0,
+		SGFrame* _rhs, float _theta1):
+		PHConstraint2D(PHG2_PARALLEL, _lhs, _rhs)
 		{theta0 = _theta0; theta1 = _theta1;}
-	PHG2Constraint* dup(){return new PHG2Parallel(lhs->frame, theta0, rhs->frame, theta1);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHParallel2D(lhs->frame, theta0, rhs->frame, theta1);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //Šp“xS‘©
-class PHG2Angle : public PHG2Constraint, public PHG2::XAngle2D{
+class PHAngle2D : public PHConstraint2D, public PHG2::XAngle2D{
 public:
-	PHG2Angle(){}
-	PHG2Angle(
-		SGFrame* _lhs, double _theta0,
-		SGFrame* _rhs, double _theta1,
-		double _phi):
-		PHG2Constraint(PHG2_ANGLE, _lhs, _rhs)
+	SGOBJECTDEF(PHAngle2D);
+	PHAngle2D(){}
+	PHAngle2D(
+		SGFrame* _lhs, float _theta0,
+		SGFrame* _rhs, float _theta1,
+		float _phi):
+		PHConstraint2D(PHG2_ANGLE, _lhs, _rhs)
 		{theta0 = _theta0; theta1 = _theta1; phi = _phi;}
-	virtual ~PHG2Angle(){}
-	PHG2Constraint* dup(){return new PHG2Angle(lhs->frame, theta0, rhs->frame, theta1, phi);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHAngle2D(lhs->frame, theta0, rhs->frame, theta1, phi);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 //ŒÅ’èS‘©
-class PHG2Fix : public PHG2Constraint, public PHG2::XFix2D{
+class PHFix2D : public PHConstraint2D, public PHG2::XFix2D{
 public:
-	PHG2Fix(){}
-	PHG2Fix(
+	SGOBJECTDEF(PHFix2D);
+	PHFix2D(){}
+	PHFix2D(
 		SGFrame* _lhs,
-		SGFrame* _rhs, const Vec2d& _p, double _theta):
-		PHG2Constraint(PHG2_FIX, _lhs, _rhs)
+		SGFrame* _rhs, const Vec2d& _p, float _theta):
+		PHConstraint2D(PHG2_FIX, _lhs, _rhs)
 		{p = _p; theta = _theta;}
-	virtual ~PHG2Fix(){}
-	PHG2Constraint* dup(){return new PHG2Fix(lhs->frame, rhs->frame, p, theta);}
-	PHG2Result Solve(PHG2ConstraintList&);
+	PHConstraint2D* dup(){return new PHFix2D(lhs->frame, rhs->frame, p, theta);}
+	PHG2Result Solve(PHConstraintList2D&);
 };
 
 ///////////////////////////////////////////////////////////////////////////

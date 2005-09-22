@@ -1,36 +1,59 @@
 #include "PHGeometry2D.h"
 #include <algorithm>
 
+namespace Spr{;
+
 using namespace std;
-using namespace Spr;
 using namespace PHG2;
 
 double PHG2_Epsilon = 1.0e-3f;
 const double PHG2_PI = 3.14159265358979f;
 
+SGOBJECTIMP(PHGeometry2DEngine, SGBehaviorEngine);
+SGOBJECTIMPABST(PHConstraint2D, SGObject);
+SGOBJECTIMP(PHPointToPoint2D, PHConstraint2D);
+SGOBJECTIMP(PHPointToLine2D, PHConstraint2D);
+SGOBJECTIMP(PHPointToArc2D, PHConstraint2D);
+SGOBJECTIMP(PHLineToLine2D, PHConstraint2D);
+SGOBJECTIMP(PHLineToArc2D, PHConstraint2D);
+SGOBJECTIMP(PHArcToArc2D, PHConstraint2D);
+SGOBJECTIMP(PHParallel2D, PHConstraint2D);
+SGOBJECTIMP(PHAngle2D, PHConstraint2D);
+SGOBJECTIMP(PHFix2D, PHConstraint2D);
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // PHGeometry2DEngine
 
 bool PHGeometry2DEngine::AddChildObject(SGObject* o, SGScene* s){
-	PHG2Constraint* con = DCAST(PHG2Constraint, o);
+	PHConstraint2D* con = DCAST(PHConstraint2D, o);
 	if(con){
 		Add(con);
 		return true;
 	}
+	plane = DCAST(SGFrame, o);	//動作平面となるフレーム
 	return false;
 }
 
 bool PHGeometry2DEngine::DelChildObject(SGObject* o, SGScene* s){
-	PHG2Constraint* con = DCAST(PHG2Constraint, o);
+	PHConstraint2D* con = DCAST(PHConstraint2D, o);
 	if(con){
 		Remove(con);
 		return true;
 	}
+	if(plane == DCAST(SGFrame, o))
+		plane = 0;
 	return false;
 }
 
 void PHGeometry2DEngine::Loaded(SGScene* scene){
-
+	//拘束リストの各要素が参照しているフレームのリストを作成
+	PHConstraintList2D::iterator icon;
+	for(icon = cons.begin(); icon != cons.end(); icon++){
+		if(find(frames.begin(), frames.end(), (*icon)->lhs) == frames.end())
+			frames.push_back((*icon)->lhs);
+		if(find(frames.begin(), frames.end(), (*icon)->rhs) == frames.end())
+			frames.push_back((*icon)->rhs);
+	}
 }
 
 //全クリア
@@ -40,13 +63,13 @@ void PHGeometry2DEngine::Clear(SGScene* s){
 }
 
 //拘束を登録
-PHG2Constraint* PHGeometry2DEngine::Add(PHG2Constraint* con){
+PHConstraint2D* PHGeometry2DEngine::Add(PHConstraint2D* con){
 	cons.push_back(con);
 	return con;
 }
 
 //拘束を削除
-void PHGeometry2DEngine::Remove(PHG2Constraint* con){
+void PHGeometry2DEngine::Remove(PHConstraint2D* con){
 	cons.erase(find(cons.begin(), cons.end(), con));
 }
 
@@ -57,10 +80,18 @@ void PHGeometry2DEngine::_Preprocess(){
 
 //Solveの後処理
 void PHGeometry2DEngine::_Postprocess(){
-	//自由度をリセット
+	//位置，傾きをSGFrameに反映して，自由度をリセット
+	//動作平面フレームのposture
+	Affinef afPlane = plane->GetWorldPosture();
+
 	PHG2FrameList::iterator it;
-	for(it = frames.begin(); it != frames.end(); it++)
-		(*it)->dof = PHG2_T2R1;
+	PHG2Frame* fr;
+	for(it = frames.begin(); it != frames.end(); it++){
+		fr = *it;
+		fr->frame->SetWorldPosture(
+			afPlane * Affinef::Trn(fr->position.x, fr->position.y, 0.0f) * Affinef::Rot(fr->angle, 'z'));
+		fr->dof = PHG2_T2R1;
+	}
 }
 
 //拘束を解決
@@ -69,9 +100,9 @@ void PHGeometry2DEngine::Step(SGScene* s){
 
 	//計算本体：
 	bool bChanged;
-	PHG2ConstraintList	newcon;
+	PHConstraintList2D	newcon;
 	PHG2Result result;
-	PHG2ConstraintList::iterator itcon, itcon_tmp;
+	PHConstraintList2D::iterator itcon, itcon_tmp;
 
 	//変化が生じなくなるまで繰り返す
 	do{
@@ -109,11 +140,39 @@ void PHGeometry2DEngine::Step(SGScene* s){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// PHG2Constraint
+// PHConstraint2D
 
-SGOBJECTIMP(PHG2Constraint, SGObject);
+bool PHConstraint2D::AddChildObject(SGObject* o, SGScene* s){
+	SGFrame* fr = DCAST(SGFrame, o);
+	if(fr){
+		if(!lhs){
+			lhs = new PHG2Frame(fr);
+			return true;
+		}
+		if(!rhs){
+			rhs = new PHG2Frame(fr);
+			return true;
+		}
+	}
+	return false;
+}
 
-PHG2Result PHG2PointToPoint::Solve(PHG2ConstraintList& newcon){
+bool PHConstraint2D::DelChildObject(SGObject* o, SGScene* s){
+	SGFrame* fr = DCAST(SGFrame, o);
+	if(fr){
+		if(fr == lhs->frame){
+			lhs = 0;
+			return true;
+		}
+		if(fr == rhs->frame){
+			rhs = 0;
+			return true;
+		}
+	}
+	return false;
+}
+
+PHG2Result PHPointToPoint2D::Solve(PHConstraintList2D& newcon){
 	Vec2d pw = lhs ? lhs->toWorld(p) : p;
 	Vec2d qw = rhs ? rhs->toWorld(q) : q;
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
@@ -174,8 +233,8 @@ PHG2Result PHG2PointToPoint::Solve(PHG2ConstraintList& newcon){
 			double d0 = (y0 - pw).square() + (y0 - qw).square();
 			double d1 = (y1 - pw).square() + (y1 - qw).square();
 			if(d0 > d1)y0 = y1;
-			newcon.push_back(new PHG2PointToPoint(0, y0, lhs->frame, p));
-			newcon.push_back(new PHG2PointToPoint(0, y0, rhs->frame, q));
+			newcon.push_back(new PHPointToPoint2D(0, y0, lhs->frame, p));
+			newcon.push_back(new PHPointToPoint2D(0, y0, rhs->frame, q));
 			return PHG2_NEW;
 		}
 		case PHG2_T1R0:{
@@ -189,8 +248,8 @@ PHG2Result PHG2PointToPoint::Solve(PHG2ConstraintList& newcon){
 			double d0 = (y0 - pw).square() + (y0 - qw).square();
 			double d1 = (y1 - pw).square() + (y1 - qw).square();
 			if(d0 > d1)y0 = y1;
-			newcon.push_back(new PHG2PointToPoint(0, y0, lhs->frame, p));
-			newcon.push_back(new PHG2PointToPoint(0, y0, rhs->frame, q));
+			newcon.push_back(new PHPointToPoint2D(0, y0, lhs->frame, p));
+			newcon.push_back(new PHPointToPoint2D(0, y0, rhs->frame, q));
 			return PHG2_NEW;
 		}
 		case PHG2_T2R0:
@@ -211,8 +270,8 @@ PHG2Result PHG2PointToPoint::Solve(PHG2ConstraintList& newcon){
 				qw, rhs->range1 - rhs->range0))
 				return PHG2_ILLPOSED;
 			//交点が両者の可動範囲内になければならない
-			newcon.push_back(new PHG2PointToPoint(0, y, lhs->frame, p));
-			newcon.push_back(new PHG2PointToPoint(0, y, rhs->frame, q));
+			newcon.push_back(new PHPointToPoint2D(0, y, lhs->frame, p));
+			newcon.push_back(new PHPointToPoint2D(0, y, rhs->frame, q));
 			return PHG2_NEW;
 		}
 		default: return PHG2_REDUNDANT;
@@ -231,7 +290,7 @@ PHG2Result PHG2PointToPoint::Solve(PHG2ConstraintList& newcon){
 	return PHG2_ERROR;
 }
 
-PHG2Result PHG2PointToLine::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHPointToLine2D::Solve(PHConstraintList2D& newcon){
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
 	Vec2d pw  = lhs ? lhs->toWorld(p) : p;
@@ -255,11 +314,11 @@ PHG2Result PHG2PointToLine::Solve(PHG2ConstraintList& newcon){
 		if((y0 - pw).square() > (y1 - pw).square())
 			y0 = y1;
 		if(y0_online){
-			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHG2PointToPoint(0, y0, lhs->frame, p) : new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y0)));
+			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHPointToPoint2D(0, y0, lhs->frame, p) : new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y0)));
 			return PHG2_NEW;
 		}
 		if(y1_online){
-			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHG2PointToPoint(0, y1, lhs->frame, p) : new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y1)));
+			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHPointToPoint2D(0, y1, lhs->frame, p) : new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y1)));
 			return PHG2_NEW;
 		}
 		return PHG2_ILLPOSED;
@@ -275,8 +334,8 @@ PHG2Result PHG2PointToLine::Solve(PHG2ConstraintList& newcon){
 		if(!Point_On_LineSegment(y, qw0, qw1))
 			return PHG2_ILLPOSED;
 		if(dof_lhs == PHG2_T1R0)
-			 newcon.push_back(new PHG2PointToPoint(0, y, lhs->frame, p));
-		else newcon.push_back(new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y)));
+			 newcon.push_back(new PHPointToPoint2D(0, y, lhs->frame, p));
+		else newcon.push_back(new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y)));
 		return PHG2_NEW;
 	}
 	//片方がT0R0でもう一方がT2R0の場合
@@ -293,7 +352,7 @@ PHG2Result PHG2PointToLine::Solve(PHG2ConstraintList& newcon){
 	return PHG2_REDUNDANT;
 }
 
-PHG2Result Spr::PHG2PointToArc::Solve(PHG2ConstraintList& newcon){
+PHG2Result Spr::PHPointToArc2D::Solve(PHConstraintList2D& newcon){
 	//簡単のためいずれかがT0R0で、かつもう一方がT0R1かT1R0の場合のみ解く
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
@@ -318,11 +377,11 @@ PHG2Result Spr::PHG2PointToArc::Solve(PHG2ConstraintList& newcon){
 		if((y0 - pw).square() > (y1 - pw).square())
 			y0 = y1;
 		if(y0_onarc){
-			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHG2PointToPoint(0, y0, lhs->frame, p) : new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y0)));
+			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHPointToPoint2D(0, y0, lhs->frame, p) : new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y0)));
 			return PHG2_NEW;
 		}
 		if(y1_onarc){
-			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHG2PointToPoint(0, y1, lhs->frame, p) : new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y1)));
+			newcon.push_back(dof_lhs == PHG2_T0R1 ? new PHPointToPoint2D(0, y1, lhs->frame, p) : new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y1)));
 			return PHG2_NEW;
 		}
 		return PHG2_ILLPOSED;
@@ -341,11 +400,11 @@ PHG2Result Spr::PHG2PointToArc::Solve(PHG2ConstraintList& newcon){
 		if((y0 - pw).square() > (y1 - pw).square())
 			y0 = y1;
 		if(y0_onarc){
-			newcon.push_back(dof_lhs == PHG2_T1R0 ? new PHG2PointToPoint(0, y0, lhs->frame, p) : new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y0)));
+			newcon.push_back(dof_lhs == PHG2_T1R0 ? new PHPointToPoint2D(0, y0, lhs->frame, p) : new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y0)));
 			return PHG2_NEW;
 		}
 		if(y1_onarc){
-			newcon.push_back(dof_lhs == PHG2_T1R0 ? new PHG2PointToPoint(0, y1, lhs->frame, p) : new PHG2PointToPoint(0, pw, rhs->frame, rhs->toLocal(y1)));
+			newcon.push_back(dof_lhs == PHG2_T1R0 ? new PHPointToPoint2D(0, y1, lhs->frame, p) : new PHPointToPoint2D(0, pw, rhs->frame, rhs->toLocal(y1)));
 			return PHG2_NEW;
 		}
 		return PHG2_ILLPOSED;
@@ -353,7 +412,7 @@ PHG2Result Spr::PHG2PointToArc::Solve(PHG2ConstraintList& newcon){
 	return PHG2_REDUNDANT;
 }
 
-PHG2Result PHG2LineToLine::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHLineToLine2D::Solve(PHConstraintList2D& newcon){
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
 	Vec2d pw0 = lhs ? lhs->toWorld(p0) : p0;
@@ -400,23 +459,23 @@ PHG2Result PHG2LineToLine::Solve(PHG2ConstraintList& newcon){
 			d1 = (u - a3).square() + (v - b3).square();
 			if(d0 > d1)a = a3, b = b3;
 		}
-		newcon.push_back(new PHG2PointToPoint(0, a, lhs->frame, lhs->toLocal(u)));
-		newcon.push_back(new PHG2PointToPoint(0, b, rhs->frame, rhs->toLocal(v)));
+		newcon.push_back(new PHPointToPoint2D(0, a, lhs->frame, lhs->toLocal(u)));
+		newcon.push_back(new PHPointToPoint2D(0, b, rhs->frame, rhs->toLocal(v)));
 		return PHG2_NEW;
 	}
 	
 	return PHG2_REDUNDANT;
 }
 
-PHG2Result PHG2LineToArc::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHLineToArc2D::Solve(PHConstraintList2D& newcon){
 	return PHG2_REDUNDANT;
 }
 
-PHG2Result PHG2ArcToArc::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHArcToArc2D::Solve(PHConstraintList2D& newcon){
 	return PHG2_REDUNDANT;
 }
 
-PHG2Result PHG2Parallel::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHParallel2D::Solve(PHConstraintList2D& newcon){
 	//lhs, rhs共に回転自由度を持つ場合は冗長
 	//lhs, rhs共に回転自由度を持たない場合は過剰
 	//いずれかのみ回転自由度を持つ場合はそちらを回転して拘束を解決
@@ -452,7 +511,7 @@ PHG2Result PHG2Parallel::Solve(PHG2ConstraintList& newcon){
 	return PHG2_ERROR;
 }
 
-PHG2Result PHG2Angle::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHAngle2D::Solve(PHConstraintList2D& newcon){
 	//lhs, rhs共に回転自由度を持つ場合は冗長
 	//lhs, rhs共に回転自由度を持たない場合は過剰
 	//いずれかのみ回転自由度を持つ場合はそちらを回転して拘束を解決
@@ -485,7 +544,7 @@ PHG2Result PHG2Angle::Solve(PHG2ConstraintList& newcon){
 	return PHG2_ERROR;
 }
 
-PHG2Result PHG2Fix::Solve(PHG2ConstraintList& newcon){
+PHG2Result PHFix2D::Solve(PHConstraintList2D& newcon){
 	//いずれかがT2R1で他方がT0R0の場合のみ扱う
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
@@ -507,6 +566,30 @@ PHG2Result PHG2Fix::Solve(PHG2ConstraintList& newcon){
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Loader & Saver
 
+//SGOBJECTIMP(Vector2, SGObject);
+
+/*class Vector2Loader:public FIObjectLoader<Vector2>{
+public:
+	virtual bool LoadData(FILoadScene* ctx, Vector2* v){
+		FIDocNodeBase* doc = ctx->docs.Top();
+		doc->GetWholeData(*(XVector2*)v);
+		return true;
+	}
+	Vector2Loader(){
+		UTRef<FITypeDescDb> db = new FITypeDescDb;
+		db->SetPrefix("X");
+		db->REG_FIELD(Float);
+		db->REG_RECORD_PROTO(XVector2);
+	}
+};
+
+class Vector2Saver : public FIObjectSaver<Vector2>{
+	virtual UTString GetType() const{ return "Vector2"; }
+	virtual void SaveData(FISaveScene* ctx, FIDocNodeBase* doc, Vector2 *v){
+		doc->SetWholeData(*(XVector2*)v);
+	}
+};*/
+
 class PHGeometry2DEngineLoader:public FIObjectLoader<PHGeometry2DEngine>{
 public:
 	virtual bool LoadData(FILoadScene* ctx, PHGeometry2DEngine* engine){
@@ -515,35 +598,90 @@ public:
 	PHGeometry2DEngineLoader(){
 		UTRef<FITypeDescDb> db = new FITypeDescDb;
 		db->SetPrefix("X");
+		db->REG_FIELD(Float);
+		db->REG_FIELD(Vector2);
 		db->REG_RECORD_PROTO(XGeometry2DEngine);
 	}
 };
 
-#define DEF_LOADER(NAME)											\
-class PH##NAME##2DLoader : public FIObjectLoader<PHG2##NAME>{		\
-public:	typedef X##NAME##2D template_type;							\
-	virtual bool LoadData(FILoadScene* ctx, PHG2PointToPoint *con){	\
-	FIDocNodeBase* doc = ctx->docs.Top();							\
-	doc->GetWholeData(*(template_type*)con);						\
-	return true;													\
-	}																\
-	PH##NAME##2DLoader(){											\
-		UTRef<FITypeDescDb> db = new FITypeDescDb;					\
-		db->SetPrefix("X");											\
-		db->REG_FIELD(Float);										\
-		db->REG_FIELD(Vector2);										\
-		db->REG_RECORD_PROTO(X##NAME##2D);							\
-	}																\
-};	
+class PHGeometry2DEngineSaver : public FIBaseSaver{
+	virtual UTString GetType() const{return "PHGeometry2DEngine";}
+	virtual void Save(FISaveScene* ctx, SGObject* arg){
+		PHGeometry2DEngine* e = (PHGeometry2DEngine*)arg;
+		FIDocNodeBase* doc = ctx->CreateDocNode("PHGeometry2DEngine", e);
+		ctx->docs.back()->AddChild(doc);
+		ctx->docs.push_back(doc);
+		PHConstraintList2D::const_iterator it;
+		for(it = e->Constraints().begin(); it != e->Constraints().end(); ++it){
+			ctx->SaveRecursive((SGObject*)&**it);
+		}
+		ctx->docs.pop_back();
+	}
+};
 
-DEF_LOADER(PointToPoint)
-DEF_LOADER(PointToLine)
-DEF_LOADER(PointToArc)
-DEF_LOADER(LineToLine)
-DEF_LOADER(LineToArc)
-DEF_LOADER(ArcToArc)
-DEF_LOADER(Parallel)
-DEF_LOADER(Angle)
-DEF_LOADER(Fix)
+#define DEF_LOADER(NAME)										\
+class PH##NAME##Loader : public FIObjectLoader<PH##NAME>{		\
+public:															\
+	typedef X##NAME template_type;								\
+	virtual bool LoadData(FILoadScene* ctx, PH##NAME *con){		\
+		FIDocNodeBase* doc = ctx->docs.Top();					\
+		doc->GetWholeData(*(template_type*)con);				\
+		return true;											\
+	}															\
+	PH##NAME##Loader(){											\
+		UTRef<FITypeDescDb> db = new FITypeDescDb;				\
+		db->SetPrefix("X");										\
+		db->REG_FIELD(Float);									\
+		db->REG_FIELD(Vector2);									\
+		db->REG_RECORD_PROTO(X##NAME);							\
+	}															\
+};
+
+#define DEF_SAVER(NAME)															\
+class PH##NAME##Saver : public FIObjectSaver<PH##NAME>{							\
+	virtual UTString GetType() const{ return "PH"#NAME; }						\
+	virtual void SaveData(FISaveScene* ctx, FIDocNodeBase* doc, PH##NAME *con){	\
+		X##NAME dat;															\
+		dat = *(X##NAME *)con;													\
+		doc->SetWholeData(dat);													\
+		doc->AddChild(ctx->CreateDocNode("REF", &*(con->lhs->frame)));			\
+		doc->AddChild(ctx->CreateDocNode("REF", &*(con->rhs->frame)));			\
+	}																			\
+};
+
+DEF_LOADER(PointToPoint2D)
+DEF_LOADER(PointToLine2D)
+DEF_LOADER(PointToArc2D)
+DEF_LOADER(LineToLine2D)
+DEF_LOADER(LineToArc2D)
+DEF_LOADER(ArcToArc2D)
+DEF_LOADER(Parallel2D)
+DEF_LOADER(Angle2D)
+DEF_LOADER(Fix2D)
+
+DEF_SAVER(PointToPoint2D)
+DEF_SAVER(PointToLine2D)
+DEF_SAVER(PointToArc2D)
+DEF_SAVER(LineToLine2D)
+DEF_SAVER(LineToArc2D)
+DEF_SAVER(ArcToArc2D)
+DEF_SAVER(Parallel2D)
+DEF_SAVER(Angle2D)
+DEF_SAVER(Fix2D)
+
+//DEF_REGISTER_BOTH(Vector2);
+DEF_REGISTER_BOTH(PHGeometry2DEngine);
+DEF_REGISTER_BOTH(PHPointToPoint2D);
+DEF_REGISTER_BOTH(PHPointToLine2D);
+DEF_REGISTER_BOTH(PHPointToArc2D);
+DEF_REGISTER_BOTH(PHLineToLine2D);
+DEF_REGISTER_BOTH(PHLineToArc2D);
+DEF_REGISTER_BOTH(PHArcToArc2D);
+DEF_REGISTER_BOTH(PHParallel2D);
+DEF_REGISTER_BOTH(PHAngle2D);
+DEF_REGISTER_BOTH(PHFix2D);
 
 #undef DEF_LOADER
+#undef DEF_SAVER
+
+}
