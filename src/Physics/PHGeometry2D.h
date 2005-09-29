@@ -39,126 +39,230 @@
 #include <Base/Affine.h>
 #include <FileIO/FIDocScene.h>
 #include <SceneGraph/SGScene.h>
-#include <Graphics/GRVisual.h>
-#include <Physics/PHSolid.h>
-//#include <algorithm>
-//#include <list>
 #include <vector>
 
 using namespace PTM;
 namespace Spr{;
 
-//充分小さな値
-static const double PHG2Epsilon = 1.0e-5;
+//Geometry2D内部namespace
+namespace PHG2{
+	//拘束の種類
+	/*enum PHConstraint2DType{
+		PHG2_POINT_TO_POINT,	//点－点拘束：２点を一致させる
+		PHG2_POINT_TO_LINE,		//点－線拘束：点を線上に拘束する
+		PHG2_POINT_TO_ARC,
+		PHG2_LINE_TO_LINE,
+		PHG2_LINE_TO_ARC,
+		PHG2_ARC_TO_ARC,
+		PHG2_PARALLEL,			//平行拘束：２線をなるべく小さな回転で平行にする
+		PHG2_ANGLE,				//角度拘束：lhsのベクトルp0->p1を基準とするrhsのベクトルq0->q1の角度を
+								//	任意の値（符号付き）に拘束する
+		PHG2_FIX,				//固定拘束：
+	};*/
 
-//自由度
-//	現在の実装ではT1R1となるケースは存在しない
-enum PHG2_DOF{
-	PHG2_T0R0,
-	PHG2_T0R1,
-	PHG2_T1R0,
-	PHG2_T2R0,
-	PHG2_T2R1
-};
+	//充分小さな値
+	static const double Epsilon = 1.0e-5;
 
-//拘束の種類
-enum PHConstraint2DType{
-	PHG2_POINT_TO_POINT,	//点－点拘束：２点を一致させる
-	PHG2_POINT_TO_LINE,		//点－線拘束：点を線上に拘束する
-	PHG2_POINT_TO_ARC,
-	PHG2_LINE_TO_LINE,
-	PHG2_LINE_TO_ARC,
-	PHG2_ARC_TO_ARC,
-	PHG2_PARALLEL,			//平行拘束：２線をなるべく小さな回転で平行にする
-	PHG2_ANGLE,				//角度拘束：lhsのベクトルp0->p1を基準とするrhsのベクトルq0->q1の角度を
-							//	任意の値（符号付き）に拘束する
-	PHG2_FIX,				//固定拘束：
-};
+	//自由度
+	//	現在の実装ではT1R1となるケースは存在しない
+	enum DOF{
+		T0R0,
+		T0R1,
+		T1R0,
+		T2R0,
+		T2R1
+	};
 
-//PHConstraint2D::Solveの戻り値
-enum PHG2Result{
-	PHG2_AGAIN,		//もう一度評価希望
-	PHG2_SOLVED,	//解けた
-	PHG2_NEW,		//新しい拘束が１つ生じた
-	PHG2_ILLPOSED,	//解決不能
-	PHG2_OVER,		//過剰拘束
-	PHG2_REDUNDANT,	//冗長拘束
-	PHG2_ERROR		//その他のエラー
-};
+	//PHConstraint2D::Solveの戻り値
+	enum Result{
+		AGAIN,		//もう一度評価希望
+		SOLVED,		//解けた
+		NEW,		//新しい拘束が１つ生じた
+		ILLPOSED,	//解決不能
+		OVER,		//過剰拘束
+		REDUNDANT,	//冗長拘束
+		ERROR		//その他のエラー
+	};
 
-//外部コンポーネントとリンクする内部クラス
-class PHG2Frame : public UTRefCount{
-public:
-	UTRef<SGFrame>	frame;
-	PHG2_DOF	dof;			//平行移動、回転の各自由度
-	Vec2d		center;			//T0R1時の回転中心
-	Vec2d		range0, range1;	//T1R0時の平行移動範囲
+	typedef float Float;
+	typedef Vec2f Vector2;
+	/*class Vector2 : public SGObject, public Vec2f{
+	public:
+		SGOBJECTDEF(Vector2);
+		Vector2& operator=(const Vec2f& v){
+			*(Vec2f*)this = v;
+			return *this;
+		}
+	};*/
+	
+	DEF_RECORD(XVector2, {
+		GUID Guid(){return WBGuid("ec045bba-b265-4511-973d-500656055f40");}
+		Float x;
+		Float y;
+	});
 
-	Vec2d		position;		//位置
-	double		angle;			//角度
+	//#define array
 
-	//ローカル座標⇔ワールド座標
-	Vec2d toWorld(const Vec2d& pl){
-		return Matrix2d::Rot(angle) * pl + position;
-	}
-	Vec2d toLocal(const Vec2d& pw){
-		return Matrix2d::Rot(-angle) * (pw - position);
-	}
+	//子ノード：
+	//Frame x 1．このFrameのxy平面が動作面となる．未指定ならグローバルフレーム
+	//拘束 x N > 0．
+	DEF_RECORD(XGeometry2DEngine, {
+		GUID Guid(){ return WBGuid("a59cd5af-d032-421f-a3ce-24920fd84222"); }
+	});
 
-	PHG2Frame& operator=(const PHG2Frame& src){
-		dof = src.dof;
-		center = src.center;
-		range0 = src.range0;
-		range1 = src.range1;
-		position = src.position;
-		angle = src.angle;
-		return *this;
-	}
+	DEF_RECORD(XPointToPoint2D, {
+		GUID Guid(){ return WBGuid("e4fa6c65-eddb-473c-96e9-9300d63875b0"); }
+		Vector2	point_l;
+		Vector2 point_r;
+	});
 
-	//operator SGFrame*(){return frame;}
-	//operator const SGFrame*()const{return frame;}
+	DEF_RECORD(XPointToLine2D, {
+		GUID Guid(){ return WBGuid("1b0bbd07-7d79-4f95-ae7a-660e8fe05ed5"); }
+		Vector2	point;
+		Vector2 line0;
+		Vector2 line1;
+	});
 
-	PHG2Frame(SGFrame* f):frame(f){
-		dof = PHG2_T2R1;
-		angle = 0.0;
-	}
-	PHG2Frame(const PHG2Frame& src){*this = src;}
-};
+	DEF_RECORD(XPointToArc2D, {
+		GUID Guid(){ return WBGuid("6669a0c5-6ad0-4f58-84e5-98673b2cd03d"); }
+		Vector2	point;
+		Vector2 center;
+		Float	radius;
+		Float	limit0;
+		Float	limit1;
+	});
 
-//オブジェクトの配列
-class PHG2FrameList : public std::vector<UTRef<PHG2Frame> >{
-public:
-	PHG2FrameList& operator=(const PHG2FrameList& src){
-		for(const_iterator it = src.begin(); it != src.end(); it++)
-			push_back(new PHG2Frame(**it));
-		return *this;
-	}
-	PHG2FrameList(){}
-	PHG2FrameList(const PHG2FrameList& src){*this = src;}
-};
+	DEF_RECORD(XLineToLine2D, {
+		GUID Guid(){ return WBGuid("2e675bc7-c8a2-42bd-9d18-02e60e8f8b6a"); }
+		Vector2	line0_l;
+		Vector2 line1_l;
+		Vector2 line0_r;
+		Vector2 line1_r;
+	});
+
+	DEF_RECORD(XLineToArc2D, {
+		GUID Guid(){ return WBGuid("f9e509e9-3010-41dd-9cf1-c9c6f6fb76ae"); }
+		Vector2 line0;
+		Vector2 line1;
+		Vector2 center;
+		Float	radius;
+		Float	limit0;
+		Float	limit1;
+	});
+
+	DEF_RECORD(XArcToArc2D, {
+		GUID Guid(){ return WBGuid("41bc8040-7536-4bf2-b66d-da3f5a8f2ffc"); }
+		Vector2 center_l;
+		Float	radius_l;
+		Float	limit0_l;
+		Float	limit1_l;
+		Vector2 center_r;
+		Float	radius_r;
+		Float	limit0_r;
+		Float	limit1_r;
+	});
+
+	DEF_RECORD(XParallel2D, {
+		GUID Guid(){ return WBGuid("cfd3c326-485a-42b7-8311-63bbbf21c58c"); }
+		Float	dir_l;
+		Float	dir_r;
+	});
+
+	DEF_RECORD(XAngle2D, {
+		GUID Guid(){ return WBGuid("66cc9fe9-b9b6-46a8-9c04-6049a6c2b782"); }
+		Float	offset_l;
+		Float	offset_r;
+		Float	angle;
+	});
+
+	DEF_RECORD(XFix2D, {
+		GUID Guid(){ return WBGuid("8a3c63cf-639e-408f-8075-44c35f78c539"); }
+		Vector2	offset;
+		Float	angle;
+	});
+
+	//外部コンポーネントとリンクする内部クラス
+	class Frame : public UTRefCount{
+	public:
+		UTRef<SGFrame>	frame;
+		DOF	dof;			//平行移動、回転の各自由度
+		Vec2d		center;			//T0R1時の回転中心
+		Vec2d		range0, range1;	//T1R0時の平行移動範囲
+
+		Vec2d		position;		//位置
+		double		angle;			//角度
+
+		//ローカル座標⇔ワールド座標
+		Vec2d toWorld(const Vec2d& pl){
+			return Matrix2d::Rot(angle) * pl + position;
+		}
+		Vec2d toLocal(const Vec2d& pw){
+			return Matrix2d::Rot(-angle) * (pw - position);
+		}
+
+		/*PHG2Frame& operator=(const PHG2Frame& src){
+			dof = src.dof;
+			center = src.center;
+			range0 = src.range0;
+			range1 = src.range1;
+			position = src.position;
+			angle = src.angle;
+			return *this;
+		}*/
+		//operator SGFrame*(){return frame;}
+		//operator const SGFrame*()const{return frame;}
+
+		Frame(SGFrame* f):frame(f){
+			dof = T2R1;
+			angle = 0.0;
+		}
+		//Frame(const Frame& src){*this = src;}
+	};
+
+	//オブジェクトの配列
+	class FrameList : public std::vector<UTRef<Frame> >{
+	public:
+		iterator find(SGFrame* fr){
+			for(iterator it = begin(); it != end(); it++)
+				if((*it)->frame == fr)
+					return it;
+			return end();
+		}
+		/*PHG2FrameList& operator=(const PHG2FrameList& src){
+			for(const_iterator it = src.begin(); it != src.end(); it++)
+				push_back(new PHG2Frame(**it));
+			return *this;
+		}
+		PHG2FrameList(){}
+		PHG2FrameList(const PHG2FrameList& src){*this = src;}*/
+	};
+
+}
+
 
 //拘束クラス
 class PHConstraintList2D;
 class PHConstraint2D : public SGObject{
 public:		
+	//SGObjectの機能
 	SGOBJECTDEFABST(PHConstraint2D);
-
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual bool DelChildObject(SGObject* o, SGScene* s);
 
-	PHConstraint2DType	type;	//拘束の種類
+protected:
+	//PHConstraint2DType	type;	//拘束の種類
 	UTRef<PHG2Frame> lhs, rhs;	//拘束対象
 
 	//複製を作成
-	virtual PHConstraint2D* dup(){return 0;}
+	virtual PHConstraint2D* dup() = 0;//{return 0;}
 	//拘束を解く
-	virtual PHG2Result Solve(PHConstraintList2D& newcon){return PHG2_ERROR;}
+	virtual PHG2Result Solve(PHConstraintList2D& newcon) = 0;//{return PHG2_ERROR;}
 
 	PHConstraint2D(){}
-	PHConstraint2D(PHConstraint2DType _type, SGFrame* _lhs, SGFrame* _rhs){
+	PHConstraint2D(PHConstraint2DType _type/*, SGFrame* _lhs, SGFrame* _rhs*/){
 		type = _type;
-		lhs = new PHG2Frame(_lhs);
-		rhs = new PHG2Frame(_rhs);
+		//lhs = new PHG2Frame(_lhs);
+		//rhs = new PHG2Frame(_rhs);
 	}
 	virtual ~PHConstraint2D(){}
 };
@@ -186,6 +290,7 @@ class PHGeometry2DEngine : public SGBehaviorEngine{
 public:		
 	SGOBJECTDEF(PHGeometry2DEngine);
 
+	///エンジンとしての機能
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	virtual bool DelChildObject(SGObject* o, SGScene* s);
 	virtual int GetPriority() const {return SGBP_GEOMETRYENGINE;}
@@ -195,25 +300,23 @@ public:
 	virtual size_t NChildObjects(){ return frames.size(); }
 	virtual SGObject* ChildObject(size_t i){ return (SGObject*)&*(frames[i]); }
 
+	///手動操作用関数
 	///拘束を追加する
-	PHConstraint2D*		Add(PHConstraint2D* con);
+	PHConstraint2D*		Add(PHConstraint2D* con, SGFrame* lhs, SGFrame* rhs);
 
 	///拘束を削除する
 	void				Remove(PHConstraint2D*);
 
 	///拘束リストの取得
-	const PHConstraintList2D& Constraints()const{return cons;}
-
-	///全クリア
-	void Clear();
+	//const PHConstraintList2D& Constraints()const{return cons;}
 
 	///拘束を解決する
-	void Solve();
+	//void Solve();
 
 	PHGeometry2DEngine(){}
 	~PHGeometry2DEngine(){}
 protected:
-	UTRef<SGFrame>		plane;
+	UTRef<PHG2Frame>	plane;
 	PHG2FrameList		frames;
 	PHConstraintList2D	cons, cons_tmp;
 	
@@ -223,123 +326,6 @@ protected:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //	色々な拘束
-
-//Vector2とFloat型名を公開したくないので内部namespace
-namespace PHG2{
-	typedef float Float;
-	typedef Vec2f Vector2;
-	/*class Vector2 : public SGObject, public Vec2f{
-	public:
-		SGOBJECTDEF(Vector2);
-		Vector2& operator=(const Vec2f& v){
-			*(Vec2f*)this = v;
-			return *this;
-		}
-	};*/
-	
-	DEF_RECORD(XVector2, {
-		GUID Guid(){return WBGuid("ec045bba-b265-4511-973d-500656055f40");}
-		Float x;
-		Float y;
-	});
-
-//#define array
-
-	//子ノード：
-	//Frame x 1．このFrameのxy平面が動作面となる．未指定ならグローバルフレーム
-	//拘束 x N > 0．
-	DEF_RECORD(XGeometry2DEngine, {
-		GUID Guid(){ return WBGuid("a59cd5af-d032-421f-a3ce-24920fd84222"); }
-	});
-
-	DEF_RECORD(XPointToPoint2D, {
-		GUID Guid(){ return WBGuid("e4fa6c65-eddb-473c-96e9-9300d63875b0"); }
-		Vector2	p;
-		Vector2 q;
-		//array Float p[2];
-		//array Float q[2];
-	});
-
-	DEF_RECORD(XPointToLine2D, {
-		GUID Guid(){ return WBGuid("1b0bbd07-7d79-4f95-ae7a-660e8fe05ed5"); }
-		Vector2	p;
-		Vector2 q0;
-		Vector2 q1;
-		//array Float p[2];
-		//array Float q0[2];
-		//array Float q1[2];
-	});
-
-	DEF_RECORD(XPointToArc2D, {
-		GUID Guid(){ return WBGuid("6669a0c5-6ad0-4f58-84e5-98673b2cd03d"); }
-		Vector2	p;
-		Vector2 c;
-		//array Float p[2];
-		//array Float c[2];
-		Float	r;
-		Float	s0;
-		Float	s1;
-	});
-
-	DEF_RECORD(XLineToLine2D, {
-		GUID Guid(){ return WBGuid("2e675bc7-c8a2-42bd-9d18-02e60e8f8b6a"); }
-		//array Float p0[2];
-		//array Float p1[2];
-		//array Float q0[2];
-		//array Float q1[2];
-		Vector2	p0;
-		Vector2 p1;
-		Vector2 q0;
-		Vector2 q1;
-	});
-
-	DEF_RECORD(XLineToArc2D, {
-		GUID Guid(){ return WBGuid("f9e509e9-3010-41dd-9cf1-c9c6f6fb76ae"); }
-		Vector2 p0;
-		Vector2 p1;
-		Vector2 c;
-		//array Float p0[2];
-		//array Float p1[2];
-		//array Float c[2];
-		Float	r;
-		Float	s0;
-		Float	s1;
-	});
-
-	DEF_RECORD(XArcToArc2D, {
-		GUID Guid(){ return WBGuid("41bc8040-7536-4bf2-b66d-da3f5a8f2ffc"); }
-		Vector2 c0;
-		Vector2 c1;
-		//array Float c0[2];
-		//array Float c1[2];
-		Float	r0;
-		Float	r1;
-		Float	s00;
-		Float	s01;
-		Float	s10;
-		Float	s11;
-	});
-
-	DEF_RECORD(XParallel2D, {
-		GUID Guid(){ return WBGuid("cfd3c326-485a-42b7-8311-63bbbf21c58c"); }
-		Float	theta0;
-		Float	theta1;
-	});
-
-	DEF_RECORD(XAngle2D, {
-		GUID Guid(){ return WBGuid("66cc9fe9-b9b6-46a8-9c04-6049a6c2b782"); }
-		Float	theta0;
-		Float	theta1;
-		Float	phi;
-	});
-
-	DEF_RECORD(XFix2D, {
-		GUID Guid(){ return WBGuid("8a3c63cf-639e-408f-8075-44c35f78c539"); }
-		Vector2	p;
-		//array Float p0[2];
-		Float	theta;
-	});
-}
 	
 //点－点拘束
 class PHPointToPoint2D : public PHConstraint2D, public PHG2::XPointToPoint2D{
@@ -347,11 +333,11 @@ public:
 	SGOBJECTDEF(PHPointToPoint2D);
 	PHPointToPoint2D(){}
 	PHPointToPoint2D(
-		SGFrame* _lhs, const Vec2f& _p,
-		SGFrame* _rhs, const Vec2f& _q):
-		PHConstraint2D(PHG2_POINT_TO_POINT, _lhs, _rhs)
-		{p = _p; q = _q;}
-	PHConstraint2D* dup(){return new PHPointToPoint2D(lhs->frame, p, rhs->frame, q);}
+		/*SGFrame* _lhs, */const Vec2f& _p,
+		/*SGFrame* _rhs, */const Vec2f& _q):
+		PHConstraint2D(PHG2_POINT_TO_POINT/*, _lhs, _rhs*/)
+		{point_l = _p; point_r = _q;}
+	PHConstraint2D* dup(){return new PHPointToPoint2D(lhs->frame, point_l, rhs->frame, point_r);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -364,8 +350,8 @@ public:
 		SGFrame* _lhs, const Vec2f& _p,
 		SGFrame* _rhs, const Vec2f& _q0, const Vec2f& _q1):
 		PHConstraint2D(PHG2_POINT_TO_LINE, _lhs, _rhs)
-		{p = _p; q0 = _q0; q1 = _q1;}
-	PHConstraint2D* dup(){return new PHPointToLine2D(lhs->frame, p, rhs->frame, q0, q1);}
+		{point = _p; line0 = _q0; line1 = _q1;}
+	PHConstraint2D* dup(){return new PHPointToLine2D(lhs->frame, point, rhs->frame, line0, line1);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -378,8 +364,8 @@ public:
 		SGFrame* _lhs, const Vec2f& _p,
 		SGFrame* _rhs, const Vec2f& _c, float _r, float _s0, float _s1):
 		PHConstraint2D(PHG2_POINT_TO_ARC, _lhs, _rhs)
-		{p = _p; c = _c; r = _r; s0 = _s0; s1 = _s1;}
-	PHConstraint2D* dup(){return new PHPointToArc2D(lhs->frame, p, rhs->frame, c, r, s0, s1);}
+		{point = _p; center = _c; radius = _r; limit0 = _s0; limit1 = _s1;}
+	PHConstraint2D* dup(){return new PHPointToArc2D(lhs->frame, point, rhs->frame, center, radius, limit0, limit1);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -392,8 +378,8 @@ public:
 		SGFrame* _lhs, const Vec2f& _p0, const Vec2f& _p1,
 		SGFrame* _rhs, const Vec2f& _q0, const Vec2f& _q1):
 		PHConstraint2D(PHG2_LINE_TO_LINE, _lhs, _rhs)
-		{p0 = _p0; p1 = _p1; q0 = _q0; q1 = _q1;}
-	PHConstraint2D* dup(){return new PHLineToLine2D(lhs->frame, p0, p1, rhs->frame, q0, q1);}
+		{line0_l = _p0; line1_l = _p1; line0_r = _q0; line1_r = _q1;}
+	PHConstraint2D* dup(){return new PHLineToLine2D(lhs->frame, line0_l, line1_l, rhs->frame, line0_r, line1_r);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -406,8 +392,8 @@ public:
 		SGFrame* _lhs, const Vec2f& _p0, const Vec2f& _p1,
 		SGFrame* _rhs, const Vec2f& _c, float _r, float _s0, float _s1):
 		PHConstraint2D(PHG2_LINE_TO_ARC, _lhs, _rhs)
-		{p0 = _p0; p1 = _p1; c = _c; r = _r; s0 = _s0; s1 = _s1;}
-	PHConstraint2D* dup(){return new PHLineToArc2D(lhs->frame, p0, p1, rhs->frame, c, r, s0, s1);}
+		{line0 = _p0; line1 = _p1; center = _c; radius = _r; limit0 = _s0; limit1 = _s1;}
+	PHConstraint2D* dup(){return new PHLineToArc2D(lhs->frame, line0, line1, rhs->frame, center, radius, limit0, limit1);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -420,10 +406,10 @@ public:
 		SGFrame* _lhs, const Vec2f& _c0, float _r0, float _s00, float _s01,
 		SGFrame* _rhs, const Vec2f& _c1, float _r1, float _s10, float _s11):
 		PHConstraint2D(PHG2_ARC_TO_ARC, _lhs, _rhs){
-		c0 = _c0; r0 = _r0; s00 = _s00; s01 = _s01;
-		c1 = _c1; r1 = _r1; s10 = _s10; s11 = _s11;
+		center_l = _c0; radius_l = _r0; limit0_l = _s00; limit1_l = _s01;
+		center_r = _c1; radius_r = _r1; limit0_r = _s10; limit1_r = _s11;
 	}
-	PHConstraint2D* dup(){return new PHArcToArc2D(lhs->frame, c0, r0, s00, s01, rhs->frame, c1, r1, s10, s11);}
+	PHConstraint2D* dup(){return new PHArcToArc2D(lhs->frame, center_l, radius_l, limit0_l, limit1_l, rhs->frame, center_r, radius_r, limit0_r, limit1_r);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -436,8 +422,8 @@ public:
 		SGFrame* _lhs, float _theta0,
 		SGFrame* _rhs, float _theta1):
 		PHConstraint2D(PHG2_PARALLEL, _lhs, _rhs)
-		{theta0 = _theta0; theta1 = _theta1;}
-	PHConstraint2D* dup(){return new PHParallel2D(lhs->frame, theta0, rhs->frame, theta1);}
+		{dir_l = _theta0; dir_r = _theta1;}
+	PHConstraint2D* dup(){return new PHParallel2D(lhs->frame, dir_l, rhs->frame, dir_r);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -451,8 +437,8 @@ public:
 		SGFrame* _rhs, float _theta1,
 		float _phi):
 		PHConstraint2D(PHG2_ANGLE, _lhs, _rhs)
-		{theta0 = _theta0; theta1 = _theta1; phi = _phi;}
-	PHConstraint2D* dup(){return new PHAngle2D(lhs->frame, theta0, rhs->frame, theta1, phi);}
+		{offset_l = _theta0; offset_r = _theta1; angle = _phi;}
+	PHConstraint2D* dup(){return new PHAngle2D(lhs->frame, offset_l, rhs->frame, offset_r, angle);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
 
@@ -465,51 +451,10 @@ public:
 		SGFrame* _lhs,
 		SGFrame* _rhs, const Vec2d& _p, float _theta):
 		PHConstraint2D(PHG2_FIX, _lhs, _rhs)
-		{p = _p; theta = _theta;}
-	PHConstraint2D* dup(){return new PHFix2D(lhs->frame, rhs->frame, p, theta);}
+		{offset = _p; angle = _theta;}
+	PHConstraint2D* dup(){return new PHFix2D(lhs->frame, rhs->frame, offset, angle);}
 	PHG2Result Solve(PHConstraintList2D&);
 };
-
-///////////////////////////////////////////////////////////////////////////
-
-/*
-enum GC2_GeometryType{
-	GC2_Point,
-	GC2_Line,
-	GC2_Circle
-};
-
-class GC2Geometry
-{
-protected:
-	GC2_GeometryType	type;
-};
-
-class GC2Point : public GC2Geometry
-{
-public:
-	Vec2d	p;
-	operator Vec2d&(){return p;}
-	operator Vec2d()const{return p;}
-	GC2Point(const Vec2d& _p):GC2Geometry(GC2_Point), p(_p){}
-};
-
-class GC2Line : public GC2Geometry
-{
-public:
-	Vec2d p0, p1;
-	GC2Line(const Vec2d& _p0, const Vec2d& _p1):GC2Geometry(GC2_Line), p0(_p0), p1(_p1){}
-};
-
-class GC2Circle : public GC2Geometry
-{
-public:
-	Vec2d c;
-	double r, theta0, theta1;
-	GC2Circle(const Vec2d& _c, double _r, double _theta0, double _theta1):
-		GC2Geometry(GC2_Circle), r(_r), theta0(_theta0), theta1(_theta1){}
-};
-*/
 
 ////////////////////////////////////////////////////////////////////////	
 //２次元幾何関数

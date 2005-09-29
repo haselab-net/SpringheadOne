@@ -30,7 +30,11 @@ bool PHGeometry2DEngine::AddChildObject(SGObject* o, SGScene* s){
 		Add(con);
 		return true;
 	}
-	plane = DCAST(SGFrame, o);	//動作平面となるフレーム
+	SGFrame* fr = DCAST(SGFrame, o);
+	if(fr && !plane){
+		plane = new PHG2Frame(fr);	//動作平面となるフレーム
+		//frames.push_back(new PHG2Frame(plane));
+	}
 	return false;
 }
 
@@ -40,19 +44,27 @@ bool PHGeometry2DEngine::DelChildObject(SGObject* o, SGScene* s){
 		Remove(con);
 		return true;
 	}
-	if(plane == DCAST(SGFrame, o))
+	if(plane->frame == DCAST(SGFrame, o))
 		plane = 0;
 	return false;
 }
 
 void PHGeometry2DEngine::Loaded(SGScene* scene){
-	//拘束リストの各要素が参照しているフレームのリストを作成
+	//各constraintが持っているフレームへの参照をエンジンのフレームリストにまとめる
 	PHConstraintList2D::iterator icon;
 	for(icon = cons.begin(); icon != cons.end(); icon++){
-		if(find(frames.begin(), frames.end(), (*icon)->lhs) == frames.end())
-			frames.push_back((*icon)->lhs);
-		if(find(frames.begin(), frames.end(), (*icon)->rhs) == frames.end())
-			frames.push_back((*icon)->rhs);
+		for(int i = 0; i < 2; i++){
+			UTRef<PHG2Frame>& fr = (i == 0 ? (*icon)->lhs : (*icon)->rhs);
+
+			PHG2FrameList::iterator ifr = frames.find(fr->frame);
+			//まだエンジンのフレームリストに登録されていない場合
+			//追加する
+			if(ifr == frames.end())
+				frames.push_back(fr);
+			//既にエンジンのフレームリストにあった場合
+			//constraintが保持していた方を破棄してつなぎかえる
+			else fr = *ifr;
+		}
 	}
 }
 
@@ -76,13 +88,14 @@ void PHGeometry2DEngine::Remove(PHConstraint2D* con){
 //Solveの前処理
 void PHGeometry2DEngine::_Preprocess(){
 	cons_tmp = cons;
+	plane->dof = PHG2_T0R0;
 }
 
 //Solveの後処理
 void PHGeometry2DEngine::_Postprocess(){
 	//位置，傾きをSGFrameに反映して，自由度をリセット
 	//動作平面フレームのposture
-	Affinef afPlane = plane->GetWorldPosture();
+	Affinef afPlane = plane->frame->GetWorldPosture();
 
 	PHG2FrameList::iterator it;
 	PHG2Frame* fr;
@@ -172,9 +185,9 @@ bool PHConstraint2D::DelChildObject(SGObject* o, SGScene* s){
 	return false;
 }
 
-PHG2Result PHPointToPoint2D::Solve(PHConstraintList2D& newcon){
-	Vec2d pw = lhs ? lhs->toWorld(p) : p;
-	Vec2d qw = rhs ? rhs->toWorld(q) : q;
+PHG2Result PHPointToPoint2D::Solve(PHG2Frame* plane, PHConstraintList2D& newcon){
+	Vec2d pw = lhs ? lhs->toWorld(point_l) : point_l;
+	Vec2d qw = rhs ? rhs->toWorld(point_r) : point_r;
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
 	switch(dof_lhs){
@@ -221,7 +234,7 @@ PHG2Result PHPointToPoint2D::Solve(PHConstraintList2D& newcon){
 		}
 	case PHG2_T0R1:
 		switch(dof_rhs){
-		case PHG2_T0R0: swap(lhs, rhs); swap(p, q); return PHG2_AGAIN;
+		case PHG2_T0R0: swap(lhs, rhs); swap(point_l, point_r); return PHG2_AGAIN;
 		case PHG2_T0R1:{
 			//２円の交点を求める:
 			Vec2d y0, y1;
@@ -233,8 +246,8 @@ PHG2Result PHPointToPoint2D::Solve(PHConstraintList2D& newcon){
 			double d0 = (y0 - pw).square() + (y0 - qw).square();
 			double d1 = (y1 - pw).square() + (y1 - qw).square();
 			if(d0 > d1)y0 = y1;
-			newcon.push_back(new PHPointToPoint2D(0, y0, lhs->frame, p));
-			newcon.push_back(new PHPointToPoint2D(0, y0, rhs->frame, q));
+			newcon.push_back(new PHPointToPoint2D(0, y0, lhs->frame, point_l));
+			newcon.push_back(new PHPointToPoint2D(0, y0, rhs->frame, point_r));
 			return PHG2_NEW;
 		}
 		case PHG2_T1R0:{
@@ -293,9 +306,9 @@ PHG2Result PHPointToPoint2D::Solve(PHConstraintList2D& newcon){
 PHG2Result PHPointToLine2D::Solve(PHConstraintList2D& newcon){
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
-	Vec2d pw  = lhs ? lhs->toWorld(p) : p;
-	Vec2d qw0 = rhs ? rhs->toWorld(q0) : q0;
-	Vec2d qw1 = rhs ? rhs->toWorld(q1) : q1;
+	Vec2d pw  = lhs ? lhs->toWorld(point) : point;
+	Vec2d qw0 = rhs ? rhs->toWorld(line0) : line0;
+	Vec2d qw1 = rhs ? rhs->toWorld(line1) : line1;
 	//両方ともT0R0の場合
 	if(dof_lhs == PHG2_T0R0 && dof_rhs == PHG2_T0R0)
 		return Point_On_LineSegment(pw, qw0, qw1) ? PHG2_SOLVED : PHG2_OVER;
@@ -358,10 +371,10 @@ PHG2Result Spr::PHPointToArc2D::Solve(PHConstraintList2D& newcon){
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
 	if(dof_lhs == PHG2_T0R0 && dof_rhs == PHG2_T0R0)return PHG2_OVER;
 	
-	Vec2d pw = lhs ? lhs->toWorld(p) : p;
-	Vec2d cw = rhs ? rhs->toWorld(c) : c;
-	double sw0 = rhs ? (s0 + rhs->angle) : s0;
-	double sw1 = rhs ? (s1 + rhs->angle) : s1;
+	Vec2d pw = lhs ? lhs->toWorld(point) : point;
+	Vec2d cw = rhs ? rhs->toWorld(center) : center;
+	double sw0 = rhs ? (limit0 + rhs->angle) : limit0;
+	double sw1 = rhs ? (limit1 + rhs->angle) : limit1;
 	Vec2d y0, y1, y;
 
 	if((dof_lhs == PHG2_T0R0 && dof_rhs == PHG2_T0R1) || (dof_lhs == PHG2_T0R1 && dof_rhs == PHG2_T0R0)){
@@ -370,10 +383,10 @@ PHG2Result Spr::PHPointToArc2D::Solve(PHConstraintList2D& newcon){
 		if(!Circle_Circle_Intersect(
 			&y0, &y1,
 			c, (pw - c).norm(),
-			cw, r))
+			cw, radius))
 			return PHG2_ILLPOSED;
-		bool y0_onarc = Point_On_Arc(y0, cw, r, sw0, sw1);
-		bool y1_onarc = Point_On_Arc(y1, cw, r, sw0, sw1);
+		bool y0_onarc = Point_On_Arc(y0, cw, radius, sw0, sw1);
+		bool y1_onarc = Point_On_Arc(y1, cw, radius, sw0, sw1);
 		if((y0 - pw).square() > (y1 - pw).square())
 			y0 = y1;
 		if(y0_onarc){
@@ -393,10 +406,10 @@ PHG2Result Spr::PHPointToArc2D::Solve(PHConstraintList2D& newcon){
 		if(!Line_Circle_Intersect(
 			&y0, &y1,
 			pw, dir,
-			cw, r))
+			cw, radius))
 			return PHG2_ILLPOSED;
-		bool y0_onarc = Point_On_Arc(y0, cw, r, sw0, sw1);
-		bool y1_onarc = Point_On_Arc(y1, cw, r, sw0, sw1);
+		bool y0_onarc = Point_On_Arc(y0, cw, radius, sw0, sw1);
+		bool y1_onarc = Point_On_Arc(y1, cw, radius, sw0, sw1);
 		if((y0 - pw).square() > (y1 - pw).square())
 			y0 = y1;
 		if(y0_onarc){
@@ -415,10 +428,10 @@ PHG2Result Spr::PHPointToArc2D::Solve(PHConstraintList2D& newcon){
 PHG2Result PHLineToLine2D::Solve(PHConstraintList2D& newcon){
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
-	Vec2d pw0 = lhs ? lhs->toWorld(p0) : p0;
-	Vec2d pw1 = lhs ? lhs->toWorld(p1) : p1;
-	Vec2d qw0 = rhs ? rhs->toWorld(q0) : q0;
-	Vec2d qw1 = rhs ? rhs->toWorld(q1) : q1;
+	Vec2d pw0 = lhs ? lhs->toWorld(line0_l) : line0_l;
+	Vec2d pw1 = lhs ? lhs->toWorld(line1_l) : line1_l;
+	Vec2d qw0 = rhs ? rhs->toWorld(line0_r) : line0_r;
+	Vec2d qw1 = rhs ? rhs->toWorld(line1_r) : line1_r;
 	if( (dof_lhs == PHG2_T0R0 && dof_rhs == PHG2_T2R1) ||
 		(dof_lhs == PHG2_T2R1 && dof_rhs == PHG2_T0R0)){
 		//未実装
@@ -490,8 +503,8 @@ PHG2Result PHParallel2D::Solve(PHConstraintList2D& newcon){
 		swap(theta0, theta1);
 		return PHG2_AGAIN;
 	}
-	double thetaw0 = lhs ? theta0 + lhs->angle : theta0;
-	double thetaw1 = rhs ? theta1 + rhs->angle : theta1;
+	double thetaw0 = lhs ? dir_l + lhs->angle : dir_l;
+	double thetaw1 = rhs ? dir_r + rhs->angle : dir_r;
 	
 	//角度を求める
 	double diff = thetaw1 - thetaw0;
@@ -522,11 +535,11 @@ PHG2Result PHAngle2D::Solve(PHConstraintList2D& newcon){
 	if( revolutive_lhs &&  revolutive_rhs)return PHG2_REDUNDANT;
 	if(!revolutive_lhs && !revolutive_rhs)return PHG2_OVER;
 	if( revolutive_lhs && !revolutive_rhs){
-		swap(lhs, rhs), swap(theta0, theta1), phi = -phi;
+		swap(lhs, rhs), swap(theta0, theta1), angle = -angle;
 		return PHG2_AGAIN;
 	}
-	double thetaw0 = lhs ? theta0 + lhs->angle : theta0;
-	double thetaw1 = rhs ? theta1 + rhs->angle : theta1;
+	double thetaw0 = lhs ? offset_l + lhs->angle : offset_l;
+	double thetaw1 = rhs ? offset_r + rhs->angle : offset_r;
 	
 	//角度を求める
 	double diff = phi - (thetaw1 - thetaw0);
@@ -549,8 +562,8 @@ PHG2Result PHFix2D::Solve(PHConstraintList2D& newcon){
 	PHG2_DOF dof_lhs = lhs ? lhs->dof : PHG2_T0R0;
 	PHG2_DOF dof_rhs = rhs ? rhs->dof : PHG2_T0R0;
 	if(dof_lhs == PHG2_T0R0 && dof_rhs == PHG2_T2R1){
-		rhs->position	= lhs ? lhs->toWorld(p) : p;
-		rhs->angle		= lhs ? lhs->angle + theta : theta;
+		rhs->position	= lhs ? lhs->toWorld(offset) : offset;
+		rhs->angle		= lhs ? lhs->angle + angle : angle;
 		rhs->dof = PHG2_T0R0;
 		return PHG2_SOLVED;
 	}
