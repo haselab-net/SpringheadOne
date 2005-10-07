@@ -14,6 +14,8 @@
 #include <HIS/HISpidarCanoe.h>
 #include <HIS/HISpidarG6WB.h>
 #include <HIS/HISpidarG6Jun.h>
+#include <HIS/HISpidarFishing.h>
+#include <HIS/HISpidarFishingRod.h>
 #include <HIS/HIRuiKuma.h>
 #include <HIS/HIOrientation.h>
 #include <Physics/PHContactEngine.h>
@@ -267,6 +269,8 @@ bool FWApp::AddHis(const char* str){
 		}
 	}
 	else IF_SPIDAR(HISpidarCanoe)
+	else IF_SPIDAR(HISpidarFishing)
+	else IF_SPIDAR(HISpidarFishingRod)
 	else IF_SPIDAR(HISpidarG6WB)
 	else IF_SPIDAR(HISpidarG6Jun)
 	bBusy = false;
