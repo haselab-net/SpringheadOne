@@ -86,6 +86,9 @@ public:
 	virtual bool AddChildObject(SGObject* o, SGScene* s);
 	///	子オブジェクトの削除
 	virtual bool DelChildObject(SGObject* o, SGScene* s);
+
+	virtual SGFrame* FindFrame(UTString);
+
 	///	子になりえるオブジェクトの型情報の配列
 	virtual const UTTypeInfo** ChildCandidates();
 	template <class T>

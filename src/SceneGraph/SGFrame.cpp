@@ -49,6 +49,23 @@ bool SGFrame::DelChildObject(SGObject* o, SGScene* s){
     }
     return false;
 }
+
+SGFrame* SGFrame::FindFrame(UTString frame_name)
+{
+	SGFrame* fr;
+
+	for(SGFrames::const_iterator it = children.begin(); it != children.end(); ++it)
+	{
+		if(strcmp((*it)->GetName(), frame_name.c_str()) == 0)
+		{
+			return *it;
+		}
+		fr = (*it)->FindFrame(frame_name);
+		if(fr)return fr;
+	}
+	return NULL;
+}
+
 const UTTypeInfo** SGFrame::ChildCandidates(){
     static const UTTypeInfo* rv[]={
         NULL
