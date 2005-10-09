@@ -4,7 +4,15 @@
 
 #include <Base/BaseUtility.h>
 #include <SceneGraph/SGScene.h>
+#include <Collision/CDMesh.h>
 #include <vector>
+
+//	FRMを使う場合は，USE_FRMを定義	FRMのソースは非公開．
+//	#define USE_FRM
+
+#ifdef USE_FRM
+#include "PHWaterResistanceMap.h"
+#endif
 
 namespace Spr{;
 
@@ -16,88 +24,26 @@ class CDMesh;
 //typedef std::vector<UTRef<CDConvex> > CDConveces;
 
 //ジオメトリが持つ凸多面体をリストアップしたもの
-class PHWaterRegistanceMap;
 class PHWaterContactEngine;
 class PHWGeometry : public UTRefCount{
 public:
 	PHWGeometry();
 	UTRef<SGFrame>	frame;			//このジオメトリが属する子フレーム
 	CDMesh*			mesh;
-	PHWaterRegistanceMap* frm;		///
+#ifdef USE_FRM
+	PHWaterResistanceMap* frm;		///
+#endif
 	CDGeometries	conveces;		//このジオメトリを構成する凸多面体
 	void Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e);
 };
 typedef std::vector<UTRef<PHWGeometry> >	PHWGeometries;
 
 class PHSolid;
-/** FRMクラス．
-
- */
-class PHWForceTexture{		//wsのTfluidForceTex
-public:
-	int ndata;	//prs, friのデータ長
-	int rate;	//流体計測時タイムステップの逆数
-	float v0;	//基本流速
-	std::vector<Vec3f>	prs, fri;	//valarrayの方がいいかな？
-};
-class PHWaterRegistanceMap;
-class PHWHapticSource{		//wsのThapticSourceとTforceSet（1対1と思われるので融合)
-public:
-	float dthe, dphi;
-	int	  nthe, nphi;
-	int   ntex;
-	float v0;
-	Vec3f pos, normal;
-	std::vector<PHWForceTexture> ftex;
-	float pressure;
-	PHWaterRegistanceMap* frm;
-
-	//	流速の設定	ここで，pressureを計算する．
-	//	実際は，ほぼ，prs だけが値を持ち， prs * normal が圧力補正値なので，これだけを計算する．
-	void SetVelocity(float theta, float phi, Vec3f v, float t);
-	//	
-	float GetPressure();
-	//	Mesh座標系での Haptic Soruce の位置
-	Vec3f GetPos();//{ return (pos * 25) + Vec3f(-0.5, -0.28, 0); }
-};
-class PHWaterRegistanceMap : public SGObject{	//wsのThapticObjみたいなもの
-public:
-	SGOBJECTDEF(PHWaterRegistanceMap);
-	PHWaterRegistanceMap();
-	
-	virtual bool AddChildObject(SGObject* o, SGScene* s);
-	virtual void Loaded(SGScene* scene);
-	void InitMesh();
-	void InitFrmMap();
-	void SetVelocity(Vec3f vel, float t);
-	
-	UTRef<SGFrame>	frame;
-	UTRef<CDMesh>	mesh;
-	UTString		filename;
-	float			pressureGain;	//haptic sourceが計算した圧力に掛け合わせる定数．
-	Affinef			posture;		//meshに対する相対変換．
-	TVec3<int>		sym;			//シンメトリーフラグ
-	std::vector<PHWHapticSource> hsrc;
-	std::vector<PHWHapticSource*> vtxHsrcMap;
-	std::vector<PHWHapticSource*> dirHsrcMap;
-
-	//	ある座標の最近傍のhsrcを見つけるためのマップ
-	enum{
-		NTHETA=20,
-		NPHI=40,
-	} DirMapSize;
-	float dTheta, dPhi;	//	マップの間隔
-	//	最近棒のHsrcを見つける
-	PHWHapticSource* FindHsrc(Vec3f pos);
-};
-class  PHWaterRegistanceMaps: public std::vector<UTRef<PHWaterRegistanceMap> >{
-};
-
 class PHWSolid : public UTRefCount{
 public:
 	UTRef<PHSolid>		solid;		//剛体
 	UTRef<SGFrame>		frame;		//剛体フレーム
-	//UTRef<PHWRegistanceMap> frm;
+	//UTRef<PHWResistanceMap> frm;
 //	Affinef				posture;	//剛体フレームのワールドフレームに対するposture
 	PHWGeometries		geometries;	//剛体のフレームの形状データ
 	void Init(PHWaterContactEngine* e);
@@ -123,7 +69,9 @@ public:
 
 	UTRef<PHWater>	water;			///水
 	PHWSolids		solids;			///水に接触する剛体
-	PHWaterRegistanceMaps	frms;	///
+#ifdef USE_FRM
+	PHWaterResistanceMaps	frms;	///
+#endif
 
 	std::vector<Vec3f> tris;		///<	デバッグ用:水面下の3角形
 	std::vector<Vec3f> points;		///<	デバッグ用:物体と重なっている水

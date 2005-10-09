@@ -1,4 +1,5 @@
 #include <FileIO/FIDocScene.h>
+#include "PHWaterContact.h"
 #pragma hdrstop
 
 namespace Spr{;
@@ -35,8 +36,10 @@ void RegisterLoaderForPhysics(FILoadScene* l){
 	REGISTER_LOADER(l, PHWaterEngine);
 	REGISTER_LOADER(l, PHWater);
 	REGISTER_LOADER(l, PHWaterContactEngine);
+#ifdef USE_FRM
 	REGISTER_LOADER(l, PHWaterTrackTarget);
-	REGISTER_LOADER(l, PHWaterRegistanceMap);
+	REGISTER_LOADER(l, PHWaterResistanceMap);
+#endif
 }
 void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHSolid);
@@ -65,8 +68,10 @@ void RegisterSaverForPhysics(FISaveScene* l){
 	REGISTER_SAVER(l, PHWaterEngine);
 	REGISTER_SAVER(l, PHWater);
 	REGISTER_SAVER(l, PHWaterContactEngine);
+#ifdef USE_FRM
 	REGISTER_SAVER(l, PHWaterTrackTarget);
-	REGISTER_SAVER(l, PHWaterRegistanceMap);
+	REGISTER_SAVER(l, PHWaterResistanceMap);
+#endif
 }
 }
 

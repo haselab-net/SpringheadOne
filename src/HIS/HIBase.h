@@ -19,7 +19,7 @@ namespace Spr{;
 class DRRealDevice;
 
 ///	The base class of human interface classes.
-class SPR_DLL HIBase: public UTRefCount{
+class SPR_DLL HIBase: public UTRefCount, UTTypeInfoBase{
 protected:
 	static std::set<DRRealDevice*> realDevices;
 	static int deviceUpdateStep;

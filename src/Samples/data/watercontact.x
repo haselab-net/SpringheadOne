@@ -30,7 +30,7 @@ Scene {
 		{water1}				#	水オブジェクトのの名前
 		{soBlock1}				#	接触する剛体の名前
 
-#		WaterRegistanceMap wrm1{
+#		WaterResistanceMap wrm1{
 #			"stick.ffm";
 #			40.0, 0.0, 0.0, 0.0,
 #			0.0, 50.0, 0.0, 0.0,

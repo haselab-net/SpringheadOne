@@ -16,7 +16,11 @@ namespace Spr {;
 #define SGOBJECTIMPBASE(cls)			DEF_UTTYPEINFO(cls)
 #define SGOBJECTIMPBASEABST(cls)		DEF_UTTYPEINFOABST(cls)
 #define SGOBJECTIMP(cls, base)			DEF_UTTYPEINFO1(cls, base)
+#define SGOBJECTIMP2(cls, b1, b2)		DEF_UTTYPEINFO2(cls, b1, b2)
+#define SGOBJECTIMP3(cls, b1, b2, b3)	DEF_UTTYPEINFO3(cls, b1, b2, b3)
 #define SGOBJECTIMPABST(cls, base)		DEF_UTTYPEINFOABST1(cls, base)
+#define SGOBJECTIMPABST2(cls, b1, b2)	DEF_UTTYPEINFOABST2(cls, b1,b2)
+#define SGOBJECTIMPABST3(cls, b1, b2, b3)	DEF_UTTYPEINFOABST3(cls, b1,b2,b3)
 
 class SGScene;
 

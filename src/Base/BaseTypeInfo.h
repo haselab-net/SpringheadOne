@@ -9,9 +9,9 @@ namespace Spr{;
 class UTTypeInfo {
 public:
 	const char* className;
-	UTTypeInfo* base;
+	UTTypeInfo** base;
 
-	UTTypeInfo(const char* cn, UTTypeInfo* b): className(cn), base(b){}
+	UTTypeInfo(const char* cn, UTTypeInfo** b): className(cn), base(b){}
 	virtual bool Inherit(const UTTypeInfo* key) const ;
 	virtual bool Inherit(const char* str) const ;
 	virtual const char* ClassName() const = 0;
@@ -22,7 +22,7 @@ public:
 template <class T>
 class UTTypeInfoImp: public UTTypeInfo{
 public:
-	UTTypeInfoImp(const char* cn, UTTypeInfo* b): UTTypeInfo(cn, b){}
+	UTTypeInfoImp(const char* cn, UTTypeInfo** b): UTTypeInfo(cn, b){}
 	virtual void* CreateInstance() const { return new T; }
 	virtual const char* ClassName() const { return className; }
 };
@@ -31,7 +31,7 @@ public:
 template <class T>
 class UTTypeInfoImpAbst: public UTTypeInfo{
 public:
-	UTTypeInfoImpAbst(const char* cn, UTTypeInfo* b): UTTypeInfo(cn, b){}
+	UTTypeInfoImpAbst(const char* cn, UTTypeInfo** b): UTTypeInfo(cn, b){}
 	virtual void* CreateInstance() const { return 0; }
 	virtual const char* ClassName() const { return className; }
 };
@@ -42,6 +42,8 @@ public:
 	virtual const UTTypeInfo* GetTypeInfo() const =0;
 };
 
+//----------------------------------------------------------------------
+//	クラスの宣言(ヘッダ)に書く部分
 ///	実行時型情報を持つクラスが持つべきメンバの宣言部
 #define DEF_UTTYPEINFODEF(cls)							\
 public:													\
@@ -64,21 +66,46 @@ public:													\
 		return &typeInfo;								\
 	}													\
 
-///	実行時型情報を持つクラスが持つべきメンバの実装．
-#define DEF_UTTYPEINFO(cls)			\
-UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, NULL);
 
-///	実行時型情報を持つクラスが持つべきメンバの実装．継承する場合
-#define DEF_UTTYPEINFO1(cls, base)		\
-UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, &base::typeInfo);
+///	実行時型情報を持つクラスが持つべきメンバの実装．
+#define DEF_UTTYPEINFO(cls)									\
+	UTTypeInfo* cls##_BASE[] = {NULL};						\
+	UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, cls##_BASE);
+
+///	実行時型情報を持つクラスが持つべきメンバの実装．1つのクラス継承をする場合
+#define DEF_UTTYPEINFO1(cls, base1)							\
+	UTTypeInfo* cls##_BASE[] = {&base1::typeInfo, NULL};	\
+	UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, cls##_BASE);
+
+///	実行時型情報を持つクラスが持つべきメンバの実装．2つのクラス継承をする場合
+#define DEF_UTTYPEINFO2(cls, base1, base2)									\
+	UTTypeInfo* cls##_BASE[] = {&base1::typeInfo, &base2::typeInfo, NULL};	\
+	UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, cls##_BASE);
+
+///	実行時型情報を持つクラスが持つべきメンバの実装．3つのクラス継承をする場合
+#define DEF_UTTYPEINFO3(cls, base1, base2, base3)												\
+	UTTypeInfo* cls##_BASE[] = {&base1::typeInfo, &base2::typeInfo, &base3::typeInfo, NULL};	\
+	UTTypeInfoImp<cls> cls::typeInfo = UTTypeInfoImp<cls>(#cls, cls##_BASE);
 
 ///	実行時型情報を持つクラスが持つべきメンバの実装．抽象クラス版
-#define DEF_UTTYPEINFOABST(cls)			\
-UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, NULL);
+#define DEF_UTTYPEINFOABST(cls)								\
+	UTTypeInfo* cls##_BASE[] = {NULL};						\
+	UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, cls##_BASE);
 
-///	実行時型情報を持つクラスが持つべきメンバの実装．抽象クラス版．継承する場合
-#define DEF_UTTYPEINFOABST1(cls, base)		\
-UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, &base::typeInfo);
+///	実行時型情報を持つクラスが持つべきメンバの実装．抽象クラス版．1つのクラスを継承する場合
+#define DEF_UTTYPEINFOABST1(cls, base)						\
+	UTTypeInfo* cls##_BASE[] = {&base::typeInfo,NULL};		\
+	UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, cls##_BASE);
+
+///	実行時型情報を持つクラスが持つべきメンバの実装．抽象クラス版．2つのクラスを継承する場合
+#define DEF_UTTYPEINFOABST2(cls, base1, base2)									\
+	UTTypeInfo* cls##_BASE[] = {&base1::typeInfo, &base2::typeInfo, NULL};		\
+	UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, cls##_BASE);
+
+///	実行時型情報を持つクラスが持つべきメンバの実装．抽象クラス版．2つのクラスを継承する場合
+#define DEF_UTTYPEINFOABST3(cls, base)															\
+	UTTypeInfo* cls##_BASE[] = {&base1::typeInfo, &base2::typeInfo, &base3::typeInfo, NULL};	\
+	UTTypeInfoImpAbst<cls> cls::typeInfo = UTTypeInfoImpAbst<cls>(#cls, cls##_BASE);
 
 #define GETCLASSNAME(p)		(p->GetTypeInfo()->className)
 #define GETCLASSNAMES(T)	(T::GetTypeInfoStatic()->className)

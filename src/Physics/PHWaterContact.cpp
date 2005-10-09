@@ -34,7 +34,9 @@ void PHWSolid::EnumGeometries(SGFrame* f, PHWaterContactEngine* e){
 //----------------------------------------------------------------------------
 //PHWGeometry
 PHWGeometry::PHWGeometry(){
+#ifdef USE_FRM
 	frm = NULL;
+#endif
 	mesh = NULL;
 }
 void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
@@ -44,6 +46,7 @@ void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 	conveces.resize(g->conveces.size());
 	//	frm の割り当て
 	std::copy(g->conveces.begin(), g->conveces.end(), conveces.begin());
+#ifdef USE_FRM
 	frm = NULL;
 	for(int i=0; i < e->frms.size(); ++i){
 		if (!e->frms[i]->mesh) e->frms[i]->InitMesh();
@@ -52,6 +55,7 @@ void PHWGeometry::Set(SGFrame* f, CDMesh* g, PHWaterContactEngine* e){
 			break;
 		}
 	}
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -86,23 +90,29 @@ bool PHWaterContactEngine::AddChildObject(SGObject* o, SGScene* scene){
 		solids.back()->solid = DCAST(PHSolid, o);
 		return true;
 	}
-	if(DCAST(PHWaterRegistanceMap, o)){
-		PHWaterRegistanceMap* frm = (PHWaterRegistanceMap*)o;
+#ifdef USE_FRM
+	if(DCAST(PHWaterResistanceMap, o)){
+		PHWaterResistanceMap* frm = (PHWaterResistanceMap*)o;
 		frms.push_back(frm);	//	frm追加
 		return true;
 	}
+#endif
 	return false;
 }
 
 void PHWaterContactEngine::Clear(SGScene* s){
 	water = 0;
 	solids.clear();
+#ifdef USE_FRM
 	frms.clear();
+#endif
 }
 void PHWaterContactEngine::Loaded(SGScene* scene){
 	Init(scene);
+#ifdef USE_FRM
 	for(int i = 0; i < frms.size(); i++)
 		frms[i]->Loaded(scene);
+#endif
 	scene->FindObject(soPaddle, "soPaddle");
 }
 
@@ -146,7 +156,9 @@ struct PHWConvexCalc{
 	std::vector<float> pressure;	//	FRMによる圧力補正
 	std::vector<float> height;		//	頂点での波高
 	std::vector<Vec3f> vtxs;		//	水座標系での頂点の座標
-	PHWaterRegistanceMap* frm;		//	frm
+#ifdef USE_FRM
+	PHWaterResistanceMap* frm;		//	frm
+#endif
 	
 	//	凸形状単位のデータ
 	CDPolyhedron* poly;				//	対象の凸形状
@@ -503,6 +515,7 @@ struct PHWConvexCalc{
 		DRAWLINE(line[3], i+1, i, y, x, 0, 0, -lineWidth, 0, AddWaterHeight);
 	}
 	void AddWaterHeight(int ix, int iy, float alpha){
+#ifdef USE_FRM
 		if(!frm) return;
 		assert(-1e-5<=alpha && alpha<=1+1e-5);
 		int cx = (ix + water->bound.x) % water->mx;
@@ -512,6 +525,7 @@ struct PHWConvexCalc{
 		PHWHapticSource* hsrc = frm->FindHsrc(Awginv * p);
 		float prs = hsrc->GetPressure();
 		water->height[cx][cy] += prs * alpha / (water->density*water->gravity);
+#endif
 	}
 
 	void SetWaterVelocityU(int ix, int iy, float alpha){
@@ -651,12 +665,13 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 		d3r->device->SetRenderState(D3DRS_LIGHTING, true);
 	}
 	//	hsrcの描画
+#ifdef USE_FRM
 	render->SetMaterial(GRMaterialData(Vec4f(1,1,0,1),2));
 	render->SetLineWidth(3);
 	for(int i=0; i<solids.size(); ++i){
 		for(int j=0; j<solids[i]->geometries.size(); ++j){
 			SGFrame* frame =  solids[i]->geometries[j]->frame;
-			PHWaterRegistanceMap* frm = solids[i]->geometries[j]->frm;
+			PHWaterResistanceMap* frm = solids[i]->geometries[j]->frm;
 			if (frm && frame){
 				render->SetModelMatrix(frame->GetWorldPosture());
 				std::vector<Vec3f> buf;
@@ -667,6 +682,7 @@ void PHWaterContactEngine::Render(GRRender* render, SGScene* s){
 			}
 		}		
 	}
+#endif
 
 	render->SetDepthTest(true);
 	if (d3r) d3r->cr.Leave();
@@ -723,7 +739,9 @@ void PHWaterContactEngine::Step(SGScene* s){
 			convCalc.Awg = convCalc.Awinv * convCalc.Ag;
 			convCalc.Awginv = convCalc.Awg.inv();
 			Vec3f meshVel = convCalc.Awginv.Rot() * (convCalc.solidVel - Vec3f(water->velocity.x, water->velocity.y, 0));
+#ifdef USE_FRM
 			if (bUseFrm && geo->frm) geo->frm->SetVelocity(meshVel, s->GetTimeStep() * s->GetCount() / 10.0);
+#endif
 
 			//BBoxレベルでの接触チェック
 			//...
@@ -741,15 +759,21 @@ void PHWaterContactEngine::Step(SGScene* s){
 				convCalc.height[i] = water->LerpHeight(convCalc.vtxs[i].x, convCalc.vtxs[i].y);
 				convCalc.depth[i] = convCalc.height[i] - convCalc.vtxs[i].z;
 				//	FRMから頂点での圧力補正を求める．
+#ifdef USE_FRM
 				if (convCalc.depth[i] > 0 && geo->frm && bUseFrm){
 					Vec3f prs, fri;
 					convCalc.pressure[i] = geo->frm->vtxHsrcMap[i]->GetPressure();
 				}else{
 					convCalc.pressure[i] = 0;
 				}
+#else
+				convCalc.pressure[i] = 0;
+#endif
 			}
+#ifdef USE_FRM
 			if (bUseFrm) convCalc.frm = geo->frm;
 			else convCalc.frm = NULL;
+#endif
 			for(ic = geo->conveces.begin(); ic != geo->conveces.end(); ic++){
 				poly = DCAST(CDPolyhedron, *ic);
 				if(!poly)continue;
@@ -813,546 +837,6 @@ public:
 };
 DEF_REGISTER_BOTH(PHWaterContactEngine);
 
-//----------------------------------------------------------------------------
-//PHWaterRegistanceMap
-
-SGOBJECTIMP(PHWaterRegistanceMap, SGObject);
-
-PHWaterRegistanceMap::PHWaterRegistanceMap(){
-	dTheta = M_PI / NTHETA;
-	dPhi = 2*M_PI / NTHETA;
-}
-
-bool PHWaterRegistanceMap::AddChildObject(SGObject* o, SGScene* scene){
-	if(DCAST(SGFrame, o)){
-		frame = DCAST(SGFrame, o);
-		return true;
-	}
-	return false;
-}
-void PHWaterRegistanceMap::SetVelocity(Vec3f vel, float t){
-	//シンメトリーフラグ処理
-	if(sym.x) vel.x = abs(vel.x);
-	if(sym.y) vel.y = abs(vel.y);
-	if(sym.z) vel.z = abs(vel.z);
-
-	float the, phi;
-
-#ifdef WS_MODE
-	float d = vel.norm();
-	float e;
-	if(d > 1.0e-20) {
-        the = vel.z >= 1.0 ? 0.0 : acos(vel.z);
-        e = vel.x / d;
-		phi = e >= 1.0 ? 0.0 : acos(e);
-        if(vel.y < 0.0) phi = 2.0*M_PI - phi;
-        //if(no_rotation == TRUE) {
-        //    the = M_PI/2.; 
-        //    vo.z = vd.z = 0.0;
-        //}
-    }
-	else the = phi = 0.0f;
-#else
-	float l = Square(vel.x)+Square(vel.y);
-	the = 0.5f*M_PI - atan2(vel.z, l);
-	phi = atan2(vel.y, vel.x);
-	if (phi<0) phi += 2*M_PI;
-	//float norm = vel.norm();
-#endif
-	for(int i=0; i<hsrc.size(); ++i){
-		hsrc[i].SetVelocity(the, phi, vel, t);
-	}
-}
-void PHWaterRegistanceMap::Loaded(SGScene* scene){
-	//FILE* fp = fopen(filename.c_str(), "rb");
-	//if(!fp)return;
-    
-	//int id;
-	//float buo_scl, pres_scl, fric_scl, vel_scl, unit_mass, disp_scl;
-	//float wz, wa;
-    //fscanf(fp, "%d%f%f%f%f%f%f", &id, &buo_scl, &pres_scl, &fric_scl, &vel_scl, &unit_mass, &disp_scl);
-    //fscanf(fp, "%f%f", &wz, &wa);
-
-	//objの位置と姿勢
-    /*Vec3f pos0, we0;
-	fscanf(fp, "%f%f%f%f%f%f", &pos0.X(), &pos0.Y(), &pos0.Z(), &we0.X(), &we0.Y(), &we0.Z());
-	//yaw pitch rollかと思われ
-    we0.X() = Rad(we0.X());
-    we0.Y() = Rad(we0.Y());
-    we0.Z() = Rad(we0.Z());
-    float stx, sty, stz, ctx, cty, ctz;
-    stx = sin(we0.X()); ctx = cos(we0.X());
-    sty = sin(we0.Y()); cty = cos(we0.Y());
-    stz = sin(we0.Z()); ctz = cos(we0.Z());
-	Affinef aff;
-	aff.Rot() = Matrix3f(cty*ctz, -stx*sty*ctz-ctx*stz, -ctx*sty*ctz+stx*stz,
-						 cty*stz, -stx*sty*stz+ctx*ctz, -ctx*sty*stz-stx*ctz,
-						 sty,	   stx*cty,				 ctx*cty);
-	aff.Pos() = pos0;
-	posture = aff;*/
-    
-    //メッシュを細分化してサンプル点を生成する処理
-	//float dlen;
-    //fscanf(fp, "%f", &dlen);
-	/*if(dlen > 0.0) { 
-        pobj.mesh = (Tmesh *)malloc(sizeof(Tmesh)*obj[pobj.id_obj].nf);
-        for(i=0; i<obj[pobj.id_obj].nf; i++) pobj.mesh[i].dlen = dlen;
-        genMesh(&pobj);
-    }else {
-        // USE OBJECT VERTEX AS SAMPLE POINTS
-        pobj.mesh = NULL;
-        genPoints();
-    }*/
-	
-	/*float v0;
-    filename.resize(256);
-	Vec3f d, s;
-	fscanf(fp, "%f%s", &v0, &filename[0]);
-    fscanf(fp, "%f%f%f%f%f%f", &d.X(), &d.Y(), &d.Z(), &s.X(), &s.Y(), &s.Z());
-	*/
-	float v0 = 2.0;
-    FILE* fm = fopen(filename.c_str(), "rb");
-    if(fm != NULL) {
-        float dthe, dphi;
-		int nhsrc, ntex, ndata, rate, nthe, nphi, n;
-		fread(&dthe, sizeof(float), 1, fm);	//1.57
-        fread(&dphi, sizeof(float), 1, fm);	//0.52
-        fread(&nhsrc, sizeof(int), 1, fm);	//12
-        fread(&ndata, sizeof(int), 1, fm);	//998
-        fread(&rate, sizeof(int), 1, fm);	//999
-        fread(&nthe, sizeof(int), 1, fm);	//3
-        fread(&nphi, sizeof(int), 1, fm);	//12
-        fread(&sym, sizeof(int), 3, fm);
-        fread(&n, sizeof(int), 1, fm);		//12
-
-		DSTR << "symmetry flag: " << sym << std::endl;
-
-		ntex = (nthe - 2) * nphi + 2;		//14
-        
-		std::vector<int> id; id.resize(n);
-        fread(&id[0], sizeof(int), n, fm);
-        
-		hsrc.resize(nhsrc);
-        //frc_set.resize(nhsrc);
-        int i;
-		float frc_max=0;
-		Vec3f p, normal;
-		std::vector<float> xprs(ndata), yprs(ndata), zprs(ndata), xfri(ndata), yfri(ndata), zfri(ndata);
-        for(i = 0; i < nhsrc; i++) {
-			hsrc[i].frm = this;
-            hsrc[i].dthe = dthe;
-            hsrc[i].dphi = dphi;
-            hsrc[i].nthe = nthe;
-            hsrc[i].nphi = nphi;
-            hsrc[i].ntex = ntex;
-            hsrc[i].v0 = v0;
-            
-			//hsrc[i].sym = sym;
-            //hsrc[i].vx = hsrc[i].vy = hsrc[i].vz = hsrc[i].v = hsrc[i].tcoord = 0.0;
-            
-			fread(&hsrc[i].pos, sizeof(Vec3f), 1, fm);
-            fread(&hsrc[i].normal, sizeof(Vec3f), 1, fm);
-            //p += d;
-            //p.X() *= s.X(); p.Y() *= s.Y(); p.Z() *= s.Z();
-			//if(nhsrc == 1){normal.X() = 1.0; normal.Y() = 0.0; normal.Z() = 0.0;}
-            //hsrc[i].p = hsrc[i].p0 = hsrc[i].p_ori = p;
-            //hsrc[i].n = normal;            
-			//hsrc[i].prs.clear();
-
-			hsrc[i].ftex.resize(ntex);
-			for(int j = 0; j < ntex; j++){
-				hsrc[i].ftex[j].ndata = 0;
-			}
-            for(int j = 0; j < n; j++) {
-                int k = id[j];
-                hsrc[i].ftex[k].ndata = ndata;
-                hsrc[i].ftex[k].rate = rate;
-                hsrc[i].ftex[k].v0 = v0;
-                fread(&xprs[0], sizeof(float), ndata, fm);
-                fread(&yprs[0], sizeof(float), ndata, fm);
-                fread(&zprs[0], sizeof(float), ndata, fm);
-                fread(&xfri[0], sizeof(float), ndata, fm);
-                fread(&yfri[0], sizeof(float), ndata, fm);
-                fread(&zfri[0], sizeof(float), ndata, fm);
-				hsrc[i].ftex[k].prs.resize(ndata);
-                hsrc[i].ftex[k].fri.resize(ndata);
-				for(int ii = 0; ii < ndata; ii++){
-					hsrc[i].ftex[k].prs[ii].X() = xprs[ii];
-					hsrc[i].ftex[k].prs[ii].Y() = yprs[ii];
-					hsrc[i].ftex[k].prs[ii].Z() = zprs[ii];
-					hsrc[i].ftex[k].fri[ii].X() = xfri[ii];
-					hsrc[i].ftex[k].fri[ii].Y() = yfri[ii];
-					hsrc[i].ftex[k].fri[ii].Z() = zfri[ii];
-					if (!_finite(xprs[ii])) DSTR << "FRM X" << ii << " is invalid value." << std::endl;
-					if (!_finite(yprs[ii])) DSTR << "FRM Y" << ii << " is invalid value." << std::endl;
-					if (!_finite(zprs[ii])) DSTR << "FRM Z" << ii << " is invalid value." << std::endl;
-				}
-                /*hsrc[i].ftex[k].peri_prs.x =
-                hsrc[i].ftex[k].peri_prs.y =
-                hsrc[i].ftex[k].peri_prs.z = (Trealf)hsrc[i].ftex[k].n/(Trealf)hsrc[i].ftex[k].rate;
-                hsrc[i].ftex[k].peri_frdi.x =
-                hsrc[i].ftex[k].peri_fri.y =
-                hsrc[i].ftex[k].peri_fri.z = (Trealf)hsrc[i].ftex[k].n/(Trealf)hsrc[i].ftex[k].rate;
-                hsrc[i].ftex[k].phas_prs.x =
-                hsrc[i].ftex[k].phas_prs.y =
-                hsrc[i].ftex[k].phas_prs.z = 0.0;
-                hsrc[i].ftex[k].phas_fri.x =
-                hsrc[i].ftex[k].phas_fri.y =
-                hsrc[i].ftex[k].phas_fri.z = 0.0;*/
-
-                for(int m = 0; m < ndata; m++)
-					frc_max = std::max(frc_max, std::max(hsrc[i].ftex[k].prs[m].norm(), hsrc[i].ftex[k].fri[m].norm()));
-            }
-        }
-		if (frc_max == 0) DSTR << "FRM frc_max = 0" << std::endl;
-        for(i = 0; i < nhsrc; i++) {
-            for(int j = 0; j < n; j++) {
-                //if(hsrc[i].ftex[j].rate > 0) {
-                    for(int k = 0; k < ndata; k++) {
-                        hsrc[i].ftex[id[j]].prs[k] /= frc_max;
-                        hsrc[i].ftex[id[j]].fri[k] /= frc_max;
-                    }
-                //}
-            }
-        }
-    }/* else {
-        // SET POINT HAPTIC SOURCE
-        int j, n, id_fset;
-
-        fscanf(fp, "%d", &n);
-        pobj.nhsrc = n;
-        pobj.hsrc = (ThapticSource *)malloc(sizeof(ThapticSource)*n);
-        hp = pobj.hsrc;
-        for(i=0; i<n; i++) {
-            fscanf(fp,"%f%f%f%d", &hp->x0, &hp->y0, &hp->z0, &hp->ntex);
-            if(hp->ntex > 0) {
-                hp->itex = (int *)malloc(sizeof(int)*hp->ntex);
-                for(j=0; j<hp->ntex; j++) fscanf(fp, "%d", &hp->itex[j]);
-                hp->fset = NULL;
-            } else {
-                hp->itex = NULL;
-                fscanf(fp, "%d", &id_fset);
-                hp->fset = &(frc_set[id_fset]);
-            }
-            fscanf(fp,"%s%s%s", cx, cy, cz);
-            hp->x = hp->x0;
-            hp->y = hp->y0;
-            hp->z = hp->z0;
-            hp->x_ori = hp->x0;
-            hp->y_ori = hp->y0;
-            hp->z_ori = hp->z0;
-            hp->vx = hp->vy = hp->vz =
-            hp->v = hp->tcoord = 0.0;
-            hp->sym.x = hp->sym.y = hp->sym.z = FALSE;
-            if(cx[0] == 'x') hp->sym.x = TRUE;
-            if(cy[0] == 'y') hp->sym.y = TRUE;
-            if(cz[0] == 'z') hp->sym.z = TRUE;
-            hp++;
-        }
-    }*/
-    
-    /*pobj.im.x = pobj.im.y = pobj.im.z = -1.0;
-    fscanf(fp, "%s", com);
-    if(!strcmp("param", com)) {
-        fscanf(fp, "%f%f%f%f%f", &pobj.mass, &pobj.im.x, &pobj.im.y, &pobj.im.z, &pobj.loss);
-        pobj.ori[0] = 1.0; pobj.ori[1] = 0.0; pobj.ori[2] = 0.0; pobj.ori[3] = 0.0;
-        pobj.a.x = pobj.a.y = pobj.a.z = 
-        pobj.vel.x = pobj.vel.y = pobj.vel.z = 0.0;
-    }*/
-	fclose(fm);
-	InitFrmMap();
-}
-
-void PHWaterRegistanceMap::InitMesh(){
-	//-----------------------------------------------------------------------
-	//	HSrcと頂点・座標との対応表の作成
-	//
-	//	フレームからCDMeshを取り出す．
-	if (frame){
-		SGObjects objs;
-		frame->EnumContents(objs);
-		for(SGObjects::iterator it = objs.begin(); it != objs.end(); ++it){
-			CDMesh* m = DCAST(CDMesh, *it);
-			if (m){
-				if (mesh) {
-					DSTR << "Don't put multiple meshes in the frame for WaterRegistanceMap";
-					exit(-1);
-				}
-				mesh = m;
-			}
-		}
-	}
-}
-void PHWaterRegistanceMap::InitFrmMap(){
-	if (mesh){
-		//	vtxHsrcMap を初期化
-		vtxHsrcMap.resize(mesh->vertices.size());
-		for(int i=0; i<mesh->vertices.size(); ++i){
-			float minDist = 1e10f;
-			int minId = -1;
-			for(int j=0; j<hsrc.size(); ++j){
-				Vec3f dist = mesh->vertices[i] - hsrc[j].GetPos();
-				float dist_n = dist.norm();
-				if (dist_n < minDist){
-					minDist = dist_n;
-					minId = j;
-				}
-			}
-			vtxHsrcMap[i] = &hsrc[minId];
-		}
-
-		//	方向とhsrcのマップの初期化
-		dirHsrcMap.resize(NTHETA * NPHI);
-		CDPolyhedron* poly = DCAST(CDPolyhedron, mesh->conveces.front());
-		assert(poly);
-		//	dirHsrcMap を初期化	the, phi を与えると最近傍のhsrcを返す．
-		//	theta : 緯度 (0北極 - NTHETA南極)
-		//	phi:	経度 (0-NPHIで1周)
-		float theta = dTheta*0.5;
-		for(int ith = 0; ith < NTHETA; ++ith){
-			float phi = dPhi*0.5;
-			for(int iphi = 0; iphi < NPHI; ++iphi){
-				Vec3f dir;
-				float th = M_PI*0.5f-theta;
-				dir.z = sin(th);
-				dir.x = cos(phi) * cos(th);
-				dir.y = sin(phi) * cos(th);
-				Vec3f crossPoint;
-				for(CDFaces::iterator itf = poly->faces.begin(); itf != poly->faces.end(); ++itf){
-					CDFace& face = *itf;
-					int i=0;
-					for(; i<3; ++i){
-						Vec3f ns = poly->base[face.vtxs[i]] ^ poly->base[face.vtxs[(i+1)%3]];
-						if (dir*ns < 0) break;
-					}
-					if (i == 3){	//	dirが3角形の中
-						Vec3f n = (poly->base[face.vtxs[2]] - poly->base[face.vtxs[0]]) ^ (poly->base[face.vtxs[1]] - poly->base[face.vtxs[0]]);
-						n.unitize();
-						float dist = n * poly->base[face.vtxs[0]];
-						float mul = dist / (dir*n);
-						crossPoint = dir*mul;
-						assert(abs(n*(crossPoint - poly->base[face.vtxs[0]])) < 1e-6f);
-						break;
-					}
-				}
-				float minDist = 1e10f;
-				int minId = -1;
-				for(int i=0; i<hsrc.size(); ++i){
-					float dist = (crossPoint - hsrc[i].GetPos()).norm();
-					if (dist < minDist){
-						minDist = dist;
-						minId = i;
-					}
-				}
-				dirHsrcMap[ith*NPHI+iphi] = &hsrc[minId];
-				phi += dPhi;
-			}
-			theta += dTheta;
-		}
-
-	}else{
-		DSTR << "No mesh found in frame " << frame->GetName() << std::endl;
-	}
-}
-//	対応表を使って，pos に一番近いhsrcを求める
-PHWHapticSource* PHWaterRegistanceMap::FindHsrc(Vec3f pos){
-	float l = Square(pos.x)+Square(pos.y);
-	float th = 0.5f*M_PI - atan2(pos.z, l);
-	float phi = atan2(pos.y, pos.x);
-	if (phi<0) phi += 2*M_PI;
-	int ith = th / dTheta;
-	ith = ith % NTHETA;
-	int iphi = phi / dPhi;
-	iphi = iphi % NPHI;
-	int id = ith*NPHI+iphi;
-	if (id >= dirHsrcMap.size() || id < 0){
-		DSTR << "dirHsrcMap " << id << std::endl;
-	}
-	return dirHsrcMap[id];
-}
-
-typedef UTString String;
-typedef float FLOAT;
-typedef Affinef Matrix4x4;
-DEF_RECORD(XWaterRegistanceMap, {
-	GUID Guid(){ return WBGuid("dbd4feca-a6ac-48f1-87c9-863162e13658"); } 
-	String filename;
-	Matrix4x4 posture;
-	FLOAT  pressureGain;
-});
-
-class PHWaterRegistanceMapLoader : public FIObjectLoader<PHWaterRegistanceMap>{
-public:
-	virtual bool LoadData(FILoadScene* ctx, PHWaterRegistanceMap* rm){
-		ctx->objects.Push(rm);
-
-		FIDocNodeBase* doc = ctx->docs.Top();
-		//圧力ゲイン
-		doc->GetData(rm->pressureGain, "pressureGain");
-
-		//FRMファイル名
-		const char* fn = NULL;
-		doc->GetData(fn, "filename");
-		WBPath xFilePath;
-		xFilePath.Path(ctx->fileName);
-		xFilePath.Path(xFilePath.FullPath());
-		WBPath imPath;
-		imPath.Path(fn);
-		FIString oldCwd = imPath.GetCwd();
-		imPath.SetCwd(xFilePath.Drive() + xFilePath.Dir());
-		rm->filename = imPath.FullPath();
-
-		//
-		Affinef af;
-		doc->GetData(af, "posture");
-		af.ExZ() *= -1;
-		af.EyZ() *= -1;
-		af.EzX() *= -1;
-		af.EzY() *= -1;
-		af.PosZ() *= -1;
-		rm->posture = af;
-
-		return true;
-	}
-	virtual void Loaded(FILoadScene* ctx){
-		ctx->objects.Pop();
-	}
-	PHWaterRegistanceMapLoader(){
-		UTRef<FITypeDescDb> db = new FITypeDescDb;
-		db->SetPrefix("X");
-		db->REG_FIELD(String);
-		db->REG_FIELD(FLOAT);
-		db->REG_FIELD(Matrix4x4);
-		db->REG_RECORD_PROTO(XWaterRegistanceMap);
-	}
-};
-
-class PHWaterRegistanceMapSaver:public FIBaseSaver{
-public:
-	virtual UTString GetType() const{ return "PHWaterRegistanceMap"; }
-	virtual void Save(FISaveScene* ctx, SGObject* arg){
-		/*PHWaterContactEngine* pc = (PHWaterContactEngine*)arg;
-		FIDocNodeBase* doc = ctx->CreateDocNode("WaterContactEngine", pc);
-		ctx->docs.back()->AddChild(doc);
-		for(PHWSolids::iterator it = pc->solids.begin(); it != pc->solids.end(); ++it){
-			doc->AddChild(ctx->CreateDocNode("REF", (*it)->solid));
-		}
-		doc->AddChild(ctx->CreateDocNode("REF", pc->water));*/
-	}
-};
-DEF_REGISTER_BOTH(PHWaterRegistanceMap);
-
-void PHWHapticSource::SetVelocity(float the, float phi, Vec3f v, float t){
-	/*Trealf the, Trealf phi,		//流速の極座標
-	Trealf t,					//恐らく未使用
-	Tpoint3f *vp,				//流速
-	TforceSet *fset,			//FRM
-	Tpoint3f *pres,				//返すべき圧力
-	Tpoint3f *fric)				//返すべき摩擦*/
-
-	//int ithe, iphi, k00, k01, k10, k11;
-    //Tpoint3f prs0, prs1, prs, fri0, fri1, fri, uu, vv, ww;
-    //Trealf ft, fp, fthe, fphi;
-    //TfluidForceTex *frc;
-	
-	Vec3f uu, vv, ww;
-
-	vv = -v;
-	uu = Vec3f(vv.y, -vv.x, 0.0);
-	float a = uu.square();
-    if(a < 0.000000001) {
-        if(vv.z > 0.) {
-			uu = Vec3d(1.0, 0.0, 0.0);
-			ww = Vec3d(0.0, -1.0, 0.0);
-        } else {
-			uu = Vec3d(1.0, 0.0, 0.0);
-			ww = Vec3d(0.0, 1.0, 0.0);
-        }
-    } else {
-		a = sqrt(a);
-		uu.x /= a; uu.y /=a;
-		ww = Vec3f( uu.y * vv.z,
-			   -uu.x * vv.z,
-			    uu.x * vv.y - uu.y * vv.x).unit();
-    }
-
-	//the, phi -> 変位
-	//dthe, dphi -> DBの格子幅
-	//ithe, iphi -> DBのインデックス
-	//fthe, fphi -> 変位を格子幅で正規化したもの
-	//ft, fp -> 一番近い格子からの変位[0, 1]
-    float	fthe = the / dthe;
-    float	fphi = phi / dphi;
-    int		ithe = (int)fthe % (nthe-1);
-    int		iphi = (int)fphi % nphi;
-    float	ft = fthe - ithe;
-    float	fp = fphi - iphi;
-
-	int k00, k01, k10, k11;
-    if(ithe > 0) {
-        k00 = (ithe - 1) * nphi + (iphi + 1);
-		k01 = (iphi + 1 < nphi) ? k00 + 1 : k00 - iphi;
-		k10 = std::min(k00 + nphi, ntex - 1);
-		k11 = std::min(k10 + 1, ntex - 1);
-    } else {
-        k00 = 0;
-        k01 = 0;
-        k10 = iphi + 1;
-		k11 = (k10 < nphi) ? k10 + 1 : 1;
-    }
-//	DSTR << "K00" << k00 << "k01" << k01 << "k10" << k10 << "k11" << k11 << std::endl;
-
-    Vec3f prs00, prs01, prs10, prs11, fri00, fri01, fri10, fri11;
-	Vec3f prs0, prs1, fri0, fri1;
-    Vec3f prs, fri, pres, fric;
-    //frc = fset->frc;
-	
-	int idx;
-	if(ftex[k00].ndata > 0) {
-		idx = (int)(t*ftex[k00].rate) % ftex[k00].ndata;
-		prs00 = ftex[k00].prs[idx];
-		fri00 = ftex[k00].fri[idx];
-    }
-    if(ftex[k01].ndata > 0) {
-		idx = (int)(t*ftex[k01].rate) % ftex[k01].ndata;
-		prs01 = ftex[k01].prs[idx];
-		fri01 = ftex[k01].fri[idx];
-    }
-    if(ftex[k10].ndata > 0) {
-		idx = (int)(t*ftex[k10].rate) % ftex[k10].ndata;
-		prs10 = ftex[k10].prs[idx];
-        fri10 = ftex[k10].fri[idx];
-    }
-    if(ftex[k11].ndata > 0) {
-		idx = (int)(t*ftex[k11].rate) % ftex[k11].ndata;
-		prs11 = ftex[k11].prs[idx];
-        fri11 = ftex[k11].fri[idx];
-    }
-
-	Matrix3f mat;
-	mat.col(0) = uu;
-	mat.col(1) = vv;
-	mat.col(2) = ww;
-	prs0 = prs00 * (1.0 - ft) + prs10 * ft;
-	prs1 = prs01 * (1.0 - ft) + prs11 * ft;
-	prs  = prs0 * (1.0 - fp) + prs1 * fp;
-    pres = - mat * prs;
-    
-	fri0 = fri00 * (1.0 - ft) + fri10 * ft;
-    fri1 = fri01 * (1.0 - ft) + fri11 * ft;
-	fri = fri0 * (1.0 - fp) + fri1 * fp;
-	fric = mat * fri;
-	
-	pressure = pres * normal;
-}
-
-float PHWHapticSource::GetPressure(){
-	return pressure * frm->pressureGain;
-}
-
-Vec3f PHWHapticSource::GetPos(){
-	return frm->posture * pos;
-}
 
 }
 
