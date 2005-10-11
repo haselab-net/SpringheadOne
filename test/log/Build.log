@@ -67,6 +67,8 @@ HISpidarCalc3DOF.cpp
 HISpidarCalc6DOF.cpp
 HISpidarCalcBase.cpp
 HISpidarCanoe.cpp
+HISpidarFishing.cpp
+HISpidarFishingRod.cpp
 HISpidarG6.cpp
 HISpidarG6C.cpp
 HISpidarG6Jun.cpp
@@ -112,6 +114,7 @@ PHStickEngine.cpp
 PHWarp.cpp
 PHWater.cpp
 PHWaterContact.cpp
+PHWaterResistanceMap.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: SceneGraph - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
@@ -335,6 +338,7 @@ PHStickEngine.cpp
 PHWarp.cpp
 PHWater.cpp
 PHWaterContact.cpp
+PHWaterResistanceMap.cpp
 ｺｰﾄﾞを生成中...
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: SceneGraph - Win32 Debug--------------------
@@ -399,9 +403,7 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
  
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] BaseUtility.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] Affine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] StrbufBase.cpp(1): 
@@ -409,7 +411,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] BaseTypeInfo.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBWinDriver.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] WBDllLoader.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBMTimer.cpp(1): 
@@ -507,7 +508,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] DRADAPIO.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HITurnTable.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
 [C++] HIHapticDevice.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HISpidarMotor.cpp(1): 
@@ -562,53 +562,53 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
     HIMouse.cpp(5): namespace Spr
     HIMouse.cpp(213): 構文解析対象：bool HIMouse::PreviewMessage(void *)
 [C++] SGFrame.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
-[C++ 警告] SGFrame.cpp(129): W8012 符号付き値と符号なし値の比較
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++ 警告] SGFrame.cpp(146): W8012 符号付き値と符号なし値の比較
   詳細な解析情報
     SGFrame.cpp(6): namespace Spr
-    SGFrame.cpp(127): 構文解析対象：void SGFrame::EnumContents(SGObjects &,SGFrames &)
+    SGFrame.cpp(144): 構文解析対象：void SGFrame::EnumContents(SGObjects &,SGFrames &)
 [C++] SGObject.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] SGScene.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] SGBehaviorEngine.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] SGEngine.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] SGRegisterLoader.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] SGRenderEngine.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FITypeDesc.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocNode.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIFileDoc.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FIDocScene.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] FISpirit.cpp(1): 
 [C++ 警告] primitives.hpp(268): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDMesh.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDGJK.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDSphere.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDConvex.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDDetectorImp.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDFramePair.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDGeometry.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDPolyhedron.cpp(1): 
-[C++] キャッシュ済みプリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDRegisterLoader.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++] CDCollisionEngine.cpp(1): 
-[C++] プリコンパイルヘッダの読み込み
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
 [C++ 警告] CDCollisionEngine.cpp(393): W8012 符号付き値と符号なし値の比較
   詳細な解析情報
     CDCollisionEngine.cpp(5): namespace Spr
@@ -641,6 +641,6 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
     PHJoint.h(222): 具体化対象の選択：Vec3f PHJointBase::GetSolidAngularAccel()
     --- 具体化のため構文解析を初期化しました
     PHJoint.h(126): 構文解析対象：Vec3f PHJointBase::GetSolidAngularAccel()
-[C++ 警告] PHJoint.h(48): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
  
  
