@@ -403,7 +403,9 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
  
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] BaseUtility.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] Affine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] StrbufBase.cpp(1): 
@@ -411,6 +413,7 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] BaseTypeInfo.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBWinDriver.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] WBDllLoader.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBMTimer.cpp(1): 
@@ -508,6 +511,7 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] DRADAPIO.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HITurnTable.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] HIHapticDevice.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HISpidarMotor.cpp(1): 
