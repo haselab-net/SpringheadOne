@@ -1,8 +1,9 @@
-日付 : 2005.10.28 
+日付 : 2005.10.29 
  
 --- ビルドエラーのログ --- 
  
 *** Springhead *** 
+LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
  
  
 *** DynaHaptic *** 
@@ -21,17 +22,6 @@ Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
  
  
 *** TreeTestView *** 
-[C++ エラー] PHJoint.h(126): E2094 * 演算子が使われたがクラス Matrix3d では SpSubVec3d 型のための定義が存在しない
-  詳細な解析情報
-    PHForceField.cpp(1): #include C:\SVNWork\Springhead\src\Physics\Physics.h
-    Physics.h(9): #include C:\SVNWork\Springhead\src\Physics\PHJointPid.h
-    PHJointPid.h(4): #include C:\SVNWork\Springhead\src\Physics/PHJoint1D.h
-    PHJoint1D.h(4): #include C:\SVNWork\Springhead\src\Physics/PHJoint.h
-    PHJoint.h(26): namespace Spr
-    PHJoint.h(51): class PHJointBase
-    PHJoint.h(222): 具体化対象の選択：Vec3f PHJointBase::GetSolidAngularAccel()
-    --- 具体化のため構文解析を初期化しました
-    PHJoint.h(126): 構文解析対象：Vec3f PHJointBase::GetSolidAngularAccel()
-[C++ 警告] SGScene.h(35): W8058 ヘッダに初期化データが含まれているためプリコンパイルヘッダーを作成できない
+[C++ 致命的エラー] BaseDebug.cpp(3): F1004 コンパイラ内部のエラー at 0x77f87eeb with base 0xba0000
  
  
