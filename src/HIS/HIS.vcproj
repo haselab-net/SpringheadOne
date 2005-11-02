@@ -570,6 +570,18 @@
 			RelativePath=".\HISpidarCanoe.h">
 		</File>
 		<File
+			RelativePath=".\HISpidarFishing.cpp">
+		</File>
+		<File
+			RelativePath=".\HISpidarFishing.h">
+		</File>
+		<File
+			RelativePath=".\HISpidarFishingRod.cpp">
+		</File>
+		<File
+			RelativePath=".\HISpidarFishingRod.h">
+		</File>
+		<File
 			RelativePath="HISpidarG6.cpp">
 			<FileConfiguration
 				Name="Release|Win32">

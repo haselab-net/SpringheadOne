@@ -1,6 +1,6 @@
-del ..\SpringheadExePack.tar.gz
-copy ..\..\..\..\Experiments\Beetle\MFCRelease\Beetle.exe .
-mkdir beetle
-xcopy /Y /S ..\..\..\..\Experiments\Beetle\data beetle
-copy ..\MFCD3DDyna\MFCRelease\MFCD3DDyna.exe .
-minitar -c -z9 ../SpringheadExePack.tar.gz *.*
+copy ..\DynaHaptic\MFCRelease\DynaHaptic.exe .
+del /S /F /Y ..\..\..\pack\ExePack
+mkdir ..\..\..\pack\ExePack
+xcopy /I /S /Y /EXCLUDE:ExePack.exclude . ..\..\..\pack\ExePack
+cd ..\..\..\pack\ExePack
+minitar -c -z9 ../SpringheadExePack.tgz *.*
