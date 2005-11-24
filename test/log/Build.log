@@ -403,7 +403,9 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
  
 *** TreeTestView *** 
 [C++] BaseDebug.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] BaseUtility.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] Affine.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] StrbufBase.cpp(1): 
@@ -411,9 +413,11 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] BaseTypeInfo.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBWinDriver.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] WBDllLoader.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] WBMTimer.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] WBPath.cpp(1): 
 [C++] プリコンパイルヘッダの読み込み
 [C++] WBPortIO.cpp(1): 
@@ -460,31 +464,7 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
     WXGuid.cpp(11): #include C:\DXSDK\include\d3dx9.h
     d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
 [C++] WXError.cpp(1): 
-[C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(637): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(638): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(639): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
-[C++ 警告] d3dx9core.h(640): W8010 継続記号 \ が // コメント内に見つかった
-  詳細な解析情報
-    WXError.cpp(1): #include C:\SVNWork\Springhead\src\WinDX\WinDX.h
-    WinDX.h(9): #include C:\DXSDK\include\d3dx9.h
-    d3dx9.h(46): #include C:\DXSDK\include\d3dx9core.h
+[C++] プリコンパイルヘッダの読み込み
 [C++ 警告] d3dx9core.h(636): W8010 継続記号 \ が // コメント内に見つかった
   詳細な解析情報
     WXError.cpp(15): #include C:\DXSDK\include\D3dx9core.h
@@ -505,6 +485,7 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] WXD3D.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] DVVirtualDevicePool.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] DVVirtualDevice.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] DVDeviceManager.cpp(1): 
@@ -530,6 +511,7 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
 [C++] DRADAPIO.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HITurnTable.cpp(1): 
+[C++] プリコンパイルヘッダの読み込み
 [C++] HIHapticDevice.cpp(1): 
 [C++] キャッシュ済みプリコンパイルヘッダの読み込み
 [C++] HISpidarMotor.cpp(1): 
