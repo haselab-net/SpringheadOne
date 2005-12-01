@@ -25,7 +25,7 @@ call bat\BuildMFC.bat Springhead\src Springhead
 call bat\BuildMFC.bat Springhead\src\Samples\DynaHaptic DynaHaptic
 call bat\BuildMFC.bat Springhead\src\Samples\MFCD3DDyna MFCD3DDyna
 call bat\BuildVC.bat  Springhead\src\Samples\SDKD3DDyna SDKD3DDyna
-call bat\BuildBCB.bat Springhead\src\BCBGui\TreeViewTest TreeTestView
+rem call bat\BuildBCB.bat Springhead\src\BCBGui\TreeViewTest TreeTestView
 rem ----- Ç±Ç±Ç‹Ç≈ -----
 
 rem **** ÉâÉxÉãïtÇØ **** 
@@ -41,7 +41,7 @@ call bat\Label.bat Springhead\src\Samples\DynaHaptic\MFCDebug DynaHaptic
 call bat\Label.bat Springhead\src\Samples\DynaHaptic3DOF\MFCDebug DynaHaptic3DOF
 call bat\Label.bat Springhead\src\Samples\MFCD3DDyna\MFCDebug MFCD3DDyna 
 call bat\Label.bat Springhead\src\Samples\SDKD3DDyna\Debug SDKD3DDyna 
-call bat\Label.bat Springhead\src\BCBGui\TreeViewTest TreeViewTest
+rem call bat\Label.bat Springhead\src\BCBGui\TreeViewTest TreeViewTest
 rem ----- Ç±Ç±Ç‹Ç≈ -----
 
 set COMMENT=%COMMENT:~0,-1%Åj
