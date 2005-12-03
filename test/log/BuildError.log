@@ -1,8 +1,9 @@
-日付 : 2005.12.03 
+日付 : 2005.12.04 
  
 --- ビルドエラーのログ --- 
  
 *** Springhead *** 
+LIB : fatal error LNK1181: 入力ﾌｧｲﾙ "WinDX/WinDXMD.lib" を開けません
  
  
 *** DynaHaptic *** 
