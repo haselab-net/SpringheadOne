@@ -1,0 +1,19 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+USEUNIT("DVVirtualDevicePool.cpp");
+USEUNIT("DRContecIsaDa.cpp");
+USEUNIT("DRRealDevice.cpp");
+USEUNIT("DRRealDevicePool.cpp");
+USEUNIT("DRUPP.CPP");
+USEUNIT("DVDeviceManager.cpp");
+USEUNIT("DVVirtualDevice.cpp");
+USEUNIT("DRContecIsaCounter.cpp");
+//---------------------------------------------------------------------------
+#define Library
+
+// ライブラリにファイルを追加するには［プロジェクト｜プロジェクトに追加］を
+// 選択してください。
+
+ 

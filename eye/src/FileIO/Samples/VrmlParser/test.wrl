@@ -1,0 +1,5 @@
+PROTO Foo [ field SFInt32 i 0 ]{
+  PROTO Boo [ field SFVec3f v 1 0 0 ]{}
+  Boo{ v 0 1 1 }
+}
+Foo{ i 3 }

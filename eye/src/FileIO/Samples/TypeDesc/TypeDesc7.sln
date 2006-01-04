@@ -1,0 +1,87 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "..\..\..\Base\Base.vcproj", "{5DD6484B-A722-48B0-91B8-63271D2B41FF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileIO", "..\..\FileIO.vcproj", "{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinBasis", "..\..\..\WinBasis\WinBasis.vcproj", "{1D84E497-995F-4263-8323-CA5E021D0858}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TypeDesc7", "TypeDesc7.vcproj", "{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF} = {5DD6484B-A722-48B0-91B8-63271D2B41FF}
+		{1D84E497-995F-4263-8323-CA5E021D0858} = {1D84E497-995F-4263-8323-CA5E021D0858}
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8} = {BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 5
+		SccProjectUniqueName0 = ..\\..\\..\\WinBasis\\WinBasis.vcproj
+		SccProjectName0 = \u0022$/Project/Springhead/src/WinBasis\u0022,\u0020WQUAAAAA
+		SccLocalPath0 = ..\\..\\..\\WinBasis
+		CanCheckoutShared = false
+		SccProjectUniqueName1 = TypeDesc7.vcproj
+		SccLocalPath1 = .
+		CanCheckoutShared = false
+		SccLocalPath2 = .
+		CanCheckoutShared = false
+		SolutionUniqueID = {326A0EED-E4AF-4324-8B0F-3B6425A46FA1}
+		SccProjectUniqueName3 = ..\\..\\FileIO.vcproj
+		SccProjectName3 = \u0022$/Project/Springhead/src/FileIO\u0022,\u0020QUUAAAAA
+		SccLocalPath3 = ..\\..
+		CanCheckoutShared = false
+		SccProjectUniqueName4 = ..\\..\\..\\Base\\Base.vcproj
+		SccProjectName4 = \u0022$/Project/Springhead/src/Base\u0022,\u0020XPUAAAAA
+		SccLocalPath4 = ..\\..\\..\\Base
+		CanCheckoutShared = false
+	EndGlobalSection
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		MFC Debug = MFC Debug
+		MFC Release = MFC Release
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.Debug.ActiveCfg = Debug|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.Debug.Build.0 = Debug|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.MFC Debug.Build.0 = MFC Debug|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.MFC Release.ActiveCfg = MFC Release|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.MFC Release.Build.0 = MFC Release|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.Release.ActiveCfg = Release|Win32
+		{5DD6484B-A722-48B0-91B8-63271D2B41FF}.Release.Build.0 = Release|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.Debug.ActiveCfg = Debug|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.Debug.Build.0 = Debug|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.MFC Debug.Build.0 = MFC Debug|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.MFC Release.ActiveCfg = MFC Release|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.MFC Release.Build.0 = MFC Release|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.Release.ActiveCfg = Release|Win32
+		{BB63ADE5-6596-4B5F-BA8E-11D5EABF6EB8}.Release.Build.0 = Release|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.Debug.ActiveCfg = Debug|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.Debug.Build.0 = Debug|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.MFC Debug.ActiveCfg = MFC Debug|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.MFC Debug.Build.0 = MFC Debug|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.MFC Release.ActiveCfg = MFC Release|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.MFC Release.Build.0 = MFC Release|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.Release.ActiveCfg = Release|Win32
+		{1D84E497-995F-4263-8323-CA5E021D0858}.Release.Build.0 = Release|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.Debug.ActiveCfg = Debug|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.Debug.Build.0 = Debug|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.MFC Debug.ActiveCfg = Debug|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.MFC Debug.Build.0 = Debug|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.MFC Release.ActiveCfg = Release|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.MFC Release.Build.0 = Release|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.Release.ActiveCfg = Release|Win32
+		{CA30D6FE-0F22-4BE0-B67C-27C1199BAD3E}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
