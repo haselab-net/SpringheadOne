@@ -1,2 +1,0 @@
-cd ..
-DynaHaptic daruma.x
