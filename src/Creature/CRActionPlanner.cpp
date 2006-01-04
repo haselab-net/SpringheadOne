@@ -54,7 +54,7 @@ int CRActionPlanner::ContactInfo::CheckContactType(int vh, int user){
 CRActionPlanner::CRActionPlanner(){
 }
 	
-void CRActionPlanner::Load(){
+void CRActionPlanner::Load(SGScene* rScene, SGScene* iScene, CRPuppet* rPuppet, CRPuppet* iPuppet, CRUser *iUser, CRInternalModel* internalModel){
 	bDraw       = false;
 	bPlanner    = false;
 	bPrediction = false;
@@ -62,61 +62,69 @@ void CRActionPlanner::Load(){
 	bLoadTemp   = false;
 	times     = 0;
 	startTime = 0;
+	this->rScene = rScene;
+	this->iScene = iScene;
+	this->rPuppet = rPuppet;
+	this->iPuppet = iPuppet;
+	this->iUser = iUser;
+	this->internalModel = internalModel;
 }
 	
-void CRActionPlanner::SaveState(SGScene* scene, bool type){
-	if(type){
+void CRActionPlanner::SaveState(SGScene* scene, SceneType type){
+	switch(type){
+	case STReal:
 		stateReal.clear();
 		scene->SaveState(stateReal);	// type == 1 の時は現在の状態として保存
 		bLoadReal = true;
-	}
-	else{
+		break;
+	case STInternal:
 		stateTemp.clear();
 		scene->SaveState(stateTemp);	// type == 0 の時は内部の状態として保存
 		bLoadTemp = true;
+		break;
 	}
 }
 
-void CRActionPlanner::LoadState(SGScene* scene, bool type){
-	if(type){
+void CRActionPlanner::LoadState(SGScene* scene, SceneType type){
+	switch(type){
+	case STReal:
 		if(bLoadReal){
 			scene->LoadState(stateReal);	// type == 1 の時は現在の状態を読み込む
 			stateReal.clear();
 		}
-	}
-	else{
+		break;
+	case STInternal:
 		if(bLoadTemp){
 			scene->LoadState(stateTemp);	// type == 0 の時は内部の状態を読み込む
 			stateTemp.clear();
 		}
+		break;
 	}
 }
 
-void CRActionPlanner::Step(CRPuppet* puppet, CRUser* user, SGScene* scene){
-	if(puppet->IsLoaded() && user->IsLoaded()){
+void CRActionPlanner::Step(bool bInternalModelStable){
+	if(iPuppet->IsLoaded() && iUser->IsLoaded()){
 		if(bPlanner){
 			Spr::GRRender* render;
-			scene->GetRenderers().Find(render);
-			//user->locus.PrintLogPos(user);
+			iScene->GetRenderers().Find(render);
 			if(bPrediction){
-				PredictionAction(puppet, user, scene);
-
+				PredictionAction(iPuppet, iUser, iScene);
+			
 				// 予測軌道を描画
 				if(bDraw){
 					for(int i = 0; i < 2; ++i){
-						if(user->locus.bPrediction[i]){
-							user->locus.DrawFutureLocus(user->locus.ak[i], 10, 10, render, Vec4f(0,1,1,1));
+						if(iUser->locus.bPrediction[i]){
+							iUser->locus.DrawFutureLocus(iUser->locus.ak[i], 10, 10, render, Vec4f(0,1,1,1));
 						}
 					}
 				}
 			}
 			else{
-				user->locus.SetLocusCoefficient(user, scene);
-				if(puppet->IsAimed(user, scene)){
-//					DSTR << "予測開始: " << scene->GetCount() * scene->GetTimeStep() << std::endl;
-					//user->locus.PrintLocusCoefficient(user);
+				iUser->locus.SetLocusCoefficient(iUser, iScene);
+				if(iPuppet->IsAimed(iUser, iScene) && /*/ bInternalModelStable /*/ true /**/){
 					bPrediction = true;
 					times = 0;
+					internalModel->DisableVisualUpdate();
 				}
 			}
 			if(cPos.norm() > 0){
@@ -135,50 +143,46 @@ void CRActionPlanner::Step(CRPuppet* puppet, CRUser* user, SGScene* scene){
 
 void CRActionPlanner::PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene){
 	const int SETCOUNT = 10;
-
+	
 	if(times >= SETCOUNT){
 		contactInfo.clear();
 		bPrediction = false;
+		internalModel->EnableVisualUpdate();
 		// 内部到達運動の初期化
 		for(int i = 0; i < 3; ++i) puppet->reaching[1][i].Init();
-//		DSTR << "時間切れ: " << scene-> GetTimeStep() * scene->GetCount() << "\n" << std::endl;
 		cPos = Vec3f();
 		return;
 	}
-
-	if(ChooseTargetAction(puppet, user)){
+	
+	if(ChooseTargetAction(rPuppet, user)){ // rPuppetの行動を決定
 		contactInfo.clear();
 		bPrediction = false;
+		internalModel->EnableVisualUpdate();
 		// 内部到達運動の初期化
 		for(int i = 0; i < 3; ++i) puppet->reaching[1][i].Init();
-//		DSTR << "予想接触位置: " << cPos << std::endl;
-//		DSTR << "予測完了: " << scene-> GetTimeStep() * scene->GetCount() << "\n" << std::endl;
 		return;
 	}
-
+	
 	currentTime = scene->GetCount() * scene->GetTimeStep();	// 現在の時刻
-	SaveState(scene, 1);		// 現在の状態を保存
+
 	if(times == 0){
-		SaveState(scene, 0);	// 初期内部状態を保存
 		contactInfo.clear();
 		startTime = currentTime;
-
-		// 到達運動のコピー
-		for(int i = 0; i < 3; ++i) puppet->reaching[1][i] = puppet->reaching[0][i];
+		
+		// 到達運動のコピー(rPuppetからiPuppetへ)
+		//for(int i = 0; i < 3; ++i) puppet->reaching[1][i] = rPuppet->reaching[0][i];
 	}
-
+	
 	MovementPrediction(puppet, user, scene, times);
-
-	LoadState(scene, 1);		// 現在の状態を読み込む
-
+	
 	times++;
 }
 
 void CRActionPlanner::MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count){
 	const int STEPCOUNT = 4;
-	const float RATE = 1.25f;
-	
-	LoadState(scene, 0);	// 途中内部状態から再開
+	const float RATE = 1.0f;
+	//const float RATE=1.0f;
+
 	float dt = scene->GetTimeStep();
 	scene->SetTimeStep(dt * RATE);
 
@@ -187,16 +191,9 @@ void CRActionPlanner::MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene
 		ContactTest(puppet, user, scene, count * STEPCOUNT + i);
 	}
 
-	// 更新結果を描画
-	GRRender* render;
-	scene->GetRenderers().Find(render);
-#ifdef USE_VHCHECKDLG
-	vhCheckDialog->DrawTest(render, scene);
-#endif
-
 	scene->SetTimeStep(dt);
-	SaveState(scene, 0);	// 途中状態を保存
 }
+
 
 void CRActionPlanner::PredictionStep(CRPuppet* puppet, CRUser* user, SGScene* scene, int count){
 	float dt = scene->GetTimeStep();
@@ -280,14 +277,23 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 			// 体の行動
 			//if(cInfo->soVHIndex == 3){
 			if(cInfo->soVHIndex == 3 || cInfo->soVHIndex == 2){
-				float rate = 0.2f;
-				if(tTime > rate) rate = tTime;
+				//float rate = 0.2f;
+				//if(tTime > rate) rate = tTime;
 
-				puppet->reaching[0][2].SetSpring(cInfo->soVH, Vec3f(0.02f, 0.02f, 0.02f));
+				float rate = 0.1f;
+				if(tTime > rate) rate = tTime * 0.5;
+				
+				PHSolid* avoidSolid;
+				rScene->FindObject(avoidSolid, cInfo->soVH->GetName());
+
+				puppet->reaching[0][2].SetSpring(avoidSolid, Vec3f(0.02f, 0.02f, 0.02f));
 				Vec3f p = GetPointToAvoid(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][2].GetPos(), 0.25f);
 				puppet->reaching[0][2].SetTargetPos(p, Vec3f());
-				puppet->reaching[0][2].SetTimer(rate, 0.45f);
+				puppet->reaching[0][2].SetTimer(rate, 0.1f);
+				puppet->reaching[0][2].SetLimitForce(1e10f);
 				puppet->reaching[0][2].SetType(3);
+				puppet->reaching[0][2].SetSprRate(0.7f);
+				puppet->reaching[0][2].SetDmpRate(0.7f);
 			}
 
 			// 右腕の行動
@@ -297,19 +303,24 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 					puppet->reaching[0][0].Init();
 				}
 				else{
-					float rate = 0.1f;
-					if(tTime > 0.2f) rate = tTime * 0.5f;
+					float rate = 0.05f;
+//						if(tTime > 0.2f) rate = tTime * 0.5f;
 
 					if((puppet->solids[5]->GetCenterPosition() - cPos).norm() > (puppet->solids[6]->GetCenterPosition() - cPos).norm()){
 						puppet->reaching[0][0].SetSpring(puppet->solids[5], Vec3f(0.0f,-0.9f * puppet->GetSolidInfo(5).scale.Y(),0));
 					}
 					else{
-						puppet->reaching[0][0].SetSpring(puppet->solids[5], Vec3f());
+						puppet->reaching[0][0].SetSpring(puppet->solids[5], Vec3f(0.0f,-0.5f * puppet->GetSolidInfo(5).scale.Y(),0));
 					}
 					Vec3f p = GetPointToGuard(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][0].GetPos());
+					//p += Vec3f(0.0f,0.1f,0.0f);
 					puppet->reaching[0][0].SetTargetPos(p, Vec3f());
-					puppet->reaching[0][0].SetTimer(rate, 0.4f - rate);
+					//puppet->reaching[0][0].SetTimer(rate, 0.4f - rate);
+					puppet->reaching[0][0].SetTimer(rate, 0.0f);
+					puppet->reaching[0][0].SetLimitForce(1000000000000.0f);//1000.0f);
 					puppet->reaching[0][0].SetType(2);
+					puppet->reaching[0][0].SetSprRate(0.8f*4.0f);
+					puppet->reaching[0][0].SetDmpRate(0.8f*4.0f);
 				}
 
 				// 左腕の行動
@@ -317,19 +328,24 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 					puppet->reaching[0][1].Init();
 				}
 				else{
-					float rate = 0.1f;
-					if(tTime > 0.2f) rate = tTime * 0.5f;
+					float rate = 0.05f;
+//						if(tTime > 0.2f) rate = tTime * 0.5f;
 
 					if((puppet->solids[8]->GetCenterPosition() - cPos).norm() > (puppet->solids[9]->GetCenterPosition() - cPos).norm()){
 						puppet->reaching[0][1].SetSpring(puppet->solids[8], Vec3f(0.0f,-0.9f * puppet->GetSolidInfo(8).scale.Y(),0));
 					}
 					else{
-						puppet->reaching[0][1].SetSpring(puppet->solids[8], Vec3f());
+						puppet->reaching[0][1].SetSpring(puppet->solids[8], Vec3f(0.0f,-0.5f * puppet->GetSolidInfo(8).scale.Y(),0));
 					}
 					Vec3f p = GetPointToGuard(cInfo->soUser->GetFrame()->GetPosture() * cInfo->contactPoint[2], cPos, puppet->reaching[0][0].GetPos());
+					//p += Vec3f(0.0f,0.1f,0.0f);
 					puppet->reaching[0][1].SetTargetPos(p, Vec3f());
-					puppet->reaching[0][1].SetTimer(rate, 0.4f - rate);
+					//puppet->reaching[0][1].SetTimer(rate, 0.4f - rate);
+					puppet->reaching[0][1].SetTimer(rate, 0.0f);
+					puppet->reaching[0][1].SetLimitForce(1000000000000.0f);//1000.0f);
 					puppet->reaching[0][1].SetType(2);
+					puppet->reaching[0][1].SetSprRate(0.8f*4.0f);
+					puppet->reaching[0][1].SetDmpRate(0.8f*4.0f);
 				}
 			}
 
@@ -363,6 +379,7 @@ bool CRActionPlanner::ChooseTargetAction(CRPuppet* puppet, CRUser* user){
 	}
 }
 
+
 Vec3f CRActionPlanner::GetNearestPoint(Vec3f a, Vec3f b, Vec3f c){
 	// 線分ab上で点cとの最近傍点を返す
 	Vec3f p;
@@ -388,6 +405,66 @@ Vec3f CRActionPlanner::GetPointToGuard(Vec3f a, Vec3f b, Vec3f c){
 	//return GetNearestPoint(a, (b - a) * 0.4f + a, c);
 	return GetNearestPoint(a, (a - b).unit() * 0.05f + b, c);
 }
+
+void CRActionPlanner::SetSolidInvisible(PHSolid* solid){
+	for(int i=0; i<contactDisabledSolids.size(); i++){
+		if (contactDisabledSolids[i]==solid){
+			return;
+		}
+	}
+	contactDisabledSolids.push_back(solid);
+}
+
+void CRActionPlanner::SetSolidVisible(PHSolid* solid){
+	for(std::vector<PHSolid*>::iterator it=contactDisabledSolids.begin();
+			it != contactDisabledSolids.end();
+			it++)
+		{
+		if (*it==solid){
+			contactDisabledSolids.erase(it);
+			return;
+		}
+	}
+}
+
+void CRActionPlanner::DisableContact(CRPuppet* puppet, SGScene* scene){
+	PHContactEngine* contactEngine = NULL;
+	scene->GetBehaviors().Find(contactEngine);
+	int pos = contactEngine->GetListenerPos();
+
+	CDCollisionEngine* collisionEngine = NULL;
+	scene->GetBehaviors().Find(collisionEngine);
+
+	for(int i=0; i<puppet->solids.size(); i++){
+		for(int j=0; j<contactDisabledSolids.size(); j++){
+			collisionEngine->AddInactive(
+																	 puppet->solids[i]->GetFrame(),
+																	 contactDisabledSolids[j]->GetFrame(),
+																	 pos
+																	 );
+		}
+	}
+}
+	
+void CRActionPlanner::EnableContact(CRPuppet* puppet, SGScene* scene){
+	PHContactEngine* contactEngine = NULL;
+	scene->GetBehaviors().Find(contactEngine);
+	int pos = contactEngine->GetListenerPos();
+
+	CDCollisionEngine* collisionEngine = NULL;
+	scene->GetBehaviors().Find(collisionEngine);
+
+	for(int i=0; i<puppet->solids.size(); i++){
+		for(int j=0; j<contactDisabledSolids.size(); j++){
+			collisionEngine->AddActive(
+																	 puppet->solids[i]->GetFrame(),
+																	 contactDisabledSolids[j]->GetFrame(),
+																	 pos
+																	 );
+		}
+	}
+}
+
 
 }
 

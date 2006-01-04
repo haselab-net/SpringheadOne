@@ -26,6 +26,12 @@ public:
 	}
 };
 DEF_REGISTER_LOADER(CDMesh);
+class CDMeshForShapeLoader: public CDMeshLoader{
+	virtual UTString GetNodeType() const{
+		return "MeshForShape";
+	}
+};
+DEF_REGISTER_LOADER(CDMeshForShape);
 
 //------------------------------------------------------------------------
 SGOBJECTIMP(CDMesh, CDGeometry);

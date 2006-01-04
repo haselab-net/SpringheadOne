@@ -266,6 +266,17 @@ protected:
 DEF_REGISTER_BOTH(GRMesh);
 
 
+class GRMeshForVisualLoader: public GRMeshLoader{
+	virtual UTString GetNodeType() const{
+		return "MeshForVisual";
+	}
+	virtual bool LoadData(FILoadScene* ctx, GRMesh* mesh){
+		return GRMeshLoader::LoadData(ctx, mesh);
+	}
+};
+DEF_REGISTER_LOADER(GRMeshForVisual);
+
+
 class GRMeshNormalsLoader:public FIBaseLoader{
 public:
 	virtual UTString GetNodeType() const{
@@ -378,7 +389,7 @@ public:
 		XMeshMaterialList m;
 		desc->Read(&m, ctx->docs.Top());
 		//	データをメッシュに格納
-		XMeshLoadContext* ml;
+		XMeshLoadContext* ml=NULL;
 		ctx->objects.Find(ml);
 		//	属性の設定
 		for(unsigned int i=0, tri=0; i<m.nFaceIndexes; ++i){

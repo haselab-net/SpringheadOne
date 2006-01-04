@@ -111,6 +111,7 @@ void D3FileDoc::Init(){
 	
 	RegisterType("MeshForVisual", &WBGuid("251c1ec7-c1c1-4d00-97c9-09bc468a1147"));
 	RegisterType("MeshForShape", &WBGuid("9299e06b-bc23-4f58-958d-83ff2dd7a143"));
+	RegisterType("SphereForShape", &WBGuid("A6692DFA-A243-48b2-B0DD-D22723B0DABC"));
 }
 
 
@@ -262,10 +263,25 @@ void D3FileDoc::RegisterTemplates(){
 	"}\n"
 	"template MeshForVisual {\n"
 	"	<251c1ec7-c1c1-4d00-97c9-09bc468a1147>\n"
+	"	DWORD nVertices;\n"
+	"	array Vector vertices[nVertices];\n"
+	"	DWORD nFaces;\n"
+	"	array MeshFace faces[nFaces];\n"
 	"	[...]\n"
 	"}\n"
 	"template MeshForShape {\n"
 	"	<9299e06b-bc23-4f58-958d-83ff2dd7a143>\n"
+	"	DWORD nVertices;\n"
+	"	array Vector vertices[nVertices];\n"
+	"	DWORD nFaces;\n"
+	"	array MeshFace faces[nFaces];\n"
+	"	[...]\n"
+	"}\n"
+	"template SphereForShape {\n"
+	"	<A6692DFA-A243-48b2-B0DD-D22723B0DABC>\n"
+	"	FLOAT Radius;\n"
+	"	DWORD Slices;\n"
+	"	DWORD Stacks;\n"
 	"	[...]\n"
 	"}\n"
 	"template XSkinMeshHeader {\n"

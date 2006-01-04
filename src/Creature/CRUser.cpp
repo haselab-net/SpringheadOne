@@ -75,6 +75,8 @@ void CRUser::SetJointSpring(float dt){
 		}
 	}
 */
+
+	/*
 	if(jointBallPids[0] != NULL){
 		JointBallPIDMul(jointBallPids[0], 0.4f, 1.0f);
 	}
@@ -99,6 +101,40 @@ void CRUser::SetJointSpring(float dt){
 	}
 	if(jointPids[7] != NULL){
 		JointPIDMul(jointPids[7], 0.01f, 0.25f);
+	}
+	*/
+
+
+	if(jointBallPids[0] != NULL){
+		//JointBallPIDMul(jointBallPids[0], 0.4f, 1.0f);
+		JointBallPIDMul(jointBallPids[0], 0.4f*2.0f, 1.0f*4.0f);
+	}
+	if(jointPids[1] != NULL){
+		//JointPIDMul(jointPids[1], 0.4f, 0.8f);
+		JointPIDMul(jointPids[1], 0.4f*2.0f, 0.8f*4.0f);
+	}
+	// ŠÖß‚ð_‚ç‚©‚ß‚ÉÝ’è(Žñ)
+	if(jointBallPids[2] != NULL){
+		JointBallPIDMul(jointBallPids[2], 0.3f, 0.8f);
+	}
+	// ŠÖß‚ð_‚ç‚©‚ß‚ÉÝ’è(‰E˜r)
+	if(jointBallPids[3] != NULL){
+		//JointBallPIDMul(jointBallPids[3], 0.08f, 1.0f);
+		JointBallPIDMul(jointBallPids[3], 0.08f*1.5f, 1.0f*3.0f);
+	}
+	if(jointPids[4] != NULL){
+		//JointPIDMul(jointPids[4], 0.06f, 0.1f);
+		JointPIDMul(jointPids[4], 0.06f*3.0f, 0.1f*10.0f);
+	}
+
+	// ŠÖß‚ð_‚ç‚©‚ß‚ÉÝ’è(¶˜r)
+	if(jointBallPids[6] != NULL){
+		//JointBallPIDMul(jointBallPids[6], 0.08f, 1.0f);
+		JointBallPIDMul(jointBallPids[6], 0.08f*1.5f, 1.0f*3.0f);
+	}
+	if(jointPids[7] != NULL){
+		//JointPIDMul(jointPids[7], 0.06f, 0.1f);
+		JointPIDMul(jointPids[7], 0.06f*3.0f, 0.1f*10.0f);
 	}
 }
 
@@ -254,14 +290,14 @@ void CRUser::SetSprings(){
 
 	// [0] ˜(Šî–{—§‚¿ˆÊ’u‚ÉŒÅ’è)
 //	postureSpring.SetSolid(solids[0], 0.1f, 1.0f);
-	postureSpring.SetSolid(solids[0], 0.01f, 0.6f);
-	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.05f, 1.0f);
+	postureSpring.SetSolid(solids[0], 0.1f, 2.0f);
+	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.6f, 10.0f);
 	positionSprings.push_back(positionSpr);
 	// [1] ‰EŽè(Spidar‚É‘Î‰ž)
-	positionSpr.SetSolid(solids[6],  Vec3f(0, 0, 0), 1.0f, 1.0f);
+	positionSpr.SetSolid(solids[6],  Vec3f(0, 0, 0), 10.0f, 10.0f);
 	positionSprings.push_back(positionSpr);
 	// [2] ¶Žè
-	positionSpr.SetSolid(solids[9],  Vec3f(0, 0, 0), 1.0f, 1.0f);
+	positionSpr.SetSolid(solids[9],  Vec3f(0, 0, 0), 10.0f, 10.0f);
 	positionSprings.push_back(positionSpr);
 	// [3] “ª’¸(ƒ‰ƒxƒŠƒ“ƒOƒJƒƒ‰‚É‘Î‰ž)
 //	positionSpr.SetSolid(solids[3],  Vec3f(0,  GetSolidInfo(3).scale.Y(),  0), 0.1f, 0.1f);
@@ -276,8 +312,15 @@ void CRUser::SetSprings(){
 
 void CRUser::SetFixedPos(){
 	if(!IsLoaded()) return;
+	Vec3f pos = (solids[6]->GetCenterPosition() + solids[9]->GetCenterPosition()) * 0.5f;
+	pos[1] = 1.0f;
+	pos += Vec3f(0.0f, 0.0f, 0.3f);
+	positionSprings[0].SetTarget(pos, Vec3f(0,0,0), true);
 	postureSpring.SetTarget(Quaterniond(1,0,0,0), Vec3f(), true);
+
+	/*
 	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f, 0.0f), Vec3f(0,0,0), true);
+	*/
 }
 
 void CRUser::SetSpidarPos(std::vector<HISpidar4*> spidars){
@@ -290,6 +333,10 @@ void CRUser::SetSpidarPos(std::vector<HISpidar4*> spidars){
 		tVel = spidars[i]->GetVel() * SCALE;
 		tPos.y += 1.4f;
 		tPos.z -= 0.3f;
+
+		if (tVel.norm() > 1.0f){
+			tVel.unitize();
+		}
 
 		positionSprings[i+1].SetTarget(tPos, tVel, true);
 	}
@@ -327,6 +374,20 @@ void CRUser::SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpid
 		}
 	}
 }
+
+void CRUser::SetJointBasicPos(){
+	// Waist
+	if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].initQt = Quaternionf(cosf(-0.1f), sinf(-0.1f), 0.0f, 0.0f);
+
+	// Shoulder(R,L)
+	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
+	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
+
+	// Elbow(R,L)
+	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 1.9f; //2.3f;
+	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 1.9f; //2.3f;
+}
+
 
 void CRUser::PlayHitSound(){
 	// GRSound::instance()->play( SAMPLE2 );

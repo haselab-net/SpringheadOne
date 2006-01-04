@@ -7,6 +7,7 @@
 #include "CRPuppet.h"
 #include <time.h>
 
+#include <Creature/CRAttention.h>
 
 //////////////////////////////////////////////////////////////////////
 // ç\íz/è¡ñ≈
@@ -43,6 +44,7 @@ void CRPuppet::PositionSpring::SetSolid(PHSolid* s, Vec3f p, float spr, float dm
 	pos     = p;
 	sprRate = spr;
 	dmpRate = dmp;
+	//DSTR << (solid ? solid->GetName() : "NULL") << " is pulled." << std::endl;
 }
 
 void CRPuppet::PositionSpring::SetTarget(Vec3f pos, Vec3f vel, bool b){
@@ -64,6 +66,7 @@ void CRPuppet::PositionSpring::AddSpringForce(float dt){
 	dt = 0.006f;
 
 	if(solid){
+//		DSTR << solid->GetName() << " <- AddSpringForce" << std::endl;
 		float mass = solid->GetMass();
 		float spring = SPRING * mass * 2 / (dt*dt);
 		float damper = DAMPER * mass / (dt);
@@ -78,11 +81,20 @@ void CRPuppet::PositionSpring::AddSpringForce(float dt){
 			if (dPos.norm() > 1e2f) dPos = dPos.unit() * 1e2f;
 			force = spring * dPos + damper * dVel;
 
-			if (force.norm() / mass > 1e3f) force = force.unit() * mass * 1e3f;
+			/*
+			if (force.norm() / mass > 1e3f){
+				force = force.unit() * mass * 1e3f;
+				DSTR << "Limit Spring Force." << std::endl;
+			}
+			*/
 
 			AddForce(force);
 		}
 	}
+	/*
+	if (strcmp(solid->GetName(), "soHead")==0)
+		DSTR << "AddSpring" << solid << solid->GetForce() << std::endl;
+		*/
 	bForce = false;
 }
 
@@ -168,18 +180,28 @@ CRPuppet::ReachingMovement::ReachingMovement(){
 void CRPuppet::ReachingMovement::Init(){
 	bForce = false;
 	bActive = false;
+	bInitIfContact = false;
 	state = 0;
 	time = 0.0f;
-	targetSolid = NULL;
+	limitForce = 350.0f;
 	SetTarget(Vec3f(), Vec3f(), false);
+}
+
+void CRPuppet::ReachingMovement::SetInitIfContact(){
+	bInitIfContact = true;
+}
+
+void CRPuppet::ReachingMovement::SetLimitForce(float limit){
+	limitForce = limit;
 }
 
 void CRPuppet::ReachingMovement::SetSpring(PHSolid* s, Vec3f r){
 	solid = s;
 	pos   = r;
-	//sprRate = 1.0f;
 	sprRate = 2.0f;
 	dmpRate = 1.0f;
+
+	//DSTR << (solid ? solid->GetName() : "NULL") << " is pulled by SetSpring." << std::endl;
 
 	firstPos = s->GetFrame()->GetPosture() * r;
 }
@@ -195,10 +217,8 @@ void CRPuppet::ReachingMovement::SetTargetPos(Vec3f p, Vec3f v){
 	finalVel = v;
 }
 
-void CRPuppet::ReachingMovement::SetTargetSolid(PHSolid* so, Vec3f p, Vec3f v){
-	targetSolid = so;
-	localPos = p;
-	finalVel = v;
+Vec3f CRPuppet::ReachingMovement::GetTargetPos(){
+	return finalPos;
 }
 
 void CRPuppet::ReachingMovement::SetType(int type){
@@ -209,12 +229,17 @@ void CRPuppet::ReachingMovement::Draw(GRRender* render){
 	if(bActive){
 		render->SetModelMatrix(Affinef());
 		render->SetLineWidth(10);
-		render->SetMaterial(GRMaterialData(Vec4f(0,1,0,1)));
 		Vec3f pos[2];
 		pos[0] = finalPos;
 		pos[1] = GetPos();
+
+		render->SetLineWidth(15);
+		render->SetMaterial(GRMaterialData(Vec4f(1,0,0,1)));
 		render->DrawDirect(GRRender::POINTS, pos, pos+1);
-		render->DrawDirect(GRRender::POINTS, pos, pos+2);
+
+		render->SetLineWidth(10);
+		render->SetMaterial(GRMaterialData(Vec4f(0,1,0,1)));
+		render->DrawDirect(GRRender::POINTS, pos+1, pos+2);
 		render->DrawDirect(GRRender::LINES,  pos, pos+2);
 	}
 }
@@ -222,41 +247,40 @@ void CRPuppet::ReachingMovement::Draw(GRRender* render){
 void CRPuppet::ReachingMovement::Step(SGScene* scene){
 	float dt = scene->GetTimeStep();
 	if(bActive){
-		if(time-period*0.3 <= -offset){
+		//DSTR << "ReachingMovement::Step: " << solid->GetForce().norm() << std::endl;
+		if(bInitIfContact && (solid->GetForce().norm() > 30.0f)){	
+			Init();
+		}
+
+		if(time <= -offset){
 			Init();
 			return;
 		}
 
-		if(targetSolid) finalPos = targetSolid->GetFrame()->GetPosture() * localPos;	// ñ⁄ïWà íuÇÃçXêV
-		if(time > period*0.3){
-			Vec3f pos, vel;
-#if 1
-			float s = dt / time;
-			pos = (finalPos - GetPos()) * 2.0f * s + GetPos();	// âºñ⁄ïWÇÃê›íË
-			vel = (finalPos - GetPos()) * 1.5f / time;
-#else
-			//	ê≥ãKâªÇµÇΩéûçè (0..1)
-			float s = 1- time/period;
-			//	ïRÇÃí∑Ç≥Ç∆ë¨ìx
-			double length = 1 - (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
-			double deltaLength = -30*(pow(s,2) - 2*pow(s,3) + pow(s,4));
-			if (length<0){
-				length = 0;
-				deltaLength = 0;
-				time = 0;
-			}
-			Vec3f dir = GetPos()-finalPos;
-			pos = finalPos + dir*length;
-			vel = dir*deltaLength;
-#endif
-			SetTarget(pos, vel, true);
-
-		}else{
-			SetTarget(finalPos, Vec3f(), true);
+		Vec3f pos, vel;
+		//	ê≥ãKâªÇµÇΩéûçè (0..1)
+		float s = 1- time/period;
+		//	ïRÇÃí∑Ç≥Ç∆ë¨ìx
+		double length = 1 - (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
+		double deltaLength = -30*(pow(s,2) - 2*pow(s,3) + pow(s,4));
+		if (length<0){
+			length = 0;
+			deltaLength = 0;
 		}
+		Vec3f dir = GetPos()-finalPos;
+		pos = finalPos + dir*length;
+		vel = dir*deltaLength;
+		SetTarget(pos, vel, true);
+
 		time -= dt;
 		AddSpringForce(dt);
-		if(force.norm() >= 1e3f) Init();
+		//DSTR << "time : " << time << std::endl;
+		//DSTR << "frce : " << force.norm() << std::endl;
+		if (force.norm() >= limitForce){
+			//DSTR << "Force " << force.norm() << " is too strong." << std::endl;
+			Init();
+		}
+		//if (force.norm() >= 300.0f) Init();
 	}
 }
 
@@ -471,7 +495,6 @@ void CRPuppet::HumanContactInfo::SetContactPointOfSolidPair(PHSolid* so1, PHSoli
 
 //////////////////// CRPuppetÉNÉâÉX ////////////////////
 CRPuppet::CRPuppet(){
-
 }
 
 void CRPuppet::LoadDerivedModel(SGScene* scene){
@@ -482,10 +505,13 @@ void CRPuppet::LoadDerivedModel(SGScene* scene){
 		bDraw   = false;
 		bAttack = false;
 		bGuard  = false;
+		bAttackAttention = false;
 		hittingCount = 0;
 		atc = 0;
 		inbetweenNotHits=0;
 		inbetweenHits=0;	
+
+		scene->FindObject(soWaistU, "soWaistU");
 	}
 }
 
@@ -716,6 +742,7 @@ inline float GetChildMass(PHJointBase* j){
 	}
 }
 
+
 void CRPuppet::SetJointSpring(float dt){
 /*	//const float SAFETYRATE = 0.002f;
 	const float SAFETYRATE = 0.002f;
@@ -751,10 +778,12 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 */
 	if(jointBallPids[0] != NULL){
-		JointBallPIDMul(jointBallPids[0], 0.4f, 1.0f);
+		//JointBallPIDMul(jointBallPids[0], 0.4f, 1.0f);
+		JointBallPIDMul(jointBallPids[0], 0.4f*2.0f, 1.0f*4.0f);
 	}
 	if(jointPids[1] != NULL){
-		JointPIDMul(jointPids[1], 0.4f, 0.8f);
+		//JointPIDMul(jointPids[1], 0.4f, 0.8f);
+		JointPIDMul(jointPids[1], 0.4f*2.0f, 0.8f*4.0f);
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(éÒ)
 	if(jointBallPids[2] != NULL){
@@ -762,18 +791,22 @@ void CRPuppet::SetJointSpring(float dt){
 	}
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(âEòr)
 	if(jointBallPids[3] != NULL){
-		JointBallPIDMul(jointBallPids[3], 0.08f, 1.0f);
+		//JointBallPIDMul(jointBallPids[3], 0.08f, 1.0f);
+		JointBallPIDMul(jointBallPids[3], 0.08f*1.5f, 1.0f*10.0f);
 	}
 	if(jointPids[4] != NULL){
-		JointPIDMul(jointPids[4], 0.06f, 0.5f);
+		//JointPIDMul(jointPids[4], 0.06f, 0.1f);
+		JointPIDMul(jointPids[4], 0.06f*3.0f, 0.1f*40.0f);
 	}
 
 	// ä÷êﬂÇè_ÇÁÇ©ÇﬂÇ…ê›íË(ç∂òr)
 	if(jointBallPids[6] != NULL){
-		JointBallPIDMul(jointBallPids[6], 0.08f, 1.0f);
+		//JointBallPIDMul(jointBallPids[6], 0.08f, 1.0f);
+		JointBallPIDMul(jointBallPids[6], 0.08f*1.5f, 1.0f*10.0f);
 	}
 	if(jointPids[7] != NULL){
-		JointPIDMul(jointPids[7], 0.06f, 0.5f);
+		//JointPIDMul(jointPids[7], 0.06f, 0.1f);
+		JointPIDMul(jointPids[7], 0.06f*3.0f, 0.1f*40.0f);
 	}
 }
 
@@ -793,16 +826,35 @@ void CRPuppet::SetJointBasicPos(){
 	if(jointPids[18]) jointPids[18]->goal = jinfo[18].initPos = 0.5f;	//Y
 	if(jointPids[19]) jointPids[19]->goal = jinfo[19].initPos = 2.3f;
 	*/
+
+	// Waist
 	if(jointBallPids[0]) jointBallPids[0]->goal = jinfo[0].initQt = Quaternionf(cosf(-0.1f), sinf(-0.1f), 0.0f, 0.0f);
-	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
-	//if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.6f), sinf(0.6f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
-	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
-	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.3f;
-	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
+
+	// Shoulder(R,L)
+	//if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(-0.25f), 0.0f, 0.0f, sinf(-0.25f));
+	//if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(cosf(0.4f), sinf(0.4f), 0.0f, 0.0f) * Quaternionf(cosf(0.25f), 0.0f, 0.0f, sinf(0.25f));
+
+	//if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(0.893092f, 0.326261f, 0.108078f, -0.290275f);
+	//if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(0.763403f, 0.622709f, 0.000002f, 0.171611f);
+	if(jointBallPids[3]) jointBallPids[3]->goal = jinfo[3].initQt = Quaternionf(0.829798f, 0.532525f, 0.066818f, -0.152931f);
+	if(jointBallPids[6]) jointBallPids[6]->goal = jinfo[6].initQt = Quaternionf(0.881232f, 0.403101f, -0.089433f, 0.230092f);
+
+	// Elbow(R,L)
+	//if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.3f;
+	//if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.3f;
+
+	//if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 2.11f;
+	//if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 1.73f;
+	if(jointPids[4]) jointPids[4]->goal = jinfo[4].initPos = 1.828327f * 1.2f;
+	if(jointPids[7]) jointPids[7]->goal = jinfo[7].initPos = 2.020205f * 1.2f;
+
 }
 
 void CRPuppet::Draw(GRRender* render){
 	positionSprings.Draw(render);
+	reaching[0][0].Draw(render);
+	reaching[0][1].Draw(render);
+	reaching[0][2].Draw(render);
 }
 
 void CRPuppet::SetSprings(){
@@ -810,20 +862,32 @@ void CRPuppet::SetSprings(){
 	positionSprings.clear();
 
 	// [0] çò(äÓñ{óßÇøà íuÇ…å≈íË)
-	//postureSpring.SetSolid(solids[0], 0.02f, 0.4f);
 	postureSpring.SetSolid(solids[0], 0.6f, 1.2f);
 	PositionSpring positionSpr;
-	//positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
-	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.5f, 1.5f);
+	positionSpr.SetSolid(solids[0], Vec3f(0, 0, 0), 0.2f, 10.0f);
 	positionSprings.push_back(positionSpr);
+
+	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-0.95f), Vec3f(), true);
 }
 
 void CRPuppet::SetFixedPos(){
 	if(!IsLoaded()) return;
 
 	postureSpring.SetTarget(Quaterniond(0,0,1,0), Vec3f(), true);
-	//positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-1.0f), Vec3f(), true);
-	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-0.95f), Vec3f(), true);
+	//positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f,-0.95f), Vec3f(), true);
+
+	Vec3f goalPos = soWaistU->GetCenterPosition() + Vec3f(0.0f, 0.0f, -0.95f);
+	goalPos[1] = 1.0f;
+
+	/*
+	Vec3f currPos = solids[0]->GetCenterPosition();
+	Vec3f dir = (goalPos - currPos); if (dir.norm()!=0){ dir = dir / dir.norm(); }
+	float ds = 0.001f;
+	Vec3f pos = positionSprings[0].targetPos + (dir*ds);
+	pos[1] = 1.0f;
+	*/
+
+	positionSprings[0].SetTarget(goalPos, Vec3f(), true);
 }
 
 void CRPuppet::SetExpectedPos(float dt){
@@ -844,6 +908,9 @@ void CRPuppet::Step(SGScene* scene){
 	SetSpringForce(scene->GetTimeStep());
 	for(int i = 0; i < 3; ++i) reaching[0][i].Step(scene);
 
+	//if (strcmp(reaching[0][2].solid->GetName(), "soHead")==0)
+	//	DSTR << "AddSpring" << solid->GetForce() << std::endl;
+
 	if(bDraw){ 
 		GRRender* render;
 		scene->GetRenderers().Find(render);
@@ -862,7 +929,8 @@ void CRPuppet::Attack(CRPuppet* puppet){
 		//for(int i = 0; i < 3; ++i) wait += reaching[0][i].state;
 		for(int i = 0; i < 2; ++i) wait += reaching[0][i].state;
 		if(wait == 0){
-			if(random1() < 0.002f){
+			//if(random1() < 0.002f){
+			if(random1() < 0.004f){
 				//srand((unsigned) time(NULL));
 				int hand = 0;
 				if(random1() > 0.7f) hand = 1;
@@ -877,12 +945,25 @@ void CRPuppet::Attack(CRPuppet* puppet){
 					* Vec3f((random1()-0.5f) * 1.8f * puppet->GetSolidInfo(body+2).scale.X(), 
 							//(random1()-0.5f) * 1.8f * puppet->GetSolidInfo(body+2).scale.Y(),
 							((1.5f*random1() - 0.5f*body) - 0.5f) * puppet->GetSolidInfo(body+2).scale.Y(),
-							0.1f);
+							0.03f);
 				reaching[0][hand].SetTargetPos(pos, Vec3f());
-				reaching[0][hand].SetTimer(0.5f, 0.05f);
+				reaching[0][hand].SetTimer(0.5f, -0.1f);
+				//reaching[0][hand].SetTimer(0.5f, -0.1f);
 				reaching[0][hand].SetType(1);
+				reaching[0][hand].SetSprRate(2.0f*2.0f);
+				reaching[0][hand].SetDmpRate(1.0f*2.0f);
+				reaching[0][hand].SetInitIfContact();
+				targetPos = pos; bAttackAttention = true;
+			}else{
+				bAttackAttention = false;
 			}
 		}
+	}
+}
+
+void CRPuppet::TopDownAttention(CRAttention* crAttention){
+	if (bAttack && bAttackAttention){
+		crAttention->SetAttentionPoint(targetPos, 100.0f); // âRÇ¡Ç€Ç¢êîéö
 	}
 }
 
@@ -908,7 +989,7 @@ inline bool CheckDirection(Vec3f a, Vec3f b, Vec3f v){
 	// ì_ a Ç©ÇÁë¨ìx v ÇÃï®ëÃÇÕ ì_ b Ç…å¸Ç©Ç¡ÇƒÇ¢ÇÈÅH
 	bool bTarget = true;
 	Vec3f ab = b - a;
-	bTarget &= (v.norm() > 1.0f);
+	bTarget &= (v.norm() > 2.0f);
 	bTarget &= ((ab.norm() * ab.norm()) / (ab * v) < 0.5f);
 	bTarget &= (acos(ab.unit() * v.unit()) < M_PI/8);
 	return bTarget;
@@ -1011,6 +1092,7 @@ void CRPuppet::HittedCheck(CRPuppet* puppet, SGScene* scene, bool prediction){
 void CRPuppet::PlayHitSound(){
 	GRSound::instance()->play( SAMPLE4 );
 }
+
 
 DEF_RECORD(XPuppet,{
 	GUID Guid(){ return WBGuid("1EA16CFD-B12D-479c-8F18-80AFB33012FE"); }

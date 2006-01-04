@@ -30,6 +30,7 @@ public:
 	virtual void SetJointSpring(float dt);
 	void SetSprings();
 	void SetFixedPos();
+	void SetJointBasicPos();
 	void SetSpidarPos(std::vector<HISpidar4*> spidars);
 	void SetExpectedPos(int count, float dt);
 	void SetSpidarForce(CRPuppet* puppet, SGScene* scene, std::vector<HISpidar4*> spidars);

@@ -17,7 +17,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+
 namespace Spr{;
+
+class CRAttention;
 
 class CRPuppet : public CRBallHuman{
 public:
@@ -41,6 +44,8 @@ public:
 
 		void SetSolid(PHSolid* s, Vec3f p, float spr, float dmp);
 		void SetTarget(Vec3f pos, Vec3f vel, bool b);
+		void SetSprRate(float spr){sprRate = spr;}
+		void SetDmpRate(float dmp){dmpRate = dmp;}
 
 		void AddSpringForce(float dt);
 		void AddForce(Vec3f f);
@@ -63,7 +68,11 @@ public:
 		float sprRate, dmpRate;		// バネ・ダンパ係数の減少率
 		bool bTorque;				// 姿勢制御をするか
 
-		PostureSpring():solid(NULL){bTorque = false;}
+		PostureSpring():solid(NULL){
+			sprRate = 1.0f;
+			dmpRate = 1.0f;
+			bTorque = false;
+		}
 
 		Quaterniond GetQuaternion();
 		Vec3f GetAngularVelocity();
@@ -82,19 +91,22 @@ public:
 		float offset;				// 達成後の待機時間
 
 		Vec3f firstPos, finalPos, finalVel;	// 最終目標位置・速度
-		PHSolid* targetSolid;		// 目標剛体
 		Vec3f localPos;				// 目標剛体のローカル座標
 		int state;					// 状態 (待機・攻撃・防御・回避)
 		bool bActive;
+		bool bInitIfContact;
+		float limitForce;
 		
 		ReachingMovement();
 		void Init();
 
+		void SetLimitForce(float limit);
 		void SetSpring(PHSolid* s, Vec3f r);
 		void SetTimer(float t, float o);
 		void SetTargetPos(Vec3f p, Vec3f v);
-		void SetTargetSolid(PHSolid* so, Vec3f p, Vec3f v);
+		Vec3f GetTargetPos();
 		void SetType(int type);
+		void SetInitIfContact();
 
 		void Draw(GRRender* render);
 		void Step(SGScene* scene);
@@ -144,7 +156,7 @@ public:
 	bool Connect(UTRef<SGScene> scene);
 	void SetSolidInfo();
 	virtual void SetJointSpring(float dt);
-	void SetJointBasicPos();
+	virtual void SetJointBasicPos();
 	void ChangeJointRange();
 
 	void Draw(GRRender* render);
@@ -154,9 +166,10 @@ public:
 	void SetExpectedPos(float dt);
 	void SetSpringForce(float dt);
 
-	void Step(SGScene* scene);
+	virtual void Step(SGScene* scene);
 
 	void Attack(CRPuppet* puppet);
+	void TopDownAttention(CRAttention* crAttention);
 	void AttackTest(CRPuppet* puppet);
 	bool IsAimed(CRPuppet* puppet, SGScene* scene);
 	void GuardTest(CRPuppet* puppet, SGScene* scene);
@@ -165,12 +178,13 @@ public:
 	void resetHits();
 	virtual void PlayHitSound();
 
-
 	PositionSprings positionSprings;
 	PostureSpring postureSpring;
 	ReachingMovement reaching[2][3];	// rm[0][i]: 通常の到達運動，rm[1][i]: 予測中に使用
 	LocusGenerator locus;
 	HumanContactInfo humanContactInfo;
+
+	PHSolid* soWaistU;
 
 	bool bDraw;
 	bool bAttack;
@@ -178,6 +192,8 @@ public:
 	bool bHitted;
 	int atc;
 	int hittingCount;
+	Vec3f targetPos;
+	bool bAttackAttention;
 
 private:
 	int inbetweenNotHits;

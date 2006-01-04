@@ -5,6 +5,7 @@ namespace Spr{;
 void SPR_DLL RegisterLoaderForGraphics(FILoadScene* l){
 	REGISTER_LOADER(l, GRCamera);
 	REGISTER_LOADER(l, GRMesh);
+	REGISTER_LOADER(l, GRMeshForVisual);
 	REGISTER_LOADER(l, GRMeshMaterialList);
 	REGISTER_LOADER(l, GRMaterial);
 	REGISTER_LOADER(l, GRMeshNormals);

@@ -31,6 +31,12 @@ public:
 };
 DEF_REGISTER_LOADER(CDSphere);
 
+class CDSphereForShapeLoader: public CDSphereLoader{
+	virtual UTString GetNodeType() const{
+		return "SphereForShape";
+	}
+};
+DEF_REGISTER_LOADER(CDSphereForShape);
 
 }
 

@@ -327,8 +327,6 @@ PHForceField.cpp
 PHJoint.cpp
 PHJoint1D.cpp
 PHJointControl.cpp
-ｺｰﾄﾞを生成中...
-ｺﾝﾊﾟｲﾙ中...
 PHJointMulti.cpp
 PHJointPid.cpp
 PHMagneticEngine.cpp
@@ -336,8 +334,6 @@ PHPenalty.cpp
 PHRegisterLoader.cpp
 PHSolid.cpp
 PHSpring.cpp
-ｺｰﾄﾞを生成中...
-ｺﾝﾊﾟｲﾙ中...
 PHStickEngine.cpp
 PHWarp.cpp
 PHWater.cpp
@@ -403,5 +399,10 @@ Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
 link.exe の実行ｴﾗｰ
 
 SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
+ 
+ 
+*** TreeTestView *** 
+[C++] BaseDebug.cpp(1): 
+[C++ 致命的エラー] BaseDebug.cpp(3): F1004 コンパイラ内部のエラー at 0x77f87eeb with base 0xba0000
  
  

@@ -144,6 +144,14 @@ SOURCE=.\CRActionPlanner.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRAttention.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRAttention.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CRBalance.cpp
 # End Source File
 # Begin Source File
@@ -208,7 +216,23 @@ SOURCE=.\CRBeetle.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CRBrain.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRBrain.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Creature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CREye.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CREye.h
 # End Source File
 # Begin Source File
 
@@ -217,6 +241,22 @@ SOURCE=.\CRHuman.cpp
 # Begin Source File
 
 SOURCE=.\CRHuman.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRInternalModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRInternalModel.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRNeckController.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRNeckController.h
 # End Source File
 # Begin Source File
 
@@ -277,6 +317,14 @@ SOURCE=.\CRVirtualHuman.cpp
 # Begin Source File
 
 SOURCE=.\CRVirtualHuman.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRVisionMotionAnalysis.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CRVisionMotionAnalysis.h
 # End Source File
 # End Target
 # End Project

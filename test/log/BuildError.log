@@ -1,4 +1,4 @@
-日付 : 2005.12.24 
+日付 : 2005.10.29 
  
 --- ビルドエラーのログ --- 
  
@@ -19,5 +19,9 @@ C:\SVNWork\Springhead\src\Samples\MFCD3DDyna\MFCD3DDynaView.cpp(198) : error C20
 *** SDKD3DDyna *** 
 PhysicsD.lib(PHWater.obj) : error LNK2001: 外部ｼﾝﾎﾞﾙ ""public: static class Spr::UTTypeInfoImp<class Spr::GLRender>  Spr::GLRender::typeInfo" (?typeInfo@GLRender@Spr@@2V?$UTTypeInfoImp@VGLRender@Spr@@@2@A)" は未解決です
 Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
+ 
+ 
+*** TreeTestView *** 
+[C++ 致命的エラー] BaseDebug.cpp(3): F1004 コンパイラ内部のエラー at 0x77f87eeb with base 0xba0000
  
  

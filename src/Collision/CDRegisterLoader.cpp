@@ -6,6 +6,8 @@ void SPR_DLL RegisterLoaderForCollision(FILoadScene* l){
 	REGISTER_LOADER(l, CDMesh);
 	REGISTER_LOADER(l, CDSphere);
 	REGISTER_LOADER(l, CDPhysicalMaterial);
+	REGISTER_LOADER(l, CDMeshForShape);
+	REGISTER_LOADER(l, CDSphereForShape);
 }
 
 //-------------------------------------------------------------------

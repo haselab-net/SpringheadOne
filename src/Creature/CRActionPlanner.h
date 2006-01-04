@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
+#include <Collision/CDCollisionEngine.h>
 #include <Creature/CRUser.h>
 #include <Graphics/GRRender.h>
 #include <SceneGraph/SGScene.h>
@@ -15,9 +16,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <Creature/CRInternalModel.h>
+
 namespace Spr{;
 
 class CRActionPlanner{
+	enum SceneType{STReal, STInternal};
+	
 	// ÚGî•ñ
 	class ContactInfo{
 	public:
@@ -37,13 +42,14 @@ class CRActionPlanner{
 	};
 
 public:
+
 	CRActionPlanner();
-	void Load();
+	void Load(SGScene* rScene, SGScene* iScene, CRPuppet* rPuppet, CRPuppet* iPuppet, CRUser* iUser, CRInternalModel* internalModel);
 
-	void SaveState(SGScene* scene, bool type);
-	void LoadState(SGScene* scene, bool type);
+	void SaveState(SGScene* scene, SceneType type);
+	void LoadState(SGScene* scene, SceneType type);
 
-	void Step(CRPuppet* puppet, CRUser* user, SGScene* scene);
+	void Step(bool bInternalModelStable);
 
 	void PredictionAction(CRPuppet* puppet, CRUser* user, SGScene* scene);
 	void MovementPrediction(CRPuppet* puppet, CRUser* user, SGScene* scene, int count);
@@ -58,6 +64,22 @@ public:
 	Vec3f GetPointToAvoid(Vec3f a, Vec3f b, Vec3f c, float d);
 	Vec3f GetPointToGuard(Vec3f a, Vec3f b, Vec3f c);
 
+	// “Á’èSolid‚ÌÕ“Ë”»’è‚ğ–³Œø‚Éİ’è
+	void SetSolidInvisible(PHSolid* solid);
+	// –³Œø‚É‚µ‚½Solid‚ÌÕ“Ë”»’è‚ğÄŠJ
+	void SetSolidVisible(PHSolid* solid);
+	// Õ“Ë”»’èOff
+	void DisableContact(CRPuppet* puppet, SGScene* scene);
+	// Õ“Ë”»’èOn
+	void EnableContact(CRPuppet* puppet, SGScene* scene);
+
+	SGScene* rScene;
+	SGScene* iScene;
+	CRPuppet* rPuppet;
+	CRPuppet* iPuppet;
+	CRUser* iUser;
+	CRInternalModel* internalModel;
+
 	bool bDraw;
 	bool bPlanner;
 	bool bPrediction;
@@ -65,6 +87,7 @@ public:
 	int times;
 	float startTime, currentTime;
 	Vec3f cPos;
+	std::vector<PHSolid*> contactDisabledSolids;
 
 	SGBehaviorStates stateReal, stateTemp;
 	ContactInfoSequence contactInfo;
