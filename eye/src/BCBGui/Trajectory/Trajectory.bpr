@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="Trajectory.exe"/>
+    <OBJFILES value="Unit1.obj Trajectory.obj"/>
+    <RESFILES value="Trajectory.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) Unit1.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="vcl.lib rtl.lib SpringheadGui.lib"/>
+    <PACKAGES value="vcl.bpi rtl.bpi SpringheadGui.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="Trajectory.cpp"/>
+    <INCLUDEPATH value="..;..\TreeViewTest;..\Trajectory;..\..\WinDX\Base;c:\DXSDK\include;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src"/>
+    <LIBPATH value="..;..\TreeViewTest;..\Trajectory;..\..\WinDX\Base;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Q -Vx -Ve -ff -X- -pr -a8 -6 -b- -d -k- 
+      -vi -c -tW -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="Trajectory.res" FORMNAME="" UNITNAME="Trajectory.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Unit1.cpp" FORMNAME="Form1" UNITNAME="Unit1" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="Trajectory.cpp" FORMNAME="" UNITNAME="Trajectory" CONTAINERID="C/C++ コンパイラ" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1041
+CodePage=932
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=9
+Item0=..;..\TreeViewTest;..\Trajectory;..\..\WinDX\Base;c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item1=..\;..\TreeViewTest;..\Trajectory;..;..\..\WinDX\Base;c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item2=..\TreeViewTest;..\Trajectory;..;..\..\WinDX\Base;c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item3=..;..\..\WinDX\Base;c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item4=..\;..\..\WinDX\Base;c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item5=..\..\WinDX\Base;c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item6=c:\DXSDK\include;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item7=C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl;$(SPRINGHEAD)\src
+Item8=C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=9
+Item0=..;..\TreeViewTest;..\Trajectory;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src
+Item1=..\;..\TreeViewTest;..\Trajectory;..;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src
+Item2=..\TreeViewTest;..\Trajectory;..;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src
+Item3=..;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src
+Item4=..\;..;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src
+Item5=..\;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(SPRINGHEAD)\src
+Item6=..\;..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item7=..\..\WinDX\Base;C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item8=C:\Program Files\Borland\CBuilder6\Projects;C:\Home\hase\C\Project\Springhead\src\Samples\BCBD3DViewer;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=1
+LinkDebugVcl=0
+LinkCGLIB=0
+  </IDEOPTIONS>
+</PROJECT>

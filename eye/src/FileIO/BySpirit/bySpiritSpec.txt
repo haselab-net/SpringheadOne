@@ -1,0 +1,30 @@
+
+1. コンバータのノードは，id, value, childNodes をもつ．
+
+2. ツリーコンバータから見た，VRMLのDOMツリーは
+	
+	<id="node">
+		<id="type">transform</>
+		<id=field>
+			<id="id">translation</>
+			<id="type">SFVec3</>
+			<id="value">
+				<id=field>
+					<id="id">x</>
+					<id="type">float</>
+					<id="value">1</>
+					:
+					:
+				</>
+			</>
+		</>
+	</>
+かなあ？
+
+3. FIDocNodeは，
+	id, childNodes, と vector<attr> を持つ．
+	attr は， id,type, nodes/data を持つ．
+	nodes は vector<FIDocNode>
+	data は， vector<BYTE> data (size=要素数 x 要素サイズ)
+
+・バイナリ変換は，

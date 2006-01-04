@@ -1,0 +1,2 @@
+cd ..
+DynaHaptic Pachinko.x
