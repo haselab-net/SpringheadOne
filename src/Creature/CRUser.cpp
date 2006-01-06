@@ -312,15 +312,16 @@ void CRUser::SetSprings(){
 
 void CRUser::SetFixedPos(){
 	if(!IsLoaded()) return;
+
+	/*/
 	Vec3f pos = (solids[6]->GetCenterPosition() + solids[9]->GetCenterPosition()) * 0.5f;
 	pos[1] = 1.0f;
 	pos += Vec3f(0.0f, 0.0f, 0.3f);
 	positionSprings[0].SetTarget(pos, Vec3f(0,0,0), true);
 	postureSpring.SetTarget(Quaterniond(1,0,0,0), Vec3f(), true);
-
-	/*
+	/*/
 	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f, 0.0f), Vec3f(0,0,0), true);
-	*/
+	/**/
 }
 
 void CRUser::SetSpidarPos(std::vector<HISpidar4*> spidars){

@@ -66,8 +66,10 @@ public:
 	*/
 	/// VirtualHumanの目を制御する
 	void ControlEyes();
-	/// VirtualHumanの目を制御する(個別)
-	void ControlEye(SGFrame* frEye, PHSolid* soEye, PHJointBallPid* jpEye, const int eyeType);
+	/// VirtualHumanの目を目標視線になるようPD制御する
+	void ControlEyePD(SGFrame* frEye, PHSolid* soEye, Vec3f aim);
+	/// 眼球運動のモデル
+	void DeterminAttentionDir();
 
 //-----------------　メンバ変数　----------------//
 	// 関連モジュール
@@ -77,6 +79,7 @@ public:
 	// VHの目
 	PHSolid* soREye;
 	PHSolid* soLEye;
+	PHSolid* soHead;
 	SGFrame* frREye;
 	SGFrame* frLEye;
 	SGFrame* frHead;
@@ -86,8 +89,14 @@ public:
 
 	/// 注視点,	注視方向
 	Vec3f attentionPoint;
-	Vec3f attentionDir[2];
-	Vec3f lastInRangeDir[2];
+	Vec3f attentionDirL;
+	Vec3f attentionDirR;
+
+	/// 前回の目標位置(視角)
+	float last_t1_a, last_t2_a;
+
+	/// 積分器
+	float integrator_L, integrator_R;
 
 	/// 注視モードか否か
 	bool bAttention;

@@ -38,6 +38,7 @@ void CREye::Load(SGScene* scene,CRPuppet* crPuppet){
 		//// Solid
 		scene->FindObject(soREye, "soREye");
 		scene->FindObject(soLEye, "soLEye");
+		scene->FindObject(soHead, "soHead");
 		//// Frame
 		scene->FindObject(frREye, "frREye");
 		scene->FindObject(frLEye, "frLEye");
@@ -54,7 +55,13 @@ void CREye::Init(){
 	// ‰Šú‰»
 	bAttention = false;
 	bVHPointOfView = false;
-	lastInRangeDir[0] = lastInRangeDir[1] = frHead->GetPosture().Rot() * Vec3f(0.0f,0.0f,-1.0f);
+	attentionDirL = frHead->GetPosture().Rot() * Vec3f(0.0f,0.0f,-1.0f);
+	attentionDirR = frHead->GetPosture().Rot() * Vec3f(0.0f,0.0f,-1.0f);
+
+	last_t1_a = 0.0f;
+	last_t2_a = 0.0f;
+
+	integrator_L = 0.0f; integrator_R = 0.0f;
 
 	bEyeMode = 2;
 }
@@ -181,29 +188,82 @@ float CREye::GetVisibility(PHSolid* solid){
 //-----------------@ˆ—@----------------//
 
 void CREye::ControlEyes(){
-	ControlEye(frREye, soREye, jpREye, 0);
-	ControlEye(frLEye, soLEye, jpLEye, 1);
-}
-
-void CREye::ControlEye(SGFrame* frEye, PHSolid* soEye, PHJointBallPid* jpEye, const int eyeType){
 	if(bEyeMode==2){
-		if (IsOverRange()){
-			attentionDir[eyeType] = lastInRangeDir[eyeType];
-		}else{
-			attentionDir[eyeType] = attentionPoint - frEye->GetPosture().Pos();
-			attentionDir[eyeType] = attentionDir[eyeType]/attentionDir[eyeType].norm();
-			lastInRangeDir[eyeType] = attentionDir[eyeType];
+		if (!IsOverRange()){
+			DeterminAttentionDir();
 		}
 	}else{
-		attentionDir[eyeType] = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+		attentionDirL = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+		attentionDirR = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 	}
+
+	// –Ú•WŽ‹ü‚ÖŒü‚¯‚Ä§Œä
+	ControlEyePD(frREye, soREye, attentionDirR);
+	ControlEyePD(frLEye, soLEye, attentionDirL);
+}
+
+void CREye::ControlEyePD(SGFrame* frEye, PHSolid* soEye, Vec3f aim){
 	Vec3f current = frEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, 1.0f);
-	Vec3f error  = PTM::cross(current, attentionDir[eyeType]);
+	current /= current.norm(); aim /= aim.norm();
+	Vec3f error  = PTM::cross(current, aim);
 	Vec3f derror = soEye->GetAngularVelocity();
 	float Kp = 2000.0f;
 	float Kd = 40.0f;
 	Vec3f torque = (Kp * error) - (Kd * derror);
  	soEye->AddTorque(torque);
+}
+
+void CREye::DeterminAttentionDir(){
+	const float alpha1 = 0.5f;
+	const float rho1 = 1.5f;
+	const float rho2 = 0.5f;
+	const float sigma = 1.0f;
+	const float kappa = 0.5f;
+	const float nu = 0.5f;
+	const float eta = 0.2f;
+
+	float PI = 3.141592653f;
+	float w  = (frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f))[1];
+	float t1 = (frLEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f,  1.0f))[1];;
+	float t2 = (frREye->GetPosture().Rot() * Vec3f(0.0f, 0.0f,  1.0f))[1];;
+
+	float dt = scene->GetTimeStep();
+
+	Vec3f vecL = attentionPoint - soLEye->GetCenterPosition();;
+	float t1_a = atan2(vecL[0],vecL[2]);
+	float eL   = t1_a - t1;
+	float vL   = (t1_a - last_t1_a) / dt;
+	last_t1_a = t1_a;
+
+	Vec3f vecR = attentionPoint - soREye->GetCenterPosition();;
+	float t2_a = atan2(vecR[0],vecR[2]);
+	float eR   = t2_a - t2;
+	float vR   = (t2_a - last_t2_a) / dt;
+	last_t2_a = t2_a;
+
+	if (/**/true/*/(abs(eL) > Rad(5.0f)) || (abs(eR) > Rad(5.0f))/**/){
+		// Saccade
+		attentionDirL = attentionPoint - frLEye->GetPosture().Pos();
+		attentionDirR = attentionPoint - frREye->GetPosture().Pos();
+		integrator_L = 0.0f; integrator_R = 0.0f;
+	}else{
+		// Smooth Pursuit
+		float head_ang_vel = soHead->GetAngularVelocity()[1];
+		float node_L_1 = -(sigma*eL + nu*vL) + (kappa*eR + eta*vR) + head_ang_vel;
+		float node_R_1 =  (sigma*eR + nu*vR) - (kappa*eL + eta*vL) - head_ang_vel;
+		
+		integrator_L += node_L_1 * dt;
+		integrator_R += node_R_1 * dt;
+		
+		float out_t1 = -(integrator_L * rho1) + (integrator_R * rho2);
+		float out_t2 = -(integrator_L * rho2) + (integrator_R * rho1);
+
+		out_t1 += w;
+		out_t2 += w;
+		
+		attentionDirL = Vec3f(-cos(out_t1), 0.0f, sin(out_t1));
+		attentionDirR = Vec3f(-cos(out_t2), 0.0f, sin(out_t2));
+	}
 }
 
 }	// end of namespace Spr
