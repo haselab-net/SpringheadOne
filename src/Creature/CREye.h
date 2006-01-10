@@ -102,6 +102,10 @@ public:
 	bool bAttention;
 	/// VH視点表示の切り替え
 	bool bVHPointOfView;
+	/// Saccade中
+	bool  bSaccade;
+	DWORD saccadeStartTime;
+	Vec3f saccadePos;
 
 	// VH視点表示前の視点の保存用
 	Affinef viewOrig;

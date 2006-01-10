@@ -321,6 +321,7 @@ void CRUser::SetFixedPos(){
 	postureSpring.SetTarget(Quaterniond(1,0,0,0), Vec3f(), true);
 	/*/
 	positionSprings[0].SetTarget(Vec3f(0.0f, 1.0f, 0.0f), Vec3f(0,0,0), true);
+	postureSpring.SetTarget(Quaterniond(1,0,0,0), Vec3f(), true);
 	/**/
 }
 

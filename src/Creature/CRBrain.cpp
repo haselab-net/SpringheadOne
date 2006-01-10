@@ -66,11 +66,11 @@ namespace Spr{
 		//// 動きの解析
 		crvMotionAnalysis.Step();
 		//// 内部モデルのシミュレーション
-		crInternalModel.Step();
-		crInternalModel.AttentionFromCertainty(&crAttention);
+		//crInternalModel.Step();
+		//crInternalModel.AttentionFromCertainty(&crAttention);
 
 		//// 予測行動
-		crPlanner.Step(crInternalModel.IsStable());
+		//crPlanner.Step(crInternalModel.IsStable());
 		//// 攻撃動作
 		puppet->Attack(user);
 		puppet->TopDownAttention(&crAttention);

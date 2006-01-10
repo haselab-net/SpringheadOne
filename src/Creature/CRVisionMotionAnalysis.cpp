@@ -88,6 +88,12 @@ void CRVisionMotionAnalysis::ListupAttractivePoints(){
 	float headAttentionAmmount = 1.0f;
 	crAttention->SetAttentionSolid(soHeadU, headAttentionAmmount);
 
+	/////
+	// デバッグ用
+	//crAttention->SetAttentionSolid(soLHandU, 100.0f);
+	//crAttention->SetAttentionSolid(soRHandU, 100.0f);
+	/////
+	
 	// 各Solidの運動が注意を引き付ける強さを計算、crAttentionに渡す
 	for(int i=0; i<userSolids.size(); i++){
 		// 視野の内部にある物体に限定

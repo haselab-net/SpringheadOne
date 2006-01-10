@@ -124,12 +124,17 @@ void CRNeckController::ControlNeck(){
 	float Kd = 0.0f;
 	Vec3f torque = Vec3f(
 											 -((Kp * errorP) - (Kd * derrorP)),
-											 0.0f, //-((Kp * errorR) - (Kd * derrorR)),
+											 -((Kp * errorR) - (Kd * derrorR)),
 											 -((Kp * errorY) - (Kd * derrorY))
 											 );
 	torque = frChest->GetPosture().Rot() * torque;
 	torque[1] = -torque[1];
 	torque[2] = -torque[2];
+
+	// For Debug
+	torque[0] = 0.0f;
+	torque[2] = 0.0f;
+
 	joNeck->AddTorque(torque);
 }
 

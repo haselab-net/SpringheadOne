@@ -42,6 +42,13 @@ void CRAttention::Step(){
 		}
 	}
 
+	/*
+	float time = (GetTickCount() * 1.0f / 1000.0f);
+	Vec3f attentionPoint = Vec3f(sin(time)*0.5f, 1.5f+cos(time)*0.001f, 0.0f);
+	crEye->SetAttentionPoint(attentionPoint);
+	crEye->SetAttentionMode();
+	*/
+
 	attentionList.clear();
 }
 

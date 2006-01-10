@@ -64,6 +64,7 @@ void CREye::Init(){
 	integrator_L = 0.0f; integrator_R = 0.0f;
 
 	bEyeMode = 2;
+	bSaccade = 0;
 }
 
 void CREye::OnKeyDown(UINT &nChar){
@@ -77,10 +78,22 @@ void CREye::Draw(GRRender* render){
 	render->SetMaterial(GRMaterialData(Spr::Vec4f(1,0,0,1)));
 	render->SetLineWidth(10);
 
+	render->SetMaterial(GRMaterialData(Spr::Vec4f(0,1,0,1)));
 	//// Attention Pointを表示
 	v[0] = attentionPoint;
 	render->DrawDirect(Spr::GRRender::POINTS,  v, v+1);
 
+	//// Attention Dirを表示
+	v[0] = soLEye->GetCenterPosition();
+	v[1] = v[0] + attentionDirL * 5.0f;
+	render->DrawDirect(Spr::GRRender::LINES,  v, v+2);
+
+	//// Attention Dirを表示
+	v[0] = soREye->GetCenterPosition();
+	v[1] = v[0] + attentionDirR * 5.0f;
+	render->DrawDirect(Spr::GRRender::LINES,  v, v+2);
+
+	render->SetMaterial(GRMaterialData(Spr::Vec4f(1,0,0,1)));
 	//// 視線表示
 	v[0] = soLEye->GetCenterPosition();
 	v[1] = v[0] + frLEye->GetPosture().Rot()*Vec3f(0.0f,0.0f,5.0f);
@@ -90,12 +103,28 @@ void CREye::Draw(GRRender* render){
 	v[0] = soREye->GetCenterPosition();
 	v[1] = v[0] + frREye->GetPosture().Rot()*Vec3f(0.0f,0.0f,5.0f);
 	render->DrawDirect(Spr::GRRender::LINES,  v, v+2);
+
+	// デバッグ用表示
+	GRFont font(50, "MS ゴシック");
+	if (bSaccade){
+		font.color = RGB(255,255,255)|0xFF000000;
+		render->DrawText(Vec2f(0, 80), "Saccade", font);
+	}else{
+		font.color = RGB(100,100,100)|0xFF000000;
+		render->DrawText(Vec2f(0, 80), "Saccade", font);
+	}
 }
 
 //------------　拡張インタフェース　-----------//
 
 void CREye::SetAttentionPoint(Vec3f position){
-	attentionPoint = position;
+	if (!bSaccade){
+		Vec3f apRel = frHead->GetPosture().inv() * position;
+		apRel[1] = 0.0f;
+		Vec3f apHoriz = frHead->GetPosture() * apRel;
+
+		attentionPoint = apHoriz;
+	}
 }
 
 Vec3f CREye::GetVisualAxis(){
@@ -189,7 +218,9 @@ float CREye::GetVisibility(PHSolid* solid){
 
 void CREye::ControlEyes(){
 	if(bEyeMode==2){
-		if (!IsOverRange()){
+		if (/**/true/*/!IsOverRange()/**/){
+			//float time = (GetTickCount() * 1.0f / 1000.0f);
+			//attentionPoint = Vec3f(sin(time)*0.001f, 1.5f+cos(time)*0.001f, 0.0f);
 			DeterminAttentionDir();
 		}
 	}else{
@@ -207,8 +238,8 @@ void CREye::ControlEyePD(SGFrame* frEye, PHSolid* soEye, Vec3f aim){
 	current /= current.norm(); aim /= aim.norm();
 	Vec3f error  = PTM::cross(current, aim);
 	Vec3f derror = soEye->GetAngularVelocity();
-	float Kp = 2000.0f;
-	float Kd = 40.0f;
+	float Kp = 5000.0f;
+	float Kd = 50.0f;
 	Vec3f torque = (Kp * error) - (Kd * derror);
  	soEye->AddTorque(torque);
 }
@@ -217,52 +248,75 @@ void CREye::DeterminAttentionDir(){
 	const float alpha1 = 0.5f;
 	const float rho1 = 1.5f;
 	const float rho2 = 0.5f;
-	const float sigma = 1.0f;
-	const float kappa = 0.5f;
-	const float nu = 0.5f;
-	const float eta = 0.2f;
+	const float sigma = 100.0f;
+	const float kappa = 50.0f;
+	const float nu =  0.05f;
+	const float eta = 0.02f;
 
 	float PI = 3.141592653f;
-	float w  = (frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f))[1];
-	float t1 = (frLEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f,  1.0f))[1];;
-	float t2 = (frREye->GetPosture().Rot() * Vec3f(0.0f, 0.0f,  1.0f))[1];;
+	Vec3f headDirVec = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+	float w = atan2(headDirVec.Z(), -headDirVec.X());
+	Vec3f eyeDirRelL = frHead->GetPosture().Rot().inv() * frLEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+	Vec3f eyeDirRelR = frHead->GetPosture().Rot().inv() * frREye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+	float t1 = atan2(eyeDirRelL.Z(), -eyeDirRelL.X());
+	float t2 = atan2(eyeDirRelR.Z(), -eyeDirRelR.X());
+	float dw = soHead->GetAngularVelocity().Y();
 
 	float dt = scene->GetTimeStep();
 
-	Vec3f vecL = attentionPoint - soLEye->GetCenterPosition();;
-	float t1_a = atan2(vecL[0],vecL[2]);
+	Vec3f vecL = attentionPoint - soLEye->GetCenterPosition();
+	vecL = frHead->GetPosture().Rot().inv() * vecL;
+	float t1_a = atan2(-vecL.Z(),vecL.X());
 	float eL   = t1_a - t1;
 	float vL   = (t1_a - last_t1_a) / dt;
 	last_t1_a = t1_a;
 
-	Vec3f vecR = attentionPoint - soREye->GetCenterPosition();;
-	float t2_a = atan2(vecR[0],vecR[2]);
+	Vec3f vecR = attentionPoint - soREye->GetCenterPosition();
+	vecR = frHead->GetPosture().Rot().inv() * vecR;
+	float t2_a = atan2(-vecR.Z(),vecR.X());
 	float eR   = t2_a - t2;
 	float vR   = (t2_a - last_t2_a) / dt;
 	last_t2_a = t2_a;
 
-	if (/**/true/*/(abs(eL) > Rad(5.0f)) || (abs(eR) > Rad(5.0f))/**/){
+	if (bSaccade){
+		// Saccade終了条件
+		if (((abs(eL) < Rad(0.5f)) && (abs(eR) < Rad(0.5f)))){  // && (GetTickCount()-saccadeStartTime > 333)){
+			bSaccade = false;
+		}
+	}else{
+		// Saccade開始条件
+		if (( (abs(eL) > Rad(5.0f)) || (abs(eR) > Rad(5.0f)) )){
+			bSaccade = true;
+			saccadeStartTime = GetTickCount();
+		}	
+	}
+
+	if (bSaccade){
+		// DSTR << "Saccade " << rand() << std::endl;
 		// Saccade
 		attentionDirL = attentionPoint - frLEye->GetPosture().Pos();
 		attentionDirR = attentionPoint - frREye->GetPosture().Pos();
 		integrator_L = 0.0f; integrator_R = 0.0f;
 	}else{
+		// DSTR << "Pursuit " << rand() << std::endl;
 		// Smooth Pursuit
-		float head_ang_vel = soHead->GetAngularVelocity()[1];
-		float node_L_1 = -(sigma*eL + nu*vL) + (kappa*eR + eta*vR) + head_ang_vel;
-		float node_R_1 =  (sigma*eR + nu*vR) - (kappa*eL + eta*vL) - head_ang_vel;
+		float node_L_1 = -(sigma*eL + nu*vL) - (kappa*eR + eta*vR) + (dw*alpha1);
+		float node_R_1 =  (sigma*eR + nu*vR) + (kappa*eL + eta*vL) - (dw*alpha1);
 		
 		integrator_L += node_L_1 * dt;
 		integrator_R += node_R_1 * dt;
 		
-		float out_t1 = -(integrator_L * rho1) + (integrator_R * rho2);
-		float out_t2 = -(integrator_L * rho2) + (integrator_R * rho1);
+		float out_t1 = -(integrator_L * rho1) + (integrator_R * rho2) + t1;
+		float out_t2 = -(integrator_L * rho2) + (integrator_R * rho1) + t2;
 
-		out_t1 += w;
-		out_t2 += w;
-		
 		attentionDirL = Vec3f(-cos(out_t1), 0.0f, sin(out_t1));
 		attentionDirR = Vec3f(-cos(out_t2), 0.0f, sin(out_t2));
+
+		attentionDirL = frHead->GetPosture().Rot() * attentionDirL;
+		attentionDirR = frHead->GetPosture().Rot() * attentionDirR;
+
+		attentionDirL = -attentionDirL;
+		attentionDirR = -attentionDirR;
 	}
 }
 
