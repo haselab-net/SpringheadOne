@@ -25,6 +25,10 @@ CRNeckController::~CRNeckController(){
 void CRNeckController::Step(){
 	if (bAttention){
 		ControlNeck();
+	}else{
+		jpNeck->proportional = 30.0f;
+		jpNeck->differential = 10.0f;
+		jpNeck->integral     = 0.0f;
 	}
 
 	bAttention = false;
@@ -44,6 +48,10 @@ void CRNeckController::Load(SGScene* scene,CRPuppet* crPuppet){
 		//// BallJoint
 		scene->FindObject(joNeck, "joNeck");
 		scene->FindObject(jpNeck, "jpNeck");
+
+		// 目
+		scene->FindObject(soLEye, "soLEye");
+		scene->FindObject(soREye, "soREye");
 	}
 
 	Init();
@@ -76,6 +84,7 @@ void CRNeckController::Draw(GRRender* render){
 void CRNeckController::SetAttentionPoint(Vec3f position){
 	goalVisualAxis = position - frHead->GetPosture().Pos();
 	goalVisualAxis = goalVisualAxis / goalVisualAxis.norm();
+	attentionPoint = position;
 }
 
 void CRNeckController::SetAttentionMode(){
@@ -91,12 +100,22 @@ float CRNeckController::GetErrAbs(){
 //-----------------　処理　----------------//
 
 void CRNeckController::ControlNeck(){
-	// 首を制御しているPHJointBallPidのパラメータをここで調整する
-	// (こんな所に書くと後の人が混乱する気がする)
-	jpNeck->proportional = 30.0f;
-	jpNeck->differential = 10.0f;
-	jpNeck->integral     = 0.0f;
+	// PHJointBallPIDを一時的に無効化
+	jpNeck->proportional =  0.0f;
+	jpNeck->differential =  3.0f;
+	jpNeck->integral     =  0.0f;
 
+	Vec3f forceLeft  = attentionPoint - soLEye->GetCenterPosition();
+	Vec3f forceRight = attentionPoint - soREye->GetCenterPosition();
+
+	forceLeft  = forceLeft  * (50.0f / forceLeft.norm());
+	forceRight = forceRight * (50.0f / forceRight.norm());
+
+	soHead->AddForce(forceLeft,  soLEye->GetCenterPosition());
+	soHead->AddForce(forceRight, soREye->GetCenterPosition());
+	soHead->AddForce(-forceLeft-forceRight,  soHead->GetCenterPosition());
+
+	/*
 	Vec3f goal = goalVisualAxis;
 	Vec3f current = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 
@@ -113,16 +132,17 @@ void CRNeckController::ControlNeck(){
 	float derrorP = joNeck->GetVelocity()[0];
 
 	// Roll
-	Vec3f goalR = Vec3f(0.0f, 1.0f, 0.0f);
+	//Vec3f goalR = Vec3f(0.0f, 1.0f, 0.0f);
+	Vec3f goalR = goal;  goalR[2] = 0.0f;
 	Vec3f currR = current; currR[2] = 0.0f;
 	float errorR = PTM::cross(goalR, currR)[2];
 	float derrorR = joNeck->GetVelocity()[2];
 
-	float Kp = 100.0f;
-	float Kd = 0.0f;
+	float Kp = 100.0f; // 100.0f;
+	float Kd = 0.0f; // 0.0f;
 	Vec3f torque = Vec3f(
 											 -((Kp * errorP) - (Kd * derrorP)),
-											 0.0f, //-((Kp * errorR) - (Kd * derrorR)),
+											 -((Kp * errorR) - (Kd * derrorR)),
 											 -((Kp * errorY) - (Kd * derrorY))
 											 );
 	torque = frChest->GetPosture().Rot() * torque;
@@ -134,6 +154,7 @@ void CRNeckController::ControlNeck(){
 	//torque[2] = 0.0f;
 
 	joNeck->AddTorque(torque);
+	*/
 }
 
 }	// end of namespace Spr

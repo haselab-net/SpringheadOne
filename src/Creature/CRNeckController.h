@@ -63,9 +63,12 @@ public:
 	PHJointBallPid* jpNeck;
 	// ‹¹
 	SGFrame* frChest;
+	// –Ú
+	PHSolid *soLEye, *soREye;
 
 	/// –Ú•W‹ü•ûŒü
 	Vec3f goalVisualAxis;
+	Vec3f attentionPoint;
 	
 	/// ’‹ƒ‚[ƒh‚©”Û‚©
 	bool bAttention;
