@@ -1,3 +1,5 @@
+#define DSTRCHK(var) DSTR << #var << " : " << (var) << GetTickCount() << std::endl;
+
 #include "Creature.h"
 #pragma hdrstop
 // CREye.cpp: CREye クラスのインプリメンテーション
@@ -60,6 +62,8 @@ void CREye::Init(){
 
 	last_t1_a = 0.0f;
 	last_t2_a = 0.0f;
+	last_t3_a = 0.0f;
+	last_t4_a = 0.0f;
 
 	integrator_L = 0.0f; integrator_R = 0.0f;
 
@@ -118,12 +122,8 @@ void CREye::Draw(GRRender* render){
 //------------　拡張インタフェース　-----------//
 
 void CREye::SetAttentionPoint(Vec3f position){
-	if (!bSaccade){
-		Vec3f apRel = frHead->GetPosture().inv() * position;
-		apRel[1] = 0.0f;
-		Vec3f apHoriz = frHead->GetPosture() * apRel;
-
-		attentionPoint = apHoriz;
+	if (/*/!bSaccade/**/true/**/){
+		attentionPoint = position;
 	}
 }
 
@@ -146,7 +146,6 @@ bool CREye::IsOverRange(Vec3f goal){
 	float vertLimit  = 30.0f;
 	float horizLimit = 60.0f;
 
-	//Vec3f goal = attentionPoint - frHead->GetPosture().Pos();
 	Vec3f head = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
 	head = frHead->GetPosture().Rot().inv() * (head / head.norm());
@@ -218,9 +217,7 @@ float CREye::GetVisibility(PHSolid* solid){
 
 void CREye::ControlEyes(){
 	if(bEyeMode==2){
-		if (/**/true/*/!IsOverRange()/**/){
-			//float time = (GetTickCount() * 1.0f / 1000.0f);
-			//attentionPoint = Vec3f(sin(time)*0.001f, 1.5f+cos(time)*0.001f, 0.0f);
+		if (/*/true/*/!IsOverRange()/**/){
 			DeterminAttentionDir();
 		}
 	}else{
@@ -253,53 +250,90 @@ void CREye::DeterminAttentionDir(){
 	const float nu =  0.05f;
 	const float eta = 0.02f;
 
-	float PI = 3.141592653f;
-	Vec3f headDirVec = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
-	float w = atan2(headDirVec.Z(), -headDirVec.X());
-	Vec3f eyeDirRelL = frHead->GetPosture().Rot().inv() * frLEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
-	Vec3f eyeDirRelR = frHead->GetPosture().Rot().inv() * frREye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
-	float t1 = atan2(eyeDirRelL.Z(), -eyeDirRelL.X());
-	float t2 = atan2(eyeDirRelR.Z(), -eyeDirRelR.X());
-	float dw = soHead->GetAngularVelocity().Y();
+	Vec3f apHoriz = frHead->GetPosture().inv() * attentionPoint;
+	apHoriz[1] = 0.0f;
+	apHoriz = frHead->GetPosture() * apHoriz;
 
+	Vec3f apVert = frHead->GetPosture().inv() * attentionPoint;
+	apVert[0] = 0.0f;
+	apVert = frHead->GetPosture() * apVert;
+
+	float PI = 3.141592653f;
 	float dt = scene->GetTimeStep();
 
-	Vec3f vecL = attentionPoint - soLEye->GetCenterPosition();
+	Vec3f headDirVec = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+	float w = atan2(headDirVec.Z(), -headDirVec.X());
+	float wv = atan2(headDirVec.Y(),  headDirVec.Z());
+	Vec3f eyeDirRelL = frHead->GetPosture().Rot().inv() * frLEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+	Vec3f eyeDirRelR = frHead->GetPosture().Rot().inv() * frREye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
+	float t1 =  atan2(eyeDirRelL.Z(), -eyeDirRelL.X());
+	float t2 =  atan2(eyeDirRelR.Z(), -eyeDirRelR.X());
+	float t3 =  -atan2(eyeDirRelL.Y(),  eyeDirRelL.Z());
+	float t4 =  -atan2(eyeDirRelR.Y(),  eyeDirRelR.Z());
+	float dw = soHead->GetAngularVelocity().Y();
+	float dwv = soHead->GetAngularVelocity().X();
+
+	Vec3f vecL = apHoriz - soLEye->GetCenterPosition();
 	vecL = frHead->GetPosture().Rot().inv() * vecL;
 	float t1_a = atan2(-vecL.Z(),vecL.X());
 	float eL   = t1_a - t1;
 	float vL   = (t1_a - last_t1_a) / dt;
 	last_t1_a = t1_a;
 
-	Vec3f vecR = attentionPoint - soREye->GetCenterPosition();
+	Vec3f vecR = apHoriz - soREye->GetCenterPosition();
 	vecR = frHead->GetPosture().Rot().inv() * vecR;
 	float t2_a = atan2(-vecR.Z(),vecR.X());
 	float eR   = t2_a - t2;
 	float vR   = (t2_a - last_t2_a) / dt;
 	last_t2_a = t2_a;
 
+	Vec3f vecLV = apVert - soLEye->GetCenterPosition();
+	vecLV = frHead->GetPosture().Rot().inv() * vecLV;
+	float t3_a = atan2(vecLV.Y(),-vecLV.Z());
+	float eLV  = t3_a - t3;
+	float vLV  = (t3_a - last_t3_a) / dt;
+	last_t3_a = t3_a;
+
+	Vec3f vecRV = apVert - soREye->GetCenterPosition();
+	vecRV = frHead->GetPosture().Rot().inv() * vecRV;
+	float t4_a = atan2(vecRV.Y(),-vecRV.Z());
+	float eRV  = t4_a - t4;
+	float vRV  = (t4_a - last_t4_a) / dt;
+	last_t4_a = t4_a;
+
 	if (bSaccade){
 		// Saccade終了条件
-		if (((abs(eL) < Rad(0.5f)) && (abs(eR) < Rad(0.5f)))){  // && (GetTickCount()-saccadeStartTime > 333)){
-			bSaccade = false;
-		}
+		if ((
+				 (abs(eL) < Rad(0.5f)) && (abs(eR)  < Rad(0.5f)) 
+				 && 
+				 (abs(eLV) < Rad(0.5f)) && (abs(eRV) < Rad(0.5f))
+				 ))
+			{
+				bSaccade = false;
+			}
 	}else{
 		// Saccade開始条件
-		if (( (abs(eL) > Rad(5.0f)) || (abs(eR) > Rad(5.0f)) )){
-			bSaccade = true;
-			saccadeStartTime = GetTickCount();
-		}	
+		if (( 
+				 (abs(eL) > Rad(5.0f)) || (abs(eR)  > Rad(5.0f)) 
+				 ||
+				 (abs(eLV) > Rad(5.0f)) || (abs(eRV) > Rad(5.0f)) 
+				 ))
+			{
+				bSaccade = true;
+				saccadeStartTime = GetTickCount();
+			}	
 	}
 
 	if (bSaccade){
-		// DSTR << "Saccade " << rand() << std::endl;
 		// Saccade
 		attentionDirL = attentionPoint - frLEye->GetPosture().Pos();
 		attentionDirR = attentionPoint - frREye->GetPosture().Pos();
-		integrator_L = 0.0f; integrator_R = 0.0f;
+		integrator_L  = 0.0f; integrator_R  = 0.0f;
+		integrator_Lv = 0.0f; integrator_Rv = 0.0f;
 	}else{
-		// DSTR << "Pursuit " << rand() << std::endl;
 		// Smooth Pursuit
+
+		//// Horizontal
 		float node_L_1 = -(sigma*eL + nu*vL) - (kappa*eR + eta*vR) + (dw*alpha1);
 		float node_R_1 =  (sigma*eR + nu*vR) + (kappa*eL + eta*vL) - (dw*alpha1);
 		
@@ -309,8 +343,38 @@ void CREye::DeterminAttentionDir(){
 		float out_t1 = -(integrator_L * rho1) + (integrator_R * rho2) + t1;
 		float out_t2 = -(integrator_L * rho2) + (integrator_R * rho1) + t2;
 
+		/*
 		attentionDirL = Vec3f(-cos(out_t1), 0.0f, sin(out_t1));
 		attentionDirR = Vec3f(-cos(out_t2), 0.0f, sin(out_t2));
+
+		attentionDirL = frHead->GetPosture().Rot() * attentionDirL;
+		attentionDirR = frHead->GetPosture().Rot() * attentionDirR;
+
+		attentionDirL = -attentionDirL;
+		attentionDirR = -attentionDirR;
+		*/
+
+		//// Vertical
+		float node_L_2 = (sigma*eLV + nu*vLV);// + (dwv*alpha1);
+		float node_R_2 = (sigma*eRV + nu*vRV);// + (dwv*alpha1);
+
+		integrator_Lv += node_L_2 * dt;
+		integrator_Rv += node_R_2 * dt;
+		
+		float out_t3 = (integrator_Lv * rho1) + t3;
+		float out_t4 = (integrator_Rv * rho1) + t4;
+
+		if (cos(out_t3)!=0){
+			attentionDirL = Vec3f(-cos(out_t1), -sin(out_t1)*tan(out_t3), sin(out_t1));
+		}else{
+			attentionDirL = Vec3f(-cos(out_t1), 0.0f, 0.0f);
+		}
+
+		if (cos(out_t4)!=0){
+			attentionDirR = Vec3f(-cos(out_t2), -sin(out_t2)*tan(out_t4), sin(out_t2));
+		}else{
+			attentionDirR = Vec3f(-cos(out_t2), 0.0f, 0.0f);
+		}
 
 		attentionDirL = frHead->GetPosture().Rot() * attentionDirL;
 		attentionDirR = frHead->GetPosture().Rot() * attentionDirR;

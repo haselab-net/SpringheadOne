@@ -60,17 +60,15 @@ void CRNeckController::OnKeyDown(UINT &nChar){
 
 void CRNeckController::Draw(GRRender* render){
 	// デバッグ用表示
-	/*
 	render->SetModelMatrix(Affinef());
 	Vec3f v[2];
-	render->SetMaterial(GRMaterialData(Spr::Vec4f(0,1,0,1)));
+	render->SetMaterial(GRMaterialData(Spr::Vec4f(0,0,1,1)));
 	render->SetLineWidth(10);
 
 	//// 頭の正面方向の表示
 	v[0] = frHead->GetPosture().Pos();
 	v[1] = v[0] + frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -100.0f);
 	render->DrawDirect(Spr::GRRender::LINES,  v, v+2);
-	*/
 }
 
 //------------　拡張インタフェース　-----------//
@@ -124,7 +122,7 @@ void CRNeckController::ControlNeck(){
 	float Kd = 0.0f;
 	Vec3f torque = Vec3f(
 											 -((Kp * errorP) - (Kd * derrorP)),
-											 -((Kp * errorR) - (Kd * derrorR)),
+											 0.0f, //-((Kp * errorR) - (Kd * derrorR)),
 											 -((Kp * errorY) - (Kd * derrorY))
 											 );
 	torque = frChest->GetPosture().Rot() * torque;
@@ -132,8 +130,8 @@ void CRNeckController::ControlNeck(){
 	torque[2] = -torque[2];
 
 	// For Debug
-	torque[0] = 0.0f;
-	torque[2] = 0.0f;
+	//torque[0] = 0.0f;
+	//torque[2] = 0.0f;
 
 	joNeck->AddTorque(torque);
 }

@@ -93,10 +93,10 @@ public:
 	Vec3f attentionDirR;
 
 	/// 前回の目標位置(視角)
-	float last_t1_a, last_t2_a;
+	float last_t1_a, last_t2_a, last_t3_a, last_t4_a;
 
 	/// 積分器
-	float integrator_L, integrator_R;
+	float integrator_L, integrator_R, integrator_Lv, integrator_Rv;
 
 	/// 注視モードか否か
 	bool bAttention;
