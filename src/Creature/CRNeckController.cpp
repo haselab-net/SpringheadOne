@@ -100,9 +100,10 @@ float CRNeckController::GetErrAbs(){
 //-----------------@ˆ—@----------------//
 
 void CRNeckController::ControlNeck(){
+	/**/
 	// PHJointBallPID‚ðˆêŽž“I‚É–³Œø‰»
 	jpNeck->proportional =  0.0f;
-	jpNeck->differential =  3.0f;
+	jpNeck->differential =  1.0f;
 	jpNeck->integral     =  0.0f;
 
 	Vec3f forceLeft  = attentionPoint - soLEye->GetCenterPosition();
@@ -115,7 +116,12 @@ void CRNeckController::ControlNeck(){
 	soHead->AddForce(forceRight, soREye->GetCenterPosition());
 	soHead->AddForce(-forceLeft-forceRight,  soHead->GetCenterPosition());
 
-	/*
+	/*/
+
+	jpNeck->proportional = 30.0f;
+	jpNeck->differential = 10.0f;
+	jpNeck->integral     = 0.0f;
+
 	Vec3f goal = goalVisualAxis;
 	Vec3f current = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 
@@ -132,8 +138,8 @@ void CRNeckController::ControlNeck(){
 	float derrorP = joNeck->GetVelocity()[0];
 
 	// Roll
-	//Vec3f goalR = Vec3f(0.0f, 1.0f, 0.0f);
-	Vec3f goalR = goal;  goalR[2] = 0.0f;
+	Vec3f goalR = Vec3f(0.0f, 1.0f, 0.0f);
+	//Vec3f goalR = goal;  goalR[2] = 0.0f;
 	Vec3f currR = current; currR[2] = 0.0f;
 	float errorR = PTM::cross(goalR, currR)[2];
 	float derrorR = joNeck->GetVelocity()[2];
@@ -149,12 +155,8 @@ void CRNeckController::ControlNeck(){
 	torque[1] = -torque[1];
 	torque[2] = -torque[2];
 
-	// For Debug
-	//torque[0] = 0.0f;
-	//torque[2] = 0.0f;
-
 	joNeck->AddTorque(torque);
-	*/
+	/**/
 }
 
 }	// end of namespace Spr
