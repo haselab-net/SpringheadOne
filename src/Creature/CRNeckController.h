@@ -73,6 +73,11 @@ public:
 	/// 注視モードか否か
 	bool bAttention;
 
+	/// 首の運動の経過時間
+	float s;
+	/// 首の運動を開始した時の頭の向き
+	Vec3f startVisualAxis;
+
 };
 
 }		//	end namespace Spr
