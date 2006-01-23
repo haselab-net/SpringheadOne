@@ -63,6 +63,7 @@ void CRVisionMotionAnalysis::OnKeyDown(UINT &nChar){
 }
 
 void CRVisionMotionAnalysis::Draw(GRRender* render){
+	/*
 	// デバッグ用表示
 	render->SetModelMatrix(Affinef());
 	Vec3f v[50];
@@ -77,6 +78,7 @@ void CRVisionMotionAnalysis::Draw(GRRender* render){
 		}
 	}
 	render->DrawDirect(Spr::GRRender::POINTS,  v, v+cnt);
+	*/
 }
 
 //-----------------　処理　----------------//

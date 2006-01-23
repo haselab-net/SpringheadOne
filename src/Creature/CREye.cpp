@@ -138,14 +138,16 @@ void CREye::SetAttentionMode(){
 }
 
 bool CREye::IsOverRange(){
-	return(IsOverRange(attentionPoint - frHead->GetPosture().Pos()));
+	bool result = IsOverRange(attentionPoint - frHead->GetPosture().Pos());
+	return(result);
 }
 
 bool CREye::IsOverRange(Vec3f goal){
 	// 単位：度
 	float vertLimit  = 30.0f;
-	float horizLimit = 60.0f;
+	float horizLimit = 55.0f;
 
+	/*
 	Vec3f head = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
 	head = frHead->GetPosture().Rot().inv() * (head / head.norm());
@@ -153,7 +155,15 @@ bool CREye::IsOverRange(Vec3f goal){
 	goal[0] *= (horizLimit / vertLimit);
 	goal /= goal.norm();
 
-	bool result = PTM::dot(goal,head) < cos(Rad(vertLimit));
+	bool result = (PTM::dot(goal,head) < cos(Rad(vertLimit)));
+	*/
+
+	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
+	goal /= goal[2];
+	float x = goal[0], y = goal[1];
+	float a = tan(Rad(horizLimit)), b = tan(vertLimit);
+	bool result = ((((x*x)/(a*a)) + ((y*y)/(b*b))) >= 1.0f);
+	overrange = (((x*x)/(a*a)) + ((y*y)/(b*b)));
 
 	return(result);
 }
@@ -217,7 +227,7 @@ float CREye::GetVisibility(PHSolid* solid){
 
 void CREye::ControlEyes(){
 	if(bEyeMode==2){
-		if (/*/true/*/!IsOverRange()/**/){
+		if (/**/true/*/!IsOverRange()/**/){
 			DeterminAttentionDir();
 		}
 	}else{
@@ -232,12 +242,22 @@ void CREye::ControlEyes(){
 
 void CREye::ControlEyePD(SGFrame* frEye, PHSolid* soEye, Vec3f aim){
 	Vec3f current = frEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, 1.0f);
-	current /= current.norm(); aim /= aim.norm();
+	current /= current.norm(); 
+
+	if (IsOverRange(current)){
+		aim = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f); 
+		//overrange = 1.0f;
+	}else{
+		//overrange = 0.0f;
+	}
+	aim /= aim.norm();
+
 	Vec3f error  = PTM::cross(current, aim);
 	Vec3f derror = soEye->GetAngularVelocity();
 	float Kp = 5000.0f;
 	float Kd = 50.0f;
 	Vec3f torque = (Kp * error) - (Kd * derror);
+
  	soEye->AddTorque(torque);
 }
 
@@ -300,7 +320,7 @@ void CREye::DeterminAttentionDir(){
 	float eRV  = t4_a - t4;
 	float vRV  = (t4_a - last_t4_a) / dt;
 	last_t4_a = t4_a;
-
+	
 	if (bSaccade){
 		// Saccade終了条件
 		if ((
@@ -343,17 +363,6 @@ void CREye::DeterminAttentionDir(){
 		float out_t1 = -(integrator_L * rho1) + (integrator_R * rho2) + t1;
 		float out_t2 = -(integrator_L * rho2) + (integrator_R * rho1) + t2;
 
-		/*
-		attentionDirL = Vec3f(-cos(out_t1), 0.0f, sin(out_t1));
-		attentionDirR = Vec3f(-cos(out_t2), 0.0f, sin(out_t2));
-
-		attentionDirL = frHead->GetPosture().Rot() * attentionDirL;
-		attentionDirR = frHead->GetPosture().Rot() * attentionDirR;
-
-		attentionDirL = -attentionDirL;
-		attentionDirR = -attentionDirR;
-		*/
-
 		//// Vertical
 		float node_L_2 = (sigma*eLV + nu*vLV);// + (dwv*alpha1);
 		float node_R_2 = (sigma*eRV + nu*vRV);// + (dwv*alpha1);
@@ -381,6 +390,11 @@ void CREye::DeterminAttentionDir(){
 
 		attentionDirL = -attentionDirL;
 		attentionDirR = -attentionDirR;
+
+		//
+
+		eyeposL = t1 - (PI/2.0f);
+		eyeposR = t2 - (PI/2.0f);
 	}
 }
 

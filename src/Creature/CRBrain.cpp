@@ -104,6 +104,10 @@ namespace Spr{
 		crEye.ToggleEyeMode();
 	}
 
+	void CRSimulatingBrain::StartAttentionExperiment(){
+		crAttention.StartExperiment();
+	}
+
 } // namespace Spr
 
 

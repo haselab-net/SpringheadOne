@@ -65,6 +65,7 @@ namespace Spr{
 		void SetRender(GRRender* render){this->render = render;}
 		CRActionPlanner* GetPlanner(){return &crPlanner;}
 		void ToggleEyeMode();
+		void StartAttentionExperiment();
 		
 		// ƒƒ“ƒo•Ï”
 		/// ˆ—ƒ‚ƒWƒ…[ƒ‹

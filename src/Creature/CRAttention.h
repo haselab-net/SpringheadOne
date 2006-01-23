@@ -19,7 +19,7 @@
 #include <vector>
 #include <Creature/CREye.h>
 #include <Creature/CRNeckController.h>
-
+#include <fstream>
 
 namespace Spr{;
 
@@ -43,6 +43,7 @@ public:
 	/// ’‹“_‚Ìİ’è
 	void SetAttentionPoint(Vec3f position, float ammount);
 	void SetAttentionSolid(PHSolid* solid, float ammount);
+	void StartExperiment();
 
 //-----------------@ˆ—@----------------//
 	void CalcMaxAttentionPoint();
@@ -73,6 +74,19 @@ public:
 	bool bFoundAttention;
 	bool bHeadControl;
 
+	// ÀŒ±
+	bool bExperimentMode;
+	std::ofstream ofs_head;
+	std::ofstream ofs_leye;
+	std::ofstream ofs_reye;
+	std::ofstream ofs_gaze;
+	std::ofstream ofs_eyes;
+	std::ofstream ofs_info;
+	std::vector<int>   timinglist;
+	std::vector<Vec3f> poslist;
+	int counter;
+	DWORD startTiming;
+	
 };
 
 }		//	end namespace Spr

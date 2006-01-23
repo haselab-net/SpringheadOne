@@ -112,6 +112,10 @@ public:
 	float frontOrig;
 public:
 	int bEyeMode;
+
+	// ŽÀŒ±‹L˜^—p
+	float eyeposR, eyeposL;
+	float overrange;
 };
 
 }		//	end namespace Spr

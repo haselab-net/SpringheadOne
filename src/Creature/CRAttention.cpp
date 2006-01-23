@@ -22,7 +22,24 @@ CRAttention::~CRAttention(){
 //------------------　基本的なインタフェース　------------------//
 
 void CRAttention::Step(){
-	CalcMaxAttentionPoint();
+	if (bExperimentMode){
+		int currentTimeInSec = (GetTickCount() - startTiming)/1000;
+		maxAttentionPoint = poslist[counter];
+		if (currentTimeInSec >= timinglist[counter]){counter++;}
+		if (counter > timinglist.size()){
+			bExperimentMode = false;
+			ofs_head.close();
+			ofs_leye.close();
+			ofs_reye.close();
+			ofs_gaze.close();
+			ofs_eyes.close();
+			ofs_info.close();
+		}
+		bFoundAttention = true;
+	}else{
+		CalcMaxAttentionPoint();
+	}
+
 	if (bFoundAttention){
 		crEye->SetAttentionPoint(maxAttentionPoint);
 		crEye->SetAttentionMode();
@@ -31,26 +48,22 @@ void CRAttention::Step(){
 			crNeckController->SetAttentionPoint(maxAttentionPoint);
 			bHeadControl = true;
 		}else{
-			float err = crNeckController->GetErrAbs();
-			float thresh = 4.0f * pow(2.718f, -(err*err*9.0f));
-			if (maxAttentionAmmount > thresh){
-				crNeckController->SetAttentionPoint(maxAttentionPoint);
-				bHeadControl = true;
-			}else{
-				bHeadControl = false;
-			}
+			bHeadControl = false;
 		}
 	}
 
-	/*
-	float time = (GetTickCount() * 1.0f / 1000.0f);
-	Vec3f attentionPoint = Vec3f(sin(time)*0.5f, 1.5f+cos(time)*0.001f, 0.0f);
-	crEye->SetAttentionPoint(attentionPoint);
-	crEye->SetAttentionMode();
-	*/
+	if (bExperimentMode){
+		ofs_head << crNeckController->headpos << std::endl;
+		ofs_leye << crEye->eyeposL << std::endl;
+		ofs_reye << crEye->eyeposR << std::endl;
+		ofs_gaze << (crNeckController->headpos + (crEye->eyeposL + crEye->eyeposR)/2.0f) << std::endl;
+		ofs_eyes << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
+		ofs_info << crEye->overrange << std::endl;
+	}
 
 	attentionList.clear();
 }
+
 
 void CRAttention::Load(SGScene* scene,CRPuppet* crPuppet, CREye* crEye,CRNeckController* crNeckController){
 	this->scene = scene;
@@ -67,10 +80,10 @@ void CRAttention::Load(SGScene* scene,CRPuppet* crPuppet, CREye* crEye,CRNeckCon
 void CRAttention::Init(){
 	// 初期化
 	bHeadControl = false;
+	bExperimentMode = false;
 }
 
 void CRAttention::OnKeyDown(UINT &nChar){
-	// キー入力
 }
 
 void CRAttention::Draw(GRRender* render){
@@ -98,6 +111,31 @@ void CRAttention::SetAttentionSolid(PHSolid* solid, float ammount){
 	}else{
 		findResult->second.ammount += ammount;
 	}
+}
+
+void CRAttention::StartExperiment(){
+	std::ifstream ifs("att_expr.txt");
+	
+	timinglist.clear();
+	poslist.clear();
+
+	int t; Vec3f p;
+	while (ifs >> t){
+		ifs >> p;
+		timinglist.push_back(t);
+		poslist.push_back(p);
+	}
+	
+	bExperimentMode = true;
+	startTiming = GetTickCount();
+	counter = 0;
+
+	ofs_head.open("head.plt");
+	ofs_leye.open("leye.plt");
+	ofs_reye.open("reye.plt");
+	ofs_gaze.open("gaze.plt");
+	ofs_eyes.open("eyes.plt");
+	ofs_info.open("info.plt");
 }
 
 //-----------------　処理　----------------//

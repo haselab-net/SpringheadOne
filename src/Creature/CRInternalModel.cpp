@@ -112,6 +112,7 @@ void CRInternalModel::OnKeyDown(UINT &nChar){
 }
 
 void CRInternalModel::Draw(GRRender* render){
+	/*
 	// デバッグ用表示
 	render->SetModelMatrix(Affinef());
 	Vec3f v[50];
@@ -154,6 +155,7 @@ void CRInternalModel::Draw(GRRender* render){
 	if (!bStability){
 		render->DrawText(Vec2f(100, 100), "Unstable", font);
 	}
+	*/
 }
 
 

@@ -78,6 +78,9 @@ public:
 	/// 首の運動を開始した時の頭の向き
 	Vec3f startVisualAxis;
 
+	// 実験記録用
+	float headpos;
+
 };
 
 }		//	end namespace Spr
