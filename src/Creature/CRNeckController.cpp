@@ -107,8 +107,8 @@ float CRNeckController::GetErrAbs(){
 //-----------------@ˆ—@----------------//
 
 void CRNeckController::ControlNeck(){
-	jpNeck->proportional = 1.0f;  // 30.0f
-	jpNeck->differential = 5.0f;
+	jpNeck->proportional = 0.0f;  // 30.0f
+	jpNeck->differential = 1.0f;
 	jpNeck->integral     = 0.0f;
 		
 	double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
@@ -126,13 +126,13 @@ void CRNeckController::ControlNeck(){
 	Vec3f goalP = goal; 	 goalP[0] = 0.0f;
 	Vec3f currP = current; currP[0] = 0.0f;
 	float errorP = PTM::cross(goalP, currP)[0];
-		
-	float Kp = 5.0f;
-		
+
+	float Kpp = 10.0f, Kpy = 5.0f;
+
 	// DSTR << atan2(currY[0],currY[2]) << ":" << atan2(goalY[0],goalY[2]) << std::endl;
 		
 	// Vec3f(PanDown,  TiltRight,  PanRight);
-	Vec3f torque = frHead->GetPosture().Rot() * (Vec3f(-errorP,0.0f,errorY) * Kp);
+	Vec3f torque = frHead->GetPosture().Rot() * (Vec3f(-errorP*Kpp,0.0f,errorY*Kpy));
 		
 	joNeck->AddTorque(torque);
 
@@ -140,6 +140,10 @@ void CRNeckController::ControlNeck(){
 	if(s > 1.0f){s=1.0f;}
 
 	headpos = atan2(currY[0],currY[2]);
+
+	Vec3f up = frChest->GetPosture().Rot()*Vec3f(0.0f,1.0f,0.0f);
+	soHead->AddForce( up*10.0f, soHead->GetCenterPosition()+(up*0.01));
+	soHead->AddForce(-up*10.0f, soHead->GetCenterPosition()          );
 }
 
 }	// end of namespace Spr
