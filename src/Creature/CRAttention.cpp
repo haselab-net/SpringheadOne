@@ -29,6 +29,7 @@ void CRAttention::Step(){
 		if (counter > timinglist.size()){
 			bExperimentMode = false;
 			ofs_head.close();
+			ofs_hedg.close();
 			ofs_leye.close();
 			ofs_reye.close();
 			ofs_gaze.close();
@@ -44,7 +45,7 @@ void CRAttention::Step(){
 		crEye->SetAttentionPoint(maxAttentionPoint);
 		crEye->SetAttentionMode();
 		crNeckController->SetAttentionMode();
-		if (crEye->IsOverRange()){
+		if (crEye->IsOverRange(10.0f,30.0f)){
 			crNeckController->SetAttentionPoint(maxAttentionPoint);
 			bHeadControl = true;
 		}else{
@@ -54,6 +55,7 @@ void CRAttention::Step(){
 
 	if (bExperimentMode){
 		ofs_head << crNeckController->headpos << std::endl;
+		ofs_hedg << crNeckController->headposgoal << std::endl;
 		ofs_leye << crEye->eyeposL << std::endl;
 		ofs_reye << crEye->eyeposR << std::endl;
 		ofs_gaze << (crNeckController->headpos + (crEye->eyeposL + crEye->eyeposR)/2.0f) << std::endl;
@@ -133,6 +135,7 @@ void CRAttention::StartExperiment(){
 	counter = 0;
 
 	ofs_head.open("head.plt");
+	ofs_hedg.open("hedg.plt");
 	ofs_leye.open("leye.plt");
 	ofs_reye.open("reye.plt");
 	ofs_gaze.open("gaze.plt");

@@ -79,7 +79,7 @@ public:
 	Vec3f startVisualAxis;
 
 	// ŽÀŒ±‹L˜^—p
-	float headpos;
+	float headpos, headposgoal;
 
 };
 

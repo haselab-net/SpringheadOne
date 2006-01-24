@@ -46,8 +46,10 @@ public:
 	void SetAttentionMode();
 	/// 注視点が眼球の可動範囲を超えた位置にあるかどうか
 	bool IsOverRange();
+	bool IsOverRange(float vertLimit, float horizLimit);
 	/// ベクトルgoalが眼球の可動範囲を超えた位置にあるかどうか
 	bool IsOverRange(Vec3f goal);
+	bool IsOverRange(Vec3f goal, float vertLimit, float horizLimit);
 	/// 対象Solidが視野内にあるかどうか
 	bool IsVisible(PHSolid* solid);
 	float GetVisibility(PHSolid* solid);

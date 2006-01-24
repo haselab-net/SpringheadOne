@@ -77,6 +77,7 @@ public:
 	// ŽÀŒ±
 	bool bExperimentMode;
 	std::ofstream ofs_head;
+	std::ofstream ofs_hedg;
 	std::ofstream ofs_leye;
 	std::ofstream ofs_reye;
 	std::ofstream ofs_gaze;

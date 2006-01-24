@@ -107,9 +107,9 @@ float CRNeckController::GetErrAbs(){
 //-----------------@ˆ—@----------------//
 
 void CRNeckController::ControlNeck(){
-	jpNeck->proportional = 0.0f;  // 30.0f
-	jpNeck->differential = 1.0f;
-	jpNeck->integral     = 0.0f;
+	jpNeck->proportional =  0.0f;  // 30.0f
+	jpNeck->differential = 10.0f;  // 3.0f
+	jpNeck->integral     =  0.0f;
 		
 	double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
 	Vec3f dir = goalVisualAxis - startVisualAxis;
@@ -127,7 +127,7 @@ void CRNeckController::ControlNeck(){
 	Vec3f currP = current; currP[0] = 0.0f;
 	float errorP = PTM::cross(goalP, currP)[0];
 
-	float Kpp = 10.0f, Kpy = 5.0f;
+	float Kpp = 200.0f, Kpy = 100.0f;
 
 	// DSTR << atan2(currY[0],currY[2]) << ":" << atan2(goalY[0],goalY[2]) << std::endl;
 		
@@ -136,10 +136,11 @@ void CRNeckController::ControlNeck(){
 		
 	joNeck->AddTorque(torque);
 
-	s += 0.01f;
+	s += 0.02f;
 	if(s > 1.0f){s=1.0f;}
 
-	headpos = atan2(currY[0],currY[2]);
+	headpos     = atan2(currY[0],currY[2]);
+	headposgoal = atan2(goalY[0],goalY[2]);
 
 	Vec3f up = frChest->GetPosture().Rot()*Vec3f(0.0f,1.0f,0.0f);
 	soHead->AddForce( up*10.0f, soHead->GetCenterPosition()+(up*0.01));
