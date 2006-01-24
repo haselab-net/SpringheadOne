@@ -147,25 +147,42 @@ bool CREye::IsOverRange(Vec3f goal){
 	float vertLimit  = 30.0f;
 	float horizLimit = 55.0f;
 
-	/*
-	Vec3f head = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
-	head = frHead->GetPosture().Rot().inv() * (head / head.norm());
+	goal[2] = -goal[2];
 
-	goal[0] *= (horizLimit / vertLimit);
-	goal /= goal.norm();
+	if(PTM::dot(Vec3f(0.0f,0.0f,1.0f),goal) < cos(Rad(horizLimit))){
+		return(true);
+	}
+	//if(goal[2]<0){return(true);}
 
-	bool result = (PTM::dot(goal,head) < cos(Rad(vertLimit)));
-	*/
-
-	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
 	goal /= goal[2];
 	float x = goal[0], y = goal[1];
 	float a = tan(Rad(horizLimit)), b = tan(vertLimit);
 	bool result = ((((x*x)/(a*a)) + ((y*y)/(b*b))) >= 1.0f);
-	overrange = (((x*x)/(a*a)) + ((y*y)/(b*b)));
 
 	return(result);
+}
+
+#define sgn(x) (((x)>=0) ? (+1) : (-1))
+
+Vec3f CREye::LimitRange(Vec3f goal){
+	float vertLimit  = 30.0f;
+	float horizLimit = 55.0f;
+
+	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
+	goal[0] = -goal[0];
+	goal[2] = -goal[2];
+
+	float ax = goal[0], ay = goal[1];
+	float T1 = tan(Rad(horizLimit)), T2 = tan(vertLimit);
+	float x = sgn(ax)/sqrt((1/(T1*T1)) + (ay/(ax*T2))*(ay/(ax*T2)));
+	float y = sgn(ay)/sqrt((ax/(ay*T1))*(ax/(ay*T1)) + (1/(T2*T2)));
+
+	DSTR << "G:" << goal << std::endl;
+	DSTR << "X:" << x << std::endl;
+	DSTR << "M:" << Vec3f(x,y,1) << std::endl;
+
+	return(Vec3f(x, y, 1.0f));
 }
 
 bool CREye::IsVisible(PHSolid* solid){
@@ -227,9 +244,7 @@ float CREye::GetVisibility(PHSolid* solid){
 
 void CREye::ControlEyes(){
 	if(bEyeMode==2){
-		if (/**/true/*/!IsOverRange()/**/){
-			DeterminAttentionDir();
-		}
+		DeterminAttentionDir();
 	}else{
 		attentionDirL = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
 		attentionDirR = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
@@ -244,13 +259,12 @@ void CREye::ControlEyePD(SGFrame* frEye, PHSolid* soEye, Vec3f aim){
 	Vec3f current = frEye->GetPosture().Rot() * Vec3f(0.0f, 0.0f, 1.0f);
 	current /= current.norm(); 
 
-	if (IsOverRange(current)){
-		aim = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f); 
-		//overrange = 1.0f;
-	}else{
-		//overrange = 0.0f;
+	if (IsOverRange(aim)){
+		aim = LimitRange(aim);
 	}
 	aim /= aim.norm();
+
+	//if (IsOverRange()){overrange=1.0f;}else{overrange=0.0f;}
 
 	Vec3f error  = PTM::cross(current, aim);
 	Vec3f derror = soEye->GetAngularVelocity();
@@ -346,8 +360,15 @@ void CREye::DeterminAttentionDir(){
 
 	if (bSaccade){
 		// Saccade
+		/**/
 		attentionDirL = attentionPoint - frLEye->GetPosture().Pos();
 		attentionDirR = attentionPoint - frREye->GetPosture().Pos();
+		/*/
+		Vec3f goalDirL = attentionPoint - frLEye->GetPosture().Pos();
+		Vec3f goalDirR = attentionPoint - frREye->GetPosture().Pos();
+		attentionDirL += 0.01f * (goalDirL - attentionDirL);
+		attentionDirR += 0.01f * (goalDirR - attentionDirR);
+		/**/
 		integrator_L  = 0.0f; integrator_R  = 0.0f;
 		integrator_Lv = 0.0f; integrator_Rv = 0.0f;
 	}else{
@@ -393,9 +414,12 @@ void CREye::DeterminAttentionDir(){
 
 		//
 
-		eyeposL = t1 - (PI/2.0f);
-		eyeposR = t2 - (PI/2.0f);
 	}
+
+	if(-PI <= t1 && t1 <= -(PI/2.0f)){ t1 += 2*PI; }
+	if(-PI <= t2 && t2 <= -(PI/2.0f)){ t2 += 2*PI; }
+	eyeposL = t1 - (PI/2.0f);
+	eyeposR = t2 - (PI/2.0f);
 }
 
 }	// end of namespace Spr

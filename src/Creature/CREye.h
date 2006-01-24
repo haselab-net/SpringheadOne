@@ -51,6 +51,8 @@ public:
 	/// 対象Solidが視野内にあるかどうか
 	bool IsVisible(PHSolid* solid);
 	float GetVisibility(PHSolid* solid);
+	/// 眼球可動範囲ぎりぎりまで動かした時の視線方向
+	Vec3f LimitRange(Vec3f goal);
 
 	void ToggleEyeMode(){
 		bEyeMode++;
@@ -105,7 +107,6 @@ public:
 	/// Saccade中
 	bool  bSaccade;
 	DWORD saccadeStartTime;
-	Vec3f saccadePos;
 
 	// VH視点表示前の視点の保存用
 	Affinef viewOrig;

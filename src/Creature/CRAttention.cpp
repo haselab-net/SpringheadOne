@@ -59,6 +59,8 @@ void CRAttention::Step(){
 		ofs_gaze << (crNeckController->headpos + (crEye->eyeposL + crEye->eyeposR)/2.0f) << std::endl;
 		ofs_eyes << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
 		ofs_info << crEye->overrange << std::endl;
+
+		DSTR << "E:" << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
 	}
 
 	attentionList.clear();
