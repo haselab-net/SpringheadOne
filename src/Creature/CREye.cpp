@@ -386,10 +386,10 @@ void CREye::DeterminAttentionDir(){
 		attentionDirL = saccadeStartDirL + ((saccadeGoalDirL - saccadeStartDirL) * length);
 		attentionDirR = saccadeStartDirR + ((saccadeGoalDirR - saccadeStartDirR) * length);
 		saccadeCount--;
-		DSTRCHK(s);
-		DSTRCHK(saccadeStartDirL);
-		DSTRCHK(saccadeGoalDirL);
-		DSTRCHK(attentionDirL);
+		//DSTRCHK(s);
+		//DSTRCHK(saccadeStartDirL);
+		//DSTRCHK(saccadeGoalDirL);
+		//DSTRCHK(attentionDirL);
 		/**/
 		integrator_L  = 0.0f; integrator_R  = 0.0f;
 		integrator_Lv = 0.0f; integrator_Rv = 0.0f;

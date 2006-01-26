@@ -107,44 +107,40 @@ float CRNeckController::GetErrAbs(){
 //-----------------@ˆ—@----------------//
 
 void CRNeckController::ControlNeck(){
+	// Re-set JointPID Parameter
 	jpNeck->proportional =  0.0f;  // 30.0f
-	jpNeck->differential = 10.0f;  // 3.0f
+	jpNeck->differential = 30.0f;  // 3.0f
 	jpNeck->integral     =  0.0f;
-		
-	double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
-	Vec3f dir = goalVisualAxis - startVisualAxis;
-	Vec3f goal = startVisualAxis + dir*length;
-		
-	Vec3f current = frHead->GetPosture().Rot() * Vec3f(0.0f, 0.0f, -1.0f);
-		
-	// Yaw
-	Vec3f goalY = goal; 	 goalY[1] = 0.0f;
-	Vec3f currY = current; currY[1] = 0.0f;
-	float errorY = PTM::cross(goalY, currY)[1];
-		
-	// Pitch
-	Vec3f goalP = goal; 	 goalP[0] = 0.0f;
-	Vec3f currP = current; currP[0] = 0.0f;
-	float errorP = PTM::cross(goalP, currP)[0];
+	
+	double t = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
+	Vec3f goal = startVisualAxis + (goalVisualAxis - startVisualAxis)*t;
+	//goal = frChest->GetPosture().Rot().inv() * goal;
+	//DSTR << goal << std::endl;
 
-	float Kpp = 200.0f, Kpy = 100.0f;
+	// Head Up
+	float Kup = 200.0f;
+	float errUp = asin((joNeck->GetOrientation() * Vec3f(0.0f, 1.0f, 0.0f))[0]);
+	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(0.0f, errUp * Kup, 0.0f));
 
-	// DSTR << atan2(currY[0],currY[2]) << ":" << atan2(goalY[0],goalY[2]) << std::endl;
-		
-	// Vec3f(PanDown,  TiltRight,  PanRight);
-	Vec3f torque = frHead->GetPosture().Rot() * (Vec3f(-errorP*Kpp,0.0f,errorY*Kpy));
-		
-	joNeck->AddTorque(torque);
+	// Horizontal Move
+	float Khoriz = 200.0f;
+	float currHoriz = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[0]);
+	float goalHoriz = -atan2(goal[0], goal[2]);
+	float errHoriz = goalHoriz - currHoriz;
+	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(0.0f, 0.0f, errHoriz * Khoriz));
 
-	s += 0.02f;
+	// Vertical Move
+	float Kvert = 200.0f;
+	float currVert = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[1]);
+	float goalVert = -atan2(goal[1], goal[2]);
+	float errVert = goalVert - currVert;
+	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(errVert * Kvert, 0.0f, 0.0f));
+
+	
+	// Inclement Time
+	s += 0.05f;
 	if(s > 1.0f){s=1.0f;}
 
-	headpos     = atan2(currY[0],currY[2]);
-	headposgoal = atan2(goalY[0],goalY[2]);
-
-	Vec3f up = frChest->GetPosture().Rot()*Vec3f(0.0f,1.0f,0.0f);
-	soHead->AddForce( up*10.0f, soHead->GetCenterPosition()+(up*0.01));
-	soHead->AddForce(-up*10.0f, soHead->GetCenterPosition()          );
 }
 
 }	// end of namespace Spr
