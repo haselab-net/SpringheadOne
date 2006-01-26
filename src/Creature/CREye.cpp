@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "CREye.h"
+#include "CRNeckController.h"
 
 //////////////////////////////////////////////////////////////////////
 // \’z/Á–Å
@@ -31,9 +32,10 @@ void CREye::Step(){
 	bAttention = false;
 }
 
-void CREye::Load(SGScene* scene,CRPuppet* crPuppet){
+void CREye::Load(SGScene* scene,CRPuppet* crPuppet,CRNeckController* crNeck){
 	this->scene = scene;
 	this->crPuppet = crPuppet;
+	this->crNeck = crNeck;
 
 	if (crPuppet->IsLoaded()){
 		// VH‚Ì–Ú‚ÉŠÖ‚·‚é—v‘f
@@ -383,8 +385,11 @@ void CREye::DeterminAttentionDir(){
 		/*/
 		float s = 1.0f - (saccadeCount / 10.0f);
 		double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
-		attentionDirL = saccadeStartDirL + ((saccadeGoalDirL - saccadeStartDirL) * length);
-		attentionDirR = saccadeStartDirR + ((saccadeGoalDirR - saccadeStartDirR) * length);
+		Vec3f currGoalL = saccadeGoalDirL - Vec3f(-sin(crNeck->headposgoal - crNeck->headpos), 0.0f, cos(crNeck->headposgoal - crNeck->headpos));
+		Vec3f currGoalR = saccadeGoalDirR - Vec3f(-sin(crNeck->headposgoal - crNeck->headpos), 0.0f, cos(crNeck->headposgoal - crNeck->headpos));
+		DSTR << crNeck->headposgoal << std::endl;
+		attentionDirL = saccadeStartDirL + ((currGoalL - saccadeStartDirL) * length);
+		attentionDirR = saccadeStartDirR + ((currGoalR - saccadeStartDirR) * length);
 		saccadeCount--;
 		//DSTRCHK(s);
 		//DSTRCHK(saccadeStartDirL);

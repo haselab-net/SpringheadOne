@@ -21,6 +21,7 @@
 namespace Spr{;
 
 class CRPuppet;
+class CRNeckController;
 
 // VHの目のクラス... 視野、眼球運動制御など
 class CREye{
@@ -32,7 +33,7 @@ public:
 
 //---------　基本インタフェース　---------//
 	void Step();
-	void Load(SGScene* scene,CRPuppet* crPuppet);
+	void Load(SGScene* scene,CRPuppet* crPuppet,CRNeckController* crNeck);
 	virtual void OnKeyDown(UINT &nChar);
 	virtual void Draw(GRRender* render);
 	virtual void Init();
@@ -79,6 +80,7 @@ public:
 	// 関連モジュール
 	SGScene* scene; // 汎用
 	CRPuppet* crPuppet; // 入出力用
+	CRNeckController* crNeck; // 協調動作
 
 	// VHの目
 	PHSolid* soREye;

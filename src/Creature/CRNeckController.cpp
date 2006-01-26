@@ -141,6 +141,9 @@ void CRNeckController::ControlNeck(){
 	s += 0.05f;
 	if(s > 1.0f){s=1.0f;}
 
+	headpos = currHoriz;
+	headposgoal = goalHoriz;
+
 }
 
 }	// end of namespace Spr

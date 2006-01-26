@@ -27,8 +27,8 @@ namespace Spr{
 		
 		crvMotionAnalysis.Load(scene, crPuppet, &crEye, &crAttention); 
 		crAttention.Load(scene, crPuppet, &crEye, &crNeckController);
-		crEye.Load(scene, crPuppet); 
 		crNeckController.Load(scene, crPuppet);
+		crEye.Load(scene, crPuppet, &crNeckController); 
 	}
 
 	void CRBaseBrain::Step(){
