@@ -1,4 +1,4 @@
-#define DSTRCHK(var) DSTR << #var << " : " << (var) << GetTickCount() << std::endl;
+#define DSTRCHK(var) DSTR << #var << " : " << (var) << "[" << GetTickCount() << "]" << std::endl;
 
 #include "Creature.h"
 #pragma hdrstop
@@ -186,9 +186,11 @@ Vec3f CREye::LimitRange(Vec3f goal){
 	float x = sgn(ax)/sqrt((1/(T1*T1)) + (ay/(ax*T2))*(ay/(ax*T2)));
 	float y = sgn(ay)/sqrt((ax/(ay*T1))*(ax/(ay*T1)) + (1/(T2*T2)));
 
+	/*
 	DSTR << "G:" << goal << std::endl;
 	DSTR << "X:" << x << std::endl;
 	DSTR << "M:" << Vec3f(x,y,1) << std::endl;
+	*/
 	Vec3f result = frHead->GetPosture().Rot() * Vec3f(-x, y, -1.0f);
 
 	return(result);
@@ -346,11 +348,12 @@ void CREye::DeterminAttentionDir(){
 	
 	if (bSaccade){
 		// SaccadeèIóπèåè
-		if ((
+		/*if ((
 				 (abs(eL) < Rad(0.5f)) && (abs(eR)  < Rad(0.5f)) 
 				 && 
 				 (abs(eLV) < Rad(0.5f)) && (abs(eRV) < Rad(0.5f))
-				 ))
+				 ))*/
+		if (saccadeCount < 0)
 			{
 				bSaccade = false;
 			}
@@ -362,8 +365,13 @@ void CREye::DeterminAttentionDir(){
 				 (abs(eLV) > Rad(5.0f)) || (abs(eRV) > Rad(5.0f)) 
 				 ))
 			{
-				bSaccade = true;
 				saccadeStartTime = GetTickCount();
+				saccadeStartDirL = frLEye->GetPosture().Rot() * Vec3f(0.0f,0.0f,1.0f);
+				saccadeStartDirR = frREye->GetPosture().Rot() * Vec3f(0.0f,0.0f,1.0f);
+				saccadeGoalDirL  = attentionPoint - frLEye->GetPosture().Pos();
+				saccadeGoalDirR  = attentionPoint - frREye->GetPosture().Pos();
+				saccadeCount = 10;
+				bSaccade = true;
 			}	
 	}
 
@@ -373,10 +381,15 @@ void CREye::DeterminAttentionDir(){
 		attentionDirL = attentionPoint - frLEye->GetPosture().Pos();
 		attentionDirR = attentionPoint - frREye->GetPosture().Pos();
 		/*/
-		Vec3f goalDirL = attentionPoint - frLEye->GetPosture().Pos();
-		Vec3f goalDirR = attentionPoint - frREye->GetPosture().Pos();
-		attentionDirL += 0.1f * (goalDirL - attentionDirL);
-		attentionDirR += 0.1f * (goalDirR - attentionDirR);
+		float s = 1.0f - (saccadeCount / 10.0f);
+		double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
+		attentionDirL = saccadeStartDirL + ((saccadeGoalDirL - saccadeStartDirL) * length);
+		attentionDirR = saccadeStartDirR + ((saccadeGoalDirR - saccadeStartDirR) * length);
+		saccadeCount--;
+		DSTRCHK(s);
+		DSTRCHK(saccadeStartDirL);
+		DSTRCHK(saccadeGoalDirL);
+		DSTRCHK(attentionDirL);
 		/**/
 		integrator_L  = 0.0f; integrator_R  = 0.0f;
 		integrator_Lv = 0.0f; integrator_Rv = 0.0f;

@@ -109,6 +109,9 @@ public:
 	/// Saccade中
 	bool  bSaccade;
 	DWORD saccadeStartTime;
+	Vec3f saccadeStartDirL, saccadeStartDirR;
+	Vec3f saccadeGoalDirL, saccadeGoalDirR;
+	int saccadeCount;
 
 	// VH視点表示前の視点の保存用
 	Affinef viewOrig;
