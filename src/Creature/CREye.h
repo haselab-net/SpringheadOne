@@ -56,6 +56,7 @@ public:
 	float GetVisibility(PHSolid* solid);
 	/// Šá‹…‰Â“®”ÍˆÍ‚¬‚è‚¬‚è‚Ü‚Å“®‚©‚µ‚½‚Ì‹ü•ûŒü
 	Vec3f LimitRange(Vec3f goal);
+	Vec3f LimitRange(Vec3f goal, float vertLimit, float horizLimit);
 
 	void ToggleEyeMode(){
 		bEyeMode++;

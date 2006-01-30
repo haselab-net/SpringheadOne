@@ -124,15 +124,15 @@ void CRNeckController::ControlNeck(){
 
 	// Horizontal Move
 	float Khoriz = 200.0f;
-	float currHoriz = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[0]);
-	float goalHoriz = -atan2(goal[0], goal[2]);
+	currHoriz = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[0]);
+	goalHoriz = -atan2(goal[0], goal[2]);
 	float errHoriz = goalHoriz - currHoriz;
 	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(0.0f, 0.0f, errHoriz * Khoriz));
 
 	// Vertical Move
 	float Kvert = 200.0f;
-	float currVert = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[1]);
-	float goalVert = -atan2(goal[1], goal[2]);
+	currVert = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[1]);
+	goalVert = -atan2(goal[1], goal[2]);
 	float errVert = goalVert - currVert;
 	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(errVert * Kvert, 0.0f, 0.0f));
 
@@ -144,6 +144,20 @@ void CRNeckController::ControlNeck(){
 	headpos = currHoriz;
 	headposgoal = goalHoriz;
 
+}
+
+Matrix3f CRNeckController::GetHeadOrientation(){
+	Matrix3f zConv = Matrix3f::Unit();	zConv[2][2] = -1;
+	return(frHead->GetPosture().Rot() * zConv);
+}
+
+Vec3f CRNeckController::LimitRange(Vec3f goal, float vertLimit, float horizLimit){
+	Vec3f goalRelHead = GetHeadOrientation().inv() * goal;
+	if(goalRelHead[0] < 0.0f){
+		return(GetHeadOrientation() * (Affinef::Rot(Rad( horizLimit),'Y')*goalRelHead));
+	}else{
+		return(GetHeadOrientation() * (Affinef::Rot(Rad(-horizLimit),'Y')*goalRelHead));
+	}
 }
 
 }	// end of namespace Spr

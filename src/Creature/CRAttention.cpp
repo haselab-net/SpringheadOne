@@ -46,7 +46,9 @@ void CRAttention::Step(){
 		crEye->SetAttentionMode();
 		crNeckController->SetAttentionMode();
 		if (crEye->IsOverRange(10.0f,30.0f)){
-			crNeckController->SetAttentionPoint(maxAttentionPoint);
+			Vec3f headgoalDir = maxAttentionPoint - crNeckController->frHead->GetPosture().Pos();
+			headgoalDir = crNeckController->LimitRange(headgoalDir,10.0f,30.0f);
+			crNeckController->SetAttentionPoint(crNeckController->frHead->GetPosture().Pos() + headgoalDir);
 			bHeadControl = true;
 		}else{
 			bHeadControl = false;

@@ -151,7 +151,7 @@ bool CREye::IsOverRange(){
 
 bool CREye::IsOverRange(Vec3f goal){
 	// íPà ÅFìx
-	float vertLimit  = 30.0f;
+	float vertLimit  = 20.0f;
 	float horizLimit = 55.0f;
 	return(IsOverRange(goal, vertLimit, horizLimit));
 }
@@ -161,6 +161,7 @@ bool CREye::IsOverRange(Vec3f goal, float vertLimit, float horizLimit){
 	goal[2] = -goal[2];
 
 	if(PTM::dot(Vec3f(0.0f,0.0f,1.0f),goal) < cos(Rad(horizLimit))){
+		DSTR << "true : " << std::endl;
 		return(true);
 	}
 	//if(goal[2]<0){return(true);}
@@ -169,6 +170,8 @@ bool CREye::IsOverRange(Vec3f goal, float vertLimit, float horizLimit){
 	float x = goal[0], y = goal[1];
 	float a = tan(Rad(horizLimit)), b = tan(vertLimit);
 	bool result = ((((x*x)/(a*a)) + ((y*y)/(b*b))) >= 1.0f);
+
+	DSTR << "!! : " << (((x*x)/(a*a)) + ((y*y)/(b*b))) << std::endl;
 
 	return(result);	
 }
@@ -179,21 +182,27 @@ Vec3f CREye::LimitRange(Vec3f goal){
 	float vertLimit  = 30.0f;
 	float horizLimit = 55.0f;
 
-	goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
-	goal[0] = -goal[0];
-	goal[2] = -goal[2];
+	return(LimitRange(goal, vertLimit, horizLimit));
+}
+
+Vec3f CREye::LimitRange(Vec3f goal, float vertLimit, float horizLimit){
+	goal = crNeck->GetHeadOrientation().inv() * (goal / goal.norm());
+
+	//goal = frHead->GetPosture().Rot().inv() * (goal / goal.norm());
+	//goal[0] = -goal[0];
+	//goal[2] = -goal[2];
 
 	float ax = goal[0], ay = goal[1];
 	float T1 = tan(Rad(horizLimit)), T2 = tan(vertLimit);
 	float x = sgn(ax)/sqrt((1/(T1*T1)) + (ay/(ax*T2))*(ay/(ax*T2)));
 	float y = sgn(ay)/sqrt((ax/(ay*T1))*(ax/(ay*T1)) + (1/(T2*T2)));
 
-	/*
-	DSTR << "G:" << goal << std::endl;
-	DSTR << "X:" << x << std::endl;
+	//DSTR << "G:" << goal << std::endl;
+	//DSTR << "X:" << x << std::endl;
 	DSTR << "M:" << Vec3f(x,y,1) << std::endl;
-	*/
-	Vec3f result = frHead->GetPosture().Rot() * Vec3f(-x, y, -1.0f);
+
+	//Vec3f result = frHead->GetPosture().Rot() * Vec3f(-x, y, -1.0f);
+	Vec3f result = crNeck->GetHeadOrientation() * Vec3f(x, y, 1.0f);
 
 	return(result);
 }
@@ -385,11 +394,10 @@ void CREye::DeterminAttentionDir(){
 		/*/
 		float s = 1.0f - (saccadeCount / 10.0f);
 		double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
-		Vec3f currGoalL = saccadeGoalDirL - Vec3f(-sin(crNeck->headposgoal - crNeck->headpos), 0.0f, cos(crNeck->headposgoal - crNeck->headpos));
-		Vec3f currGoalR = saccadeGoalDirR - Vec3f(-sin(crNeck->headposgoal - crNeck->headpos), 0.0f, cos(crNeck->headposgoal - crNeck->headpos));
-		DSTR << crNeck->headposgoal << std::endl;
-		attentionDirL = saccadeStartDirL + ((currGoalL - saccadeStartDirL) * length);
-		attentionDirR = saccadeStartDirR + ((currGoalR - saccadeStartDirR) * length);
+		Matrix3d headori     = crNeck->GetHeadOrientation();
+		Matrix3d headori_inv = headori.inv();
+		attentionDirL = headori*((headori_inv*saccadeGoalDirL)*length) + saccadeStartDirL*(1-length); 
+		attentionDirR = headori*((headori_inv*saccadeGoalDirR)*length) + saccadeStartDirR*(1-length); 
 		saccadeCount--;
 		//DSTRCHK(s);
 		//DSTRCHK(saccadeStartDirL);

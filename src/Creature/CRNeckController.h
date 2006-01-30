@@ -45,6 +45,9 @@ public:
 	void SetAttentionMode();
 	/// 目標値までの誤差
 	float GetErrAbs();
+	/// 頭部の回転行列(顔が前)
+  Matrix3f GetHeadOrientation();
+	Vec3f LimitRange(Vec3f goal, float vertLimit, float horizLimit);
 
 //-----------------　処理　----------------//
 	/// VirtualHumanの目を制御する
@@ -69,6 +72,8 @@ public:
 	/// 目標視線方向
 	Vec3f goalVisualAxis;
 	Vec3f attentionPoint;
+	float currHoriz, currVert;
+	float goalHoriz, goalVert;
 	
 	/// 注視モードか否か
 	bool bAttention;
