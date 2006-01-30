@@ -73,6 +73,9 @@ public:
 	Vec3f    maxAttentionPoint;
 	bool bFoundAttention;
 	bool bHeadControl;
+	bool bChangeAttention;
+	bool bActiveAttention;
+	DWORD attentionChangeTime;
 
 	// ŽÀŒ±
 	bool bExperimentMode;

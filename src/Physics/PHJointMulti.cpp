@@ -23,13 +23,15 @@ PHJointBall::PHJointBall(){
 	maxTwist = 100.0;
 	minTwist = -100.0;
 	minDot = 10.0f;
+	conelimitK = .4;
+	conelimitB = .4;
 }
 void PHJointBall::Integrate(SGScene* scene){
 	double dt = scene->GetTimeStep();
 	//‰Â“®”ÍˆÍ§ŒÀ‚ª—LŒø‚Èê‡
 	if(minDot < 1){
-		double K=.4;
-		double B=.4;
+		double K=conelimitK;  //.4;
+		double B=conelimitB;  //.4;
 		double mass = MassFactor();
 		K*= mass/(dt*dt);
 		B*= mass/dt;

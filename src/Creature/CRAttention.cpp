@@ -41,13 +41,40 @@ void CRAttention::Step(){
 		CalcMaxAttentionPoint();
 	}
 
+// [t1 -> t2] で [0 -> 1] に遷移するシグモイド
+#define SIGM(t1,t2,x) (1.0f/(1.0f + pow(2.718f, -(((x-(t1))-(((t2)-(t1))/2.0f))*(14.0f/((t2)-(t1)))))))
+
 	if (bFoundAttention){
-		crEye->SetAttentionPoint(maxAttentionPoint);
+		if (bChangeAttention) {
+			attentionChangeTime = GetTickCount();
+		}
+		int timeFromChangeAttention = GetTickCount() - attentionChangeTime;
+
 		crEye->SetAttentionMode();
 		crNeckController->SetAttentionMode();
-		if (crEye->IsOverRange(10.0f,30.0f)){
+
+		bool moveHead = false, moveEyes = false;
+		if (bActiveAttention) {
+			moveHead = true;
+			if (timeFromChangeAttention > 40) { moveEyes = true; }
+		}else{
+			moveEyes = true;
+			if (timeFromChangeAttention > 40) { moveHead = true; }
+		}
+		
+		if (moveEyes) {
+			crEye->SetAttentionPoint(maxAttentionPoint);
+		}
+		if (crEye->IsOverRange(10.0f,30.0f) && (moveHead)){
 			Vec3f headgoalDir = maxAttentionPoint - crNeckController->frHead->GetPosture().Pos();
-			headgoalDir = crNeckController->LimitRange(headgoalDir,10.0f,30.0f);
+			float neckVertLimit  = 10.0f, neckHorizLimit = 30.0f;
+			float vlim = neckVertLimit  * SIGM(1.0f, 3.0f, maxAttentionAmmount);
+			float hlim = neckHorizLimit * SIGM(1.0f, 3.0f, maxAttentionAmmount);
+			if (bActiveAttention){
+				//headgoalDir = crNeckController->LimitRange(headgoalDir,10.0f,30.0f);
+			}else{
+				headgoalDir = crNeckController->LimitRange(headgoalDir,vlim,hlim);
+			}
 			crNeckController->SetAttentionPoint(crNeckController->frHead->GetPosture().Pos() + headgoalDir);
 			bHeadControl = true;
 		}else{
@@ -148,6 +175,7 @@ void CRAttention::StartExperiment(){
 //-----------------　処理　----------------//
 
 void CRAttention::CalcMaxAttentionPoint(){
+	PHSolid* lastAttentionSolid = maxAttentionSolid;
 	maxAttentionSolid   = NULL;
 	maxAttentionAmmount = -99999.0f;
 	bFoundAttention = false;
@@ -163,6 +191,10 @@ void CRAttention::CalcMaxAttentionPoint(){
 			bFoundAttention = true;
 		}
 	}
+
+	bChangeAttention = (lastAttentionSolid != maxAttentionSolid);
+	bActiveAttention = (maxAttentionSolid==NULL);
+
 }
 
 }	// end of namespace Spr

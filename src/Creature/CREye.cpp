@@ -161,7 +161,7 @@ bool CREye::IsOverRange(Vec3f goal, float vertLimit, float horizLimit){
 	goal[2] = -goal[2];
 
 	if(PTM::dot(Vec3f(0.0f,0.0f,1.0f),goal) < cos(Rad(horizLimit))){
-		DSTR << "true : " << std::endl;
+		//DSTR << "true : " << std::endl;
 		return(true);
 	}
 	//if(goal[2]<0){return(true);}
@@ -171,7 +171,7 @@ bool CREye::IsOverRange(Vec3f goal, float vertLimit, float horizLimit){
 	float a = tan(Rad(horizLimit)), b = tan(vertLimit);
 	bool result = ((((x*x)/(a*a)) + ((y*y)/(b*b))) >= 1.0f);
 
-	DSTR << "!! : " << (((x*x)/(a*a)) + ((y*y)/(b*b))) << std::endl;
+	//DSTR << "!! : " << (((x*x)/(a*a)) + ((y*y)/(b*b))) << std::endl;
 
 	return(result);	
 }

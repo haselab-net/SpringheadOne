@@ -127,6 +127,8 @@ public:
 	double minDot;			//	可動範囲
 	double minTwist;			//	ひねりの可動範囲
 	double maxTwist;			//	ひねりの可動範囲
+	double conelimitK;      //  可動域制御のバネ係数
+	double conelimitB;      //  可動域制御のダンパ係数
 
 	PHJointBall();
 	///	関節位置の取得
