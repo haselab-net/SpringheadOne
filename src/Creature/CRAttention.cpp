@@ -23,6 +23,7 @@ CRAttention::~CRAttention(){
 
 void CRAttention::Step(){
 	if (bExperimentMode){
+		/*
 		int currentTimeInSec = (GetTickCount() - startTiming)/1000;
 		maxAttentionPoint = poslist[counter];
 		if (currentTimeInSec >= timinglist[counter]){counter++;}
@@ -37,6 +38,23 @@ void CRAttention::Step(){
 			ofs_info.close();
 		}
 		bFoundAttention = true;
+		*/
+		if (GetTickCount() - lastTick > interval) {
+			lastTick = GetTickCount();
+			interval = (int)(((float)rand()/(float)RAND_MAX)*2500) + 500;
+			if (((float)rand() / (float)RAND_MAX) > 0.8) {
+				bRandom = true;
+				//maxAttentionPoint  = Vec3f(0.0f, 1.5f, 0.0f);
+				randomAttention = Vec3f( ((float)rand()/(float)RAND_MAX)*0.2f, ((float)rand()/(float)RAND_MAX)*0.2f, ((float)rand() / (float)RAND_MAX)*0.2f);
+			} else {
+				bRandom = false;
+			}
+		}
+		if (!bRandom) {
+			CalcMaxAttentionPoint();
+		} else {
+			maxAttentionPoint = soHeadU->GetCenterPosition() + randomAttention;
+		}
 	}else{
 		CalcMaxAttentionPoint();
 	}
@@ -91,7 +109,7 @@ void CRAttention::Step(){
 		ofs_eyes << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
 		ofs_info << crEye->overrange << std::endl;
 
-		DSTR << "E:" << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
+		//DSTR << "E:" << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
 	}
 
 	attentionList.clear();
@@ -105,6 +123,7 @@ void CRAttention::Load(SGScene* scene,CRPuppet* crPuppet, CREye* crEye,CRNeckCon
 	this->crNeckController = crNeckController;
 
 	if (crPuppet->IsLoaded()){
+		scene->FindObject(soHeadU, "soHeadU");
 	}
 
 	Init();
@@ -138,6 +157,7 @@ void CRAttention::SetAttentionPoint(Vec3f position, float ammount){
 }
 
 void CRAttention::SetAttentionSolid(PHSolid* solid, float ammount){
+	//DSTR << "  " << solid->GetName() << ammount << std::endl;
 	AttentionListIter findResult = attentionList.find(solid);
 	if (findResult==attentionList.end()){
 		attentionList.insert(AttentionListItem(solid,AttentionInfo(ammount,solid->GetCenterPosition())));
@@ -147,9 +167,16 @@ void CRAttention::SetAttentionSolid(PHSolid* solid, float ammount){
 }
 
 void CRAttention::StartExperiment(){
+	bExperimentMode = !bExperimentMode;
+	bRandom = false;
+	lastTick = GetTickCount();
+	interval = (int)(((float)rand()/(float)RAND_MAX)*2500) + 500;
+
+	/*
 	std::ifstream ifs("att_expr.txt");
 	
 	timinglist.clear();
+
 	poslist.clear();
 
 	int t; Vec3f p;
@@ -170,6 +197,7 @@ void CRAttention::StartExperiment(){
 	ofs_gaze.open("gaze.plt");
 	ofs_eyes.open("eyes.plt");
 	ofs_info.open("info.plt");
+	*/
 }
 
 //-----------------Å@èàóùÅ@----------------//
@@ -192,8 +220,18 @@ void CRAttention::CalcMaxAttentionPoint(){
 		}
 	}
 
+	if (maxAttentionAmmount < 1.0f){
+		DSTR << "  att: " << maxAttentionAmmount << " : " << maxAttentionSolid->GetName() << std::endl;
+		for(AttentionListIter it=attentionList.begin(); it!=attentionList.end(); it++){
+			PHSolid* solid    = it->first;
+			DSTR << "    " << solid->GetName() << " : " << it->second.ammount << std::endl;
+		}
+	}
+
 	bChangeAttention = (lastAttentionSolid != maxAttentionSolid);
 	bActiveAttention = (maxAttentionSolid==NULL);
+
+	//DSTR << "--- --- --- --- ---" << std::endl;
 
 }
 

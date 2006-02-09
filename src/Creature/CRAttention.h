@@ -90,6 +90,11 @@ public:
 	std::vector<Vec3f> poslist;
 	int counter;
 	DWORD startTiming;
+	DWORD lastTick;
+	bool bRandom;
+	int interval;
+	Vec3f randomAttention;
+	PHSolid* soHeadU;
 	
 };
 

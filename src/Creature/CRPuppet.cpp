@@ -1032,7 +1032,9 @@ void CRPuppet::GuardTest(CRPuppet* puppet, SGScene* scene){
 					reaching[0][1-i].SetTimer(0.3f*time, 0.1f);
 					reaching[0][1-i].SetType(2);
 
-					if(bDraw){ 
+					targetPos = pos; bAttackAttention = true;
+
+					if(bDraw){
 						GRRender* render;
 						scene->GetRenderers().Find(render);
 						render->SetModelMatrix(Affinef());

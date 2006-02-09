@@ -75,9 +75,9 @@ namespace Spr{
 		puppet->Attack(user);
 		puppet->TopDownAttention(&crAttention);
 		//// –hŒä“®ì
-		//if(!crPlanner.bPlanner){
-		//	puppet->GuardTest(user, scene);
-		//}
+		if(!crPlanner.bPlanner){
+			puppet->GuardTest(user, scene);
+		}
 			
 		// “ž’B‰^“®‚Ì§ŒÀ
 		puppet->ReachingMovemantsSafetyCheck(user, scene);

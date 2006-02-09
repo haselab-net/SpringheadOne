@@ -130,9 +130,10 @@ void CREye::SetAttentionPoint(Vec3f position){
 }
 
 Vec3f CREye::GetVisualAxis(){
-	Vec3f visualAxis = (frREye->GetPosture() + frLEye->GetPosture()) * Vec3f(0.0f, 0.0f, 0.5f);
-	visualAxis = visualAxis / visualAxis.norm();
-	return visualAxis;
+	Vec3f dirL = soLEye->GetFrame()->GetPosture().Rot() * Vec3f(0,0,1);
+	Vec3f dirR = soREye->GetFrame()->GetPosture().Rot() * Vec3f(0,0,1);
+	Vec3f axis = ((dirL + dirR) * 0.5f);
+	return(axis / axis.norm());
 }
 
 void CREye::SetAttentionMode(){
@@ -168,7 +169,7 @@ bool CREye::IsOverRange(Vec3f goal, float vertLimit, float horizLimit){
 
 	goal /= goal[2];
 	float x = goal[0], y = goal[1];
-	float a = tan(Rad(horizLimit)), b = tan(vertLimit);
+	float a = tan(Rad(horizLimit)), b = tan(Rad(vertLimit));
 	bool result = ((((x*x)/(a*a)) + ((y*y)/(b*b))) >= 1.0f);
 
 	//DSTR << "!! : " << (((x*x)/(a*a)) + ((y*y)/(b*b))) << std::endl;
@@ -193,13 +194,13 @@ Vec3f CREye::LimitRange(Vec3f goal, float vertLimit, float horizLimit){
 	//goal[2] = -goal[2];
 
 	float ax = goal[0], ay = goal[1];
-	float T1 = tan(Rad(horizLimit)), T2 = tan(vertLimit);
+	float T1 = tan(Rad(horizLimit)), T2 = tan(Rad(vertLimit));
 	float x = sgn(ax)/sqrt((1/(T1*T1)) + (ay/(ax*T2))*(ay/(ax*T2)));
 	float y = sgn(ay)/sqrt((ax/(ay*T1))*(ax/(ay*T1)) + (1/(T2*T2)));
 
 	//DSTR << "G:" << goal << std::endl;
 	//DSTR << "X:" << x << std::endl;
-	DSTR << "M:" << Vec3f(x,y,1) << std::endl;
+	//DSTR << "M:" << Vec3f(x,y,1) << std::endl;
 
 	//Vec3f result = frHead->GetPosture().Rot() * Vec3f(-x, y, -1.0f);
 	Vec3f result = crNeck->GetHeadOrientation() * Vec3f(x, y, 1.0f);
@@ -298,13 +299,25 @@ void CREye::ControlEyePD(SGFrame* frEye, PHSolid* soEye, Vec3f aim){
 }
 
 void CREye::DeterminAttentionDir(){
+	/**/
 	const float alpha1 = 0.5f;
-	const float rho1 = 1.5f;
-	const float rho2 = 0.5f;
+	const float rho1 = 1.50f;
+	const float rho2 = 0.50f;
+	// Error
 	const float sigma = 100.0f;
 	const float kappa = 50.0f;
-	const float nu =  0.05f;
-	const float eta = 0.02f;
+	// Velocity
+	const float nu =  0.5f;
+	const float eta = 0.2f;
+	/*/
+	const float alpha1 = 0.5f;
+	const float rho1 = 1.50f;
+	const float rho2 = 0.50f;
+	const float sigma = 1.0f;
+	const float kappa = 0.5f;
+	const float nu =  0.5f;
+	const float eta = 0.2f;
+	/**/
 
 	Vec3f apHoriz = frHead->GetPosture().inv() * attentionPoint;
 	apHoriz[1] = 0.0f;
@@ -388,10 +401,11 @@ void CREye::DeterminAttentionDir(){
 
 	if (bSaccade){
 		// Saccade
-		/*/
+		/*
 		attentionDirL = attentionPoint - frLEye->GetPosture().Pos();
 		attentionDirR = attentionPoint - frREye->GetPosture().Pos();
-		/*/
+		*/
+		/*
 		float s = 1.0f - (saccadeCount / 10.0f);
 		double length = (10*pow(s,3) - 15*pow(s,4) + 6*pow(s,5));
 		Matrix3d headori     = crNeck->GetHeadOrientation();
@@ -399,11 +413,52 @@ void CREye::DeterminAttentionDir(){
 		attentionDirL = headori*((headori_inv*saccadeGoalDirL)*length) + saccadeStartDirL*(1-length); 
 		attentionDirR = headori*((headori_inv*saccadeGoalDirR)*length) + saccadeStartDirR*(1-length); 
 		saccadeCount--;
-		//DSTRCHK(s);
-		//DSTRCHK(saccadeStartDirL);
-		//DSTRCHK(saccadeGoalDirL);
-		//DSTRCHK(attentionDirL);
-		/**/
+		*/
+		float aL = acos(PTM::dot(saccadeGoalDirL/saccadeGoalDirL.norm(), saccadeStartDirL/saccadeStartDirL.norm()));
+		float aR = acos(PTM::dot(saccadeGoalDirR/saccadeGoalDirR.norm(), saccadeStartDirR/saccadeStartDirR.norm()));
+		float t = (float)(GetTickCount() - saccadeStartTime) / 1000.0f;
+		float L = Rad(500.0f);
+		float T = 0.05f;
+		float lengthL = 1.0f;
+		float lengthR = 1.0f;
+#define theta(x)   (6*pow(((x)/T),5) - 15*pow(((x)/T),4) + 10*pow(((x)/T),3))
+#define dtheta(x)  (30*pow((x),4)/pow(T,5) - 60*pow((x),4)/pow(T,4) + 30*pow((x),2)/pow(T,3))
+		if (aL*dtheta(T/2.0f) >= L) {
+			float a_ = L/dtheta(T/2.0f);
+			if (0 <= t && t < T/2.0f) {
+				lengthL = (a_*theta(t))/aL;
+			} else if (t < ((aL-a_)/L + T/2.0f)) {
+				lengthL = (L*t + a_/2.0 -L*T/2.0f)/aL;
+			} else if (t < ((aL-a_)/L + T     )) {
+				lengthL = (a_*theta(t-(aL-a_)/L) + (aL-a_))/aL;
+			}
+		} else {
+			if (0 <=t && t < T) {
+				lengthL = (aL*theta(t))/aL;
+			}
+		}
+		if (aR*dtheta(T/2.0f) >= L) {
+			float a_ = L/dtheta(T/2.0f);
+			if (0 <= t && t < T/2.0f) {
+				lengthR = (a_*theta(t))/aR;
+			} else if (t < ((aR-a_)/L + T/2.0f)) {
+				lengthR = (L*t + a_/2.0 -L*T/2.0f)/aR;
+			} else if (t < ((aR-a_)/L + T     )) {
+				lengthR = (a_*theta(t-(aR-a_)/L) + (aR-a_))/aR;
+			}
+		} else {
+			if (0 <=t && t < T) {
+				lengthR = (aR*theta(t))/aR;
+			}
+		}
+
+		Matrix3d headori     = crNeck->GetHeadOrientation();
+		Matrix3d headori_inv = headori.inv();
+		attentionDirL = headori*((headori_inv*saccadeGoalDirL)*lengthL) + saccadeStartDirL*(1-lengthL); 
+		attentionDirR = headori*((headori_inv*saccadeGoalDirR)*lengthR) + saccadeStartDirR*(1-lengthR); 
+
+		if (lengthL>=1.0f && lengthR>=1.0f) { bSaccade = false; }
+
 		integrator_L  = 0.0f; integrator_R  = 0.0f;
 		integrator_Lv = 0.0f; integrator_Rv = 0.0f;
 	}else{

@@ -118,27 +118,31 @@ void CRNeckController::ControlNeck(){
 	//DSTR << goal << std::endl;
 
 	// Head Up
-	float Kup = 200.0f;
+	float Kup = 400.0f;
 	float errUp = asin((joNeck->GetOrientation() * Vec3f(0.0f, 1.0f, 0.0f))[0]);
 	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(0.0f, errUp * Kup, 0.0f));
 
 	// Horizontal Move
-	float Khoriz = 200.0f;
+	float Khoriz = 400.0f;
 	currHoriz = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[0]);
 	goalHoriz = -atan2(goal[0], goal[2]);
+	if (goalHoriz >  0.96f) {goalHoriz =  0.96f;}
+	if (goalHoriz < -0.96f) {goalHoriz = -0.96f;}
 	float errHoriz = goalHoriz - currHoriz;
 	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(0.0f, 0.0f, errHoriz * Khoriz));
 
 	// Vertical Move
-	float Kvert = 200.0f;
+	float Kvert = 400.0f;
 	currVert = asin((joNeck->GetOrientation() * Vec3f(0.0f, 0.0f, 1.0f))[1]);
 	goalVert = -atan2(goal[1], goal[2]);
+	if (goalVert >  0.55f) {goalVert =  0.55f;}
+	if (goalVert < -0.55f) {goalVert = -0.55f;}
 	float errVert = goalVert - currVert;
 	joNeck->AddTorque(frChest->GetPosture().Rot() * Vec3f(errVert * Kvert, 0.0f, 0.0f));
 
 	
 	// Inclement Time
-	s += 0.05f;
+	s += 0.1f;
 	if(s > 1.0f){s=1.0f;}
 
 	headpos = currHoriz;
