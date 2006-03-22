@@ -372,12 +372,12 @@ void CREye::DeterminAttentionDir(){
 	
 	if (bSaccade){
 		// SaccadeI—¹ğŒ
-		/*if ((
-				 (abs(eL) < Rad(0.5f)) && (abs(eR)  < Rad(0.5f)) 
+		if ((
+				 (abs(eL) < Rad(0.1f)) && (abs(eR)  < Rad(0.1f)) 
 				 && 
-				 (abs(eLV) < Rad(0.5f)) && (abs(eRV) < Rad(0.5f))
-				 ))*/
-		if (saccadeCount < 0)
+				 (abs(eLV) < Rad(0.1f)) && (abs(eRV) < Rad(0.1f))
+				 ))
+				 /*if (saccadeCount < 0)*/
 			{
 				bSaccade = false;
 			}
@@ -387,7 +387,7 @@ void CREye::DeterminAttentionDir(){
 				 (abs(eL) > Rad(5.0f)) || (abs(eR)  > Rad(5.0f)) 
 				 ||
 				 (abs(eLV) > Rad(5.0f)) || (abs(eRV) > Rad(5.0f)) 
-				 ))
+				 ) || bForceSaccade)
 			{
 				saccadeStartTime = GetTickCount();
 				saccadeStartDirL = frLEye->GetPosture().Rot() * Vec3f(0.0f,0.0f,1.0f);
@@ -510,6 +510,8 @@ void CREye::DeterminAttentionDir(){
 	if(-PI <= t2 && t2 <= -(PI/2.0f)){ t2 += 2*PI; }
 	eyeposL = t1 - (PI/2.0f);
 	eyeposR = t2 - (PI/2.0f);
+
+	bForceSaccade = false;
 }
 
 }	// end of namespace Spr

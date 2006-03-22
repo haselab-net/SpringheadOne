@@ -121,6 +121,7 @@ public:
 	float frontOrig;
 public:
 	int bEyeMode;
+	bool bForceSaccade;
 
 	// ŽÀŒ±‹L˜^—p
 	float eyeposR, eyeposL;

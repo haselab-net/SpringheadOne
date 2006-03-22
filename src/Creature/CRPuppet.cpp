@@ -495,6 +495,11 @@ void CRPuppet::HumanContactInfo::SetContactPointOfSolidPair(PHSolid* so1, PHSoli
 
 //////////////////// CRPuppetƒNƒ‰ƒX ////////////////////
 CRPuppet::CRPuppet(){
+	ofs.open("puppet.dat", std::ios::out | std::ios::app);
+}
+
+CRPuppet::~CRPuppet(){
+	ofs.close();
 }
 
 void CRPuppet::LoadDerivedModel(SGScene* scene){
@@ -506,12 +511,14 @@ void CRPuppet::LoadDerivedModel(SGScene* scene){
 		bAttack = false;
 		bGuard  = false;
 		bAttackAttention = false;
+		bGoingToAttack = false;
 		hittingCount = 0;
 		atc = 0;
 		inbetweenNotHits=0;
 		inbetweenHits=0;	
 
 		scene->FindObject(soWaistU, "soWaistU");
+		scene->FindObject(soHead, "soHead");
 	}
 }
 
@@ -930,22 +937,36 @@ void CRPuppet::Attack(CRPuppet* puppet){
 		for(int i = 0; i < 2; ++i) wait += reaching[0][i].state;
 		if(wait == 0){
 			//if(random1() < 0.002f){
-			if(random1() < 0.004f){
-				//srand((unsigned) time(NULL));
-				int hand = 0;
-				if(random1() > 0.7f) hand = 1;
-				int body = 0;
-				float dist0 = pow((solids[3*hand+6]->GetCenterPosition() - puppet->solids[2]->GetCenterPosition()).norm(), 2);
-				float dist1 = pow((solids[3*hand+6]->GetCenterPosition() - puppet->solids[3]->GetCenterPosition()).norm(), 2);
-				if(random1() > dist1/(dist0+dist1)) body = 1;
-				if(random1() > 0.2f) body = 1;
-
+			if (!bGoingToAttack){
+				if(random1() < 0.004f){
+					int hand = 0;
+					if(random1() > 0.7f) hand = 1;
+					int body = 0;
+					float dist0 = pow((solids[3*hand+6]->GetCenterPosition() - puppet->solids[2]->GetCenterPosition()).norm(), 2);
+					float dist1 = pow((solids[3*hand+6]->GetCenterPosition() - puppet->solids[3]->GetCenterPosition()).norm(), 2);
+					if(random1() > dist1/(dist0+dist1)) body = 1;
+					if(random1() > 0.2f) body = 1;
+					Vec3f pos = puppet->solids[body+2]->GetFrame()->GetPosture() 
+						* Vec3f((random1()-0.5f) * 1.8f * puppet->GetSolidInfo(body+2).scale.X(), 
+								//(random1()-0.5f) * 1.8f * puppet->GetSolidInfo(body+2).scale.Y(),
+								((1.5f*random1() - 0.5f*body) - 0.5f) * puppet->GetSolidInfo(body+2).scale.Y(),
+								0.03f);
+					bGoingToAttack = true;
+					Vec3f hitDir = pos - soHead->GetCenterPosition();
+					hitDir = hitDir / hitDir.norm();
+					ofs << GetTickCount() << " " << "DetermineAttack " << hitDir << std::endl;
+					attackDetermineTime = GetTickCount();
+					attackPlanningPos = pos;
+					attackPlanningHand = hand;
+					targetPos = pos; bAttackAttention = true;
+				}else{
+					bGoingToAttack = false;
+					bAttackAttention = false;
+				}
+			}else if(GetTickCount()-attackDetermineTime > 200){
+				int hand = attackPlanningHand;
+				Vec3f pos = attackPlanningPos;
 				reaching[0][hand].SetSpring(solids[3*hand+6], Vec3f(0,0,0));
-				Vec3f pos = puppet->solids[body+2]->GetFrame()->GetPosture() 
-					* Vec3f((random1()-0.5f) * 1.8f * puppet->GetSolidInfo(body+2).scale.X(), 
-							//(random1()-0.5f) * 1.8f * puppet->GetSolidInfo(body+2).scale.Y(),
-							((1.5f*random1() - 0.5f*body) - 0.5f) * puppet->GetSolidInfo(body+2).scale.Y(),
-							0.03f);
 				reaching[0][hand].SetTargetPos(pos, Vec3f());
 				reaching[0][hand].SetTimer(0.5f, -0.1f);
 				//reaching[0][hand].SetTimer(0.5f, -0.1f);
@@ -953,9 +974,8 @@ void CRPuppet::Attack(CRPuppet* puppet){
 				reaching[0][hand].SetSprRate(2.0f*2.0f);
 				reaching[0][hand].SetDmpRate(1.0f*2.0f);
 				reaching[0][hand].SetInitIfContact();
-				targetPos = pos; bAttackAttention = true;
-			}else{
-				bAttackAttention = false;
+				bGoingToAttack = false;
+				ofs << GetTickCount() << " " << "ExecuteAttack" << std::endl;
 			}
 		}
 	}
@@ -963,7 +983,10 @@ void CRPuppet::Attack(CRPuppet* puppet){
 
 void CRPuppet::TopDownAttention(CRAttention* crAttention){
 	if (bAttack && bAttackAttention){
-		crAttention->SetAttentionPoint(targetPos, 100.0f); // ‰R‚Á‚Û‚¢”Žš
+		crAttention->SetAttentionPoint(targetPos, 3.0f); // ‰R‚Á‚Û‚¢”Žš
+	}
+	if (bGuard && bGuardAttention){
+		crAttention->SetAttentionPoint(targetPos, 3.0f); // ‰R‚Á‚Û‚¢”Žš
 	}
 }
 
@@ -1012,6 +1035,7 @@ bool CRPuppet::IsAimed(CRPuppet* puppet, SGScene* scene){
 }
 
 void CRPuppet::GuardTest(CRPuppet* puppet, SGScene* scene){
+	bGuardAttention = false;
 	if(bGuard){
 		puppet->locus.SetLocusCoefficient(puppet, scene);
 		if(IsAimed(puppet, scene)){
@@ -1032,7 +1056,8 @@ void CRPuppet::GuardTest(CRPuppet* puppet, SGScene* scene){
 					reaching[0][1-i].SetTimer(0.3f*time, 0.1f);
 					reaching[0][1-i].SetType(2);
 
-					targetPos = pos; bAttackAttention = true;
+					targetPos = pos; bGuardAttention = true;
+					ofs << GetTickCount() << " " << "Guard" << std::endl;
 
 					if(bDraw){
 						GRRender* render;

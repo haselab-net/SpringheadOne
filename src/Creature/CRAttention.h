@@ -95,6 +95,7 @@ public:
 	int interval;
 	Vec3f randomAttention;
 	PHSolid* soHeadU;
+	float randomRate;
 	
 };
 

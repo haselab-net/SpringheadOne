@@ -98,10 +98,6 @@ void CRVisionMotionAnalysis::Draw(GRRender* render){
 void CRVisionMotionAnalysis::ListupAttractivePoints(){
 	Vec3f visualAxis = crEye->GetVisualAxis();
 
-	// 顔はデフォルトで一定量の注意を引き付ける
-	float headAttentionAmmount = 0.8f;
-	crAttention->SetAttentionSolid(soHeadU, headAttentionAmmount);
-
 	/////
 	// デバッグ用
 	//crAttention->SetAttentionSolid(soLHandU, 100.0f);
@@ -144,6 +140,16 @@ void CRVisionMotionAnalysis::ListupAttractivePoints(){
 	/*/
 	// 各Solidの運動が注意を引き付ける強さを計算、crAttentionに渡す
 	for(int i=0; i<userSolids.size(); i++){
+		// 顔の引き付ける注意
+		float headAtt = 1.5f;
+		if (userSolids[i]==soHeadU){
+			float headAttentionAmmount = headAtt;
+			crAttention->SetAttentionSolid(userSolids[i], headAttentionAmmount);
+		}else{
+			float nonHeadSupression = -headAtt;
+			crAttention->SetAttentionSolid(userSolids[i], nonHeadSupression);
+		}
+		
 		// 視野の内部にある物体に限定
 		if (crEye->IsVisible(userSolids[i])){
 			Vec3f position = userSolids[i]->GetCenterPosition();
@@ -155,13 +161,14 @@ void CRVisionMotionAnalysis::ListupAttractivePoints(){
 			float d = PTM::dot(dir, visualAxis);
 			if (d>=0.999f) { d = 0.0f; } else { d = acos(d); }
 			d = 1.0f * pow(2.71828f, -(d*d*2.0f));
+			//d = 1.0f;
 
 			Vec3f letinalPos = position - (visualAxis * PTM::dot(visualAxis,position));
 			
 			float trnAmmount = (velocity - (visualAxis * PTM::dot(velocity,visualAxis))).norm() * 3 / r;
 			float divAmmount = abs(PTM::dot(velocity,visualAxis)) * 2 / r;
 			float rotAmmount = abs(PTM::dot(angVelocity,visualAxis));
-			
+
 			crAttention->SetAttentionSolid(userSolids[i], trnAmmount * d);
 			crAttention->SetAttentionSolid(userSolids[i], divAmmount * d);
 			crAttention->SetAttentionSolid(userSolids[i], rotAmmount * d);

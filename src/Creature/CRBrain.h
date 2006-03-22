@@ -18,6 +18,8 @@
 #include <Creature/CRInternalModel.h>
 #include <Creature/CRActionPlanner2.h>
 
+#include <fstream>
+
 namespace Spr{
 
 	class CRBrain{
@@ -30,6 +32,14 @@ namespace Spr{
 
 	class CRBaseBrain: public CRBrain{
 	public:
+		CRBaseBrain(){
+			ofs.open("brain.dat", std::ios::out | std::ios::app);
+		}
+		~CRBaseBrain(){
+			ofs.close();
+		}
+
+
 		// 基本インターフェース
 		void Load(SGScene* scene, CRPuppet* crPuppet, CRUser* crUser);
 		void Step();
@@ -51,6 +61,9 @@ namespace Spr{
 
 		// デバッグ用
 		PHSolid*  soLEye;
+
+		// 実験用
+		std::ofstream ofs;
 	};
 
 	class CRSimulatingBrain: public CRBaseBrain{

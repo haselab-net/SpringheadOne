@@ -90,6 +90,17 @@ namespace Spr{
 		if (crEye.bEyeMode != 0) crNeckController.Step();
 		//// –Ú‚Ì§Œä
 		crEye.Step();
+
+		Vec3f eyeposL  = crEye.soLEye->GetFrame()->GetPosture().Rot() * Vec3f(0.0f, 0.0f, 1.0f);
+		Vec3f eyeposR  = crEye.soREye->GetFrame()->GetPosture().Rot() * Vec3f(0.0f, 0.0f, 1.0f);
+		Vec3f headpos  = crNeckController.GetHeadOrientation() * Vec3f(0.0f, 0.0f, 1.0f);
+
+		ofs << "L " << GetTickCount() << " " << eyeposL << std::endl;
+		ofs << "R " << GetTickCount() << " " << eyeposR << std::endl;
+		ofs << "H " << GetTickCount() << " " << headpos << std::endl;
+		ofs << "U " << GetTickCount() << " " << crvMotionAnalysis.soHeadU->GetCenterPosition() << std::endl;
+		ofs << "l " << GetTickCount() << " " << crvMotionAnalysis.soLHandU->GetCenterPosition() << std::endl;
+		ofs << "r " << GetTickCount() << " " << crvMotionAnalysis.soRHandU->GetCenterPosition() << std::endl;
 	}
 
 	void CRSimulatingBrain::Draw(GRRender* render){

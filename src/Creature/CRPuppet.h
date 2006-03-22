@@ -17,6 +17,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <fstream>
 
 namespace Spr{;
 
@@ -151,7 +152,8 @@ public:
 	//////////////////// CRPuppetÉNÉâÉX ////////////////////
 
 	CRPuppet();
-	
+	~CRPuppet();
+
 	void LoadDerivedModel(SGScene* scene);	// îhê∂ÉÇÉfÉã(User,VH)ÇÃê›íË
 	bool Connect(UTRef<SGScene> scene);
 	void SetSolidInfo();
@@ -185,6 +187,7 @@ public:
 	HumanContactInfo humanContactInfo;
 
 	PHSolid* soWaistU;
+	PHSolid* soHead;
 
 	bool bDraw;
 	bool bAttack;
@@ -194,6 +197,13 @@ public:
 	int hittingCount;
 	Vec3f targetPos;
 	bool bAttackAttention;
+	bool bGuardAttention;
+	bool bGoingToAttack;
+	DWORD attackDetermineTime;
+	int attackPlanningHand;
+	Vec3f attackPlanningPos;
+
+	std::ofstream ofs;
 
 private:
 	int inbetweenNotHits;

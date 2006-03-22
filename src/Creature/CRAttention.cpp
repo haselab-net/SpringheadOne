@@ -23,7 +23,7 @@ CRAttention::~CRAttention(){
 
 void CRAttention::Step(){
 	if (bExperimentMode){
-		/*
+		/**/
 		int currentTimeInSec = (GetTickCount() - startTiming)/1000;
 		maxAttentionPoint = poslist[counter];
 		if (currentTimeInSec >= timinglist[counter]){counter++;}
@@ -38,11 +38,11 @@ void CRAttention::Step(){
 			ofs_info.close();
 		}
 		bFoundAttention = true;
-		*/
+		/*/
 		if (GetTickCount() - lastTick > interval) {
 			lastTick = GetTickCount();
 			interval = (int)(((float)rand()/(float)RAND_MAX)*2500) + 500;
-			if (((float)rand() / (float)RAND_MAX) > 0.8) {
+			if (((float)rand() / (float)RAND_MAX) > randomRate) {
 				bRandom = true;
 				//maxAttentionPoint  = Vec3f(0.0f, 1.5f, 0.0f);
 				randomAttention = Vec3f( ((float)rand()/(float)RAND_MAX)*0.2f, ((float)rand()/(float)RAND_MAX)*0.2f, ((float)rand() / (float)RAND_MAX)*0.2f);
@@ -55,6 +55,7 @@ void CRAttention::Step(){
 		} else {
 			maxAttentionPoint = soHeadU->GetCenterPosition() + randomAttention;
 		}
+		/**/
 	}else{
 		CalcMaxAttentionPoint();
 	}
@@ -74,7 +75,7 @@ void CRAttention::Step(){
 		bool moveHead = false, moveEyes = false;
 		if (bActiveAttention) {
 			moveHead = true;
-			if (timeFromChangeAttention > 40) { moveEyes = true; }
+			if (timeFromChangeAttention > 100) { moveEyes = true; }
 		}else{
 			moveEyes = true;
 			if (timeFromChangeAttention > 40) { moveHead = true; }
@@ -101,6 +102,7 @@ void CRAttention::Step(){
 	}
 
 	if (bExperimentMode){
+		/**/
 		ofs_head << crNeckController->headpos << std::endl;
 		ofs_hedg << crNeckController->headposgoal << std::endl;
 		ofs_leye << crEye->eyeposL << std::endl;
@@ -108,6 +110,7 @@ void CRAttention::Step(){
 		ofs_gaze << (crNeckController->headpos + (crEye->eyeposL + crEye->eyeposR)/2.0f) << std::endl;
 		ofs_eyes << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
 		ofs_info << crEye->overrange << std::endl;
+		/**/
 
 		//DSTR << "E:" << ((crEye->eyeposR + crEye->eyeposL)/2.0f) << std::endl;
 	}
@@ -172,7 +175,12 @@ void CRAttention::StartExperiment(){
 	lastTick = GetTickCount();
 	interval = (int)(((float)rand()/(float)RAND_MAX)*2500) + 500;
 
-	/*
+	ofs_info.open("info.plt", std::ios::out | std::ios::app);
+	randomRate = ((float)rand() / (float)RAND_MAX);
+	ofs_info << randomRate << std::endl;
+	ofs_info.close();
+
+	/**/
 	std::ifstream ifs("att_expr.txt");
 	
 	timinglist.clear();
@@ -197,7 +205,7 @@ void CRAttention::StartExperiment(){
 	ofs_gaze.open("gaze.plt");
 	ofs_eyes.open("eyes.plt");
 	ofs_info.open("info.plt");
-	*/
+	/**/
 }
 
 //-----------------@ˆ—@----------------//
