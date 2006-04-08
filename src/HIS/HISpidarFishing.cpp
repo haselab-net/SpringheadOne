@@ -16,6 +16,7 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 	float vpn = 0.3f;
 	float lpp = -(float)2.924062107079e-5;
 	//float lpp = -(float)1.03e-5;
+	//float lpp = -(float)1.33e-5;
 	float minF = 0.5f;
 	float maxF = 12.0f;
 
@@ -43,8 +44,7 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 	const float PY = 0.0f;		//	y方向の辺の長さ/2
 	const float PZ1 = 0.4025f;		//	z方向の辺の長さ/2
 	const float PZ2 = 0.0f;
-
-	/*
+/*
 	Vec3f motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
 		{Vec3f(-PX1, PY,-PZ1), Vec3f(-GX, GY,-GZ)},
 		{Vec3f(-PX2, PY, PZ2), Vec3f(-GX, GY, GZ)},
@@ -56,6 +56,17 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 		{Vec3f( PX3, PY,-PZ1), Vec3f( GX, GY,-GZ)},
 	};
 */
+		Vec3f motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
+		{Vec3f( 0, PY,-PZ1), Vec3f(-GX, GY,-GZ)},
+		{Vec3f(-PX1, PY, PZ2), Vec3f(-GX, GY, GZ)},
+		{Vec3f( 0, PY, PZ1), Vec3f(-GX, GY, GZ)},
+		{Vec3f( PX1, PY, PZ2), Vec3f( GX, GY, GZ)},
+		{Vec3f( PX1, PY, PZ1), Vec3f( GX, GY, GZ)},
+		{Vec3f( PX2, PY, PZ2), Vec3f( GX, GY, GZ)},
+		{Vec3f( PX1, PY,-PZ1), Vec3f( GX, GY,-GZ)},
+		{Vec3f( PX3, PY,-PZ1), Vec3f( GX, GY,-GZ)},
+	};
+
 	const float YOFF=-0.05f;//5cm上が原点とする
 	/*
 	Vec3f	motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
@@ -69,6 +80,7 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 		{Vec3f( PX3, PY+YOFF,-PZ1), Vec3f( GX, GY,-GZ)},// 8	
 	};
 	*/
+	/* IVRC final setting
 	Vec3f	motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
 		{Vec3f(-PX1, PY+YOFF,-PZ1), Vec3f(-GX, GY,-GZ)},// 1
 		{Vec3f(-PX2, PY+YOFF, PZ2), Vec3f(-GX, GY, GZ)},// 2
@@ -79,7 +91,7 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 		{Vec3f( PX1, PY+YOFF,-PZ1), Vec3f( GX, GY,-GZ)},// 7
 		{Vec3f( PX3, 0.33+YOFF,-PZ1), Vec3f( GX, GY,-GZ)},// 8	
 	};
-
+	*/
 /*
 	//キャリブレーション位置を中心からずらす
 	for( int i=0; i<8; i++ ) motorPos[i][0] -= Vec3f( 0,-0.0675,0.095 );
@@ -107,8 +119,8 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 
 	HISpidarCalc3Dof::Init(3, minForce, maxForce);
 
-	motor[1].lengthPerPulse *= -1;
-	motor[3].lengthPerPulse *= -1;
+//	motor[1].lengthPerPulse *= -1;
+//	motor[3].lengthPerPulse *= -1;
 	motor[5].lengthPerPulse *= -1;
 	motor[7].lengthPerPulse *= -1;
 
@@ -140,7 +152,7 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 }
 bool HISpidarFishing::Calib(){
 	//	ポインタを原点(中心)に置いて、キャリブレーションを行う
-	for(unsigned i=0; i<motor.size(); i++) motor[i].SetLength( (motor[i].pos - motor[i].jointPos).norm() );
+	for(unsigned i=0; i<4; i++) motor[i].SetLength( (motor[i].pos - motor[i].jointPos).norm() );
 	lengthDiffAve.clear();
 	for(int i=0; i<4; ++i) HISpidarCalc3Dof::Update();	//	姿勢を更新
 	return true;

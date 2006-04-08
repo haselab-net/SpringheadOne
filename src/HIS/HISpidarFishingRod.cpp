@@ -121,7 +121,7 @@ bool HISpidarFishingRod::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(*
 }
 bool HISpidarFishingRod::Calib(){
 	//	ポインタを原点(中心)に置いて、キャリブレーションを行う
-	for(unsigned i=0; i<motor.size(); i++) motor[i].SetLength( (motor[i].pos - motor[i].jointPos).norm() );
+	for(unsigned i=0; i<1; i++) motor[i].SetLength( (motor[i].pos - motor[i].jointPos).norm() );
 	lengthDiffAve.clear();
 	for(int i=0; i<4; ++i) HISpidarCalc3Dof::Update();	//	姿勢を更新
 	return true;
