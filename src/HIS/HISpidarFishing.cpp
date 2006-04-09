@@ -61,13 +61,12 @@ bool HISpidarFishing::Init(DVDeviceManager& dev)//, int nMotor, const Vec3f(* mo
 		{Vec3f(-PX1, PY, PZ2), Vec3f(-GX, GY, GZ)},
 		{Vec3f( 0, PY, PZ1), Vec3f(-GX, GY, GZ)},
 		{Vec3f( PX1, PY, PZ2), Vec3f( GX, GY, GZ)},
-		{Vec3f( PX1, PY, PZ1), Vec3f( GX, GY, GZ)},
-		{Vec3f( PX2, PY, PZ2), Vec3f( GX, GY, GZ)},
-		{Vec3f( PX1, PY,-PZ1), Vec3f( GX, GY,-GZ)},
-		{Vec3f( PX3, PY,-PZ1), Vec3f( GX, GY,-GZ)},
-	};
-
-	const float YOFF=-0.05f;//5cm上が原点とする
+		{Vec3f( 0.001, 1, 0.001), Vec3f( 0, 0, 0)},
+		{Vec3f( -0.001, -0.001, -0.001), Vec3f( 0, 0, 0)},
+		{Vec3f( 0.001, 0, 0.001), Vec3f( 0, 0, 0)},
+		{Vec3f( -0.001, 0, -0.001), Vec3f( 0, 0, 0)}};
+		
+		const float YOFF=-0.05f;//5cm上が原点とする
 	/*
 	Vec3f	motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
 		{Vec3f(-PX1, PY+YOFF,-PZ1), Vec3f(-GX, GY,-GZ)},// 1
