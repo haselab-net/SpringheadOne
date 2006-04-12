@@ -277,6 +277,13 @@ void D3Render::PushModelMatrix(){
 void D3Render::PopModelMatrix(){
 	modelMatrixStack.Pop();
 }
+void D3Render::SetViewMatrix(const Affinef& afv){
+	device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&afv);
+}
+void D3Render::SetProjectionMatrix(const Affinef& afp){
+	device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&afp);
+}
+
 
 void D3Render::SetDepthWrite(bool b){
 	WXCHECK(device->SetRenderState(D3DRS_ZWRITEENABLE, b));

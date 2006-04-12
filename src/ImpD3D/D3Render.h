@@ -82,6 +82,8 @@ public:
 	virtual void PushModelMatrix();
 	virtual void PopModelMatrix();
 	virtual void SetModelMatrix(const Affinef& afw);
+	virtual void SetViewMatrix(const Affinef& afv);
+	virtual void SetProjectionMatrix(const Affinef& afp);
 	virtual void DrawDirect(TPrimitiveType ty, Vec3f* begin, Vec3f* end);
 	virtual void DrawIndexed(TPrimitiveType ty, size_t* begin, size_t* end, Vec3f* vtx);
 	virtual void DrawText(Vec2f pos, FIString str, const GRFont& font);
