@@ -11,7 +11,7 @@
 namespace Spr{;
 
 class FWApp:public UTRefCount{
-protected:
+public:
 	HWND hWnd;							//	ウィンドウハンドル
 
 	WBCriticalSection cs;				//	クリティカルセクション
