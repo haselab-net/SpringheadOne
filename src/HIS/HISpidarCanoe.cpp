@@ -17,7 +17,7 @@ HISpidarCanoe::HISpidarCanoe() : HISpidarG6() {
 #define GY 0.065f/2
 */
 void HISpidarCanoe::MakeWireVec(){
-#if 0
+#if 1
 	//	θを[-π,π]に強制
 	if (ori.W() < 0) ori *= -1;
 	if (ori.theta() > M_PI*0.7){
@@ -74,7 +74,7 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 #if 1	//	工作室
 	const float PX = 0.061f/2;		//	x方向の辺の長さ/2
 	const float PY = 2.35f/2;		//	y方向の辺の長さ/2
-	const float PZ = 1.50f/2;		//	z方向の辺の長さ/2
+	const float PZ = 1.49f/2;		//	z方向の辺の長さ/2
 	Vec3f motorPos[8][2] = {		//	モータの取り付け位置(中心を原点とするDirectX座標系（右がX,上がY,奥がZ）)
 		{Vec3f( PX,-PY+PY,-PZ), Vec3f(  GX, GY, -GZ)},
 		{Vec3f(-PX,-PY+PY,-PZ), Vec3f( -GX, GY, -GZ)},
@@ -124,7 +124,9 @@ bool HISpidarCanoe::Init(DVDeviceManager& dev){
 	//キャリブレーション位置を中心からずらす
 	for( int i=0; i<8; i++ ) motorPos[i][0] -= Vec3f( 0,-0.0675,0.095 );
 */
-	double lpp = 3.0824008138351983723296032553408e-5 * 500 /1024;
+	//	86120-15000=71120
+//	double lpp = 3.0824008138351983723296032553408e-5 * 500 /1024;
+	double lpp = 1.0 / 71120.0;
 	if( HISpidarG6::Init(dev, 8, motorPos, 0.3f, (float)lpp, 0.8f, 8.0f) == false ){
 		return false;
 	}

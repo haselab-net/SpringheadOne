@@ -52,12 +52,16 @@ void GRRender::Render(SGScene* s){
 
 	//	•s“§–¾•”‚Ì•`‰æ
 	drawState = DRAW_OPAQUE;
+	PushModelMatrix();
+	SetModelMatrix(Affinef());
 	frames.Push(s->GetWorld());
 	RenderRecurse();
 	frames.Pop();
 	s->GetBehaviors().Render(this, s);
+	PopModelMatrix();
 
 	//	”¼“§–¾•”‚Ì•`‰æ
+	PushModelMatrix();
 	drawState = DRAW_TRANSPARENT;
 	SetDepthWrite(false);
 	SetAlphaMode(BF_SRCALPHA, BF_INVSRCALPHA);
@@ -65,6 +69,7 @@ void GRRender::Render(SGScene* s){
 	RenderRecurse();
 	frames.Pop();
 	s->GetBehaviors().Render(this, s);
+	PopModelMatrix();
 	
 	//	•’i‚ÍBOTH‚É‚µ‚Ä‚¨‚­
 	drawState = DRAW_BOTH;

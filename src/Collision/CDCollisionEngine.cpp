@@ -423,6 +423,11 @@ void RenderCDMesh(Affinef af, SGFrame* fr, GRRender* render){
 	}
 }
 void CDCollisionEngine::Render(GRRender* render, SGScene* scene){
+	return;
+
+
+
+	
 	if (!render->bDrawDebug) return;
 	if ((render->drawState & GRRender::DRAW_OPAQUE) == 0) return;
 	count = 0;

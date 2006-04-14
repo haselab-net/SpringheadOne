@@ -99,6 +99,7 @@ public:
 	virtual void SetAlphaMode(TBlendFunc src, TBlendFunc dest);
 	virtual bool CanDraw();
 	void InitTree(SGFrame* fr, SGScene* scene);
+	void Render(SGScene* s);
 
 	virtual Vec3f getPointUnderPixel(int x, int y, bool& found, SGScene* scene);
 

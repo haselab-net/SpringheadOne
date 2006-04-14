@@ -409,6 +409,11 @@ void D3Render::SetLineWidth(float w){
 bool D3Render::CanDraw(){
 	return device.CanDraw();
 }
+void D3Render::Render(SGScene* s){
+	modelMatrixStack.clear();
+	modelMatrixStack.Push(Affinef());
+	GRRender::Render(s);
+}
 
 
 Vec3f D3Render::getPointUnderPixel(int x, int y, bool& found, SGScene* scene){

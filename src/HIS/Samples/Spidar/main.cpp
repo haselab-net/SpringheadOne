@@ -38,6 +38,9 @@ int main(){
 #ifdef _WIN32
 	devMan.RPool().Register(new DRUsb20Simple(10));	//	USB2.0アンプ(ID 10)を登録
 	devMan.RPool().Register(new DRUsb20Sh4(0));		//	SH4アンプ(ID 0)を登録
+	devMan.RPool().Register(new DRUsb20Sh4(1));		//	SH4アンプ(ID 0)を登録
+	devMan.RPool().Register(new DRUsb20Sh4(2));		//	SH4アンプ(ID 0)を登録
+	devMan.RPool().Register(new DRUsb20Sh4(3));		//	SH4アンプ(ID 0)を登録
 	//	IDはアンプ裏のロータリスイッチの値(0x0-0xF)です．
 
 	/*	使っていないドライバ．登録しておけば自動認識する．
@@ -129,12 +132,26 @@ int main(){
 		cout << "P:" << spidar.GetPos() << "\tF:" << spidar.GetForce() << std::endl;
 #endif
 		//	デバッグ用：糸の長さを表示
-#if 1
+#if 0
 		for(int i=0; i<4; i++){
 			cout << spidar.Motor()[i].GetLength() << " ";
 		}
 		for(int i=0; i<4; i++){
 			cout << spidar2.Motor()[i].GetLength() << " ";
+		}
+		cout << std::endl;
+		cout.flush();
+#endif
+#if 1
+		for(int i=0; i<4; i++){
+			if (spidar.Motor()[i].counter){
+				cout << spidar.Motor()[i].counter->Count() << " ";
+			}
+		}
+		for(int i=0; i<4; i++){
+			if (spidar2.Motor()[i].counter){
+				cout << spidar2.Motor()[i].counter->Count() << " ";
+			}
 		}
 		cout << std::endl;
 		cout.flush();
