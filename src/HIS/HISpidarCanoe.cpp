@@ -30,7 +30,7 @@ void HISpidarCanoe::MakeWireVec(){
 */
 		ori = Quaternionf::Rot(Rad(180), 'z') * ori;
 		pos.x *= -1;
-		DSTR << ori << std::endl;
+		DSTR << "HISpdiarCanoe: reversed " << ori << std::endl;
 	}
 #endif
 	for(unsigned int i=0; i<motor.size(); ++i){
