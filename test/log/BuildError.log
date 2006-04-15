@@ -1,4 +1,4 @@
-日付 : 2005.10.29 
+日付 : 2006.04.15 
  
 --- ビルドエラーのログ --- 
  
@@ -22,6 +22,5 @@ Debug/SDKD3DDyna.exe : fatal error LNK1120: 外部参照 1 が未解決です。
  
  
 *** TreeTestView *** 
-[C++ 致命的エラー] BaseDebug.cpp(3): F1004 コンパイラ内部のエラー at 0x77f87eeb with base 0xba0000
  
  

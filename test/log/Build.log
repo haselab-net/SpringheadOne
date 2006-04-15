@@ -206,6 +206,7 @@ setupapi.lib(SETUPAPI.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR は ddraw.
 --------------------構成: Creature - Win32 MFC Debug--------------------
 ｺﾝﾊﾟｲﾙ中...
 CRActionPlanner.cpp
+CRAttention.cpp
 CRBalance.cpp
 CRBalanceMultiLeg.cpp
 CRBalanceQuadPR.cpp
@@ -214,7 +215,11 @@ CRBallBalanceQuadPR.cpp
 CRBallHuman.cpp
 CRBallVirtualHuman.cpp
 CRBeetle.cpp
+CRBrain.cpp
+CREye.cpp
 CRHuman.cpp
+CRInternalModel.cpp
+CRNeckController.cpp
 CRPuppet.cpp
 CRReachingMovment.cpp
 CRReachingMovmentPD.cpp
@@ -223,8 +228,10 @@ CRSupportArea.cpp
 CRUser.cpp
 CRVH.cpp
 CRVirtualHuman.cpp
+CRVisionMotionAnalysis.cpp
 ﾗｲﾌﾞﾗﾘを作成中...
 --------------------構成: DynaHaptic - Win32 MFC Debug--------------------
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
 ｺﾝﾊﾟｲﾙ中...
 StdAfx.cpp
 ｺﾝﾊﾟｲﾙ中...
@@ -240,6 +247,7 @@ DynaHaptic.exe - ｴﾗｰ 0、警告 5
  
 *** MFCD3DDyna *** 
 --------------------構成: MFCD3DDyna - Win32 MFC Debug--------------------
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
 ｺﾝﾊﾟｲﾙ中...
 StdAfx.cpp
 ｺﾝﾊﾟｲﾙ中...
@@ -402,7 +410,5 @@ SDKD3DDyna.exe - ｴﾗｰ 2、警告 8
  
  
 *** TreeTestView *** 
-[C++] BaseDebug.cpp(1): 
-[C++ 致命的エラー] BaseDebug.cpp(3): F1004 コンパイラ内部のエラー at 0x77f87eeb with base 0xba0000
  
  
